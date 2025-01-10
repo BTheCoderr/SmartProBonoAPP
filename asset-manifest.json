@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/smartProBonoAPP/static/css/main.e6c13ad2.css",
+    "main.js": "/smartProBonoAPP/static/js/main.31244527.js",
+    "static/js/239.d311f816.chunk.js": "/smartProBonoAPP/static/js/239.d311f816.chunk.js",
+    "static/js/213.c8d985d6.chunk.js": "/smartProBonoAPP/static/js/213.c8d985d6.chunk.js",
+    "static/js/455.4b7ad7e6.chunk.js": "/smartProBonoAPP/static/js/455.4b7ad7e6.chunk.js",
+    "static/js/453.3373b86a.chunk.js": "/smartProBonoAPP/static/js/453.3373b86a.chunk.js",
+    "index.html": "/smartProBonoAPP/index.html",
+    "main.e6c13ad2.css.map": "/smartProBonoAPP/static/css/main.e6c13ad2.css.map",
+    "main.31244527.js.map": "/smartProBonoAPP/static/js/main.31244527.js.map",
+    "239.d311f816.chunk.js.map": "/smartProBonoAPP/static/js/239.d311f816.chunk.js.map",
+    "213.c8d985d6.chunk.js.map": "/smartProBonoAPP/static/js/213.c8d985d6.chunk.js.map",
+    "455.4b7ad7e6.chunk.js.map": "/smartProBonoAPP/static/js/455.4b7ad7e6.chunk.js.map",
+    "453.3373b86a.chunk.js.map": "/smartProBonoAPP/static/js/453.3373b86a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.31244527.js"
+  ]
+}
