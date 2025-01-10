@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/smartProBonoAPP/static/css/main.e6c13ad2.css",
-    "main.js": "/smartProBonoAPP/static/js/main.5785db6a.js",
+    "main.js": "/smartProBonoAPP/static/js/main.c6b445b2.js",
     "static/js/453.c4b78541.chunk.js": "/smartProBonoAPP/static/js/453.c4b78541.chunk.js",
     "index.html": "/smartProBonoAPP/index.html",
     "main.e6c13ad2.css.map": "/smartProBonoAPP/static/css/main.e6c13ad2.css.map",
-    "main.5785db6a.js.map": "/smartProBonoAPP/static/js/main.5785db6a.js.map",
+    "main.c6b445b2.js.map": "/smartProBonoAPP/static/js/main.c6b445b2.js.map",
     "453.c4b78541.chunk.js.map": "/smartProBonoAPP/static/js/453.c4b78541.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.5785db6a.js"
+    "static/js/main.c6b445b2.js"
   ]
 }
