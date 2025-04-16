@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DACA Renewal Cover Letter Template</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .sender-info { text-align: right; margin-bottom: 40px; }
+    .recipient-info { margin-bottom: 40px; }
+    .subject { font-weight: bold; margin-bottom: 20px; }
+    .body { margin-bottom: 40px; }
+    .closing { margin-bottom: 60px; }
+    .signature { }
+    .enclosures { margin-top: 40px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sender-info">
+      <p>{{full_name}}<br>
+      {{street_address}}<br>
+      {{city}}, {{state}} {{zip_code}}<br>
+      {{phone_number}}<br>
+      {{email}}</p>
+    </div>
+    
+    <div class="recipient-info">
+      <p>U.S. Citizenship and Immigration Services<br>
+      {{uscis_office_name}}<br>
+      {{uscis_street_address}}<br>
+      {{uscis_city}}, {{uscis_state}} {{uscis_zip_code}}</p>
+    </div>
+    
+    <div class="subject">
+      <p>RE: DACA Renewal Application for {{full_name}}, A# {{alien_number}}</p>
+    </div>
+    
+    <div class="body">
+      <p>Dear USCIS Officer:</p>
+      
+      <p>I am writing to submit my application to renew my Deferred Action for Childhood Arrivals (DACA) status. My current DACA status is set to expire on {{expiration_date}}. I have included all required forms and supporting documentation with this application.</p>
+      
+      <p>Please find enclosed the following documents:</p>
+      <ol>
+        <li>Form I-821D, Consideration of Deferred Action for Childhood Arrivals</li>
+        <li>Form I-765, Application for Employment Authorization</li>
+        <li>Form I-765WS, Worksheet</li>
+        <li>Copy of my previous DACA approval notice</li>
+        <li>Copy of my current Employment Authorization Document (EAD)</li>
+        <li>Two passport-style photographs</li>
+        <li>Check or money order for $495 filing fee</li>
+        {{#if additional_documents}}
+        <li>{{additional_documents}}</li>
+        {{/if}}
+      </ol>
+      
+      <p>{{#if has_changed_circumstances}}I would like to note the following changes in my circumstances since my last DACA application: {{changed_circumstances_details}}{{/if}}</p>
+      
+      <p>{{#if special_considerations}}I would also like to request your consideration of the following special circumstances: {{special_considerations_details}}{{/if}}</p>
+      
+      <p>Please note that I am submitting this renewal application {{days_before_expiration}} days before my current DACA status expires. I understand that USCIS recommends submitting renewal applications between 150 and 120 days before expiration.</p>
+      
+      <p>If you require any additional information or documentation, please contact me using the information provided above. Thank you for your consideration of my application.</p>
+    </div>
+    
+    <div class="closing">
+      <p>Sincerely,</p>
+    </div>
+    
+    <div class="signature">
+      <p>{{full_name}}</p>
+    </div>
+    
+    <div class="enclosures">
+      <p>Enclosures: {{enclosures_count}}</p>
+    </div>
+  </div>
+</body>
+</html> 

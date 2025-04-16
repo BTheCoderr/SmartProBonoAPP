@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Last Will and Testament</title>
+  <style>
+    body { font-family: Times New Roman, serif; line-height: 1.8; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-weight: bold; margin-bottom: 15px; text-decoration: underline; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .signature-block { margin-top: 50px; }
+    .witness-block { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px; }
+    .numbered-item { margin-left: 20px; margin-bottom: 15px; }
+    ol { margin-left: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>LAST WILL AND TESTAMENT</h1>
+      <p><em>of</em></p>
+      <h2><span class="field">{{full_name}}</span></h2>
+    </div>
+
+    <div class="section">
+      <p>I, <span class="field">{{full_name}}</span>, residing at <span class="field">{{street_address}}</span>, <span class="field">{{city}}</span>, <span class="field">{{state}}</span> <span class="field">{{zip_code}}</span>, being of sound mind and memory, do hereby make, publish, and declare this to be my Last Will and Testament, hereby revoking all wills and codicils previously made by me.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">ARTICLE I: DECLARATIONS</div>
+      <ol>
+        <li class="numbered-item">I am currently <span class="field">{{marital_status}}</span> to <span class="field">{{spouse_name}}</span>.</li>
+        <li class="numbered-item">I have the following children:
+          <span class="field">{{children_names}}</span>
+        </li>
+        <li class="numbered-item">All references in this Will to "my spouse" refer to <span class="field">{{spouse_name}}</span>. All references to "my children" refer to the children named above and any children born to or adopted by me after the execution of this Will.</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <div class="section-title">ARTICLE II: PAYMENT OF DEBTS AND EXPENSES</div>
+      <p>I direct my Executor to pay all of my just debts, funeral expenses, and the expenses of administering my estate as soon after my death as is practicable.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">ARTICLE III: EXECUTOR</div>
+      <p>I hereby appoint <span class="field">{{executor_name}}</span>, residing at <span class="field">{{executor_address}}</span>, as the Executor of this, my Last Will and Testament.</p>
+      
+      <p>In the event that <span class="field">{{executor_name}}</span> is unable or unwilling to serve as Executor, I hereby appoint <span class="field">{{alternate_executor_name}}</span>, residing at <span class="field">{{alternate_executor_address}}</span>, as the alternate Executor of this, my Last Will and Testament.</p>
+      
+      <p>I direct that no bond or other security shall be required of any Executor appointed in this Will in any jurisdiction.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">ARTICLE IV: SPECIFIC BEQUESTS</div>
+      <p>I make the following specific bequests:</p>
+      <p>1. I give and bequeath to <span class="field">{{specific_beneficiary_1_name}}</span>, <span class="field">{{specific_beneficiary_1_relationship}}</span>, the following: <span class="field">{{specific_bequest_1_description}}</span>.</p>
+      
+      {{#if has_specific_bequest_2}}
+      <p>2. I give and bequeath to <span class="field">{{specific_beneficiary_2_name}}</span>, <span class="field">{{specific_beneficiary_2_relationship}}</span>, the following: <span class="field">{{specific_bequest_2_description}}</span>.</p>
+      {{/if}}
+      
+      {{#if has_specific_bequest_3}}
+      <p>3. I give and bequeath to <span class="field">{{specific_beneficiary_3_name}}</span>, <span class="field">{{specific_beneficiary_3_relationship}}</span>, the following: <span class="field">{{specific_bequest_3_description}}</span>.</p>
+      {{/if}}
+      
+      <p>If any beneficiary named in this Article does not survive me, then the bequest to such beneficiary shall lapse and shall become part of my residuary estate.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">ARTICLE V: RESIDUARY ESTATE</div>
+      <p>I give, devise, and bequeath all of the rest, residue, and remainder of my property and estate, both real and personal, of whatever kind and wherever situated, which I may own or have the right to dispose of at the time of my death (my "residuary estate") as follows:</p>
+      
+      <span class="field">{{residuary_distribution}}</span>
+    </div>
+
+    <div class="section">
+      <div class="section-title">ARTICLE VI: GUARDIAN</div>
+      {{#if needs_guardian}}
+      <p>In the event that at the time of my death I am the sole parent or legal guardian of any minor children, I hereby nominate and appoint <span class="field">{{guardian_name}}</span>, residing at <span class="field">{{guardian_address}}</span>, as guardian of the person and property of such minor children.</p>
+      
+      <p>In the event that <span class="field">{{guardian_name}}</span> is unable or unwilling to serve as guardian, I hereby nominate and appoint <span class="field">{{alternate_guardian_name}}</span>, residing at <span class="field">{{alternate_guardian_address}}</span>, as guardian of the person and property of such minor children.</p>
+      {{else}}
+      <p>This article is intentionally left blank as I do not have minor children at the time of making this Will.</p>
+      {{/if}}
+    </div>
+
+    <div class="section">
+      <div class="section-title">ARTICLE VII: MISCELLANEOUS PROVISIONS</div>
+      <p>If any provision of this Will is found to be invalid or unenforceable, this shall not affect the remaining provisions, which shall continue to be valid and enforceable.</p>
+      
+      <p>The division of my assets shall be made in kind to the extent possible. My Executor may sell, at public or private sale, any property belonging to my estate in order to carry out the provisions of this Will.</p>
+    </div>
+
+    <div class="signature-block">
+      <p>IN WITNESS WHEREOF, I, <span class="field">{{full_name}}</span>, hereby sign, publish, and declare this instrument as my Last Will and Testament, this <span class="field">{{signing_day}}</span> day of <span class="field">{{signing_month}}</span>, <span class="field">{{signing_year}}</span>.</p>
+      <p>____________________________<br>
+      <span class="field">{{full_name}}</span>, Testator/Testatrix</p>
+    </div>
+
+    <div class="witness-block">
+      <p>The foregoing instrument was signed, published, and declared by <span class="field">{{full_name}}</span> as their Last Will and Testament, in our presence, and we, at their request and in their presence, and in the presence of each other, have subscribed our names as witnesses thereto, believing said <span class="field">{{full_name}}</span> to be of sound mind and memory.</p>
+      
+      <p>
+        ____________________________<br>
+        Witness Signature<br><br>
+        ____________________________<br>
+        Printed Name<br><br>
+        ____________________________<br>
+        Address
+      </p>
+      
+      <p>
+        ____________________________<br>
+        Witness Signature<br><br>
+        ____________________________<br>
+        Printed Name<br><br>
+        ____________________________<br>
+        Address
+      </p>
+      
+      <p>
+        ____________________________<br>
+        Witness Signature<br><br>
+        ____________________________<br>
+        Printed Name<br><br>
+        ____________________________<br>
+        Address
+      </p>
+    </div>
+  </div>
+</body>
+</html> 

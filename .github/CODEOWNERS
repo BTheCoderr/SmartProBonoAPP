@@ -1,0 +1,49 @@
+# This file defines who is responsible for reviewing changes to different parts of the codebase
+# For more information, see: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+# These owners will be the default owners for everything in the repository
+# unless a later match takes precedence
+*                   @BTheCoderr @SmartProBono/core-team
+
+# Frontend code ownership
+/frontend/          @SmartProBono/frontend-team
+/frontend/src/      @SmartProBono/frontend-team
+*.js                @SmartProBono/frontend-team
+*.jsx               @SmartProBono/frontend-team
+*.ts                @SmartProBono/frontend-team
+*.tsx               @SmartProBono/frontend-team
+*.css               @SmartProBono/frontend-team
+*.scss              @SmartProBono/frontend-team
+
+# Backend code ownership
+/backend/           @SmartProBono/backend-team
+/backend/app.py     @SmartProBono/backend-team
+/backend/models/    @SmartProBono/backend-team
+/backend/routes/    @SmartProBono/backend-team
+/backend/services/  @SmartProBono/backend-team
+*.py                @SmartProBono/backend-team
+
+# Legal content ownership
+/backend/rights.py  @SmartProBono/legal-team
+/backend/document_service.py @SmartProBono/legal-team @SmartProBono/backend-team
+
+# Documentation ownership
+*.md                @SmartProBono/docs-team
+/docs/              @SmartProBono/docs-team
+
+# Security-related files
+/backend/config/    @SmartProBono/security-team
+SECURITY.md         @SmartProBono/security-team
+
+# CI/CD and deployment
+*.yml               @SmartProBono/devops-team
+*.yaml              @SmartProBono/devops-team
+/render.yaml        @SmartProBono/devops-team
+/netlify.toml       @SmartProBono/devops-team
+
+# Community and governance
+CODE_OF_CONDUCT.md  @SmartProBono/community-team
+CONTRIBUTING.md     @SmartProBono/community-team
+GOVERNANCE.md       @SmartProBono/board
+LICENSE             @SmartProBono/legal-team 

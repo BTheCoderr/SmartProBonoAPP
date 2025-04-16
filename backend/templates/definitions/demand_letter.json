@@ -1,0 +1,57 @@
+{
+    "id": "demand-letter",
+    "name": "Legal Demand Letter",
+    "category": "Disputes",
+    "description": "Formal demand letter for legal claims or disputes",
+    "requires_signature": true,
+    "required_fields": [
+        "sender_name",
+        "sender_address",
+        "recipient_name",
+        "recipient_address",
+        "demand_amount",
+        "reason",
+        "deadline",
+        "incident_date"
+    ],
+    "optional_fields": [
+        "previous_communications",
+        "supporting_documents",
+        "settlement_terms",
+        "legal_citations"
+    ],
+    "sections": [
+        {
+            "title": "DEMAND LETTER",
+            "content": "Date: {current_date}\n\n{recipient_name}\n{recipient_address}\n\nRE: Legal Demand - {reason}"
+        },
+        {
+            "title": "Dear {recipient_name}:",
+            "content": "This letter serves as a formal demand for payment in the amount of ${demand_amount} regarding {reason} that occurred on {incident_date}."
+        },
+        {
+            "title": "1. BACKGROUND",
+            "content": "On {incident_date}, the following incident occurred: {reason}"
+        },
+        {
+            "title": "2. PREVIOUS COMMUNICATIONS",
+            "content": "Previous attempts to resolve this matter include: {previous_communications}"
+        },
+        {
+            "title": "3. SUPPORTING DOCUMENTATION",
+            "content": "The following documents support this demand: {supporting_documents}"
+        },
+        {
+            "title": "4. LEGAL BASIS",
+            "content": "This demand is supported by the following legal authorities: {legal_citations}"
+        },
+        {
+            "title": "5. DEMAND",
+            "content": "I hereby demand payment in the amount of ${demand_amount} to be paid no later than {deadline}. The proposed settlement terms are as follows: {settlement_terms}"
+        },
+        {
+            "title": "6. CONCLUSION",
+            "content": "If I do not receive payment or a satisfactory response by {deadline}, I will pursue all available legal remedies, including but not limited to filing a lawsuit to recover the amount owed, plus any additional costs, interest, and attorney fees as permitted by law."
+        }
+    ]
+} 

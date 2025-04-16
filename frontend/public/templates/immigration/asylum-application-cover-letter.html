@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Asylum Application Cover Letter</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .sender-info { text-align: right; margin-bottom: 40px; }
+    .recipient-info { margin-bottom: 40px; }
+    .subject { font-weight: bold; margin-bottom: 20px; }
+    .body { margin-bottom: 40px; }
+    .closing { margin-bottom: 60px; }
+    .signature { }
+    .enclosures { margin-top: 40px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sender-info">
+      <p>
+        <span class="field">{{applicant_name}}</span><br>
+        <span class="field">{{applicant_address}}</span><br>
+        <span class="field">{{applicant_city}}</span>, <span class="field">{{applicant_state}}</span> <span class="field">{{applicant_zip}}</span><br>
+        <span class="field">{{applicant_phone}}</span><br>
+        <span class="field">{{applicant_email}}</span>
+      </p>
+      <p><span class="field">{{current_date}}</span></p>
+    </div>
+
+    <div class="recipient-info">
+      <p>
+        U.S. Citizenship and Immigration Services<br>
+        <span class="field">{{uscis_office_name}}</span><br>
+        <span class="field">{{uscis_address}}</span><br>
+        <span class="field">{{uscis_city}}</span>, <span class="field">{{uscis_state}}</span> <span class="field">{{uscis_zip}}</span>
+      </p>
+    </div>
+
+    <div class="subject">
+      <p>RE: Asylum Application for <span class="field">{{applicant_name}}</span>, A# <span class="field">{{alien_number}}</span> (if applicable)</p>
+    </div>
+
+    <div class="body">
+      <p>Dear USCIS Officer:</p>
+
+      <p>I am writing to submit my application for asylum in the United States based on well-founded fear of persecution in my home country of <span class="field">{{home_country}}</span>. I am seeking asylum because <span class="field">{{brief_reason}}</span>.</p>
+
+      <p>Enclosed please find the following documents in support of my asylum application:</p>
+
+      <ol>
+        <li>Form I-589, Application for Asylum and for Withholding of Removal, completed and signed</li>
+        <li>One passport-style photograph</li>
+        <li>Copy of my passport biographical page</li>
+        <li>Copy of I-94 Arrival/Departure Record (if applicable)</li>
+        <li>Copy of current immigration status document (visa, EAD, etc.)</li>
+        {{#if has_spouse_children}}
+        <li>Documents relating to my spouse and/or children, including marriage certificate and birth certificates</li>
+        {{/if}}
+        <li>Personal declaration describing my claim for asylum</li>
+        <li>Evidence supporting my asylum claim, including:</li>
+        <ol type="a">
+          <li><span class="field">{{evidence_item_1}}</span></li>
+          <li><span class="field">{{evidence_item_2}}</span></li>
+          {{#if has_evidence_item_3}}
+          <li><span class="field">{{evidence_item_3}}</span></li>
+          {{/if}}
+          {{#if has_evidence_item_4}}
+          <li><span class="field">{{evidence_item_4}}</span></li>
+          {{/if}}
+          {{#if has_evidence_item_5}}
+          <li><span class="field">{{evidence_item_5}}</span></li>
+          {{/if}}
+        </ol>
+        <li>Country conditions reports and other documentation concerning human rights practices in <span class="field">{{home_country}}</span></li>
+        {{#if has_additional_documents}}
+        <li><span class="field">{{additional_documents}}</span></li>
+        {{/if}}
+      </ol>
+
+      <p>My application demonstrates that I have a well-founded fear of persecution based on my <span class="field">{{persecution_basis}}</span> if I were to return to <span class="field">{{home_country}}</span>. As described in detail in my personal declaration, I have experienced the following persecution:</p>
+
+      <p><span class="field">{{persecution_summary}}</span></p>
+
+      <p>I fear that if I return to <span class="field">{{home_country}}</span>, I will face continued persecution, including <span class="field">{{feared_future_persecution}}</span>.</p>
+
+      <p>I am filing this application within one year of my arrival in the United States, as required by law. I arrived in the United States on <span class="field">{{arrival_date}}</span>.</p>
+
+      {{#if represented_by_attorney}}
+      <p>Please note that I am represented by <span class="field">{{attorney_name}}</span>. A Form G-28, Notice of Entry of Appearance as Attorney, is included with this application. Please direct all correspondence regarding my case to my attorney.</p>
+      {{/if}}
+
+      <p>If you require any additional information or documentation to support my application, please contact {{#if represented_by_attorney}}my attorney at <span class="field">{{attorney_phone}}</span> or <span class="field">{{attorney_email}}</span>{{else}}me using the information provided above{{/if}}.</p>
+
+      <p>Thank you for your consideration of my application.</p>
+    </div>
+
+    <div class="closing">
+      <p>Sincerely,</p>
+    </div>
+
+    <div class="signature">
+      <p><span class="field">{{applicant_name}}</span></p>
+    </div>
+
+    <div class="enclosures">
+      <p>Enclosures: As listed above</p>
+    </div>
+  </div>
+</body>
+</html> 

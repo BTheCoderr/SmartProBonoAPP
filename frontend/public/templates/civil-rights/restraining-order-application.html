@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Restraining Order Application</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .court-info { text-align: center; margin-bottom: 20px; border: 1px solid #000; padding: 10px; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .party-box { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; }
+    .party-title { font-weight: bold; text-align: center; margin-bottom: 10px; }
+    .case-number { font-weight: bold; text-align: right; margin: 10px 0; }
+    .signature-block { margin-top: 40px; }
+    .warning { font-weight: bold; color: #b71c1c; }
+    .notice { background-color: #f5f5f5; padding: 10px; border-left: 3px solid #757575; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>APPLICATION FOR RESTRAINING ORDER</h1>
+    </div>
+
+    <div class="court-info">
+      <p>IN THE <span class="field">{{court_type}}</span> COURT OF <span class="field">{{court_jurisdiction}}</span></p>
+      <p><span class="field">{{court_address}}</span></p>
+      <p><span class="field">{{court_city}}</span>, <span class="field">{{court_state}}</span> <span class="field">{{court_zip}}</span></p>
+    </div>
+
+    <div class="case-number">
+      CASE NO. <span class="field">{{case_number}}</span>
+    </div>
+
+    <div class="section">
+      <div class="party-box">
+        <div class="party-title">PETITIONER (Person asking for protection)</div>
+        <p>
+          Name: <span class="field">{{petitioner_name}}</span><br>
+          Date of Birth: <span class="field">{{petitioner_dob}}</span><br>
+          Address: <span class="field">{{petitioner_address}}</span> 
+          <span class="field">{{petitioner_city}}</span>, <span class="field">{{petitioner_state}}</span> 
+          <span class="field">{{petitioner_zip}}</span><br>
+          Phone: <span class="field">{{petitioner_phone}}</span><br>
+          Email: <span class="field">{{petitioner_email}}</span>
+        </p>
+        <p class="notice">
+          <strong>Address Confidentiality:</strong> If you fear for your safety, you may use an alternate address. Check here to keep your address confidential: □
+        </p>
+      </div>
+      
+      <div class="party-box">
+        <div class="party-title">RESPONDENT (Person you want protection from)</div>
+        <p>
+          Name: <span class="field">{{respondent_name}}</span><br>
+          Date of Birth: <span class="field">{{respondent_dob}}</span> (if known)<br>
+          Address: <span class="field">{{respondent_address}}</span> 
+          <span class="field">{{respondent_city}}</span>, <span class="field">{{respondent_state}}</span> 
+          <span class="field">{{respondent_zip}}</span><br>
+          Phone: <span class="field">{{respondent_phone}}</span><br>
+          Email: <span class="field">{{respondent_email}}</span>
+        </p>
+        <p>
+          Physical Description:<br>
+          Sex: <span class="field">{{respondent_sex}}</span><br>
+          Race: <span class="field">{{respondent_race}}</span><br>
+          Height: <span class="field">{{respondent_height}}</span><br>
+          Weight: <span class="field">{{respondent_weight}}</span><br>
+          Eye Color: <span class="field">{{respondent_eye_color}}</span><br>
+          Hair Color: <span class="field">{{respondent_hair_color}}</span><br>
+          Distinguishing Features: <span class="field">{{respondent_distinguishing_features}}</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">1. RELATIONSHIP TO RESPONDENT</div>
+      <p>The Respondent is (check all that apply):</p>
+      <p>
+        □ Current or former spouse<br>
+        □ Current or former intimate partner<br>
+        □ We have a child in common<br>
+        □ Parent of Petitioner<br>
+        □ Child of Petitioner<br>
+        □ Person living in same household<br>
+        □ Related by blood or marriage (specify): <span class="field">{{relationship_type}}</span><br>
+        □ Other relationship (specify): <span class="field">{{other_relationship}}</span>
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. COURT HISTORY</div>
+      <p>
+        □ No other case<br>
+        □ There is/was another court case involving the Respondent and me:<br>
+        Court: <span class="field">{{previous_court}}</span><br>
+        Case Number: <span class="field">{{previous_case_number}}</span><br>
+        Type of Case: <span class="field">{{previous_case_type}}</span><br>
+        Outcome: <span class="field">{{previous_case_outcome}}</span>
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. BASIS FOR RESTRAINING ORDER</div>
+      <p class="warning">Describe in detail what the Respondent did, when it happened, and why you need protection:</p>
+      <p><span class="field">{{incident_description}}</span></p>
+      
+      <p>Date(s) of incidents: <span class="field">{{incident_dates}}</span></p>
+      <p>Location(s) of incidents: <span class="field">{{incident_locations}}</span></p>
+      
+      <p>Were weapons involved? □ Yes □ No</p>
+      <p>If yes, describe: <span class="field">{{weapons_description}}</span></p>
+      
+      <p>Were there injuries? □ Yes □ No</p>
+      <p>If yes, describe: <span class="field">{{injuries_description}}</span></p>
+      
+      <p>Was medical treatment sought? □ Yes □ No</p>
+      <p>If yes, describe: <span class="field">{{medical_treatment_description}}</span></p>
+      
+      <p>Were police called? □ Yes □ No</p>
+      <p>Police Report #: <span class="field">{{police_report_number}}</span></p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. REQUESTED PROTECTION</div>
+      <p>I am requesting the following orders (check all that apply):</p>
+      <p>
+        □ Respondent must not contact, assault, threaten, abuse, harass, follow, stalk, or interfere with me<br>
+        □ Respondent must stay at least <span class="field">{{distance}}</span> yards away from me<br>
+        □ Respondent must stay away from my home<br>
+        □ Respondent must stay away from my workplace: <span class="field">{{workplace_address}}</span><br>
+        □ Respondent must stay away from my school: <span class="field">{{school_address}}</span><br>
+        □ Respondent must stay away from the following places: <span class="field">{{other_locations}}</span><br>
+        □ Respondent must not possess firearms or ammunition<br>
+        □ Temporary child custody (names and ages of children): <span class="field">{{children_details}}</span><br>
+        □ Other protection (specify): <span class="field">{{other_protection}}</span>
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. EMERGENCY ORDER WITHOUT NOTICE</div>
+      <p>I am requesting an emergency restraining order without notice to the Respondent because:</p>
+      <p>
+        □ There is an immediate danger of harm<br>
+        □ Irreparable injury will occur if the order is delayed<br>
+        □ I have made reasonable attempts to notify the Respondent<br>
+        □ Other reason (specify): <span class="field">{{emergency_reason}}</span>
+      </p>
+    </div>
+
+    <div class="signature-block">
+      <p>I declare under penalty of perjury under the laws of <span class="field">{{state_name}}</span> that the foregoing is true and correct.</p>
+      <p>Date: <span class="field">{{signing_date}}</span></p>
+      <p>Signature: ________________________________</p>
+      <p>Printed Name: <span class="field">{{petitioner_name}}</span></p>
+    </div>
+
+    <div class="notice">
+      <p><strong>NOTICE:</strong> After filing this application, you will need to attend a hearing where a judge will determine whether to grant a restraining order. You must appear at this hearing or your request may be denied.</p>
+      <p>If you are in immediate danger, contact law enforcement by calling 911.</p>
+    </div>
+  </div>
+</body>
+</html> 

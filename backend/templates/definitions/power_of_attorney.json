@@ -1,0 +1,55 @@
+{
+    "id": "power-of-attorney",
+    "name": "General Power of Attorney",
+    "category": "Legal",
+    "description": "General power of attorney document granting legal authority to an agent",
+    "requires_signature": true,
+    "required_fields": [
+        "grantor_name",
+        "grantor_address",
+        "agent_name",
+        "agent_address",
+        "effective_date",
+        "powers_granted"
+    ],
+    "optional_fields": [
+        "expiration_date",
+        "limitations",
+        "successor_agent",
+        "additional_instructions"
+    ],
+    "sections": [
+        {
+            "title": "POWER OF ATTORNEY",
+            "content": "I, {grantor_name}, residing at {grantor_address} ('Principal'), hereby appoint {agent_name}, residing at {agent_address} ('Agent'), as my Attorney-in-Fact ('Agent')."
+        },
+        {
+            "title": "1. GRANT OF AUTHORITY",
+            "content": "I hereby grant to my Agent full power and authority to act on my behalf and in my name in any way I could act in person with respect to the following matters, as each of them is defined in state law, to the extent that I am permitted by law to act through an Agent: {powers_granted}"
+        },
+        {
+            "title": "2. EFFECTIVE DATE",
+            "content": "This Power of Attorney shall become effective on {effective_date}."
+        },
+        {
+            "title": "3. EXPIRATION",
+            "content": "This Power of Attorney shall expire on {expiration_date} unless revoked earlier by the Principal."
+        },
+        {
+            "title": "4. LIMITATIONS",
+            "content": "The powers granted to the Agent are subject to the following limitations: {limitations}"
+        },
+        {
+            "title": "5. SUCCESSOR AGENT",
+            "content": "If {agent_name} is unable or unwilling to serve as my Agent, I appoint {successor_agent} as my successor Agent."
+        },
+        {
+            "title": "6. ADDITIONAL INSTRUCTIONS",
+            "content": "{additional_instructions}"
+        },
+        {
+            "title": "7. RELIANCE ON THIS POWER OF ATTORNEY",
+            "content": "Any person, including my Agent, may rely upon this Power of Attorney unless that person has actual knowledge that this Power of Attorney has been terminated or is invalid."
+        }
+    ]
+} 

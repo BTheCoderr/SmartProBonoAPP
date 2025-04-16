@@ -1,0 +1,96 @@
+{
+  "analyzer": {
+    "title": "Document Analysis",
+    "subtitle": "AI-powered legal document analysis",
+    "upload": {
+      "title": "Upload Document",
+      "button": "Choose File",
+      "drag": "or drag and drop here",
+      "types": "Supported file types: PDF, DOC, DOCX, TXT",
+      "size": "Maximum file size: 10MB"
+    },
+    "paste": {
+      "title": "Paste Text",
+      "placeholder": "Paste your document text here..."
+    },
+    "type": {
+      "label": "Document Type",
+      "auto": "Auto-detect",
+      "contract": "Contract/Agreement",
+      "legal_brief": "Legal Brief",
+      "immigration": "Immigration Form",
+      "unknown": "Other Document"
+    },
+    "analysis": {
+      "basic": {
+        "title": "Basic Analysis",
+        "length": "Document Length",
+        "words": "Word Count",
+        "sentences": "Sentence Count",
+        "readability": "Readability Score",
+        "complexity": "Complexity Analysis"
+      },
+      "entities": {
+        "title": "Named Entities",
+        "people": "People",
+        "organizations": "Organizations",
+        "locations": "Locations",
+        "dates": "Dates",
+        "monetary": "Monetary Values"
+      },
+      "contract": {
+        "title": "Contract Analysis",
+        "parties": "Parties",
+        "dates": "Key Dates",
+        "clauses": "Key Clauses",
+        "obligations": "Obligations",
+        "termination": "Termination Conditions"
+      },
+      "brief": {
+        "title": "Legal Brief Analysis",
+        "citations": "Legal Citations",
+        "arguments": "Legal Arguments",
+        "relief": "Requested Relief",
+        "jurisdiction": "Jurisdiction"
+      },
+      "immigration": {
+        "title": "Immigration Form Analysis",
+        "form_type": "Form Type",
+        "personal_info": "Personal Information",
+        "travel_history": "Travel History",
+        "required_docs": "Required Documents"
+      },
+      "structure": {
+        "title": "Document Structure",
+        "sections": "Sections",
+        "paragraphs": "Paragraphs",
+        "formatting": "Formatting"
+      },
+      "topics": {
+        "title": "Main Topics",
+        "keywords": "Keywords",
+        "categories": "Categories"
+      }
+    },
+    "actions": {
+      "analyze": "Analyze Document",
+      "analyzing": "Analyzing...",
+      "download": "Download Analysis",
+      "share": "Share Analysis",
+      "clear": "Clear"
+    },
+    "status": {
+      "loading": "Analyzing document...",
+      "error": "Error analyzing document",
+      "success": "Analysis complete",
+      "empty": "Please provide a document to analyze"
+    },
+    "errors": {
+      "file_type": "Invalid file type",
+      "file_size": "File size exceeds limit",
+      "empty": "Document text cannot be empty",
+      "server": "Server error occurred",
+      "timeout": "Analysis timed out"
+    }
+  }
+} 

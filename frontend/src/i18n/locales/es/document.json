@@ -1,0 +1,96 @@
+{
+  "analyzer": {
+    "title": "Análisis de Documentos",
+    "subtitle": "Análisis de documentos legales con IA",
+    "upload": {
+      "title": "Subir Documento",
+      "button": "Elegir Archivo",
+      "drag": "o arrastrar y soltar aquí",
+      "types": "Tipos de archivo soportados: PDF, DOC, DOCX, TXT",
+      "size": "Tamaño máximo: 10MB"
+    },
+    "paste": {
+      "title": "Pegar Texto",
+      "placeholder": "Pega el texto de tu documento aquí..."
+    },
+    "type": {
+      "label": "Tipo de Documento",
+      "auto": "Detección automática",
+      "contract": "Contrato/Acuerdo",
+      "legal_brief": "Escrito Legal",
+      "immigration": "Formulario de Inmigración",
+      "unknown": "Otro Documento"
+    },
+    "analysis": {
+      "basic": {
+        "title": "Análisis Básico",
+        "length": "Longitud del Documento",
+        "words": "Cantidad de Palabras",
+        "sentences": "Cantidad de Oraciones",
+        "readability": "Índice de Legibilidad",
+        "complexity": "Análisis de Complejidad"
+      },
+      "entities": {
+        "title": "Entidades Nombradas",
+        "people": "Personas",
+        "organizations": "Organizaciones",
+        "locations": "Ubicaciones",
+        "dates": "Fechas",
+        "monetary": "Valores Monetarios"
+      },
+      "contract": {
+        "title": "Análisis de Contrato",
+        "parties": "Partes",
+        "dates": "Fechas Clave",
+        "clauses": "Cláusulas Principales",
+        "obligations": "Obligaciones",
+        "termination": "Condiciones de Terminación"
+      },
+      "brief": {
+        "title": "Análisis de Escrito Legal",
+        "citations": "Citas Legales",
+        "arguments": "Argumentos Legales",
+        "relief": "Alivio Solicitado",
+        "jurisdiction": "Jurisdicción"
+      },
+      "immigration": {
+        "title": "Análisis de Formulario de Inmigración",
+        "form_type": "Tipo de Formulario",
+        "personal_info": "Información Personal",
+        "travel_history": "Historial de Viajes",
+        "required_docs": "Documentos Requeridos"
+      },
+      "structure": {
+        "title": "Estructura del Documento",
+        "sections": "Secciones",
+        "paragraphs": "Párrafos",
+        "formatting": "Formato"
+      },
+      "topics": {
+        "title": "Temas Principales",
+        "keywords": "Palabras Clave",
+        "categories": "Categorías"
+      }
+    },
+    "actions": {
+      "analyze": "Analizar Documento",
+      "analyzing": "Analizando...",
+      "download": "Descargar Análisis",
+      "share": "Compartir Análisis",
+      "clear": "Limpiar"
+    },
+    "status": {
+      "loading": "Analizando documento...",
+      "error": "Error al analizar el documento",
+      "success": "Análisis completado",
+      "empty": "Por favor proporciona un documento para analizar"
+    },
+    "errors": {
+      "file_type": "Tipo de archivo inválido",
+      "file_size": "El archivo excede el límite de tamaño",
+      "empty": "El texto del documento no puede estar vacío",
+      "server": "Ocurrió un error en el servidor",
+      "timeout": "El análisis excedió el tiempo límite"
+    }
+  }
+} 

@@ -1,0 +1,67 @@
+/* High Contrast Mode */
+.high-contrast {
+  --primary-color: #0066CC;
+  --text-color: #000000;
+  --background-color: #FFFFFF;
+  --card-background: #F5F5F5;
+  --border-color: #000000;
+}
+
+.high-contrast body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.high-contrast .MuiCard-root {
+  background-color: var(--card-background);
+  border: 2px solid var(--border-color);
+}
+
+.high-contrast .MuiTypography-root {
+  color: var(--text-color);
+}
+
+.high-contrast .MuiButton-contained {
+  background-color: var(--primary-color);
+  color: #FFFFFF;
+}
+
+.high-contrast .MuiSwitch-track {
+  background-color: #666666 !important;
+}
+
+.high-contrast .MuiSwitch-thumb {
+  background-color: var(--primary-color);
+}
+
+/* Reduced Motion */
+.reduce-motion * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Focus Styles */
+.high-contrast *:focus {
+  outline: 3px solid var(--primary-color) !important;
+  outline-offset: 2px !important;
+}
+
+/* Text Sizing */
+html {
+  font-size: 16px;
+}
+
+body[data-text-size="small"] {
+  font-size: 14px;
+}
+
+body[data-text-size="large"] {
+  font-size: 18px;
+}
+
+/* Keyboard Navigation */
+[data-keyboard-nav="true"] *:focus {
+  outline: 3px solid var(--primary-color) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.4);
+} 

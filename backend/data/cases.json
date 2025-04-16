@@ -1,0 +1,49 @@
+[
+  {
+    "title": "Test Eviction Case",
+    "type": "housing",
+    "status": "new",
+    "priority": "high",
+    "description": "This is a test case created via API",
+    "client": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "555-123-4567"
+    },
+    "id": "CASE-20250320-a458b098",
+    "created": "2025-03-20T01:58:22.620489",
+    "updated": "2025-03-20T01:58:22.620489"
+  },
+  {
+    "title": "Test Eviction Case",
+    "type": "housing",
+    "status": "new",
+    "priority": "high",
+    "description": "This is a test case created via API",
+    "client": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "555-123-4567"
+    },
+    "id": "CASE-20250320-77096f5c",
+    "created": "2025-03-20T02:20:34.809417",
+    "updated": "2025-03-20T02:20:34.844527",
+    "timeline": [
+      {
+        "type": "note",
+        "description": "Called client to discuss case details",
+        "id": "TL-1",
+        "date": "2025-03-20T02:20:34.834880"
+      }
+    ],
+    "nextSteps": [
+      {
+        "description": "File response with court",
+        "dueDate": "2024-08-01T09:00:00Z",
+        "assignedTo": "attorney",
+        "id": "NS-1",
+        "completed": false
+      }
+    ]
+  }
+]

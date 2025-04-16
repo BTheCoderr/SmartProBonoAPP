@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Credit Report Dispute Letter</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .sender-info { text-align: right; margin-bottom: 40px; }
+    .recipient-info { margin-bottom: 40px; }
+    .subject { font-weight: bold; margin-bottom: 20px; }
+    .body { margin-bottom: 40px; }
+    .closing { margin-bottom: 60px; }
+    .signature { }
+    .enclosures { margin-top: 40px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .notice { font-style: italic; margin-top: 30px; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sender-info">
+      <p>
+        <span class="field">{{full_name}}</span><br>
+        <span class="field">{{street_address}}</span><br>
+        <span class="field">{{city}}</span>, <span class="field">{{state}}</span> <span class="field">{{zip_code}}</span><br>
+        <span class="field">{{phone_number}}</span><br>
+        <span class="field">{{email}}</span>
+      </p>
+      <p><span class="field">{{current_date}}</span></p>
+    </div>
+
+    <div class="recipient-info">
+      <p>
+        <span class="field">{{credit_bureau_name}}</span><br>
+        <span class="field">{{credit_bureau_address}}</span><br>
+        <span class="field">{{credit_bureau_city}}</span>, <span class="field">{{credit_bureau_state}}</span> <span class="field">{{credit_bureau_zip}}</span>
+      </p>
+    </div>
+
+    <div class="subject">
+      <p>RE: Credit Report Dispute - Account Number/Reference: <span class="field">{{dispute_reference}}</span></p>
+    </div>
+
+    <div class="body">
+      <p>To Whom It May Concern:</p>
+
+      <p>I am writing to dispute inaccurate information that appears on my credit report. I recently reviewed my credit report from your agency dated <span class="field">{{report_date}}</span>, and found the following information to be inaccurate:</p>
+
+      <p>Account/Item Information:</p>
+      <ul>
+        <li>Creditor Name: <span class="field">{{creditor_name}}</span></li>
+        <li>Account Number: <span class="field">{{account_number}}</span></li>
+        <li>Dispute Reason: <span class="field">{{dispute_reason}}</span></li>
+      </ul>
+
+      <p>Specifically, I am disputing this item because:</p>
+      <p><span class="field">{{detailed_explanation}}</span></p>
+
+      {{#if has_additional_items}}
+      <p>Additionally, I am disputing the following items:</p>
+
+      <p>Account/Item Information:</p>
+      <ul>
+        <li>Creditor Name: <span class="field">{{additional_creditor_name}}</span></li>
+        <li>Account Number: <span class="field">{{additional_account_number}}</span></li>
+        <li>Dispute Reason: <span class="field">{{additional_dispute_reason}}</span></li>
+      </ul>
+
+      <p>Specifically, I am disputing this item because:</p>
+      <p><span class="field">{{additional_detailed_explanation}}</span></p>
+      {{/if}}
+
+      <p>Under the Fair Credit Reporting Act (FCRA), you are required to investigate these disputes and correct or delete any information that is found to be inaccurate, incomplete, or unverifiable. I request that you initiate an investigation of these disputed items and correct my credit report accordingly.</p>
+
+      <p>To assist in your investigation, I have enclosed the following documentation to support my dispute:</p>
+      <ul>
+        <li><span class="field">{{supporting_document_1}}</span></li>
+        {{#if has_supporting_document_2}}
+        <li><span class="field">{{supporting_document_2}}</span></li>
+        {{/if}}
+        {{#if has_supporting_document_3}}
+        <li><span class="field">{{supporting_document_3}}</span></li>
+        {{/if}}
+      </ul>
+
+      <p>Additionally, I have enclosed:</p>
+      <ul>
+        <li>A copy of my credit report with the disputed items highlighted</li>
+        <li>A copy of my identification (driver's license/state ID)</li>
+        <li>Proof of address (utility bill/bank statement)</li>
+      </ul>
+
+      <p>As required by law, please forward all relevant information concerning this dispute to the furnisher of the information so they may conduct their own investigation. After completing your investigation, please send me an updated copy of my credit report reflecting the corrections.</p>
+
+      <p>If you find that the disputed information is accurate, please provide me with any and all documentation used to verify this information, including the method of verification and the name, address, and telephone number of any sources contacted.</p>
+
+      <p>I understand that under Section 611(a)(5) of the FCRA, you are required to complete your investigation within 30 days of receiving this dispute (or 45 days if I submit additional relevant information during the 30-day period).</p>
+
+      <p>Please send all correspondence regarding this matter to the address listed above. Should you need additional information or have any questions, please contact me at <span class="field">{{phone_number}}</span> or <span class="field">{{email}}</span>.</p>
+
+      <p>Thank you for your prompt attention to this matter.</p>
+    </div>
+
+    <div class="closing">
+      <p>Sincerely,</p>
+    </div>
+
+    <div class="signature">
+      <p><span class="field">{{full_name}}</span></p>
+    </div>
+
+    <div class="enclosures">
+      <p>Enclosures:</p>
+      <ul>
+        <li>Copy of credit report with disputed items highlighted</li>
+        <li>Copy of identification</li>
+        <li>Proof of address</li>
+        {{#if has_supporting_documents}}
+        <li>Supporting documentation as listed above</li>
+        {{/if}}
+      </ul>
+    </div>
+
+    <div class="notice">
+      <p>Note: This is a dispute letter protected under the Fair Credit Reporting Act. Improper handling of this dispute may result in a violation of federal law.</p>
+    </div>
+  </div>
+</body>
+</html> 

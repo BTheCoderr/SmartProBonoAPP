@@ -1,0 +1,99 @@
+{
+    "id": "child-custody-agreement",
+    "name": "Child Custody Agreement",
+    "category": "Family Law",
+    "description": "Legal agreement for establishing child custody arrangements between parents",
+    "requires_signature": true,
+    "required_fields": [
+        "parent1_name",
+        "parent1_address",
+        "parent2_name",
+        "parent2_address",
+        "children_names",
+        "children_dobs",
+        "agreement_date",
+        "legal_custody",
+        "physical_custody",
+        "parent1_time",
+        "parent2_time",
+        "jurisdiction_state"
+    ],
+    "optional_fields": [
+        "holiday_schedule",
+        "transportation",
+        "communication_method",
+        "decision_making",
+        "child_support",
+        "education_agreement",
+        "healthcare_agreement",
+        "relocation_terms",
+        "modification_process",
+        "special_provisions"
+    ],
+    "sections": [
+        {
+            "title": "1. Parties",
+            "content": "This Child Custody Agreement (\"Agreement\") is made and entered into on {agreement_date} by and between:\n\n{parent1_name}, residing at {parent1_address} (\"Parent 1\")\n\nAND\n\n{parent2_name}, residing at {parent2_address} (\"Parent 2\")"
+        },
+        {
+            "title": "2. Children",
+            "content": "This Agreement concerns the following minor children:\n\nNames: {children_names}\nDates of Birth: {children_dobs}"
+        },
+        {
+            "title": "3. Jurisdiction",
+            "content": "This Agreement shall be governed by the laws of the State of {jurisdiction_state}. The parties acknowledge that this state is the home state of the children and has jurisdiction over custody matters concerning the children."
+        },
+        {
+            "title": "4. Legal Custody",
+            "content": "Legal custody refers to the right and responsibility to make decisions regarding the children's health, education, and welfare.\n\nLegal Custody Arrangement: {legal_custody}"
+        },
+        {
+            "title": "5. Physical Custody",
+            "content": "Physical custody refers to where the children will primarily reside.\n\nPhysical Custody Arrangement: {physical_custody}"
+        },
+        {
+            "title": "6. Parenting Time Schedule",
+            "content": "Parent 1's Parenting Time: {parent1_time}\n\nParent 2's Parenting Time: {parent2_time}\n\nHoliday Schedule: {holiday_schedule}"
+        },
+        {
+            "title": "7. Transportation Arrangements",
+            "content": "Transportation Arrangements: {transportation}"
+        },
+        {
+            "title": "8. Communication",
+            "content": "The parents shall communicate regarding the children as follows: {communication_method}"
+        },
+        {
+            "title": "9. Decision Making",
+            "content": "Major decisions regarding the children shall be made as follows: {decision_making}"
+        },
+        {
+            "title": "10. Child Support",
+            "content": "Child support shall be handled as follows: {child_support}"
+        },
+        {
+            "title": "11. Education",
+            "content": "Education arrangements: {education_agreement}"
+        },
+        {
+            "title": "12. Healthcare",
+            "content": "Healthcare arrangements: {healthcare_agreement}"
+        },
+        {
+            "title": "13. Relocation",
+            "content": "If either parent wishes to relocate, the following shall apply: {relocation_terms}"
+        },
+        {
+            "title": "14. Modification",
+            "content": "This Agreement may be modified as follows: {modification_process}"
+        },
+        {
+            "title": "15. Special Provisions",
+            "content": "Additional provisions: {special_provisions}"
+        },
+        {
+            "title": "16. Execution",
+            "content": "By signing below, the parties acknowledge that they have read and understand this Agreement, that they enter into it freely and voluntarily, and that they intend to be legally bound by its terms.\n\n____________________________    ___________\nSignature of Parent 1                 Date\n\n____________________________    ___________\nSignature of Parent 2                 Date"
+        }
+    ]
+} 

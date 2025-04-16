@@ -1,0 +1,72 @@
+{
+    "id": "eviction_appeal",
+    "name": "Eviction Appeal",
+    "category": "Housing",
+    "description": "Form to appeal an eviction judgment or order",
+    "requires_signature": true,
+    "required_fields": [
+        "tenant_name",
+        "tenant_address",
+        "landlord_name",
+        "court_name",
+        "case_number",
+        "judgment_date",
+        "grounds_for_appeal",
+        "filing_deadline"
+    ],
+    "optional_fields": [
+        "attorney_name",
+        "attorney_contact",
+        "original_court_action",
+        "hardship_explanation",
+        "supporting_evidence",
+        "stay_request",
+        "fee_waiver_request"
+    ],
+    "sections": [
+        {
+            "title": "NOTICE OF APPEAL - EVICTION JUDGMENT",
+            "content": "IN THE {court_name}\n\nCase No. {case_number}\n\n{landlord_name}, Plaintiff/Appellee\nvs.\n{tenant_name}, Defendant/Appellant"
+        },
+        {
+            "title": "NOTICE OF APPEAL",
+            "content": "NOTICE IS HEREBY GIVEN that {tenant_name}, Defendant in the above-entitled action, appeals to the appropriate appellate court from the judgment of eviction entered on {judgment_date} in the above-entitled action."
+        },
+        {
+            "title": "1. APPELLANT INFORMATION",
+            "content": "Appellant (Tenant):\nName: {tenant_name}\nAddress: {tenant_address}\n\nAttorney Information (if represented):\nName: {attorney_name}\nContact: {attorney_contact}"
+        },
+        {
+            "title": "2. DESCRIPTION OF JUDGMENT",
+            "content": "On {judgment_date}, the court entered the following judgment or order:\n\n{original_court_action}"
+        },
+        {
+            "title": "3. GROUNDS FOR APPEAL",
+            "content": "This appeal is based on the following grounds:\n\n{grounds_for_appeal}"
+        },
+        {
+            "title": "4. HARDSHIP STATEMENT",
+            "content": "The eviction will cause the following hardship to the appellant and/or appellant's family:\n\n{hardship_explanation}"
+        },
+        {
+            "title": "5. SUPPORTING EVIDENCE",
+            "content": "This appeal is supported by the following evidence:\n\n{supporting_evidence}"
+        },
+        {
+            "title": "6. REQUEST FOR STAY OF EXECUTION",
+            "content": "Appellant hereby requests a stay of execution of the judgment pending appeal based on the following:\n\n{stay_request}"
+        },
+        {
+            "title": "7. FEE WAIVER REQUEST",
+            "content": "Appellant requests a waiver of the filing fee for this appeal based on the following circumstances:\n\n{fee_waiver_request}"
+        },
+        {
+            "title": "8. CERTIFICATION",
+            "content": "I certify that this appeal is being filed within the deadline for filing an appeal, which is {filing_deadline}.\n\nI further certify that a copy of this Notice of Appeal has been served on all parties to this action."
+        },
+        {
+            "title": "9. SIGNATURE",
+            "content": "Dated: {current_date}\n\n________________________\n{tenant_name}, Appellant\n\n________________________\n{attorney_name}, Attorney for Appellant (if applicable)"
+        }
+    ]
+} 

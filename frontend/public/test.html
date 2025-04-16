@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartProBono API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button.secondary {
+            background-color: #95a5a6;
+        }
+        button.secondary:hover {
+            background-color: #7f8c8d;
+        }
+        button.danger {
+            background-color: #e74c3c;
+        }
+        button.danger:hover {
+            background-color: #c0392b;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .loading {
+            display: none;
+            margin-top: 10px;
+            color: #7f8c8d;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .badge.cached {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .badge.realtime {
+            background-color: #e67e22;
+            color: white;
+        }
+        .badge.static {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .cache-info {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+        .cache-stats {
+            flex-grow: 1;
+        }
+        .models-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .model-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            margin: 5px;
+            border-radius: 15px;
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>SmartProBono API Test</h1>
+    
+    <div class="form-group">
+        <label for="apiUrl">API URL:</label>
+        <input type="text" id="apiUrl" value="http://localhost:5002" />
+    </div>
+    
+    <div class="models-container" id="modelsContainer">
+        <h3>Available Models</h3>
+        <div id="modelsList">Loading models...</div>
+        <button id="refreshModels" class="secondary">Refresh Models</button>
+    </div>
+    
+    <div class="cache-info" id="cacheInfo">
+        <div class="cache-stats" id="cacheStats">Loading cache info...</div>
+        <button id="clearCache" class="danger">Clear Cache</button>
+    </div>
+    
+    <h2>Echo Test</h2>
+    <div class="form-group">
+        <label for="echoMessage">Message:</label>
+        <input type="text" id="echoMessage" value="Hello World" />
+    </div>
+    <button id="testEcho">Test Echo</button>
+    <div class="loading" id="echoLoading">Loading...</div>
+    <pre id="echoResult"></pre>
+    
+    <h2>Legal Chat Test</h2>
+    <div class="form-group">
+        <label for="chatModel">Model:</label>
+        <select id="chatModel">
+            <!-- Local Models -->
+            <optgroup label="Local Models (Ollama)">
+                <option value="llama3:8b">Llama3 (8B) - Fast, Multilingual</option>
+                <option value="mistral">Mistral - Legal Reasoning</option>
+                <option value="deepseek">DeepSeek - Legal Research</option>
+                <option value="openhermes">OpenHermes - Legal QA</option>
+            </optgroup>
+            
+            <!-- HuggingFace Models -->
+            <optgroup label="HuggingFace Models">
+                <option value="huggingface/mistral">HF Mistral-7B v0.3 (Legal QA)</option>
+                <option value="huggingface/mixtral">HF Mixtral-8x7B (Complex)</option>
+                <option value="huggingface/legal-bert">Legal BERT (Classification)</option>
+                <option value="huggingface/legal-bertimbau">Legal BERTimbau (Portuguese)</option>
+                <option value="huggingface/legalbert-large">LegalBERT Large (Advanced)</option>
+                <option value="huggingface/legal-roberta">Legal RoBERTa (Documents)</option>
+                <option value="huggingface/phi2">Phi-2 (Quick Answers)</option>
+                <option value="huggingface/phi-4">Phi-4 (Advanced Reasoning)</option>
+                <option value="huggingface/lawgpt">LawGPT (Specialized Legal)</option>
+            </optgroup>
+            
+            <!-- Other Options -->
+            <optgroup label="Other Options">
+                <option value="openai">OpenAI (GPT-3.5)</option>
+                <option value="static">Static Only</option>
+            </optgroup>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="chatMessage">Question:</label>
+        <textarea id="chatMessage" rows="3">What are my basic rights as a tenant?</textarea>
+    </div>
+    <button id="testChat">Test Legal Chat</button>
+    <div class="loading" id="chatLoading">Loading...</div>
+    <pre id="chatResult"></pre>
+    
+    <h2>Legal Rights Test</h2>
+    <div class="form-group">
+        <label for="rightsModel">Model:</label>
+        <select id="rightsModel">
+            <!-- Local Models -->
+            <optgroup label="Local Models (Ollama)">
+                <option value="llama3:8b">Llama3 (8B) - Fast, Multilingual</option>
+                <option value="mistral">Mistral - Legal Reasoning</option>
+                <option value="deepseek">DeepSeek - Legal Research</option>
+                <option value="openhermes">OpenHermes - Legal QA</option>
+            </optgroup>
+            
+            <!-- HuggingFace Models -->
+            <optgroup label="HuggingFace Models">
+                <option value="huggingface/mistral">HF Mistral-7B (Legal QA)</option>
+                <option value="huggingface/mixtral">HF Mixtral-8x7B (Complex)</option>
+                <option value="huggingface/legal-bert">Legal BERT (Classification)</option>
+                <option value="huggingface/legal-roberta">Legal RoBERTa (Documents)</option>
+                <option value="huggingface/phi2">Phi-2 (Quick Answers)</option>
+                <option value="huggingface/lawgpt">LawGPT (Specialized Legal)</option>
+            </optgroup>
+            
+            <!-- Other Options -->
+            <optgroup label="Other Options">
+                <option value="openai">OpenAI (GPT-3.5)</option>
+                <option value="static">Static Only</option>
+            </optgroup>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="rightsTopic">Topic:</label>
+        <input type="text" id="rightsTopic" value="tenancy" />
+    </div>
+    <div class="form-group">
+        <label for="rightsJurisdiction">Jurisdiction (optional):</label>
+        <input type="text" id="rightsJurisdiction" value="California" />
+    </div>
+    <button id="testRights">Test Legal Rights</button>
+    <div class="loading" id="rightsLoading">Loading...</div>
+    <pre id="rightsResult"></pre>
+    
+    <script>
+        // Fetch available models
+        async function fetchModels() {
+            const baseUrl = document.getElementById('apiUrl').value;
+            const modelsList = document.getElementById('modelsList');
+            
+            try {
+                const response = await fetch(`${baseUrl}/api/models`);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.models && data.models.length > 0) {
+                    modelsList.innerHTML = '';
+                    data.models.forEach(model => {
+                        const badge = document.createElement('span');
+                        badge.className = 'model-badge';
+                        badge.textContent = model;
+                        modelsList.appendChild(badge);
+                    });
+                } else {
+                    modelsList.textContent = 'No models found or error retrieving models.';
+                }
+            } catch (error) {
+                modelsList.textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        // Fetch cache statistics
+        async function fetchCacheStats() {
+            const baseUrl = document.getElementById('apiUrl').value;
+            const cacheStats = document.getElementById('cacheStats');
+            
+            try {
+                const response = await fetch(`${baseUrl}/api/cache/stats`);
+                const data = await response.json();
+                
+                if (data.status === 'enabled') {
+                    cacheStats.innerHTML = `
+                        <strong>Cache Status:</strong> Enabled<br>
+                        <strong>Entries:</strong> ${data.entries}<br>
+                        <strong>Size:</strong> ${data.size_kb} KB<br>
+                        <strong>TTL:</strong> ${Math.floor(data.ttl_seconds / 3600)} hours
+                    `;
+                } else {
+                    cacheStats.textContent = 'Cache is disabled.';
+                }
+            } catch (error) {
+                cacheStats.textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        // Clear cache
+        async function clearCache() {
+            const baseUrl = document.getElementById('apiUrl').value;
+            const cacheStats = document.getElementById('cacheStats');
+            
+            try {
+                const response = await fetch(`${baseUrl}/api/cache/clear`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    alert(`Cache cleared: ${data.cleared_entries} entries removed`);
+                    fetchCacheStats();
+                } else {
+                    alert(`Failed to clear cache: ${data.status}`);
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        }
+        
+        // Initialize page
+        function init() {
+            fetchModels();
+            fetchCacheStats();
+            
+            // Set up event listeners
+            document.getElementById('refreshModels').addEventListener('click', fetchModels);
+            document.getElementById('clearCache').addEventListener('click', clearCache);
+        }
+        
+        // Add the badge to the result
+        function addResponseBadge(element, data) {
+            const badgeSpan = document.createElement('span');
+            
+            if (data.cached) {
+                badgeSpan.className = 'badge cached';
+                badgeSpan.textContent = 'CACHED';
+            } else if (data.provider === 'static_test' || data.model === 'static') {
+                badgeSpan.className = 'badge static';
+                badgeSpan.textContent = 'STATIC';
+            } else {
+                badgeSpan.className = 'badge realtime';
+                badgeSpan.textContent = 'REALTIME';
+            }
+            
+            element.insertBefore(badgeSpan, element.firstChild);
+        }
+        
+        document.getElementById('testEcho').addEventListener('click', async () => {
+            const baseUrl = document.getElementById('apiUrl').value;
+            const message = document.getElementById('echoMessage').value;
+            const resultEl = document.getElementById('echoResult');
+            const loadingEl = document.getElementById('echoLoading');
+            
+            loadingEl.style.display = 'block';
+            resultEl.textContent = '';
+            
+            try {
+                const response = await fetch(`${baseUrl}/api/echo`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                const data = await response.json();
+                resultEl.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultEl.textContent = `Error: ${error.message}`;
+            } finally {
+                loadingEl.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('testChat').addEventListener('click', async () => {
+            const baseUrl = document.getElementById('apiUrl').value;
+            const message = document.getElementById('chatMessage').value;
+            const modelSelect = document.getElementById('chatModel');
+            const selectedModel = modelSelect.value;
+            const resultEl = document.getElementById('chatResult');
+            const loadingEl = document.getElementById('chatLoading');
+            
+            loadingEl.style.display = 'block';
+            resultEl.textContent = '';
+            resultEl.innerHTML = '';
+            
+            try {
+                const payload = { message };
+                
+                // Only add model if not static
+                if (selectedModel !== 'static') {
+                    payload.model = selectedModel;
+                }
+                
+                const response = await fetch(`${baseUrl}/api/legal/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                resultEl.textContent = JSON.stringify(data, null, 2);
+                
+                // Add badge
+                addResponseBadge(resultEl, data);
+                
+                // Update cache stats
+                fetchCacheStats();
+            } catch (error) {
+                resultEl.textContent = `Error: ${error.message}`;
+            } finally {
+                loadingEl.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('testRights').addEventListener('click', async () => {
+            const baseUrl = document.getElementById('apiUrl').value;
+            const topic = document.getElementById('rightsTopic').value;
+            const jurisdiction = document.getElementById('rightsJurisdiction').value;
+            const modelSelect = document.getElementById('rightsModel');
+            const selectedModel = modelSelect.value;
+            const resultEl = document.getElementById('rightsResult');
+            const loadingEl = document.getElementById('rightsLoading');
+            
+            loadingEl.style.display = 'block';
+            resultEl.textContent = '';
+            resultEl.innerHTML = '';
+            
+            try {
+                const payload = { topic, jurisdiction };
+                
+                // Only add model if not static
+                if (selectedModel !== 'static') {
+                    payload.model = selectedModel;
+                }
+                
+                const response = await fetch(`${baseUrl}/api/legal/rights`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                resultEl.textContent = JSON.stringify(data, null, 2);
+                
+                // Add badge
+                addResponseBadge(resultEl, data);
+                
+                // Update cache stats
+                fetchCacheStats();
+            } catch (error) {
+                resultEl.textContent = `Error: ${error.message}`;
+            } finally {
+                loadingEl.style.display = 'none';
+            }
+        });
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html> 

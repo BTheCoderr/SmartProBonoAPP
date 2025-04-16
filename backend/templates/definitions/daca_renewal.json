@@ -1,0 +1,77 @@
+{
+    "id": "daca-renewal-application",
+    "name": "DACA Renewal Application",
+    "category": "Immigration",
+    "description": "Form to help prepare a Deferred Action for Childhood Arrivals (DACA) renewal application",
+    "requires_signature": true,
+    "required_fields": [
+        "applicant_name",
+        "alien_registration_number",
+        "uscis_number",
+        "daca_expiration_date",
+        "date_of_birth",
+        "country_of_birth",
+        "current_address",
+        "mailing_address",
+        "phone_number",
+        "email_address",
+        "initial_daca_approval_date",
+        "gender",
+        "marital_status",
+        "application_date"
+    ],
+    "optional_fields": [
+        "social_security_number",
+        "current_employment",
+        "current_school",
+        "education_level",
+        "military_service",
+        "criminal_history",
+        "travel_history",
+        "previous_addresses",
+        "attorney_information",
+        "additional_information"
+    ],
+    "sections": [
+        {
+            "title": "1. Personal Information",
+            "content": "Full Name: {applicant_name}\nAlien Registration Number (A-Number): {alien_registration_number}\nUSCIS Number: {uscis_number}\nDate of Birth: {date_of_birth}\nCountry of Birth: {country_of_birth}\nGender: {gender}\nMarital Status: {marital_status}\nSocial Security Number (if applicable): {social_security_number}"
+        },
+        {
+            "title": "2. Contact Information",
+            "content": "Current Address: {current_address}\nMailing Address (if different): {mailing_address}\nPhone Number: {phone_number}\nEmail Address: {email_address}"
+        },
+        {
+            "title": "3. DACA Status Information",
+            "content": "Date of Initial DACA Approval: {initial_daca_approval_date}\nCurrent DACA Expiration Date: {daca_expiration_date}"
+        },
+        {
+            "title": "4. Education and Employment",
+            "content": "Current Education Status/School: {current_school}\nHighest Education Level Completed: {education_level}\nCurrent Employment: {current_employment}\nMilitary Service (if applicable): {military_service}"
+        },
+        {
+            "title": "5. Residence History",
+            "content": "Previous Addresses Since Last DACA Application (include dates): {previous_addresses}"
+        },
+        {
+            "title": "6. Travel History",
+            "content": "Travel Outside the United States Since Last DACA Application (include dates, destinations, and purposes): {travel_history}"
+        },
+        {
+            "title": "7. Criminal History",
+            "content": "Any Citations, Arrests, or Criminal Charges Since Last DACA Application: {criminal_history}"
+        },
+        {
+            "title": "8. Legal Representation",
+            "content": "Attorney or Accredited Representative Information (if applicable): {attorney_information}"
+        },
+        {
+            "title": "9. Additional Information",
+            "content": "Any Other Relevant Information for Your DACA Renewal Application: {additional_information}"
+        },
+        {
+            "title": "10. Certification",
+            "content": "I, {applicant_name}, certify that the information provided in this application is true and correct to the best of my knowledge. I understand that providing false information may result in the denial of my DACA renewal application and potential removal proceedings.\n\nDate: {application_date}\n\nSignature: ______________________________"
+        }
+    ]
+} 

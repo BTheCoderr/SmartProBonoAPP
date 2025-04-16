@@ -1,0 +1,52 @@
+{
+    "id": "immigration-assistance",
+    "name": "Immigration Assistance Form",
+    "category": "Immigration",
+    "description": "Form for requesting immigration legal assistance",
+    "requires_signature": true,
+    "required_fields": [
+        "applicant_name",
+        "applicant_dob",
+        "applicant_nationality",
+        "current_status",
+        "entry_date",
+        "passport_number",
+        "contact_phone",
+        "contact_email",
+        "assistance_type"
+    ],
+    "optional_fields": [
+        "current_visa",
+        "visa_expiry",
+        "previous_applications",
+        "employment_status",
+        "family_members",
+        "additional_info"
+    ],
+    "sections": [
+        {
+            "title": "1. Personal Information",
+            "content": "Full Name: {applicant_name}\nDate of Birth: {applicant_dob}\nNationality: {applicant_nationality}\nPassport Number: {passport_number}"
+        },
+        {
+            "title": "2. Immigration Status",
+            "content": "Current Immigration Status: {current_status}\nDate of Entry: {entry_date}\nCurrent Visa (if any): {current_visa}\nVisa Expiry Date: {visa_expiry}"
+        },
+        {
+            "title": "3. Contact Information",
+            "content": "Phone Number: {contact_phone}\nEmail Address: {contact_email}"
+        },
+        {
+            "title": "4. Assistance Details",
+            "content": "Type of Assistance Requested: {assistance_type}\nPrevious Immigration Applications: {previous_applications}"
+        },
+        {
+            "title": "5. Additional Information",
+            "content": "Employment Status: {employment_status}\nFamily Members in Country: {family_members}\nAdditional Information: {additional_info}"
+        },
+        {
+            "title": "6. Declaration",
+            "content": "I, {applicant_name}, declare that the information provided above is true and correct to the best of my knowledge."
+        }
+    ]
+} 

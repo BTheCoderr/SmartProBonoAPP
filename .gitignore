@@ -1,0 +1,62 @@
+# Dependencies
+venv/
+.venv/
+*/.venv/
+backend/.venv/
+backend/venv/
+**/venv/
+node_modules/
+**/node_modules/
+__pycache__/
+*.py[cod]
+*$py.class
+**/.cache/
+**/default-development/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+backend/.env
+frontend/.env
+frontend/.env.*
+
+# Build files
+/build
+/dist
+*.egg-info/
+*.egg
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.so
+.coverage
+htmlcov/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+backend/app.db
+backend/data/queue.db
+**/instance/
+
+# Generated files
+Miniforge3-MacOSX-arm64.sh

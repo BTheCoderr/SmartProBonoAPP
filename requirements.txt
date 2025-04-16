@@ -1,0 +1,54 @@
+# Core dependencies
+Flask>=2.0.0
+Flask-SQLAlchemy>=3.0.0
+Flask-Cors>=4.0.0
+Flask-JWT-Extended>=4.5.0
+Flask-Limiter>=3.3.0
+gunicorn>=21.2.0
+
+# Database
+SQLAlchemy>=2.0.0
+Flask-Migrate>=4.0.0
+psycopg2-binary>=2.9.0
+redis>=5.0.0
+
+# Security
+cryptography>=41.0.0
+PyJWT>=2.8.0
+bcrypt>=4.0.1
+pyotp>=2.9.0
+Flask-Limiter>=3.5.0
+Flask-Login>=0.6.3
+Flask-JWT-Extended>=4.6.0
+
+# AI/ML
+aiohttp>=3.9.0
+openai>=1.0.0
+transformers>=4.35.0
+datasets>=2.15.0
+sentence-transformers>=2.2.2
+peft>=0.6.1
+torch>=2.0.0
+numpy>=1.24.0
+pandas>=2.0.0
+tqdm>=4.66.0
+faiss-cpu>=1.7.4    # Use faiss-gpu for GPU acceleration
+accelerate>=0.24.0
+bitsandbytes>=0.41.0
+
+# Utils
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+email-validator>=2.1.0
+qrcode>=7.4.2
+Pillow>=10.0.0
+APScheduler>=3.10.0
+
+# Monitoring & Logging
+prometheus-client>=0.17.0
+sentry-sdk>=1.32.0
+
+# Production
+gevent>=23.9.0
+supervisor>=4.2.0
+redis>=5.0.0 

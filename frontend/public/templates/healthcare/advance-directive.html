@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Advance Healthcare Directive</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .signature-block { margin-top: 40px; }
+    .witness-block { margin-top: 30px; border-top: 1px dashed #ccc; padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>ADVANCE HEALTHCARE DIRECTIVE</h1>
+      <p><em>This document expresses my wishes regarding my healthcare decisions</em></p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">PART 1: PERSONAL INFORMATION</div>
+      <p>I, <span class="field">{{full_name}}</span>, born on <span class="field">{{date_of_birth}}</span>, residing at <span class="field">{{street_address}}</span>, <span class="field">{{city}}</span>, <span class="field">{{state}}</span> <span class="field">{{zip_code}}</span>, create this Advance Healthcare Directive to express my wishes regarding my healthcare in the event I cannot make or communicate decisions myself.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">PART 2: APPOINTMENT OF HEALTHCARE AGENT</div>
+      <p>I appoint the following person as my healthcare agent to make healthcare decisions for me if I cannot make or communicate decisions myself:</p>
+      <p>
+        Name: <span class="field">{{agent_name}}</span><br>
+        Relationship: <span class="field">{{agent_relationship}}</span><br>
+        Address: <span class="field">{{agent_address}}</span><br>
+        Phone: <span class="field">{{agent_phone}}</span><br>
+        Email: <span class="field">{{agent_email}}</span>
+      </p>
+
+      <p>If my first choice is unable or unwilling to act as my healthcare agent, I appoint:</p>
+      <p>
+        Name: <span class="field">{{alternate_agent_name}}</span><br>
+        Relationship: <span class="field">{{alternate_agent_relationship}}</span><br>
+        Address: <span class="field">{{alternate_agent_address}}</span><br>
+        Phone: <span class="field">{{alternate_agent_phone}}</span><br>
+        Email: <span class="field">{{alternate_agent_email}}</span>
+      </p>
+
+      <p>My healthcare agent has full authority to make healthcare decisions for me, including:</p>
+      <ul>
+        <li>Consenting to, refusing, or withdrawing consent to medical treatment</li>
+        <li>Selecting or discharging healthcare providers</li>
+        <li>Approving or disapproving diagnostic tests, procedures, and medications</li>
+        <li>Directing the provision, withholding, or withdrawal of artificial nutrition and hydration</li>
+        <li>Making all necessary arrangements for healthcare services on my behalf</li>
+        <li>Taking any other action necessary to do what I authorize here</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">PART 3: END-OF-LIFE DECISIONS</div>
+      <p>If I have an incurable and irreversible condition that will result in my death within a relatively short time, OR if I have lost the ability to communicate my wishes regarding my healthcare and it is unlikely that I will regain that ability, I direct my healthcare providers and agent to provide, withhold, or withdraw treatment in accordance with the following instructions:</p>
+      
+      <p><strong>Life-Prolonging Treatments:</strong><br>
+      <span class="field">{{life_prolonging_choice}}</span></p>
+      
+      <p><strong>Artificial Nutrition and Hydration:</strong><br>
+      <span class="field">{{nutrition_hydration_choice}}</span></p>
+      
+      <p><strong>Pain Relief:</strong><br>
+      I want treatment for alleviation of pain or discomfort to be provided at all times, even if it hastens my death.</p>
+      
+      <p><strong>Other Instructions:</strong><br>
+      <span class="field">{{other_instructions}}</span></p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">PART 4: ORGAN DONATION</div>
+      <p>Upon my death:</p>
+      <p><span class="field">{{organ_donation_choice}}</span></p>
+      
+      <p>If I have chosen to donate organs, tissues, or body parts, the following are my specific instructions (if any):</p>
+      <p><span class="field">{{donation_instructions}}</span></p>
+    </div>
+
+    <div class="signature-block">
+      <p>By signing below, I indicate that I understand the purpose and effect of this document.</p>
+      <p>Signature: _________________________________ Date: _______________</p>
+      <p>Printed Name: <span class="field">{{full_name}}</span></p>
+    </div>
+
+    <div class="witness-block">
+      <div class="section-title">WITNESS STATEMENTS</div>
+      <p>I declare under penalty of perjury that the person who signed or acknowledged this document is personally known to me (or proved to me on the basis of convincing evidence) to be the principal, that the principal signed or acknowledged this Advance Healthcare Directive in my presence, that the principal appears to be of sound mind and under no duress, fraud, or undue influence, that I am not a person appointed as agent by this document, and that I am not the principal's healthcare provider, an employee of the principal's healthcare provider, the operator of a community care facility, an employee of an operator of a community care facility, the operator of a residential care facility for the elderly, or an employee of an operator of a residential care facility for the elderly.</p>
+      
+      <p>
+        Witness 1 Signature: _________________________________ Date: _______________<br>
+        Printed Name: _________________________________ <br>
+        Address: _________________________________
+      </p>
+      
+      <p>
+        Witness 2 Signature: _________________________________ Date: _______________<br>
+        Printed Name: _________________________________ <br>
+        Address: _________________________________
+      </p>
+    </div>
+  </div>
+</body>
+</html> 

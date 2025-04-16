@@ -1,0 +1,60 @@
+{
+    "id": "rental-agreement",
+    "name": "Residential Rental Agreement",
+    "category": "Housing",
+    "description": "Standard residential lease agreement between landlord and tenant",
+    "requires_signature": true,
+    "required_fields": [
+        "landlord_name",
+        "tenant_name",
+        "property_address",
+        "rent_amount",
+        "lease_term",
+        "start_date",
+        "security_deposit"
+    ],
+    "optional_fields": [
+        "utilities_included",
+        "pet_policy",
+        "parking_details",
+        "additional_terms"
+    ],
+    "sections": [
+        {
+            "title": "1. Parties",
+            "content": "This Rental Agreement is made between {landlord_name} ('Landlord') and {tenant_name} ('Tenant')."
+        },
+        {
+            "title": "2. Property",
+            "content": "The Landlord agrees to rent to the Tenant the residential property located at: {property_address}"
+        },
+        {
+            "title": "3. Term",
+            "content": "The lease term is {lease_term}, beginning on {start_date}."
+        },
+        {
+            "title": "4. Rent",
+            "content": "The Tenant agrees to pay rent in the amount of ${rent_amount} per month, due on the first day of each month."
+        },
+        {
+            "title": "5. Security Deposit",
+            "content": "The Tenant shall pay a security deposit of ${security_deposit} to be held in accordance with state law."
+        },
+        {
+            "title": "6. Utilities and Services",
+            "content": "Utilities included in rent: {utilities_included}"
+        },
+        {
+            "title": "7. Pet Policy",
+            "content": "{pet_policy}"
+        },
+        {
+            "title": "8. Parking",
+            "content": "{parking_details}"
+        },
+        {
+            "title": "9. Additional Terms",
+            "content": "{additional_terms}"
+        }
+    ]
+} 

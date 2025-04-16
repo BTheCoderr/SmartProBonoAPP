@@ -1,0 +1,73 @@
+{
+    "id": "civil_rights",
+    "name": "Civil Rights Assertion",
+    "category": "Accessibility & Rights",
+    "description": "Document to assert your civil rights when facing potential discrimination or rights violations",
+    "requires_signature": true,
+    "required_fields": [
+        "sender_name",
+        "sender_address",
+        "sender_phone",
+        "sender_email",
+        "recipient_name",
+        "recipient_address",
+        "incident_date",
+        "rights_violated",
+        "incident_description",
+        "requested_remedies",
+        "response_deadline"
+    ],
+    "optional_fields": [
+        "witness_information",
+        "previous_complaints",
+        "legal_citations",
+        "supporting_documents",
+        "cc_recipients"
+    ],
+    "sections": [
+        {
+            "title": "CIVIL RIGHTS ASSERTION",
+            "content": "Date: {current_date}\n\n{recipient_name}\n{recipient_address}\n\nRE: Assertion of Civil Rights Violation"
+        },
+        {
+            "title": "1. SENDER INFORMATION",
+            "content": "From: {sender_name}\nAddress: {sender_address}\nPhone: {sender_phone}\nEmail: {sender_email}"
+        },
+        {
+            "title": "2. RIGHTS VIOLATION",
+            "content": "I am writing to formally assert my civil rights regarding an incident that occurred on {incident_date}. This letter serves as formal notice that I believe my rights under {rights_violated} have been violated."
+        },
+        {
+            "title": "3. INCIDENT DESCRIPTION",
+            "content": "The details of the incident are as follows:\n\n{incident_description}"
+        },
+        {
+            "title": "4. WITNESS INFORMATION",
+            "content": "The following individuals witnessed or have information about this incident:\n\n{witness_information}"
+        },
+        {
+            "title": "5. PREVIOUS COMPLAINTS",
+            "content": "Previous attempts to address this issue include:\n\n{previous_complaints}"
+        },
+        {
+            "title": "6. LEGAL BASIS",
+            "content": "My rights in this matter are protected by the following laws and regulations:\n\n{legal_citations}"
+        },
+        {
+            "title": "7. SUPPORTING DOCUMENTATION",
+            "content": "I have attached the following documentation to support my assertion:\n\n{supporting_documents}"
+        },
+        {
+            "title": "8. REQUESTED REMEDIES",
+            "content": "To remedy this situation, I am requesting the following:\n\n{requested_remedies}"
+        },
+        {
+            "title": "9. RESPONSE REQUEST",
+            "content": "I request a written response to this letter by {response_deadline}. If I do not receive a satisfactory response by this date, I may pursue additional legal remedies, including filing a formal complaint with the appropriate government agency or seeking legal counsel."
+        },
+        {
+            "title": "10. CLOSING",
+            "content": "I look forward to your prompt attention to this matter and a resolution that respects my civil rights.\n\nSincerely,\n\n{sender_name}\n\nCC: {cc_recipients}"
+        }
+    ]
+} 

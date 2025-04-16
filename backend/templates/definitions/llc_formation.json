@@ -1,0 +1,112 @@
+{
+    "id": "llc_formation",
+    "name": "LLC Formation",
+    "category": "Business",
+    "description": "Documents required to form a Limited Liability Company (LLC)",
+    "requires_signature": true,
+    "required_fields": [
+        "company_name",
+        "state_of_formation",
+        "registered_agent_name",
+        "registered_agent_address",
+        "principal_business_address",
+        "purpose_of_business",
+        "management_structure",
+        "members_names_addresses",
+        "initial_contributions",
+        "formation_date"
+    ],
+    "optional_fields": [
+        "duration",
+        "tax_classification",
+        "member_voting_rights",
+        "profit_loss_distributions",
+        "transfer_restrictions",
+        "dissolution_terms",
+        "dispute_resolution",
+        "operating_agreement_terms",
+        "additional_provisions"
+    ],
+    "sections": [
+        {
+            "title": "ARTICLES OF ORGANIZATION",
+            "content": "STATE OF {state_of_formation}\n\nARTICLES OF ORGANIZATION OF {company_name}, LLC\n\nThe undersigned, acting as the organizer(s) of a limited liability company under the laws of the State of {state_of_formation}, hereby adopt(s) the following Articles of Organization for such limited liability company:"
+        },
+        {
+            "title": "ARTICLE I: NAME",
+            "content": "The name of the limited liability company is: {company_name}, LLC"
+        },
+        {
+            "title": "ARTICLE II: REGISTERED AGENT AND OFFICE",
+            "content": "The name and address of the registered agent for service of process on the limited liability company in the State of {state_of_formation} is:\n\nName: {registered_agent_name}\nAddress: {registered_agent_address}"
+        },
+        {
+            "title": "ARTICLE III: PRINCIPAL OFFICE",
+            "content": "The principal office of the limited liability company is located at:\n\n{principal_business_address}"
+        },
+        {
+            "title": "ARTICLE IV: PURPOSE",
+            "content": "The purpose for which the limited liability company is organized is:\n\n{purpose_of_business}\n\nThe company shall have the authority to engage in any lawful act or activity for which a limited liability company may be organized in the State of {state_of_formation}."
+        },
+        {
+            "title": "ARTICLE V: DURATION",
+            "content": "The period of duration of the limited liability company is:\n\n{duration}"
+        },
+        {
+            "title": "ARTICLE VI: MANAGEMENT",
+            "content": "The limited liability company shall be managed by:\n\n{management_structure}"
+        },
+        {
+            "title": "ARTICLE VII: MEMBERS",
+            "content": "The name(s) and address(es) of the initial member(s) of the limited liability company are:\n\n{members_names_addresses}"
+        },
+        {
+            "title": "ARTICLE VIII: ORGANIZER",
+            "content": "The name and address of the organizer executing these Articles of Organization is:\n\nName: \nAddress: "
+        },
+        {
+            "title": "ARTICLE IX: ADDITIONAL PROVISIONS",
+            "content": "{additional_provisions}"
+        },
+        {
+            "title": "EXECUTION",
+            "content": "These Articles of Organization are executed on {formation_date}.\n\n________________________\nOrganizer's Signature\n\n________________________\nPrinted Name of Organizer"
+        },
+        {
+            "title": "OPERATING AGREEMENT SUMMARY",
+            "content": "The members of {company_name}, LLC have adopted an Operating Agreement that includes the following key provisions:"
+        },
+        {
+            "title": "1. CAPITAL CONTRIBUTIONS",
+            "content": "Initial capital contributions of each member:\n\n{initial_contributions}"
+        },
+        {
+            "title": "2. TAX CLASSIFICATION",
+            "content": "The company has elected the following tax classification:\n\n{tax_classification}"
+        },
+        {
+            "title": "3. VOTING RIGHTS",
+            "content": "Members' voting rights are established as follows:\n\n{member_voting_rights}"
+        },
+        {
+            "title": "4. DISTRIBUTIONS",
+            "content": "Profits and losses shall be distributed as follows:\n\n{profit_loss_distributions}"
+        },
+        {
+            "title": "5. TRANSFER RESTRICTIONS",
+            "content": "Restrictions on transfers of membership interests:\n\n{transfer_restrictions}"
+        },
+        {
+            "title": "6. DISSOLUTION",
+            "content": "Conditions for dissolution of the company:\n\n{dissolution_terms}"
+        },
+        {
+            "title": "7. DISPUTE RESOLUTION",
+            "content": "Method for resolving disputes among members:\n\n{dispute_resolution}"
+        },
+        {
+            "title": "8. ADDITIONAL TERMS",
+            "content": "Additional terms of the Operating Agreement:\n\n{operating_agreement_terms}"
+        }
+    ]
+} 

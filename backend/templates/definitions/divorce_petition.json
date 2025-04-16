@@ -1,0 +1,93 @@
+{
+    "id": "divorce_petition",
+    "name": "Divorce Petition",
+    "category": "Family",
+    "description": "Legal petition to initiate divorce proceedings",
+    "requires_signature": true,
+    "required_fields": [
+        "petitioner_name",
+        "petitioner_address",
+        "respondent_name",
+        "respondent_address",
+        "court_name",
+        "county_name",
+        "marriage_date",
+        "separation_date",
+        "grounds_for_divorce",
+        "children_of_marriage",
+        "filing_date"
+    ],
+    "optional_fields": [
+        "petitioner_attorney",
+        "property_division_requests",
+        "alimony_requests",
+        "custody_requests",
+        "child_support_requests",
+        "name_change_request",
+        "restraining_order_request",
+        "other_relief_requested",
+        "case_number"
+    ],
+    "sections": [
+        {
+            "title": "PETITION FOR DISSOLUTION OF MARRIAGE",
+            "content": "IN THE {court_name} COURT\nFOR THE COUNTY OF {county_name}\nSTATE OF ____________\n\nCase No. {case_number}\n\nIn re the Marriage of:\n\n{petitioner_name},\nPetitioner,\n\nand\n\n{respondent_name},\nRespondent."
+        },
+        {
+            "title": "PETITION FOR DISSOLUTION OF MARRIAGE",
+            "content": "COMES NOW the Petitioner, {petitioner_name}, by and through counsel, {petitioner_attorney}, and petitions this Court for dissolution of marriage, and in support thereof states as follows:"
+        },
+        {
+            "title": "1. JURISDICTION AND VENUE",
+            "content": "Petitioner resides at {petitioner_address}. Petitioner has been a resident of the State of ____________ for at least _____ months immediately preceding the filing of this Petition.\n\nRespondent resides at {respondent_address}.\n\nVenue is proper in this Court."
+        },
+        {
+            "title": "2. MARRIAGE INFORMATION",
+            "content": "Petitioner and Respondent were married on {marriage_date} in ____________, and have been separated since {separation_date}."
+        },
+        {
+            "title": "3. GROUNDS",
+            "content": "This marriage should be dissolved on the grounds that:\n\n{grounds_for_divorce}"
+        },
+        {
+            "title": "4. CHILDREN",
+            "content": "The following children were born of this marriage or were legally adopted by the parties:\n\n{children_of_marriage}"
+        },
+        {
+            "title": "5. CUSTODY AND PARENTING TIME",
+            "content": "Petitioner requests the following custody and parenting time arrangement:\n\n{custody_requests}"
+        },
+        {
+            "title": "6. CHILD SUPPORT",
+            "content": "Petitioner requests child support as follows:\n\n{child_support_requests}"
+        },
+        {
+            "title": "7. PROPERTY DIVISION",
+            "content": "Petitioner requests the following division of marital property and debts:\n\n{property_division_requests}"
+        },
+        {
+            "title": "8. SPOUSAL SUPPORT/ALIMONY",
+            "content": "Petitioner requests spousal support/alimony as follows:\n\n{alimony_requests}"
+        },
+        {
+            "title": "9. NAME CHANGE",
+            "content": "Petitioner requests the following name change:\n\n{name_change_request}"
+        },
+        {
+            "title": "10. RESTRAINING ORDERS",
+            "content": "Petitioner requests the following restraining orders:\n\n{restraining_order_request}"
+        },
+        {
+            "title": "11. OTHER RELIEF",
+            "content": "Petitioner requests the following additional relief:\n\n{other_relief_requested}"
+        },
+        {
+            "title": "WHEREFORE",
+            "content": "WHEREFORE, Petitioner requests that this Court:\n\n1. Dissolve the marriage between Petitioner and Respondent;\n\n2. Award custody, parenting time, and child support as requested herein;\n\n3. Equitably divide the marital property and debts between the parties;\n\n4. Award spousal support/alimony as requested herein;\n\n5. Grant the name change as requested herein;\n\n6. Issue the restraining orders as requested herein;\n\n7. Grant any other relief the Court deems just and proper under the circumstances."
+        },
+        {
+            "title": "VERIFICATION",
+            "content": "I, {petitioner_name}, being duly sworn upon my oath, state that I am the Petitioner in the above-entitled matter, that I have read the foregoing Petition for Dissolution of Marriage and know the contents thereof, and that the statements contained therein are true and correct to the best of my knowledge, information, and belief.\n\nDated this {filing_date}.\n\n________________________\n{petitioner_name}, Petitioner\n\n________________________\n{petitioner_attorney}, Attorney for Petitioner (if applicable)"
+        }
+    ]
+} 

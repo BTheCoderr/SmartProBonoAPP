@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Workplace Discrimination Complaint Letter</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .sender-info { text-align: right; margin-bottom: 40px; }
+    .recipient-info { margin-bottom: 40px; }
+    .subject { font-weight: bold; margin-bottom: 20px; }
+    .body { margin-bottom: 40px; }
+    .closing { margin-bottom: 60px; }
+    .signature { }
+    .enclosures { margin-top: 40px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .notice { font-style: italic; margin-top: 30px; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sender-info">
+      <p>
+        <span class="field">{{full_name}}</span><br>
+        <span class="field">{{street_address}}</span><br>
+        <span class="field">{{city}}</span>, <span class="field">{{state}}</span> <span class="field">{{zip_code}}</span><br>
+        <span class="field">{{phone_number}}</span><br>
+        <span class="field">{{email}}</span>
+      </p>
+      <p><span class="field">{{current_date}}</span></p>
+    </div>
+
+    <div class="recipient-info">
+      <p>
+        <span class="field">{{recipient_name}}</span><br>
+        <span class="field">{{recipient_title}}</span><br>
+        <span class="field">{{company_name}}</span><br>
+        <span class="field">{{company_address}}</span><br>
+        <span class="field">{{company_city}}</span>, <span class="field">{{company_state}}</span> <span class="field">{{company_zip}}</span>
+      </p>
+    </div>
+
+    <div class="subject">
+      <p>RE: Formal Complaint of Workplace Discrimination</p>
+    </div>
+
+    <div class="body">
+      <p>Dear <span class="field">{{recipient_name}}</span>:</p>
+
+      <p>I am writing to formally report and file a complaint regarding discriminatory treatment I have experienced while employed at <span class="field">{{company_name}}</span> in my position as <span class="field">{{job_title}}</span> in the <span class="field">{{department}}</span> department.</p>
+
+      <p>I believe I have been discriminated against based on my <span class="field">{{discrimination_basis}}</span> in violation of applicable anti-discrimination laws, including {{#if federal_law}}<span class="field">{{federal_law}}</span>{{/if}}{{#if state_law}} and <span class="field">{{state_law}}</span>{{/if}}.</p>
+
+      <p><strong>Background Information:</strong></p>
+      <ul>
+        <li>Date of hire: <span class="field">{{hire_date}}</span></li>
+        <li>Current supervisor: <span class="field">{{supervisor_name}}</span></li>
+        <li>Position/department: <span class="field">{{job_title}}</span>, <span class="field">{{department}}</span></li>
+      </ul>
+
+      <p><strong>Description of Discriminatory Treatment:</strong></p>
+      <p><span class="field">{{discrimination_description}}</span></p>
+
+      <p><strong>Specific Incidents:</strong></p>
+      <ol>
+        <li>Date: <span class="field">{{incident_1_date}}</span><br>
+        Description: <span class="field">{{incident_1_description}}</span><br>
+        Witnesses (if any): <span class="field">{{incident_1_witnesses}}</span></li>
+
+        {{#if has_incident_2}}
+        <li>Date: <span class="field">{{incident_2_date}}</span><br>
+        Description: <span class="field">{{incident_2_description}}</span><br>
+        Witnesses (if any): <span class="field">{{incident_2_witnesses}}</span></li>
+        {{/if}}
+
+        {{#if has_incident_3}}
+        <li>Date: <span class="field">{{incident_3_date}}</span><br>
+        Description: <span class="field">{{incident_3_description}}</span><br>
+        Witnesses (if any): <span class="field">{{incident_3_witnesses}}</span></li>
+        {{/if}}
+      </ol>
+
+      {{#if prior_reporting}}
+      <p><strong>Previous Reporting Attempts:</strong></p>
+      <p>I previously reported this issue on <span class="field">{{prior_report_date}}</span> to <span class="field">{{prior_report_recipient}}</span>. The response I received was: <span class="field">{{prior_report_response}}</span>.</p>
+      {{/if}}
+
+      <p><strong>Impact:</strong></p>
+      <p><span class="field">{{impact_description}}</span></p>
+
+      <p><strong>Requested Resolution:</strong></p>
+      <p>I am requesting that the company take the following actions to address this situation:</p>
+      <ol>
+        <li><span class="field">{{requested_action_1}}</span></li>
+        {{#if has_requested_action_2}}
+        <li><span class="field">{{requested_action_2}}</span></li>
+        {{/if}}
+        {{#if has_requested_action_3}}
+        <li><span class="field">{{requested_action_3}}</span></li>
+        {{/if}}
+      </ol>
+
+      <p>I am committed to working cooperatively to resolve this matter. However, I want to emphasize that this type of discriminatory treatment is unacceptable and contrary to both company policy and applicable law. I request that this complaint be kept confidential to the extent possible and that no retaliatory action be taken against me for filing this complaint.</p>
+
+      <p>I request a written response to this complaint and a meeting to discuss this matter further within <span class="field">{{response_timeframe}}</span> business days. Please contact me using the information provided above to schedule this meeting.</p>
+
+      <p>I am aware of my rights under anti-discrimination laws, including the right to file a complaint with the Equal Employment Opportunity Commission (EEOC) or equivalent state agency if this matter cannot be resolved internally.</p>
+    </div>
+
+    <div class="closing">
+      <p>Sincerely,</p>
+    </div>
+
+    <div class="signature">
+      <p><span class="field">{{full_name}}</span></p>
+    </div>
+
+    {{#if has_enclosures}}
+    <div class="enclosures">
+      <p>Enclosures:</p>
+      <ul>
+        {{#if has_documents_evidence}}
+        <li><span class="field">{{documents_evidence_description}}</span></li>
+        {{/if}}
+        {{#if has_witness_statements}}
+        <li>Witness statements</li>
+        {{/if}}
+        {{#if has_performance_reviews}}
+        <li>Performance review documents</li>
+        {{/if}}
+        {{#if has_other_enclosures}}
+        <li><span class="field">{{other_enclosures}}</span></li>
+        {{/if}}
+      </ul>
+    </div>
+    {{/if}}
+
+    <div class="notice">
+      <p>cc: {{#if cc_hr}}Human Resources Department{{/if}}{{#if cc_legal}}, Legal Department{{/if}}{{#if cc_other}}, <span class="field">{{cc_other}}</span>{{/if}}</p>
+    </div>
+  </div>
+</body>
+</html> 

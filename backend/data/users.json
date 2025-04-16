@@ -1,0 +1,81 @@
+{
+  "users": [
+    {
+      "id": "USR-001",
+      "email": "sarah.johnson@example.com",
+      "password_hash": "hashed_password_123",
+      "full_name": "Sarah Johnson",
+      "role": "client",
+      "created_at": "2024-03-20T00:00:00Z",
+      "profile": {
+        "phone": "555-0101",
+        "language": "en",
+        "needs": ["housing", "employment"],
+        "income_level": "low",
+        "location": "New York, NY"
+      }
+    },
+    {
+      "id": "USR-002",
+      "email": "maria.garcia@example.com",
+      "password_hash": "hashed_password_456",
+      "full_name": "Maria Garcia",
+      "role": "client",
+      "created_at": "2024-03-20T00:00:00Z",
+      "profile": {
+        "phone": "555-0102",
+        "language": "es",
+        "needs": ["immigration", "family"],
+        "income_level": "low",
+        "location": "Los Angeles, CA"
+      }
+    },
+    {
+      "id": "USR-003",
+      "email": "james.wilson@example.com",
+      "password_hash": "hashed_password_789",
+      "full_name": "James Wilson",
+      "role": "volunteer_attorney",
+      "created_at": "2024-03-20T00:00:00Z",
+      "profile": {
+        "phone": "555-0103",
+        "language": ["en", "es"],
+        "specialties": ["housing", "civil_rights"],
+        "bar_number": "NY123456",
+        "availability": "evenings",
+        "location": "Brooklyn, NY"
+      }
+    },
+    {
+      "id": "USR-004",
+      "email": "lisa.chen@example.com",
+      "password_hash": "hashed_password_012",
+      "full_name": "Lisa Chen",
+      "role": "volunteer_attorney",
+      "created_at": "2024-03-20T00:00:00Z",
+      "profile": {
+        "phone": "555-0104",
+        "language": ["en", "zh"],
+        "specialties": ["immigration", "family"],
+        "bar_number": "CA789012",
+        "availability": "weekends",
+        "location": "San Francisco, CA"
+      }
+    },
+    {
+      "id": "USR-005",
+      "email": "david.patel@example.com",
+      "password_hash": "hashed_password_345",
+      "full_name": "David Patel",
+      "role": "client",
+      "created_at": "2024-03-20T00:00:00Z",
+      "profile": {
+        "phone": "555-0105",
+        "language": "en",
+        "needs": ["small_business", "contracts"],
+        "income_level": "medium",
+        "location": "Chicago, IL"
+      }
+    }
+  ]
+} 

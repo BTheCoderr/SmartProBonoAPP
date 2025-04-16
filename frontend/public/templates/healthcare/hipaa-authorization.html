@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HIPAA Authorization for Release of Medical Information</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .signature-block { margin-top: 40px; }
+    .checkbox-item { margin: 10px 0; }
+    .notice { font-size: 0.9em; font-style: italic; margin-top: 20px; border: 1px solid #ddd; padding: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>AUTHORIZATION FOR RELEASE OF HEALTH INFORMATION</h1>
+      <p><em>Pursuant to the Health Insurance Portability and Accountability Act (HIPAA)</em></p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">PATIENT INFORMATION</div>
+      <p>
+        Name: <span class="field">{{patient_name}}</span><br>
+        Date of Birth: <span class="field">{{date_of_birth}}</span><br>
+        Address: <span class="field">{{street_address}}</span>, <span class="field">{{city}}</span>, <span class="field">{{state}}</span> <span class="field">{{zip_code}}</span><br>
+        Phone: <span class="field">{{phone_number}}</span><br>
+        Email: <span class="field">{{email}}</span>
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">HEALTHCARE PROVIDER TO RELEASE INFORMATION</div>
+      <p>
+        Provider/Facility Name: <span class="field">{{provider_name}}</span><br>
+        Address: <span class="field">{{provider_address}}</span><br>
+        Phone: <span class="field">{{provider_phone}}</span><br>
+        Fax: <span class="field">{{provider_fax}}</span>
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">RECIPIENT OF INFORMATION</div>
+      <p>
+        Name: <span class="field">{{recipient_name}}</span><br>
+        Organization (if applicable): <span class="field">{{recipient_organization}}</span><br>
+        Address: <span class="field">{{recipient_address}}</span><br>
+        Phone: <span class="field">{{recipient_phone}}</span><br>
+        Fax: <span class="field">{{recipient_fax}}</span><br>
+        Email: <span class="field">{{recipient_email}}</span>
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">INFORMATION TO BE RELEASED</div>
+      <p>I authorize the release of the following health information (check all that apply):</p>
+      
+      <div class="checkbox-item">
+        ☐ Complete Medical Record<br>
+        ☐ Medical Records for specific date(s): <span class="field">{{specific_dates}}</span><br>
+        ☐ Lab Results<br>
+        ☐ X-Rays/Imaging Reports<br>
+        ☐ Billing Records<br>
+        ☐ Mental Health Records (excluding psychotherapy notes)<br>
+        ☐ Substance Abuse Treatment Records<br>
+        ☐ HIV/AIDS-Related Information<br>
+        ☐ Genetic Testing Information<br>
+        ☐ Other: <span class="field">{{other_information}}</span>
+      </div>
+      
+      <p>For the following purpose(s):</p>
+      <div class="checkbox-item">
+        ☐ At the request of the individual<br>
+        ☐ Continuing care/medical treatment<br>
+        ☐ Insurance/benefits<br>
+        ☐ Legal purposes<br>
+        ☐ Other: <span class="field">{{disclosure_purpose}}</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">EXPIRATION</div>
+      <p>This authorization will expire on (choose one):</p>
+      <div class="checkbox-item">
+        ☐ Specific date: <span class="field">{{expiration_date}}</span><br>
+        ☐ Occurrence of the following event: <span class="field">{{expiration_event}}</span><br>
+        ☐ One year from the date of signing
+      </div>
+    </div>
+
+    <div class="notice">
+      <p><strong>NOTICE TO PATIENT:</strong></p>
+      <ul>
+        <li>You have the right to revoke this authorization at any time by writing to the healthcare provider listed above.</li>
+        <li>Revocation will not apply to information that has already been released in response to this authorization.</li>
+        <li>Treatment, payment, enrollment, or eligibility for benefits may not be conditioned on whether you sign this authorization.</li>
+        <li>Information disclosed pursuant to this authorization may be redisclosed by the recipient and may no longer be protected by federal or state privacy regulations.</li>
+        <li>You have the right to inspect or copy the information to be disclosed.</li>
+      </ul>
+    </div>
+
+    <div class="signature-block">
+      <p>By signing below, I acknowledge that I have read and understand this authorization form.</p>
+      <p>Signature: _________________________________ Date: _______________</p>
+      <p>Printed Name: <span class="field">{{patient_name}}</span></p>
+      
+      <p>If signed by a personal representative:</p>
+      <p>Representative's Signature: _________________________________ Date: _______________</p>
+      <p>Printed Name: <span class="field">{{representative_name}}</span></p>
+      <p>Relationship to Patient: <span class="field">{{representative_relationship}}</span></p>
+    </div>
+  </div>
+</body>
+</html> 

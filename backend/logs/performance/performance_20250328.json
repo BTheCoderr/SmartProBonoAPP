@@ -1,0 +1,202 @@
+[
+  {
+    "timestamp": "2025-03-28T01:20:55.292392",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.30922436714172363,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:20:55.463338",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.17044496536254883,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:21:44.337277",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.19060897827148438,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:21:44.494829",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.1562960147857666,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:23:10.195421",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.34980106353759766,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:23:10.338104",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.1408531665802002,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:30:08.068538",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.2754397392272949,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:30:08.512642",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.44274306297302246,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:33:24.507258",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.3918163776397705,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:33:24.658129",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.1491079330444336,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:40:48.679099",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.45578694343566895,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:40:48.848428",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.1667180061340332,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:45:46.289247",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.356475830078125,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:45:46.433002",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.1423039436340332,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:47:28.892040",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.30609583854675293,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:47:29.071475",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.17783093452453613,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:48:47.919021",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.2778811454772949,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:48:48.086604",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.16473102569580078,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:49:57.394463",
+    "model": "all",
+    "task_type": "chat",
+    "response_time": 0.1996469497680664,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-03-28T01:49:57.535321",
+    "model": "all",
+    "task_type": "default",
+    "response_time": 0.13965201377868652,
+    "success": false,
+    "error": "All providers failed. Attempts:\nmistral: mistral API error: mistral API error: Status 401\nllama: llama API error: llama API error: Status 401\nfalcon: falcon API error: falcon API error: Status 401\ndeepseek: deepseek API error: deepseek API error: Status 401\nopenai: OpenAI API error: \n\nYou tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.\n\nYou can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. \n\nAlternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`\n\nA detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742\n",
+    "token_count": 0,
+    "metadata": {}
+  }
+]

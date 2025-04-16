@@ -1,0 +1,70 @@
+{
+    "id": "small_claims",
+    "name": "Small Claims Complaint",
+    "category": "Legal",
+    "description": "Form for filing a small claims court case for monetary disputes under the jurisdictional limit",
+    "requires_signature": true,
+    "required_fields": [
+        "plaintiff_name",
+        "plaintiff_address",
+        "plaintiff_phone",
+        "plaintiff_email",
+        "defendant_name",
+        "defendant_address",
+        "claim_amount",
+        "filing_court",
+        "incident_date",
+        "claim_description",
+        "remedy_requested"
+    ],
+    "optional_fields": [
+        "supporting_evidence",
+        "witnesses",
+        "demand_letter_date",
+        "prior_payments",
+        "interest_claimed",
+        "filing_fees"
+    ],
+    "sections": [
+        {
+            "title": "SMALL CLAIMS COURT COMPLAINT",
+            "content": "IN THE SMALL CLAIMS COURT OF {filing_court}\n\n{plaintiff_name}, Plaintiff\nvs.\n{defendant_name}, Defendant"
+        },
+        {
+            "title": "1. PARTIES",
+            "content": "Plaintiff Information:\nName: {plaintiff_name}\nAddress: {plaintiff_address}\nPhone: {plaintiff_phone}\nEmail: {plaintiff_email}\n\nDefendant Information:\nName: {defendant_name}\nAddress: {defendant_address}"
+        },
+        {
+            "title": "2. JURISDICTION",
+            "content": "This court has jurisdiction over this matter as the amount in controversy does not exceed the jurisdictional limit for small claims in this court, and either the defendant resides in this jurisdiction or the events giving rise to this claim occurred within this jurisdiction."
+        },
+        {
+            "title": "3. STATEMENT OF CLAIM",
+            "content": "On or about {incident_date}, the following occurred:\n\n{claim_description}"
+        },
+        {
+            "title": "4. DEMAND LETTER",
+            "content": "Prior to filing this complaint, I sent a demand letter to the defendant on {demand_letter_date} requesting payment, but the matter remains unresolved."
+        },
+        {
+            "title": "5. SUPPORTING EVIDENCE",
+            "content": "The following evidence supports my claim:\n\n{supporting_evidence}"
+        },
+        {
+            "title": "6. WITNESSES",
+            "content": "The following individuals have relevant information regarding this claim:\n\n{witnesses}"
+        },
+        {
+            "title": "7. DAMAGES",
+            "content": "As a result of the defendant's actions, I have suffered damages in the amount of ${claim_amount}.\n\nPrior payments received: ${prior_payments}\nInterest claimed: ${interest_claimed}\nFiling fees: ${filing_fees}\n\nTotal amount claimed: ${claim_amount}"
+        },
+        {
+            "title": "8. REMEDY REQUESTED",
+            "content": "I am requesting the following remedy:\n\n{remedy_requested}"
+        },
+        {
+            "title": "9. CERTIFICATION",
+            "content": "I, {plaintiff_name}, declare under penalty of perjury that the information provided in this complaint is true and correct to the best of my knowledge.\n\nDate: {current_date}\n\nSignature: ________________________"
+        }
+    ]
+} 

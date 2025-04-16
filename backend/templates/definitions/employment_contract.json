@@ -1,0 +1,71 @@
+{
+    "id": "employment-contract",
+    "name": "Employment Contract",
+    "category": "Employment",
+    "description": "Standard employment contract template",
+    "requires_signature": true,
+    "required_fields": [
+        "employer_name",
+        "employer_address",
+        "employee_name",
+        "employee_address",
+        "position_title",
+        "start_date",
+        "salary_amount",
+        "payment_frequency",
+        "work_hours",
+        "work_location"
+    ],
+    "optional_fields": [
+        "probation_period",
+        "benefits_package",
+        "vacation_days",
+        "sick_leave",
+        "notice_period",
+        "special_conditions",
+        "bonus_terms",
+        "reporting_to"
+    ],
+    "sections": [
+        {
+            "title": "1. Parties",
+            "content": "This Employment Contract (the \"Agreement\") is made between {employer_name}, located at {employer_address} (the \"Employer\") and {employee_name}, residing at {employee_address} (the \"Employee\")."
+        },
+        {
+            "title": "2. Position and Duties",
+            "content": "Position Title: {position_title}\nReporting to: {reporting_to}\nWork Location: {work_location}\n\nThe Employee agrees to perform the duties and responsibilities commonly associated with this position and other duties as assigned."
+        },
+        {
+            "title": "3. Term",
+            "content": "Employment will commence on {start_date}.\nProbation Period (if applicable): {probation_period}"
+        },
+        {
+            "title": "4. Compensation",
+            "content": "Salary: ${salary_amount} per {payment_frequency}\nBonus Terms (if applicable): {bonus_terms}"
+        },
+        {
+            "title": "5. Work Schedule",
+            "content": "Standard Work Hours: {work_hours}"
+        },
+        {
+            "title": "6. Benefits",
+            "content": "Benefits Package: {benefits_package}\nVacation Days: {vacation_days} days per year\nSick Leave: {sick_leave} days per year"
+        },
+        {
+            "title": "7. Termination",
+            "content": "Notice Period Required: {notice_period}"
+        },
+        {
+            "title": "8. Special Conditions",
+            "content": "{special_conditions}"
+        },
+        {
+            "title": "9. Confidentiality",
+            "content": "The Employee agrees to maintain the confidentiality of the Employer's proprietary information and trade secrets during and after employment."
+        },
+        {
+            "title": "10. Governing Law",
+            "content": "This Agreement shall be governed by the laws of the jurisdiction where the Employer is located."
+        }
+    ]
+} 

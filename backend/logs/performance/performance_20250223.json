@@ -1,0 +1,376 @@
+[
+  {
+    "timestamp": "2025-02-23T10:29:58.050146",
+    "model": "mistral",
+    "task_type": "chat",
+    "response_time": 0.3886599540710449,
+    "success": false,
+    "error": "Incorrect API key provided: your_ope********here. You can find your API key at https://platform.openai.com/account/api-keys.",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-02-23T10:29:58.275881",
+    "model": "llama",
+    "task_type": "document_drafting",
+    "response_time": 0.22501397132873535,
+    "success": false,
+    "error": "Incorrect API key provided: your_ope********here. You can find your API key at https://platform.openai.com/account/api-keys.",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-02-23T10:29:58.276507",
+    "model": "deepseek",
+    "task_type": "legal_research",
+    "response_time": 2.09808349609375e-05,
+    "success": false,
+    "error": "'NoneType' object has no attribute 'get'",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-02-23T10:29:58.493549",
+    "model": "falcon",
+    "task_type": "statute_interpretation",
+    "response_time": 0.21669697761535645,
+    "success": false,
+    "error": "Incorrect API key provided: your_ope********here. You can find your API key at https://platform.openai.com/account/api-keys.",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-02-23T10:34:20.334002",
+    "model": "mistral",
+    "task_type": "chat",
+    "response_time": 0.3001840114593506,
+    "success": false,
+    "error": "mistral API error: Status 503",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-02-23T10:34:20.495800",
+    "model": "llama",
+    "task_type": "document_drafting",
+    "response_time": 0.15891098976135254,
+    "success": false,
+    "error": "llama API error: Status 400",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-02-23T10:34:20.880948",
+    "model": "deepseek",
+    "task_type": "legal_research",
+    "response_time": 0.38303208351135254,
+    "success": false,
+    "error": "deepseek API error: Status 403",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-02-23T10:34:21.566205",
+    "model": "falcon",
+    "task_type": "statute_interpretation",
+    "response_time": 0.6786379814147949,
+    "success": true,
+    "error": null,
+    "token_count": 30,
+    "metadata": {
+      "tokens": 30,
+      "model_name": "Falcon 7B Instruct",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:35:08.199718",
+    "model": "mistral",
+    "task_type": "chat",
+    "response_time": 22.651427030563354,
+    "success": true,
+    "error": null,
+    "token_count": 177,
+    "metadata": {
+      "tokens": 177,
+      "model_name": "TinyLlama Chat",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:35:09.414560",
+    "model": "llama",
+    "task_type": "document_drafting",
+    "response_time": 1.2127177715301514,
+    "success": false,
+    "error": "llama API error: Status 503",
+    "token_count": 0,
+    "metadata": {}
+  },
+  {
+    "timestamp": "2025-02-23T10:35:10.476224",
+    "model": "deepseek",
+    "task_type": "legal_research",
+    "response_time": 1.060180902481079,
+    "success": true,
+    "error": null,
+    "token_count": 23,
+    "metadata": {
+      "tokens": 23,
+      "model_name": "BLOOM",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:35:10.570899",
+    "model": "falcon",
+    "task_type": "statute_interpretation",
+    "response_time": 0.09317684173583984,
+    "success": true,
+    "error": null,
+    "token_count": 30,
+    "metadata": {
+      "tokens": 30,
+      "model_name": "Falcon 7B Instruct",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:35:46.652372",
+    "model": "mistral",
+    "task_type": "chat",
+    "response_time": 0.1533069610595703,
+    "success": true,
+    "error": null,
+    "token_count": 177,
+    "metadata": {
+      "tokens": 177,
+      "model_name": "TinyLlama Chat",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:35:49.465941",
+    "model": "llama",
+    "task_type": "document_drafting",
+    "response_time": 2.8124287128448486,
+    "success": true,
+    "error": null,
+    "token_count": 102,
+    "metadata": {
+      "tokens": 102,
+      "model_name": "GPT2 Legal",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:35:49.554295",
+    "model": "deepseek",
+    "task_type": "legal_research",
+    "response_time": 0.08739519119262695,
+    "success": true,
+    "error": null,
+    "token_count": 23,
+    "metadata": {
+      "tokens": 23,
+      "model_name": "BLOOM",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:35:49.637307",
+    "model": "falcon",
+    "task_type": "statute_interpretation",
+    "response_time": 0.0821523666381836,
+    "success": true,
+    "error": null,
+    "token_count": 30,
+    "metadata": {
+      "tokens": 30,
+      "model_name": "Falcon 7B Instruct",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:37:20.939355",
+    "model": "mistral",
+    "task_type": "legal_qa",
+    "response_time": 0.5317990779876709,
+    "success": true,
+    "error": null,
+    "token_count": 7,
+    "metadata": {
+      "tokens": 7,
+      "model_name": "TinyLlama Chat",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:37:42.379773",
+    "model": "llama",
+    "task_type": "document_drafting",
+    "response_time": 21.43744397163391,
+    "success": true,
+    "error": null,
+    "token_count": 623,
+    "metadata": {
+      "tokens": 623,
+      "model_name": "GPT2 Legal",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:37:43.464938",
+    "model": "deepseek",
+    "task_type": "legal_research",
+    "response_time": 1.0818607807159424,
+    "success": true,
+    "error": null,
+    "token_count": 27,
+    "metadata": {
+      "tokens": 27,
+      "model_name": "BLOOM",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:37:44.592461",
+    "model": "falcon",
+    "task_type": "statute_interpretation",
+    "response_time": 1.126800775527954,
+    "success": true,
+    "error": null,
+    "token_count": 43,
+    "metadata": {
+      "tokens": 43,
+      "model_name": "Falcon 7B Instruct",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:40:55.378686",
+    "model": "mistral",
+    "task_type": "chat",
+    "response_time": 44.759111166000366,
+    "success": true,
+    "error": null,
+    "token_count": 306,
+    "metadata": {
+      "tokens": 306,
+      "model_name": "TinyLlama Chat",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:41:34.654807",
+    "model": "mistral",
+    "task_type": "chat",
+    "response_time": 39.27095293998718,
+    "success": true,
+    "error": null,
+    "token_count": 297,
+    "metadata": {
+      "tokens": 297,
+      "model_name": "TinyLlama Chat",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:42:04.060040",
+    "model": "mistral",
+    "task_type": "chat",
+    "response_time": 29.400485038757324,
+    "success": true,
+    "error": null,
+    "token_count": 229,
+    "metadata": {
+      "tokens": 229,
+      "model_name": "TinyLlama Chat",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:42:12.720141",
+    "model": "llama",
+    "task_type": "document_drafting",
+    "response_time": 8.657480001449585,
+    "success": true,
+    "error": null,
+    "token_count": 77,
+    "metadata": {
+      "tokens": 77,
+      "model_name": "GPT2 Legal",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:43:36.500486",
+    "model": "llama",
+    "task_type": "document_drafting",
+    "response_time": 83.77783823013306,
+    "success": false,
+    "error": "llama API error: Status 500",
+    "token_count": 804,
+    "metadata": {
+      "tokens": 804,
+      "model_name": "GPT2 Legal",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:43:38.400324",
+    "model": "deepseek",
+    "task_type": "rights_research",
+    "response_time": 1.8956298828125,
+    "success": true,
+    "error": null,
+    "token_count": 49,
+    "metadata": {
+      "tokens": 49,
+      "model_name": "BLOOM",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:43:39.615005",
+    "model": "deepseek",
+    "task_type": "rights_research",
+    "response_time": 1.2128660678863525,
+    "success": true,
+    "error": null,
+    "token_count": 53,
+    "metadata": {
+      "tokens": 53,
+      "model_name": "BLOOM",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:43:49.890170",
+    "model": "falcon",
+    "task_type": "complex_analysis",
+    "response_time": 10.272802114486694,
+    "success": true,
+    "error": null,
+    "token_count": 303,
+    "metadata": {
+      "tokens": 303,
+      "model_name": "Falcon 7B Instruct",
+      "success": true
+    }
+  },
+  {
+    "timestamp": "2025-02-23T10:43:53.478263",
+    "model": "falcon",
+    "task_type": "complex_analysis",
+    "response_time": 3.583811044692993,
+    "success": true,
+    "error": null,
+    "token_count": 121,
+    "metadata": {
+      "tokens": 121,
+      "model_name": "Falcon 7B Instruct",
+      "success": true
+    }
+  }
+]

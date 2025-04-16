@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Small Claims Court Complaint</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .court-info { text-align: center; margin-bottom: 30px; border: 1px solid #ccc; padding: 15px; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .signature-block { margin-top: 40px; }
+    .note { font-style: italic; font-size: 0.9em; margin-top: 5px; }
+    .instruction { background-color: #f5f5f5; padding: 10px; border: 1px solid #ddd; margin: 15px 0; font-style: italic; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>SMALL CLAIMS COURT COMPLAINT</h1>
+      <p><em>This is not an official court form. Check with your local court for specific requirements in your jurisdiction.</em></p>
+    </div>
+
+    <div class="instruction">
+      <p>INSTRUCTIONS: Complete all sections of this form. Type or print neatly in black or blue ink. File the original with the court clerk and keep a copy for your records. You may need to attach additional pages for some sections. Check your local court's filing fees and serve the defendant according to local rules after filing.</p>
+    </div>
+
+    <div class="court-info">
+      <p>IN THE <span class="field">{{court_name}}</span> COURT FOR <span class="field">{{county}}</span> COUNTY, <span class="field">{{state}}</span></p>
+      <p>
+        <span class="field">{{plaintiff_name}}</span>,<br>
+        Plaintiff,<br><br>
+        vs.<br><br>
+        <span class="field">{{defendant_name}}</span>,<br>
+        Defendant.
+      </p>
+      <p>Case No.: <span class="field">{{case_number}}</span> (To be assigned by court)</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">1. PLAINTIFF INFORMATION (Person Filing Claim)</div>
+      <p>
+        Full Name: <span class="field">{{plaintiff_name}}</span><br>
+        {{#if is_business_plaintiff}}
+        Business Name: <span class="field">{{plaintiff_business_name}}</span><br>
+        Type of Business: <span class="field">{{plaintiff_business_type}}</span><br>
+        {{/if}}
+        Street Address: <span class="field">{{plaintiff_street_address}}</span><br>
+        City, State, ZIP: <span class="field">{{plaintiff_city}}</span>, <span class="field">{{plaintiff_state}}</span> <span class="field">{{plaintiff_zip}}</span><br>
+        Phone: <span class="field">{{plaintiff_phone}}</span><br>
+        Email: <span class="field">{{plaintiff_email}}</span><br>
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. DEFENDANT INFORMATION (Person Being Sued)</div>
+      <p>
+        Full Name: <span class="field">{{defendant_name}}</span><br>
+        {{#if is_business_defendant}}
+        Business Name: <span class="field">{{defendant_business_name}}</span><br>
+        Type of Business: <span class="field">{{defendant_business_type}}</span><br>
+        {{/if}}
+        Street Address: <span class="field">{{defendant_street_address}}</span><br>
+        City, State, ZIP: <span class="field">{{defendant_city}}</span>, <span class="field">{{defendant_state}}</span> <span class="field">{{defendant_zip}}</span><br>
+        Phone: <span class="field">{{defendant_phone}}</span><br>
+        Email: <span class="field">{{defendant_email}}</span><br>
+      </p>
+      {{#if has_additional_defendants}}
+      <p>Additional defendants are listed on attached page(s).</p>
+      {{/if}}
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. CLAIM AMOUNT</div>
+      <p>I (plaintiff) claim the defendant owes me $ <span class="field">{{claim_amount}}</span>, plus court costs of $ <span class="field">{{court_costs}}</span>, for a total of $ <span class="field">{{total_amount}}</span>.</p>
+      <p class="note">Note: The maximum claim amount varies by jurisdiction. Check your local small claims court limit before filing.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. BASIS FOR CLAIM</div>
+      <p>The claim is based on:</p>
+      <p>☐ Goods sold and delivered</p>
+      <p>☐ Services performed</p>
+      <p>☐ Loan</p>
+      <p>☐ Auto accident</p>
+      <p>☐ Property damage</p>
+      <p>☐ Breach of contract</p>
+      <p>☐ Return of security deposit</p>
+      <p>☐ Unpaid rent</p>
+      <p>☐ Unpaid wages</p>
+      <p>☐ Other: <span class="field">{{other_claim_basis}}</span></p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. STATEMENT OF FACTS</div>
+      <p>The facts of my claim are as follows:</p>
+      <p><span class="field">{{claim_facts}}</span></p>
+      <p>This happened on or about <span class="field">{{incident_date}}</span> at <span class="field">{{incident_location}}</span>.</p>
+      <p class="note">Attach copies of any documents that support your claim (receipts, contracts, estimates, photos, etc.). Do not attach originals.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. ATTEMPTS TO RESOLVE</div>
+      <p>I have tried to collect this money by:</p>
+      <p><span class="field">{{collection_attempts}}</span></p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. REQUEST FOR JUDGMENT</div>
+      <p>I ask the court for judgment against the defendant(s) for:</p>
+      <p>
+        $ <span class="field">{{claim_amount}}</span> Principal claim amount<br>
+        $ <span class="field">{{interest_amount}}</span> Interest (if applicable)<br>
+        $ <span class="field">{{court_costs}}</span> Court costs<br>
+        $ <span class="field">{{total_amount}}</span> TOTAL
+      </p>
+      {{#if request_payment_plan}}
+      <p>☐ I request the court to order a payment plan.</p>
+      {{/if}}
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. HEARING DATE REQUEST</div>
+      <p>☐ I request a regular hearing date.</p>
+      <p>☐ I request an evening or weekend hearing date, if available.</p>
+      <p>☐ I cannot attend court on the following dates: <span class="field">{{unavailable_dates}}</span></p>
+    </div>
+
+    <div class="signature-block">
+      <p>I declare under penalty of perjury under the laws of the State of <span class="field">{{state}}</span> that the foregoing is true and correct.</p>
+      <p>Date: ________________________</p>
+      <p>Signature: ________________________</p>
+      <p>Printed Name: <span class="field">{{plaintiff_name}}</span></p>
+    </div>
+
+    <div class="instruction">
+      <p><strong>WHAT HAPPENS NEXT:</strong></p>
+      <ol>
+        <li>File this form with your local small claims court clerk.</li>
+        <li>Pay the filing fee (or submit a fee waiver request if you cannot afford to pay).</li>
+        <li>The court will provide you with a court date and instructions on how to serve the defendant.</li>
+        <li>You must properly serve the defendant with a copy of this complaint and the court summons according to your state's rules.</li>
+        <li>Appear at the scheduled court hearing prepared to present your case and any evidence.</li>
+      </ol>
+    </div>
+  </div>
+</body>
+</html> 

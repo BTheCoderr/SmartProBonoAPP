@@ -1,0 +1,71 @@
+{
+    "id": "discrimination-complaint-form",
+    "name": "Employment Discrimination Complaint",
+    "category": "Employment",
+    "description": "Form for filing a workplace discrimination complaint with relevant government agencies",
+    "requires_signature": true,
+    "required_fields": [
+        "complainant_name",
+        "complainant_address",
+        "complainant_phone",
+        "complainant_email",
+        "employer_name",
+        "employer_address",
+        "employer_phone",
+        "date_of_incident",
+        "discrimination_type",
+        "incident_description",
+        "witnesses",
+        "complaint_date"
+    ],
+    "optional_fields": [
+        "job_title",
+        "hire_date",
+        "employment_status",
+        "supervisor_name",
+        "prior_complaints",
+        "requested_remedy",
+        "attorney_name",
+        "attorney_contact",
+        "supporting_documents",
+        "agency_choice"
+    ],
+    "sections": [
+        {
+            "title": "1. Complainant Information",
+            "content": "Name: {complainant_name}\nAddress: {complainant_address}\nPhone: {complainant_phone}\nEmail: {complainant_email}\nJob Title: {job_title}\nHire Date: {hire_date}\nEmployment Status: {employment_status}"
+        },
+        {
+            "title": "2. Employer Information",
+            "content": "Employer Name: {employer_name}\nAddress: {employer_address}\nPhone: {employer_phone}\nSupervisor Name: {supervisor_name}"
+        },
+        {
+            "title": "3. Discrimination Details",
+            "content": "Type of Discrimination: {discrimination_type}\nDate of Incident: {date_of_incident}\nDescription of Incident: {incident_description}\nWitnesses: {witnesses}"
+        },
+        {
+            "title": "4. Prior Complaints",
+            "content": "Have you filed any prior complaints about this issue? If so, provide details: {prior_complaints}"
+        },
+        {
+            "title": "5. Requested Remedy",
+            "content": "What remedy are you seeking for this discrimination? {requested_remedy}"
+        },
+        {
+            "title": "6. Attorney Information (if applicable)",
+            "content": "Attorney Name: {attorney_name}\nAttorney Contact Information: {attorney_contact}"
+        },
+        {
+            "title": "7. Supporting Documentation",
+            "content": "List any supporting documents you are attaching to this complaint: {supporting_documents}"
+        },
+        {
+            "title": "8. Agency Selection",
+            "content": "I would like to file this complaint with: {agency_choice}"
+        },
+        {
+            "title": "9. Certification",
+            "content": "I, {complainant_name}, certify that the information provided in this complaint is true and accurate to the best of my knowledge. I understand that false statements may subject me to penalties under applicable law.\n\nDate: {complaint_date}\n\nSignature: ______________________________"
+        }
+    ]
+} 

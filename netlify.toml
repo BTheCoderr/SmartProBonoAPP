@@ -1,0 +1,22 @@
+[build]
+  base = "frontend"
+  publish = "build"
+  command = """
+    npm cache clean --force &&
+    rm -rf node_modules package-lock.json &&
+    npm install -g npm@10.2.4 &&
+    npm install ajv@8.12.0 ajv-keywords@5.1.0 --save --legacy-peer-deps &&
+    npm install --legacy-peer-deps &&
+    CI=false npm run build
+  """
+
+[build.environment]
+  REACT_APP_API_URL = "https://your-backend-url.com"
+  REACT_APP_ENV = "production"
+  NPM_FLAGS = "--legacy-peer-deps"
+  NODE_VERSION = "20.17.0"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 

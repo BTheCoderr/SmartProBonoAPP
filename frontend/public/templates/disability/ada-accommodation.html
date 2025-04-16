@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ADA Accommodation Request Letter</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .sender-info { text-align: right; margin-bottom: 40px; }
+    .recipient-info { margin-bottom: 40px; }
+    .subject { font-weight: bold; margin-bottom: 20px; }
+    .body { margin-bottom: 40px; }
+    .closing { margin-bottom: 60px; }
+    .signature { }
+    .attachments { margin-top: 40px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sender-info">
+      <p>{{full_name}}<br>
+      {{street_address}}<br>
+      {{city}}, {{state}} {{zip_code}}<br>
+      {{phone_number}}<br>
+      {{email}}</p>
+    </div>
+    
+    <div class="recipient-info">
+      <p>{{recipient_name}}<br>
+      {{recipient_title}}<br>
+      {{organization_name}}<br>
+      {{organization_street_address}}<br>
+      {{organization_city}}, {{organization_state}} {{organization_zip_code}}</p>
+    </div>
+    
+    <div class="subject">
+      <p>RE: Request for Reasonable Accommodation Under the Americans with Disabilities Act</p>
+    </div>
+    
+    <div class="body">
+      <p>Dear {{recipient_name}}:</p>
+      
+      <p>I am writing to request reasonable accommodation under the Americans with Disabilities Act (ADA) for my disability. I am {{position_or_role}} at {{organization_name}} {{#if is_student}}in the {{department_or_program}} department{{/if}}.</p>
+      
+      <p>Due to my disability, I experience the following limitations: {{disability_limitations}}. These limitations affect my ability to {{affected_abilities}}.</p>
+      
+      <p>I am requesting the following accommodation(s), which I believe will allow me to perform the essential functions of my {{#if is_student}}studies{{else}}job{{/if}} effectively:</p>
+      
+      <ol>
+        {{#each accommodations}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ol>
+      
+      <p>My healthcare provider, {{healthcare_provider_name}}, has recommended these accommodations. {{#if has_documentation}}I have attached documentation from my healthcare provider supporting this request.{{/if}}</p>
+      
+      <p>I believe these accommodations are reasonable and will not impose an undue hardship on {{organization_name}}. These accommodations will allow me to {{accommodation_benefits}}.</p>
+      
+      <p>I understand that you may need additional information to process this request, and I am willing to cooperate in an interactive process to determine the most appropriate accommodations. Please let me know what additional information you need.</p>
+      
+      <p>The ADA and applicable state laws require employers and educational institutions to provide reasonable accommodations to qualified individuals with disabilities. I look forward to working with you to find effective accommodations.</p>
+      
+      <p>Please respond to this request within {{response_timeframe}} business days. If you have any questions or need more information, please contact me using the information provided above.</p>
+    </div>
+    
+    <div class="closing">
+      <p>Sincerely,</p>
+    </div>
+    
+    <div class="signature">
+      <p>{{full_name}}</p>
+    </div>
+    
+    {{#if has_attachments}}
+    <div class="attachments">
+      <p>Attachments:</p>
+      <ol>
+        {{#each attachments}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ol>
+    </div>
+    {{/if}}
+  </div>
+</body>
+</html> 

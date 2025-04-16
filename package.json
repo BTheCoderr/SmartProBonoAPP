@@ -1,0 +1,33 @@
+{
+  "name": "pro-bono-app",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://bthecoderr.github.io/smartProBonoAPP/",
+  "dependencies": {
+    "@mui/lab": "^6.0.0-beta.25",
+    "concurrently": "^9.1.2",
+    "formik": "^2.4.6",
+    "jspdf": "^2.5.2",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-router-dom": "^7.0.1",
+    "react-scripts": "^5.0.1",
+    "react-speech-recognition": "^3.10.0",
+    "regenerator-runtime": "^0.14.1",
+    "socket.io-client": "^4.8.1",
+    "yup": "^1.4.0"
+  },
+  "scripts": {
+    "start": "concurrently \"cd backend && source venv/bin/activate && python3 app.py\" \"cd frontend && npm start\"",
+    "install-all": "cd frontend && npm install && cd ../backend && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt",
+    "predeploy": "cd frontend && npm run build",
+    "deploy": "gh-pages -d frontend/build"
+  },
+  "devDependencies": {
+    "@babel/generator": "^7.27.0",
+    "@babel/parser": "^7.27.0",
+    "@babel/traverse": "^7.27.0",
+    "@babel/types": "^7.27.0",
+    "gh-pages": "^6.1.1",
+    "glob": "^11.0.1"
+  }
+}

@@ -1,0 +1,57 @@
+{
+    "id": "eviction-defense",
+    "name": "Eviction Defense Form",
+    "category": "Housing",
+    "description": "Form for responding to an eviction notice and asserting tenant rights",
+    "requires_signature": true,
+    "required_fields": [
+        "tenant_name",
+        "tenant_address",
+        "landlord_name",
+        "eviction_notice_date",
+        "court_case_number",
+        "response_date",
+        "tenant_phone",
+        "tenant_email"
+    ],
+    "optional_fields": [
+        "rental_agreement_date",
+        "monthly_rent",
+        "security_deposit",
+        "eviction_grounds",
+        "repair_issues",
+        "rent_payment_history",
+        "disabilities",
+        "additional_defenses"
+    ],
+    "sections": [
+        {
+            "title": "1. Tenant Information",
+            "content": "Name: {tenant_name}\nAddress: {tenant_address}\nPhone: {tenant_phone}\nEmail: {tenant_email}"
+        },
+        {
+            "title": "2. Landlord Information",
+            "content": "Name: {landlord_name}"
+        },
+        {
+            "title": "3. Eviction Notice Details",
+            "content": "Date of Eviction Notice: {eviction_notice_date}\nCourt Case Number: {court_case_number}\nAlleged Grounds for Eviction: {eviction_grounds}"
+        },
+        {
+            "title": "4. Rental History",
+            "content": "Date of Original Rental Agreement: {rental_agreement_date}\nMonthly Rent Amount: ${monthly_rent}\nSecurity Deposit Amount: ${security_deposit}\nPayment History: {rent_payment_history}"
+        },
+        {
+            "title": "5. Defense Information",
+            "content": "Repair Issues in Unit: {repair_issues}\nDisabilities or Protected Status: {disabilities}\nAdditional Defenses: {additional_defenses}"
+        },
+        {
+            "title": "6. Response",
+            "content": "I, {tenant_name}, hereby deny the allegations contained in the eviction notice and assert my rights as a tenant under applicable state and local laws. I request a hearing to present my defenses to the eviction action."
+        },
+        {
+            "title": "7. Declaration",
+            "content": "I declare under penalty of perjury that the foregoing is true and correct to the best of my knowledge.\n\nDate: {response_date}\n\nSignature: ___________________________"
+        }
+    ]
+} 

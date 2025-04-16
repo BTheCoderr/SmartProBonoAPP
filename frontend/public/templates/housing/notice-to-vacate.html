@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Notice to Vacate</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .sender-info { text-align: right; margin-bottom: 40px; }
+    .recipient-info { margin-bottom: 40px; }
+    .subject { font-weight: bold; margin-bottom: 20px; }
+    .body { margin-bottom: 40px; }
+    .closing { margin-bottom: 60px; }
+    .signature { }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .notice { font-style: italic; margin-top: 30px; font-size: 0.9em; border: 1px solid #ddd; padding: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>NOTICE TO VACATE</h1>
+    </div>
+
+    <div class="sender-info">
+      <p>
+        <span class="field">{{landlord_name}}</span><br>
+        <span class="field">{{landlord_company}}</span><br>
+        <span class="field">{{landlord_address}}</span><br>
+        <span class="field">{{landlord_city}}</span>, <span class="field">{{landlord_state}}</span> <span class="field">{{landlord_zip}}</span><br>
+        <span class="field">{{landlord_phone}}</span><br>
+        <span class="field">{{landlord_email}}</span>
+      </p>
+      <p><span class="field">{{current_date}}</span></p>
+    </div>
+
+    <div class="recipient-info">
+      <p>
+        <span class="field">{{tenant_name}}</span><br>
+        <span class="field">{{property_address}}</span><br>
+        <span class="field">{{property_unit}}</span><br>
+        <span class="field">{{property_city}}</span>, <span class="field">{{property_state}}</span> <span class="field">{{property_zip}}</span>
+      </p>
+    </div>
+
+    <div class="subject">
+      <p>RE: NOTICE TO VACATE PREMISES</p>
+    </div>
+
+    <div class="body">
+      <p>Dear <span class="field">{{tenant_name}}</span>:</p>
+
+      <p>This letter constitutes formal notice that your tenancy at <span class="field">{{property_address}}</span>, <span class="field">{{property_unit}}</span>, <span class="field">{{property_city}}</span>, <span class="field">{{property_state}}</span> <span class="field">{{property_zip}}</span> will terminate on <span class="field">{{termination_date}}</span>.</p>
+
+      {{#if is_lease_expiration}}
+      <p>This notice is being provided because your lease agreement is scheduled to expire on the above date, and the landlord has elected not to renew the lease. According to the terms of your lease agreement dated <span class="field">{{lease_date}}</span>, this notice is being provided at least <span class="field">{{notice_period}}</span> days in advance of the lease expiration, as required.</p>
+      {{/if}}
+
+      {{#if is_month_to_month}}
+      <p>This notice is being provided because the landlord is terminating your month-to-month tenancy. Under the applicable laws of <span class="field">{{property_state}}</span>, this notice is being provided at least <span class="field">{{notice_period}}</span> days in advance of the termination date, as required.</p>
+      {{/if}}
+
+      {{#if is_lease_violation}}
+      <p>This notice is being provided due to the following lease violation(s):</p>
+      <p><span class="field">{{violation_details}}</span></p>
+      
+      {{#if is_curable_violation}}
+      <p>You have <span class="field">{{cure_period}}</span> days from the date of this notice to remedy the above violation(s). If the violation(s) are not corrected within this time period, your tenancy will terminate on the date specified above, and you must vacate the premises.</p>
+      {{else}}
+      <p>This violation cannot be remedied, and you must vacate the premises by the termination date specified above.</p>
+      {{/if}}
+      {{/if}}
+
+      <p>You are required to vacate the premises and remove all personal belongings by 11:59 PM on the termination date. The property should be left in a clean and undamaged condition, reasonable wear and tear excepted.</p>
+
+      <p>Please schedule a move-out inspection by contacting <span class="field">{{contact_name}}</span> at <span class="field">{{contact_phone}}</span> or <span class="field">{{contact_email}}</span>. All keys, garage door openers, and other access devices must be returned at the time of move-out.</p>
+
+      <p>Your security deposit will be handled in accordance with <span class="field">{{property_state}}</span> law. Please provide a forwarding address where your security deposit or an itemized statement of deductions can be sent.</p>
+
+      {{#if additional_instructions}}
+      <p>Additional Instructions:</p>
+      <p><span class="field">{{additional_instructions}}</span></p>
+      {{/if}}
+
+      <p>If you have any questions regarding this notice, please contact <span class="field">{{contact_name}}</span> at <span class="field">{{contact_phone}}</span> or <span class="field">{{contact_email}}</span>.</p>
+    </div>
+
+    <div class="closing">
+      <p>Sincerely,</p>
+    </div>
+
+    <div class="signature">
+      <p><span class="field">{{landlord_name}}</span><br>
+      <span class="field">{{landlord_title}}</span></p>
+    </div>
+
+    <div class="notice">
+      <p><strong>Service of Notice:</strong></p>
+      <p>This notice was served on <span class="field">{{service_date}}</span> in the following manner:</p>
+      <p>
+        ☐ Personal delivery to the tenant<br>
+        ☐ Personal delivery to a person of suitable age and discretion at the premises<br>
+        ☐ Posted in a conspicuous place at the premises<br>
+        ☐ Sent via certified mail, return receipt requested<br>
+        ☐ Other: <span class="field">{{other_service_method}}</span>
+      </p>
+      <p>Service completed by: <span class="field">{{server_name}}</span></p>
+    </div>
+  </div>
+</body>
+</html> 

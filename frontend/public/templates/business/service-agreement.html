@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Service Agreement</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .signature-block { margin-top: 40px; display: flex; justify-content: space-between; }
+    .signature-column { width: 45%; }
+    .numbering { margin-left: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>SERVICE AGREEMENT</h1>
+    </div>
+
+    <div class="section">
+      <p>This Service Agreement (the "Agreement") is made and entered into on <span class="field">{{effective_date}}</span> (the "Effective Date"), by and between:</p>
+      
+      <p><strong>Service Provider:</strong> <span class="field">{{provider_name}}</span>, a <span class="field">{{provider_entity_type}}</span> with its principal place of business at <span class="field">{{provider_address}}</span>, <span class="field">{{provider_city}}</span>, <span class="field">{{provider_state}}</span> <span class="field">{{provider_zip}}</span> (the "Provider"), and</p>
+      
+      <p><strong>Client:</strong> <span class="field">{{client_name}}</span>, a <span class="field">{{client_entity_type}}</span> with its principal place of business at <span class="field">{{client_address}}</span>, <span class="field">{{client_city}}</span>, <span class="field">{{client_state}}</span> <span class="field">{{client_zip}}</span> (the "Client").</p>
+      
+      <p>Provider and Client may be referred to individually as a "Party" and collectively as the "Parties."</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">1. SERVICES</div>
+      <p>1.1 Provider agrees to provide to Client the following services (collectively, the "Services"):</p>
+      <p class="numbering"><span class="field">{{services_description}}</span></p>
+      
+      <p>1.2 Additional services not specified in this Agreement shall be provided only if agreed to by both Parties in writing.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. TERM</div>
+      <p>2.1 This Agreement shall commence on the Effective Date and shall continue until <span class="field">{{termination_date}}</span> or until terminated as provided in this Agreement.</p>
+      
+      <p>2.2 Either Party may terminate this Agreement for convenience upon <span class="field">{{termination_notice_period}}</span> days' written notice to the other Party.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. COMPENSATION</div>
+      <p>3.1 Client agrees to compensate Provider for the Services as follows:</p>
+      <p class="numbering"><span class="field">{{compensation_terms}}</span></p>
+      
+      <p>3.2 Provider shall invoice Client <span class="field">{{invoice_frequency}}</span>, and Client shall pay each invoice within <span class="field">{{payment_terms}}</span> days of receipt.</p>
+      
+      <p>3.3 Late payments shall accrue interest at the rate of <span class="field">{{late_payment_interest}}</span>% per month or the maximum rate permitted by law, whichever is less.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. EXPENSES</div>
+      <p>4.1 Client shall reimburse Provider for the following expenses incurred in performing the Services:</p>
+      <p class="numbering"><span class="field">{{reimbursable_expenses}}</span></p>
+      
+      <p>4.2 All expenses must be pre-approved by Client in writing and documented with receipts.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. RESPONSIBILITIES</div>
+      <p>5.1 Provider Responsibilities:</p>
+      <p class="numbering">a) Provider shall perform the Services in a professional and workmanlike manner, consistent with industry standards.</p>
+      <p class="numbering">b) Provider shall comply with all applicable laws, regulations, and Client's reasonable policies while performing the Services.</p>
+      <p class="numbering">c) Provider shall provide all necessary equipment, tools, and materials needed to perform the Services, except as otherwise specified in this Agreement.</p>
+      
+      <p>5.2 Client Responsibilities:</p>
+      <p class="numbering">a) Client shall provide Provider with timely access to facilities, equipment, and information necessary for Provider to perform the Services.</p>
+      <p class="numbering">b) Client shall designate a primary contact person to whom all Provider communications may be addressed.</p>
+      <p class="numbering">c) Client shall provide timely feedback and approvals as needed for Provider to perform the Services.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. INDEPENDENT CONTRACTOR</div>
+      <p>6.1 Provider is an independent contractor and not an employee, agent, joint venturer, or partner of Client. Provider shall be solely responsible for all taxes, withholdings, insurance, and other statutory or contractual obligations of an employer.</p>
+      
+      <p>6.2 Provider shall have no authority to bind Client to any agreements, contracts, or other obligations.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. INTELLECTUAL PROPERTY</div>
+      <p>7.1 Upon full payment for the Services, Provider assigns to Client all right, title, and interest in and to all deliverables and work product created specifically for Client under this Agreement (the "Work Product").</p>
+      
+      <p>7.2 Provider retains all rights to pre-existing materials, proprietary tools, methodologies, and know-how used to create the Work Product. Provider grants Client a non-exclusive, perpetual license to use such pre-existing materials as incorporated into the Work Product.</p>
+      
+      <p>7.3 Client shall retain ownership of all materials, data, and intellectual property provided to Provider for use in performing the Services.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. CONFIDENTIALITY</div>
+      <p>8.1 Each Party may disclose certain confidential and proprietary information (the "Confidential Information") to the other Party in the course of performing this Agreement.</p>
+      
+      <p>8.2 Each Party agrees to keep confidential all Confidential Information disclosed by the other Party and to use such Confidential Information only for the purposes of performing its obligations under this Agreement.</p>
+      
+      <p>8.3 Confidential Information shall not include information that: (a) is or becomes publicly available through no fault of the receiving Party; (b) was rightfully known to the receiving Party prior to disclosure; (c) is rightfully obtained by the receiving Party from a third party without restriction on disclosure; or (d) is independently developed by the receiving Party without use of the disclosing Party's Confidential Information.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">9. WARRANTIES</div>
+      <p>9.1 Provider warrants that the Services will be performed in a professional manner consistent with industry standards.</p>
+      
+      <p>9.2 EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, PROVIDER MAKES NO OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">10. LIMITATION OF LIABILITY</div>
+      <p>10.1 IN NO EVENT SHALL EITHER PARTY BE LIABLE TO THE OTHER PARTY FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATED TO THIS AGREEMENT.</p>
+      
+      <p>10.2 THE TOTAL LIABILITY OF PROVIDER TO CLIENT FOR ANY AND ALL CLAIMS ARISING OUT OF OR RELATED TO THIS AGREEMENT SHALL NOT EXCEED THE TOTAL AMOUNT PAID BY CLIENT TO PROVIDER UNDER THIS AGREEMENT.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">11. INDEMNIFICATION</div>
+      <p>11.1 Each Party shall indemnify, defend, and hold harmless the other Party from and against any and all claims, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or related to the indemnifying Party's breach of this Agreement or negligent acts or omissions.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">12. GENERAL PROVISIONS</div>
+      <p>12.1 <strong>Entire Agreement.</strong> This Agreement constitutes the entire understanding between the Parties concerning the subject matter hereof and supersedes all prior agreements, understandings, or negotiations.</p>
+      
+      <p>12.2 <strong>Amendments.</strong> This Agreement may only be modified by a written amendment signed by both Parties.</p>
+      
+      <p>12.3 <strong>Assignment.</strong> Neither Party may assign this Agreement without the prior written consent of the other Party.</p>
+      
+      <p>12.4 <strong>Governing Law.</strong> This Agreement shall be governed by the laws of <span class="field">{{governing_law_state}}</span> without regard to its conflict of laws principles.</p>
+      
+      <p>12.5 <strong>Dispute Resolution.</strong> Any dispute arising out of or related to this Agreement shall be resolved through <span class="field">{{dispute_resolution_method}}</span>.</p>
+      
+      <p>12.6 <strong>Severability.</strong> If any provision of this Agreement is found to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.</p>
+      
+      <p>12.7 <strong>Notices.</strong> All notices under this Agreement shall be in writing and sent to the addresses listed above or to such other address as either Party may specify in writing.</p>
+      
+      <p>12.8 <strong>Waiver.</strong> The failure of either Party to enforce any right or provision of this Agreement shall not be construed as a waiver of such right or provision.</p>
+      
+      <p>12.9 <strong>Force Majeure.</strong> Neither Party shall be liable for delays or failures in performance resulting from causes beyond its reasonable control.</p>
+    </div>
+
+    <div class="signature-block">
+      <div class="signature-column">
+        <p><strong>SERVICE PROVIDER:</strong></p>
+        <p><span class="field">{{provider_name}}</span></p>
+        <p>Signature: _______________________</p>
+        <p>Name: <span class="field">{{provider_signatory_name}}</span></p>
+        <p>Title: <span class="field">{{provider_signatory_title}}</span></p>
+        <p>Date: _______________________</p>
+      </div>
+      
+      <div class="signature-column">
+        <p><strong>CLIENT:</strong></p>
+        <p><span class="field">{{client_name}}</span></p>
+        <p>Signature: _______________________</p>
+        <p>Name: <span class="field">{{client_signatory_name}}</span></p>
+        <p>Title: <span class="field">{{client_signatory_title}}</span></p>
+        <p>Date: _______________________</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html> 

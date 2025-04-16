@@ -1,0 +1,77 @@
+{
+    "id": "last-will-testament",
+    "name": "Last Will and Testament",
+    "category": "Estate Planning",
+    "description": "A legal document that expresses a person's wishes for the distribution of their assets and the care of any minor children after death",
+    "requires_signature": true,
+    "required_fields": [
+        "testator_name",
+        "testator_address",
+        "executor_name",
+        "executor_address",
+        "alternate_executor_name",
+        "revocation_clause",
+        "date"
+    ],
+    "optional_fields": [
+        "marital_status",
+        "children_names",
+        "specific_bequests",
+        "residuary_beneficiaries",
+        "guardian_name",
+        "burial_wishes",
+        "digital_assets",
+        "pets_arrangements",
+        "trust_provisions"
+    ],
+    "sections": [
+        {
+            "title": "LAST WILL AND TESTAMENT",
+            "content": "I, {testator_name}, residing at {testator_address}, being of sound mind and memory, do hereby make, publish, and declare this to be my Last Will and Testament, hereby revoking all wills and codicils previously made by me."
+        },
+        {
+            "title": "1. REVOCATION",
+            "content": "{revocation_clause}"
+        },
+        {
+            "title": "2. PERSONAL INFORMATION",
+            "content": "I declare that I am {marital_status}. I have the following children: {children_names}."
+        },
+        {
+            "title": "3. EXECUTOR APPOINTMENT",
+            "content": "I hereby appoint {executor_name}, residing at {executor_address}, as the Executor of this Will. If {executor_name} is unable or unwilling to serve, I appoint {alternate_executor_name} as the successor Executor."
+        },
+        {
+            "title": "4. GUARDIAN APPOINTMENT",
+            "content": "If at the time of my death I have any minor children, I appoint {guardian_name} as guardian of the person and property of such minor children."
+        },
+        {
+            "title": "5. SPECIFIC BEQUESTS",
+            "content": "I make the following specific bequests: {specific_bequests}"
+        },
+        {
+            "title": "6. RESIDUARY ESTATE",
+            "content": "I give, devise, and bequeath all the rest, residue, and remainder of my estate to: {residuary_beneficiaries}"
+        },
+        {
+            "title": "7. DIGITAL ASSETS",
+            "content": "With respect to my digital assets, I direct the following: {digital_assets}"
+        },
+        {
+            "title": "8. PETS",
+            "content": "With respect to any pets I may own at the time of my death, I direct the following: {pets_arrangements}"
+        },
+        {
+            "title": "9. TRUST PROVISIONS",
+            "content": "{trust_provisions}"
+        },
+        {
+            "title": "10. BURIAL WISHES",
+            "content": "My wishes regarding funeral and burial arrangements are as follows: {burial_wishes}"
+        },
+        {
+            "title": "11. ATTESTATION",
+            "content": "IN WITNESS WHEREOF, I have hereunto set my hand to this my Last Will and Testament on this {date}."
+        }
+    ]
+} 

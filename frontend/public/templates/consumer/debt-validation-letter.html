@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Debt Validation Letter</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .sender-info { text-align: right; margin-bottom: 40px; }
+    .recipient-info { margin-bottom: 40px; }
+    .subject { font-weight: bold; margin-bottom: 20px; }
+    .body { margin-bottom: 40px; }
+    .closing { margin-bottom: 60px; }
+    .signature { }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .notice { font-style: italic; margin-top: 30px; font-size: 0.9em; border: 1px solid #ddd; padding: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sender-info">
+      <p>
+        <span class="field">{{full_name}}</span><br>
+        <span class="field">{{street_address}}</span><br>
+        <span class="field">{{city}}</span>, <span class="field">{{state}}</span> <span class="field">{{zip_code}}</span>
+      </p>
+      <p><span class="field">{{current_date}}</span></p>
+    </div>
+
+    <div class="recipient-info">
+      <p>
+        <span class="field">{{debt_collector_name}}</span><br>
+        <span class="field">{{debt_collector_address}}</span><br>
+        <span class="field">{{debt_collector_city}}</span>, <span class="field">{{debt_collector_state}}</span> <span class="field">{{debt_collector_zip}}</span>
+      </p>
+    </div>
+
+    <div class="subject">
+      <p>RE: Account Number: <span class="field">{{account_number}}</span><br>
+      Original Creditor: <span class="field">{{original_creditor}}</span><br>
+      Alleged Amount: <span class="field">{{alleged_amount}}</span></p>
+    </div>
+
+    <div class="body">
+      <p>To Whom It May Concern:</p>
+
+      <p>I am writing in response to your {{#if is_first_contact}}initial communication, dated <span class="field">{{communication_date}}</span>,{{else}}recent attempts to collect a debt{{/if}} regarding the above-referenced account. Please be advised that I am disputing this debt and exercising my right to request validation pursuant to the Fair Debt Collection Practices Act (FDCPA), 15 U.S.C. § 1692g.</p>
+
+      <p>Under the FDCPA, you are required to cease all collection activities until you provide me with verification of this debt. Accordingly, I request that you provide the following information:</p>
+
+      <ol>
+        <li>Complete documentation showing that you are the legal owner of this debt and have the legal authority to collect it;</li>
+        <li>A copy of the original agreement that created this debt, including my signature;</li>
+        <li>A complete accounting of the alleged debt, including:
+          <ul>
+            <li>The original amount of the debt;</li>
+            <li>The date the debt was incurred;</li>
+            <li>All charges, interest, and fees added to the debt;</li>
+            <li>All payments made on the debt;</li>
+            <li>An explanation of how the current amount was calculated;</li>
+          </ul>
+        </li>
+        <li>Documentation showing the chain of ownership if this debt has been sold or transferred from the original creditor;</li>
+        <li>Verification that this debt is not outside the statute of limitations for debt collection in my state;</li>
+        <li>Documentation showing that you are licensed to collect debts in my state.</li>
+      </ol>
+
+      {{#if has_specific_disputes}}
+      <p>In addition to the above, I specifically dispute this debt for the following reasons:</p>
+      <p><span class="field">{{specific_disputes}}</span></p>
+      {{/if}}
+
+      <p>Please note that this is not a refusal to pay, but a request for validation of this debt. I have the right to dispute this debt and request validation during the 30-day period following my receipt of your initial communication. Until you provide the requested validation, you should treat this debt as disputed.</p>
+
+      <p>Be advised that I am familiar with my rights under the FDCPA and the Fair Credit Reporting Act (FCRA). I know that:</p>
+      <ul>
+        <li>You must cease collection activities until you provide verification of the debt;</li>
+        <li>You must not report this debt to the credit bureaus while it is in dispute, or if you do, you must note that it is disputed;</li>
+        <li>You must not contact me at inconvenient times or places, such as before 8 a.m. or after 9 p.m.;</li>
+        <li>If I request in writing that you cease communication, you must stop contacting me except to inform me of specific actions.</li>
+      </ul>
+
+      {{#if cease_communication}}
+      <p>I hereby request that you cease all further communication with me except to comply with the verification requirement above or to inform me of your intent to take a specific action permitted by law.</p>
+      {{/if}}
+
+      <p>Please provide the requested validation information by mail to the address above. {{#if specify_electronic_communication}}Alternatively, you may provide this information electronically to <span class="field">{{email_address}}</span>.{{/if}}</p>
+
+      <p>Any attempt to collect this debt or report it to a credit bureau without validating it violates the FDCPA and may entitle me to seek damages.</p>
+    </div>
+
+    <div class="closing">
+      <p>Sincerely,</p>
+    </div>
+
+    <div class="signature">
+      <p><span class="field">{{full_name}}</span></p>
+    </div>
+
+    <div class="notice">
+      <p><strong>NOTICE:</strong> This letter was sent pursuant to the Fair Debt Collection Practices Act, 15 U.S.C. § 1692g. All information provided in this letter is accurate to the best of my knowledge. This is a formal request for validation of debt. The consumer reserves all rights under federal and state law, including but not limited to the FDCPA and FCRA.</p>
+      <p>Sent via: {{#if sent_certified}}Certified Mail, Return Receipt Requested #<span class="field">{{certified_mail_number}}</span>{{else}}<span class="field">{{delivery_method}}</span>{{/if}}</p>
+    </div>
+  </div>
+</body>
+</html> 

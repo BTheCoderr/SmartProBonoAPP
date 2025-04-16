@@ -1,0 +1,81 @@
+{
+    "id": "non_disclosure",
+    "name": "Non-Disclosure Agreement",
+    "category": "Business",
+    "description": "Confidentiality agreement to protect sensitive business or personal information",
+    "requires_signature": true,
+    "required_fields": [
+        "disclosing_party_name",
+        "disclosing_party_address",
+        "receiving_party_name",
+        "receiving_party_address",
+        "effective_date",
+        "purpose_of_disclosure",
+        "confidential_information_definition",
+        "agreement_duration"
+    ],
+    "optional_fields": [
+        "jurisdiction",
+        "exceptions_to_confidentiality",
+        "return_of_materials",
+        "no_license_granted",
+        "injunctive_relief",
+        "governing_law",
+        "dispute_resolution",
+        "survival_clause"
+    ],
+    "sections": [
+        {
+            "title": "NON-DISCLOSURE AGREEMENT",
+            "content": "This Non-Disclosure Agreement (the \"Agreement\") is entered into as of {effective_date} (the \"Effective Date\"), by and between:\n\n{disclosing_party_name}, located at {disclosing_party_address} (the \"Disclosing Party\"),\n\nand\n\n{receiving_party_name}, located at {receiving_party_address} (the \"Receiving Party\")."
+        },
+        {
+            "title": "1. PURPOSE",
+            "content": "The Disclosing Party wishes to disclose certain confidential and proprietary information to the Receiving Party for the purpose of: {purpose_of_disclosure} (the \"Purpose\")."
+        },
+        {
+            "title": "2. DEFINITION OF CONFIDENTIAL INFORMATION",
+            "content": "For purposes of this Agreement, \"Confidential Information\" means any information disclosed by the Disclosing Party to the Receiving Party, either directly or indirectly, in writing, orally or by inspection of tangible objects, that is designated as \"Confidential\" or would reasonably be understood to be confidential given the nature of the information and the circumstances of disclosure. Specifically, Confidential Information includes, but is not limited to:\n\n{confidential_information_definition}"
+        },
+        {
+            "title": "3. EXCEPTIONS TO CONFIDENTIALITY",
+            "content": "The Receiving Party's obligations under this Agreement do not extend to information that is:\n\n{exceptions_to_confidentiality}"
+        },
+        {
+            "title": "4. OBLIGATIONS OF RECEIVING PARTY",
+            "content": "The Receiving Party shall:\n\na) Use the Confidential Information only for the Purpose described above;\n\nb) Hold and maintain the Confidential Information in strict confidence;\n\nc) Not disclose Confidential Information to any third party without prior written consent of the Disclosing Party;\n\nd) Limit access to Confidential Information to employees, agents, and representatives who have a need to know in connection with the Purpose and who are bound by confidentiality obligations at least as restrictive as those in this Agreement;\n\ne) Take reasonable precautions to prevent unauthorized disclosure or use of the Confidential Information, using at least the same degree of care that the Receiving Party uses to protect its own confidential information, but in no case less than reasonable care."
+        },
+        {
+            "title": "5. TERM AND TERMINATION",
+            "content": "This Agreement shall remain in effect for {agreement_duration} from the Effective Date. The Receiving Party's obligations with respect to Confidential Information shall survive termination of this Agreement."
+        },
+        {
+            "title": "6. RETURN OF MATERIALS",
+            "content": "Upon the termination of this Agreement, or upon the Disclosing Party's earlier request, the Receiving Party shall:\n\n{return_of_materials}"
+        },
+        {
+            "title": "7. NO LICENSE OR RIGHTS",
+            "content": "{no_license_granted}"
+        },
+        {
+            "title": "8. REMEDIES",
+            "content": "The Receiving Party acknowledges that any breach of this Agreement may cause irreparable harm to the Disclosing Party for which monetary damages may be inadequate. Accordingly:\n\n{injunctive_relief}"
+        },
+        {
+            "title": "9. GOVERNING LAW",
+            "content": "This Agreement shall be governed by and construed in accordance with the laws of {jurisdiction}, without regard to its conflict of law principles."
+        },
+        {
+            "title": "10. DISPUTE RESOLUTION",
+            "content": "{dispute_resolution}"
+        },
+        {
+            "title": "11. GENERAL PROVISIONS",
+            "content": "a) This Agreement constitutes the entire agreement between the parties with respect to the subject matter hereof.\n\nb) This Agreement may not be amended except by a written agreement signed by both parties.\n\nc) The invalidity or unenforceability of any provision of this Agreement shall not affect the validity or enforceability of any other provision.\n\nd) {survival_clause}"
+        },
+        {
+            "title": "12. SIGNATURES",
+            "content": "The parties have executed this Non-Disclosure Agreement as of the Effective Date.\n\nDISCLOSING PARTY:\n{disclosing_party_name}\n\nBy: ________________________\nName: ________________________\nTitle: ________________________\nDate: {current_date}\n\nRECEIVING PARTY:\n{receiving_party_name}\n\nBy: ________________________\nName: ________________________\nTitle: ________________________\nDate: {current_date}"
+        }
+    ]
+} 

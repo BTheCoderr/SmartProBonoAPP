@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test</title>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .message-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .received {
+            background-color: #e2f3f5;
+        }
+        .sent {
+            background-color: #f5e2e2;
+            text-align: right;
+        }
+        .system {
+            background-color: #f5f5f5;
+            font-style: italic;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            flex-grow: 1;
+            padding: 8px;
+        }
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .debug {
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 12px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WebSocket Test</h1>
+        
+        <div id="status" class="status disconnected">Disconnected</div>
+        
+        <div class="controls">
+            <input type="text" id="serverUrl" value="http://localhost:5002" placeholder="Server URL">
+            <button id="connectBtn">Connect</button>
+            <button id="disconnectBtn" disabled>Disconnect</button>
+        </div>
+        
+        <h3>Messages</h3>
+        <div id="messages" class="message-container">
+            <div class="message system">No messages yet...</div>
+        </div>
+        
+        <div class="controls">
+            <input type="text" id="messageInput" placeholder="Type a message..." disabled>
+            <button id="sendBtn" disabled>Send</button>
+            <button id="sendChatBtn" disabled>Send as Chat</button>
+        </div>
+
+        <div class="debug">
+            <h4>Debug Info:</h4>
+            <div id="debugInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const statusEl = document.getElementById('status');
+        const messagesEl = document.getElementById('messages');
+        const serverUrlInput = document.getElementById('serverUrl');
+        const messageInput = document.getElementById('messageInput');
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const sendBtn = document.getElementById('sendBtn');
+        const sendChatBtn = document.getElementById('sendChatBtn');
+        const debugInfo = document.getElementById('debugInfo');
+        
+        // Socket.IO instance
+        let socket = null;
+        
+        // Add a message to the messages container
+        function addMessage(type, content) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            
+            let prefix = '';
+            if (type === 'system') prefix = '🔄 ';
+            else if (type === 'sent') prefix = '▶️ ';
+            else if (type === 'received') prefix = '◀️ ';
+            
+            messageEl.textContent = prefix + content;
+            messagesEl.appendChild(messageEl);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+        
+        // Update connection status
+        function updateStatus(connected) {
+            if (connected) {
+                statusEl.className = 'status connected';
+                statusEl.textContent = 'Connected';
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+                sendChatBtn.disabled = false;
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+            } else {
+                statusEl.className = 'status disconnected';
+                statusEl.textContent = 'Disconnected';
+                messageInput.disabled = true;
+                sendBtn.disabled = true;
+                sendChatBtn.disabled = true;
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+            }
+        }
+        
+        // Log debug information
+        function logDebug(message) {
+            const time = new Date().toLocaleTimeString();
+            debugInfo.innerHTML += `<div>[${time}] ${message}</div>`;
+            debugInfo.scrollTop = debugInfo.scrollHeight;
+        }
+        
+        // Initialize Socket.IO connection
+        function initSocket() {
+            const serverUrl = serverUrlInput.value.trim();
+            
+            if (!serverUrl) {
+                alert('Please enter a server URL');
+                return;
+            }
+            
+            try {
+                logDebug(`Connecting to ${serverUrl}...`);
+                
+                // Create Socket.IO instance with options
+                socket = io(serverUrl, {
+                    reconnection: true,
+                    reconnectionAttempts: 5,
+                    reconnectionDelay: 1000,
+                    timeout: 20000,
+                    transports: ['websocket', 'polling']
+                });
+                
+                // Set up event handlers
+                socket.on('connect', () => {
+                    logDebug(`Connected with ID: ${socket.id}`);
+                    updateStatus(true);
+                    addMessage('system', `Connected to ${serverUrl}`);
+                });
+                
+                socket.on('disconnect', (reason) => {
+                    logDebug(`Disconnected. Reason: ${reason}`);
+                    updateStatus(false);
+                    addMessage('system', `Disconnected: ${reason}`);
+                });
+                
+                socket.on('connect_error', (error) => {
+                    logDebug(`Connection error: ${error.message}`);
+                    addMessage('system', `Connection error: ${error.message}`);
+                });
+                
+                socket.on('connection_response', (data) => {
+                    logDebug(`Connection response: ${JSON.stringify(data)}`);
+                    addMessage('received', `Connection response: ${JSON.stringify(data)}`);
+                });
+                
+                socket.on('message_response', (data) => {
+                    logDebug(`Message response: ${JSON.stringify(data)}`);
+                    addMessage('received', `Message response: ${JSON.stringify(data)}`);
+                });
+                
+                socket.on('chat_update', (data) => {
+                    logDebug(`Chat update: ${JSON.stringify(data)}`);
+                    addMessage('received', `Chat update: ${JSON.stringify(data)}`);
+                });
+                
+            } catch (error) {
+                logDebug(`Error initializing Socket.IO: ${error.message}`);
+                alert(`Error initializing Socket.IO: ${error.message}`);
+            }
+        }
+        
+        // Close Socket.IO connection
+        function closeSocket() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+                updateStatus(false);
+                addMessage('system', 'Connection closed');
+            }
+        }
+        
+        // Send a regular message
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            if (socket && socket.connected) {
+                logDebug(`Sending message: ${message}`);
+                socket.emit('message', message);
+                addMessage('sent', message);
+                messageInput.value = '';
+            } else {
+                alert('Not connected to server');
+            }
+        }
+        
+        // Send a chat message
+        function sendChatMessage() {
+            const message = messageInput.value.trim();
+            
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            if (socket && socket.connected) {
+                const chatData = {
+                    message: message,
+                    timestamp: new Date().toISOString(),
+                    user: 'WebSocketTest'
+                };
+                
+                logDebug(`Sending chat message: ${JSON.stringify(chatData)}`);
+                socket.emit('chat_message', chatData);
+                addMessage('sent', `Chat: ${message}`);
+                messageInput.value = '';
+            } else {
+                alert('Not connected to server');
+            }
+        }
+        
+        // Event listeners
+        connectBtn.addEventListener('click', initSocket);
+        disconnectBtn.addEventListener('click', closeSocket);
+        sendBtn.addEventListener('click', sendMessage);
+        sendChatBtn.addEventListener('click', sendChatMessage);
+        
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Initial status
+        updateStatus(false);
+    </script>
+</body>
+</html> 

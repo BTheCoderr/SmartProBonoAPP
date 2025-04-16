@@ -1,0 +1,77 @@
+{
+    "id": "ada_request",
+    "name": "ADA Accommodation Request",
+    "category": "Accessibility & Rights",
+    "description": "Formal request for reasonable accommodations under the Americans with Disabilities Act",
+    "requires_signature": true,
+    "required_fields": [
+        "requester_name",
+        "requester_address",
+        "requester_phone",
+        "requester_email",
+        "recipient_name",
+        "recipient_organization",
+        "recipient_address",
+        "disability_description",
+        "accommodation_requested",
+        "response_deadline"
+    ],
+    "optional_fields": [
+        "healthcare_provider",
+        "previous_accommodations",
+        "alternative_accommodations",
+        "supporting_documents",
+        "impact_explanation",
+        "ada_references"
+    ],
+    "sections": [
+        {
+            "title": "ADA ACCOMMODATION REQUEST",
+            "content": "Date: {current_date}\n\n{recipient_name}\n{recipient_organization}\n{recipient_address}\n\nRE: Request for Reasonable Accommodation under the Americans with Disabilities Act"
+        },
+        {
+            "title": "1. REQUESTER INFORMATION",
+            "content": "From: {requester_name}\nAddress: {requester_address}\nPhone: {requester_phone}\nEmail: {requester_email}"
+        },
+        {
+            "title": "2. DISABILITY INFORMATION",
+            "content": "I am a person with a disability as defined by the Americans with Disabilities Act. The nature of my disability is as follows:\n\n{disability_description}"
+        },
+        {
+            "title": "3. ACCOMMODATION REQUEST",
+            "content": "Due to my disability, I am requesting the following reasonable accommodation(s):\n\n{accommodation_requested}"
+        },
+        {
+            "title": "4. NECESSITY AND EFFECTIVENESS",
+            "content": "This accommodation is necessary for me to {impact_explanation}"
+        },
+        {
+            "title": "5. HEALTHCARE PROVIDER INFORMATION",
+            "content": "My healthcare provider who can verify my disability and the need for accommodation is:\n\n{healthcare_provider}"
+        },
+        {
+            "title": "6. PREVIOUS ACCOMMODATIONS",
+            "content": "Previous accommodations that have been effective include:\n\n{previous_accommodations}"
+        },
+        {
+            "title": "7. ALTERNATIVE ACCOMMODATIONS",
+            "content": "If the requested accommodation is not possible, I would also consider the following alternatives:\n\n{alternative_accommodations}"
+        },
+        {
+            "title": "8. RELEVANT ADA PROVISIONS",
+            "content": "This request is made pursuant to the Americans with Disabilities Act and related regulations, including:\n\n{ada_references}"
+        },
+        {
+            "title": "9. SUPPORTING DOCUMENTATION",
+            "content": "I have attached the following documentation to support my request:\n\n{supporting_documents}"
+        },
+        {
+            "title": "10. RESPONSE REQUEST",
+            "content": "I request a written response to this accommodation request by {response_deadline}. If you need additional information or wish to discuss alternative accommodations, please contact me at the phone number or email address provided above."
+        },
+        {
+            "title": "11. CLOSING",
+            "content": "Thank you for your attention to this matter. I look forward to your response and working together to implement a reasonable accommodation.\n\nSincerely,\n\n{requester_name}"
+        }
+    ]
+} 

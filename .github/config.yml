@@ -1,0 +1,79 @@
+# Configuration for GitHub apps
+
+# Configuration for welcome - https://github.com/behaviorbot/welcome
+# Comment to be posted to on first-time pull requests
+firstPRWelcomeComment: >
+  Thank you for contributing to SmartProBono! 🎉 We're excited to review your first pull request. 
+  Please make sure you've read our [Contributing Guidelines](../CONTRIBUTING.md) and [Code of Conduct](../CODE_OF_CONDUCT.md).
+  
+  Our team will review your PR soon. In the meantime, feel free to join our [Discord community](https://discord.gg/smartprobono) to connect with other contributors!
+
+# Comment to be posted to on first time issues
+firstIssueWelcomeComment: >
+  Thank you for opening your first issue with SmartProBono! 🙌 
+  
+  Our team will review your issue soon. To help us address it efficiently, please make sure you've included all relevant details.
+  
+  If you're interested in contributing to the project, check out our [good first issues](https://github.com/SmartProBono/smartProBonoAPP/labels/good%20first%20issue) or join our [Discord community](https://discord.gg/smartprobono).
+
+# Comment to be posted to on PRs from first time contributors
+firstContributionWelcomeComment: >
+  Congratulations on your first contribution to SmartProBono! 🚀 
+  
+  Your work helps make legal assistance more accessible to those who need it most. We truly appreciate your effort.
+  
+  We'd love to hear about your experience contributing to the project. Join our [Discord community](https://discord.gg/smartprobono) to share your thoughts!
+
+# Configuration for sentiment-bot - https://github.com/behaviorbot/sentiment-bot
+# *Required* toxicity threshold between 0 and .99 with the higher numbers being the most toxic
+# Anything higher than this threshold will be marked as toxic and commented on
+sentimentBotToxicityThreshold: .7
+
+# *Required* Comment to reply with
+sentimentBotReplyComment: >
+  Please be mindful of your language and tone. We strive to maintain a respectful and inclusive community.
+  
+  If you have concerns or frustrations, we're here to help, but we ask that you express them constructively.
+  Please review our [Code of Conduct](../CODE_OF_CONDUCT.md) for guidance on community interactions.
+
+# Configuration for stale - https://github.com/probot/stale
+# Number of days of inactivity before an issue becomes stale
+daysUntilStale: 60
+# Number of days of inactivity before a stale issue is closed
+daysUntilClose: 7
+# Issues with these labels will never be considered stale
+exemptLabels:
+  - pinned
+  - security
+  - bug
+  - enhancement
+  - good first issue
+  - help wanted
+  - legal-review
+# Label to use when marking an issue as stale
+staleLabel: stale
+# Comment to post when marking an issue as stale
+markComment: >
+  This issue has been automatically marked as stale because it has not had
+  recent activity. It will be closed in 7 days if no further activity occurs.
+  Thank you for your contributions to SmartProBono!
+  
+  If this issue is still relevant, please leave a comment to keep it open.
+# Comment to post when closing a stale issue
+closeComment: >
+  This issue has been automatically closed due to inactivity.
+  Feel free to reopen it if you believe it's still relevant.
+
+# Configuration for todo - https://github.com/jasonetco/todo
+todo:
+  keyword: "@todo"
+  
+# Configuration for request-info - https://github.com/behaviorbot/request-info
+requestInfoReplyComment: >
+  We would appreciate it if you could provide more information to help us address this issue/PR effectively.
+  For issues, please include steps to reproduce, expected vs. actual behavior, and any relevant logs or screenshots.
+  For PRs, please describe what changes you've made and why.
+  
+  Thank you for contributing to SmartProBono!
+  
+requestInfoLabelToAdd: needs-more-info 

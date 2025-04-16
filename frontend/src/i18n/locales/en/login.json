@@ -1,0 +1,11 @@
+{
+  "title": "Login",
+  "email": "Email",
+  "password": "Password",
+  "login": "Login",
+  "forgotPassword": "Forgot Password?",
+  "noAccount": "Don't have an account?",
+  "accessibility": {
+    "options": "Accessibility options"
+  }
+} 

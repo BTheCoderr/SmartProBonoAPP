@@ -1,0 +1,73 @@
+{
+    "id": "child_support",
+    "name": "Child Support Calculation",
+    "category": "Family",
+    "description": "Document calculating child support payments based on parental income and jurisdiction guidelines",
+    "requires_signature": true,
+    "required_fields": [
+        "custodial_parent_name",
+        "non_custodial_parent_name",
+        "children_names_ages",
+        "jurisdiction",
+        "calculation_date",
+        "custodial_parent_income",
+        "non_custodial_parent_income",
+        "payment_amount",
+        "payment_frequency",
+        "effective_date",
+        "payment_method"
+    ],
+    "optional_fields": [
+        "healthcare_costs",
+        "childcare_costs",
+        "education_expenses",
+        "extraordinary_expenses",
+        "parenting_time_adjustment",
+        "deductions_applied",
+        "additional_income_sources",
+        "review_date",
+        "modification_terms"
+    ],
+    "sections": [
+        {
+            "title": "CHILD SUPPORT CALCULATION WORKSHEET",
+            "content": "Calculation Date: {calculation_date}\n\nJurisdiction: {jurisdiction}\n\nChildren:\n{children_names_ages}\n\nParties:\nCustodial Parent: {custodial_parent_name}\nNon-Custodial Parent: {non_custodial_parent_name}"
+        },
+        {
+            "title": "1. INCOME INFORMATION",
+            "content": "A. Custodial Parent's Monthly Gross Income: ${custodial_parent_income}\nB. Non-Custodial Parent's Monthly Gross Income: ${non_custodial_parent_income}\nC. Additional Income Sources:\n{additional_income_sources}"
+        },
+        {
+            "title": "2. ALLOWABLE DEDUCTIONS",
+            "content": "The following deductions have been applied according to the applicable child support guidelines:\n\n{deductions_applied}"
+        },
+        {
+            "title": "3. BASIC CHILD SUPPORT OBLIGATION",
+            "content": "Based on the combined adjusted gross income of both parents and the number of children, the basic child support obligation is calculated as follows:\n\nA. Combined Adjusted Monthly Income: ${custodial_parent_income + non_custodial_parent_income}\nB. Percentage Share of Income:\n   - Custodial Parent: %\n   - Non-Custodial Parent: %\nC. Basic Child Support Amount: $"
+        },
+        {
+            "title": "4. ADJUSTMENTS TO BASIC SUPPORT",
+            "content": "A. Healthcare Costs: ${healthcare_costs}\nB. Childcare Costs: ${childcare_costs}\nC. Education Expenses: ${education_expenses}\nD. Extraordinary Expenses: ${extraordinary_expenses}\nE. Parenting Time Adjustment: ${parenting_time_adjustment}"
+        },
+        {
+            "title": "5. FINAL CHILD SUPPORT CALCULATION",
+            "content": "Based on the above calculations and in accordance with {jurisdiction} child support guidelines, the non-custodial parent shall pay child support in the amount of ${payment_amount} {payment_frequency}."
+        },
+        {
+            "title": "6. PAYMENT TERMS",
+            "content": "A. Effective Date: {effective_date}\nB. Payment Frequency: {payment_frequency}\nC. Payment Method: {payment_method}\nD. Payment Due Date: Child support payments are due on the ___ day of each {payment_frequency}."
+        },
+        {
+            "title": "7. HEALTH INSURANCE AND MEDICAL EXPENSES",
+            "content": "The parents agree to the following regarding health insurance coverage and payment of medical expenses for the children:\n\n{healthcare_costs}"
+        },
+        {
+            "title": "8. REVIEW AND MODIFICATION",
+            "content": "This child support calculation shall be reviewed on {review_date} or earlier if there is a substantial change in circumstances including, but not limited to, changes in income, employment, number of children entitled to support, or as otherwise provided by law.\n\n{modification_terms}"
+        },
+        {
+            "title": "9. CERTIFICATION",
+            "content": "I/We certify that the information provided in this child support calculation is true and accurate to the best of my/our knowledge and belief. I/We understand that providing false information may result in penalties as provided by law.\n\nDate: {current_date}\n\n________________________\n{custodial_parent_name}, Custodial Parent\n\n________________________\n{non_custodial_parent_name}, Non-Custodial Parent"
+        }
+    ]
+} 

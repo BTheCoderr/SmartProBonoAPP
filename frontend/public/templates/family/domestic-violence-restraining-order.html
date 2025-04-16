@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Petition for Domestic Violence Restraining Order</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .court-info { text-align: center; margin-bottom: 30px; border: 1px solid #ccc; padding: 15px; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+    .signature-block { margin-top: 40px; }
+    .checkbox-option { margin: 5px 0; }
+    .note { font-style: italic; font-size: 0.9em; margin-top: 5px; }
+    .warning { background-color: #ffe6e6; padding: 10px; border: 1px solid #ffcccc; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>PETITION FOR DOMESTIC VIOLENCE RESTRAINING ORDER</h1>
+      <p><em>This is not an official court form. Consult with an attorney or legal aid organization to ensure this petition meets your jurisdiction's requirements.</em></p>
+    </div>
+
+    <div class="court-info">
+      <p>IN THE <span class="field">{{court_name}}</span> COURT FOR <span class="field">{{county}}</span> COUNTY, <span class="field">{{state}}</span></p>
+      <p>
+        <span class="field">{{petitioner_name}}</span>,<br>
+        Petitioner,<br><br>
+        vs.<br><br>
+        <span class="field">{{respondent_name}}</span>,<br>
+        Respondent.
+      </p>
+      <p>Case No.: <span class="field">{{case_number}}</span></p>
+    </div>
+
+    <div class="warning">
+      <p><strong>IMPORTANT:</strong> If you are in immediate danger, call 911. This form is not a substitute for emergency services.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">1. PETITIONER INFORMATION</div>
+      <p>
+        Full Name: <span class="field">{{petitioner_name}}</span><br>
+        Date of Birth: <span class="field">{{petitioner_dob}}</span><br>
+        Gender: <span class="field">{{petitioner_gender}}</span><br>
+        Address: <span class="field">{{petitioner_address}}</span> 
+        <span class="note">(If you want your address to remain confidential, do not provide it here. Instead, provide an alternative address where you can receive court papers.)</span><br>
+        Phone Number: <span class="field">{{petitioner_phone}}</span> 
+        <span class="note">(If you want your phone number to remain confidential, do not provide it here.)</span><br>
+        Email: <span class="field">{{petitioner_email}}</span> 
+        <span class="note">(If you want your email to remain confidential, do not provide it here.)</span>
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. RESPONDENT INFORMATION</div>
+      <p>
+        Full Name: <span class="field">{{respondent_name}}</span><br>
+        Date of Birth: <span class="field">{{respondent_dob}}</span><br>
+        Gender: <span class="field">{{respondent_gender}}</span><br>
+        Address: <span class="field">{{respondent_address}}</span><br>
+        Phone Number: <span class="field">{{respondent_phone}}</span><br>
+        Email: <span class="field">{{respondent_email}}</span><br>
+        Race/Height/Weight: <span class="field">{{respondent_description}}</span><br>
+        Employer: <span class="field">{{respondent_employer}}</span><br>
+        Work Address: <span class="field">{{respondent_work_address}}</span><br>
+        Work Schedule: <span class="field">{{respondent_work_schedule}}</span>
+      </p>
+      {{#if has_photo}}
+      <p>A photograph of the respondent is attached to this petition.</p>
+      {{/if}}
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. RELATIONSHIP TO RESPONDENT</div>
+      <p>The respondent is my:</p>
+      <div class="checkbox-option">☐ Current spouse</div>
+      <div class="checkbox-option">☐ Former spouse</div>
+      <div class="checkbox-option">☐ Current domestic partner/cohabitant</div>
+      <div class="checkbox-option">☐ Former domestic partner/cohabitant</div>
+      <div class="checkbox-option">☐ Person with whom I have a child in common</div>
+      <div class="checkbox-option">☐ Person related to me by blood, marriage, or adoption (relationship: <span class="field">{{family_relationship}}</span>)</div>
+      <div class="checkbox-option">☐ Person with whom I have/had a dating or engagement relationship</div>
+      <div class="checkbox-option">☐ Other relationship (specify): <span class="field">{{other_relationship}}</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. CHILDREN</div>
+      {{#if has_children}}
+      <p>The following minor children are affected by this case:</p>
+      <p>
+        1. Name: <span class="field">{{child_1_name}}</span><br>
+        Date of Birth: <span class="field">{{child_1_dob}}</span><br>
+        Resides with: <span class="field">{{child_1_residence}}</span>
+      </p>
+      {{#if has_child_2}}
+      <p>
+        2. Name: <span class="field">{{child_2_name}}</span><br>
+        Date of Birth: <span class="field">{{child_2_dob}}</span><br>
+        Resides with: <span class="field">{{child_2_residence}}</span>
+      </p>
+      {{/if}}
+      {{#if has_child_3}}
+      <p>
+        3. Name: <span class="field">{{child_3_name}}</span><br>
+        Date of Birth: <span class="field">{{child_3_dob}}</span><br>
+        Resides with: <span class="field">{{child_3_residence}}</span>
+      </p>
+      {{/if}}
+      {{#if has_additional_children}}
+      <p>Additional children are listed on an attached page.</p>
+      {{/if}}
+      {{else}}
+      <p>☐ There are no minor children affected by this case.</p>
+      {{/if}}
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. OTHER COURT CASES</div>
+      <p>☐ There are no other court cases involving the petitioner and respondent.</p>
+      <p>☐ The following court cases involve both the petitioner and respondent:</p>
+      {{#if has_other_cases}}
+      <p>
+        Case Type: <span class="field">{{other_case_1_type}}</span><br>
+        Court/County/State: <span class="field">{{other_case_1_court}}</span><br>
+        Case Number: <span class="field">{{other_case_1_number}}</span><br>
+        Status/Outcome: <span class="field">{{other_case_1_status}}</span>
+      </p>
+      {{#if has_other_case_2}}
+      <p>
+        Case Type: <span class="field">{{other_case_2_type}}</span><br>
+        Court/County/State: <span class="field">{{other_case_2_court}}</span><br>
+        Case Number: <span class="field">{{other_case_2_number}}</span><br>
+        Status/Outcome: <span class="field">{{other_case_2_status}}</span>
+      </p>
+      {{/if}}
+      {{/if}}
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. DESCRIPTION OF ABUSE</div>
+      <p>The respondent has committed the following acts of domestic violence against me and/or the children listed above:</p>
+      
+      <p><strong>Most Recent Incident:</strong></p>
+      <p>Date: <span class="field">{{recent_incident_date}}</span></p>
+      <p>Description: <span class="field">{{recent_incident_description}}</span></p>
+
+      <p><strong>Previous Incident(s):</strong></p>
+      <p>Date: <span class="field">{{previous_incident_1_date}}</span></p>
+      <p>Description: <span class="field">{{previous_incident_1_description}}</span></p>
+
+      {{#if has_previous_incident_2}}
+      <p>Date: <span class="field">{{previous_incident_2_date}}</span></p>
+      <p>Description: <span class="field">{{previous_incident_2_description}}</span></p>
+      {{/if}}
+
+      {{#if has_previous_incident_3}}
+      <p>Date: <span class="field">{{previous_incident_3_date}}</span></p>
+      <p>Description: <span class="field">{{previous_incident_3_description}}</span></p>
+      {{/if}}
+
+      {{#if has_additional_incidents}}
+      <p>Additional incidents are described on an attached page.</p>
+      {{/if}}
+
+      <p><strong>Injuries Sustained:</strong></p>
+      <p><span class="field">{{injuries_description}}</span></p>
+
+      {{#if has_police_reports}}
+      <p><strong>Police Involvement:</strong></p>
+      <p>Police Department: <span class="field">{{police_department}}</span></p>
+      <p>Report Number: <span class="field">{{police_report_number}}</span></p>
+      <p>Date of Report: <span class="field">{{police_report_date}}</span></p>
+      <p>Outcome: <span class="field">{{police_report_outcome}}</span></p>
+      {{/if}}
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. REQUESTED RELIEF</div>
+      <p>I request that the court issue the following orders:</p>
+      
+      <p><strong>Personal Conduct Orders:</strong></p>
+      <div class="checkbox-option">☐ Prohibit the respondent from harassing, intimidating, molesting, stalking, threatening, or otherwise disturbing my peace.</div>
+      <div class="checkbox-option">☐ Prohibit the respondent from contacting me, either directly or indirectly, by telephone, mail, email, text message, social media, or through third parties.</div>
+      <div class="checkbox-option">☐ Prohibit the respondent from assaulting, attacking, striking, threatening, battering, or physically abusing me.</div>
+      <div class="checkbox-option">☐ Prohibit the respondent from destroying my personal property.</div>
+      <div class="checkbox-option">☐ Other conduct orders (specify): <span class="field">{{other_conduct_orders}}</span></div>
+      
+      <p><strong>Stay-Away Orders:</strong></p>
+      <div class="checkbox-option">☐ Order the respondent to stay at least <span class="field">{{stay_away_distance}}</span> yards away from me.</div>
+      <div class="checkbox-option">☐ Order the respondent to stay away from my home.</div>
+      <div class="checkbox-option">☐ Order the respondent to stay away from my workplace.</div>
+      <div class="checkbox-option">☐ Order the respondent to stay away from my children's school or childcare.</div>
+      <div class="checkbox-option">☐ Order the respondent to stay away from my vehicle.</div>
+      <div class="checkbox-option">☐ Other stay-away locations (specify): <span class="field">{{other_stay_away_locations}}</span></div>
+      
+      <p><strong>Move-Out Order:</strong></p>
+      <div class="checkbox-option">☐ Order the respondent to move out of the residence at <span class="field">{{residence_address}}</span> and take only personal clothing and belongings.</div>
+      
+      <p><strong>Child Custody and Visitation:</strong></p>
+      <div class="checkbox-option">☐ Grant me temporary legal custody of the children listed in this petition.</div>
+      <div class="checkbox-option">☐ Grant me temporary physical custody of the children listed in this petition.</div>
+      <div class="checkbox-option">☐ Establish the following visitation schedule: <span class="field">{{visitation_schedule}}</span></div>
+      <div class="checkbox-option">☐ Prohibit visitation until further court order.</div>
+      <div class="checkbox-option">☐ Allow supervised visitation only.</div>
+      
+      <p><strong>Other Orders:</strong></p>
+      <div class="checkbox-option">☐ Order the respondent to surrender any firearms and prohibit the respondent from obtaining or possessing firearms during the order period.</div>
+      <div class="checkbox-option">☐ Other orders (specify): <span class="field">{{other_orders}}</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. EMERGENCY EX PARTE ORDERS</div>
+      <p>I request that the court issue emergency ex parte orders without first notifying the respondent because:</p>
+      <p><span class="field">{{ex_parte_reason}}</span></p>
+    </div>
+
+    <div class="signature-block">
+      <p>I declare under penalty of perjury under the laws of the State of <span class="field">{{state}}</span> that the foregoing is true and correct.</p>
+      <p>Date: ________________________</p>
+      <p>Signature: ________________________</p>
+      <p>Printed Name: <span class="field">{{petitioner_name}}</span></p>
+    </div>
+  </div>
+</body>
+</html> 

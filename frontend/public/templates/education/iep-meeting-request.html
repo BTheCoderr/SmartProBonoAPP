@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>IEP Meeting Request Letter</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .sender-info { text-align: right; margin-bottom: 40px; }
+    .recipient-info { margin-bottom: 40px; }
+    .subject { font-weight: bold; margin-bottom: 20px; }
+    .body { margin-bottom: 40px; }
+    .closing { margin-bottom: 60px; }
+    .signature { }
+    .cc { margin-top: 40px; font-style: italic; }
+    .field { background-color: #f0f0f0; padding: 3px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sender-info">
+      <p>
+        <span class="field">{{parent_name}}</span><br>
+        <span class="field">{{parent_address}}</span><br>
+        <span class="field">{{parent_city}}</span>, <span class="field">{{parent_state}}</span> <span class="field">{{parent_zip}}</span><br>
+        <span class="field">{{parent_phone}}</span><br>
+        <span class="field">{{parent_email}}</span>
+      </p>
+      <p><span class="field">{{current_date}}</span></p>
+    </div>
+
+    <div class="recipient-info">
+      <p>
+        <span class="field">{{school_official_name}}</span><br>
+        <span class="field">{{school_official_title}}</span><br>
+        <span class="field">{{school_name}}</span><br>
+        <span class="field">{{school_address}}</span><br>
+        <span class="field">{{school_city}}</span>, <span class="field">{{school_state}}</span> <span class="field">{{school_zip}}</span>
+      </p>
+    </div>
+
+    <div class="subject">
+      <p>RE: Request for IEP Meeting for <span class="field">{{student_name}}</span></p>
+    </div>
+
+    <div class="body">
+      <p>Dear <span class="field">{{school_official_name}}</span>:</p>
+
+      <p>I am writing to request an Individualized Education Program (IEP) meeting for my child, <span class="field">{{student_name}}</span>, who is currently in grade <span class="field">{{student_grade}}</span> at <span class="field">{{school_name}}</span> with <span class="field">{{teacher_name}}</span>.</p>
+
+      <p>I am requesting this meeting to discuss {{#if is_initial_evaluation}}the need for special education evaluation and services{{else}}my child's current IEP and the need for adjustments to ensure appropriate educational progress{{/if}}.</p>
+
+      {{#if is_initial_evaluation}}
+      <p>I have concerns about my child's educational progress in the following areas:</p>
+      <ul>
+        <li><span class="field">{{concern_1}}</span></li>
+        <li><span class="field">{{concern_2}}</span></li>
+        {{#if has_concern_3}}
+        <li><span class="field">{{concern_3}}</span></li>
+        {{/if}}
+        {{#if has_concern_4}}
+        <li><span class="field">{{concern_4}}</span></li>
+        {{/if}}
+      </ul>
+
+      <p>I believe my child may need special education services due to <span class="field">{{disability_suspicion}}</span>. I am formally requesting a comprehensive evaluation to determine if my child qualifies for special education services under the Individuals with Disabilities Education Act (IDEA).</p>
+      {{else}}
+      <p>Since the development of my child's current IEP, I have observed the following issues that need to be addressed:</p>
+      <ul>
+        <li><span class="field">{{issue_1}}</span></li>
+        <li><span class="field">{{issue_2}}</span></li>
+        {{#if has_issue_3}}
+        <li><span class="field">{{issue_3}}</span></li>
+        {{/if}}
+        {{#if has_issue_4}}
+        <li><span class="field">{{issue_4}}</span></li>
+        {{/if}}
+      </ul>
+
+      <p>I would like to discuss the following potential changes to the IEP:</p>
+      <ul>
+        <li><span class="field">{{change_1}}</span></li>
+        <li><span class="field">{{change_2}}</span></li>
+        {{#if has_change_3}}
+        <li><span class="field">{{change_3}}</span></li>
+        {{/if}}
+        {{#if has_change_4}}
+        <li><span class="field">{{change_4}}</span></li>
+        {{/if}}
+      </ul>
+      {{/if}}
+
+      {{#if has_private_evaluations}}
+      <p>I have obtained private evaluations that I would like to share with the IEP team. These evaluations include:</p>
+      <ul>
+        <li><span class="field">{{evaluation_1}}</span></li>
+        {{#if has_evaluation_2}}
+        <li><span class="field">{{evaluation_2}}</span></li>
+        {{/if}}
+        {{#if has_evaluation_3}}
+        <li><span class="field">{{evaluation_3}}</span></li>
+        {{/if}}
+      </ul>
+      {{/if}}
+
+      <p>I understand that under IDEA, the school is required to hold an IEP meeting within a reasonable time after a parent's request. I am available on the following dates and times:</p>
+      <ul>
+        <li><span class="field">{{available_date_1}}</span></li>
+        <li><span class="field">{{available_date_2}}</span></li>
+        <li><span class="field">{{available_date_3}}</span></li>
+      </ul>
+
+      <p>I request that the following individuals attend the IEP meeting:</p>
+      <ul>
+        {{#if include_general_education_teacher}}
+        <li>My child's general education teacher</li>
+        {{/if}}
+        {{#if include_special_education_teacher}}
+        <li>A special education teacher</li>
+        {{/if}}
+        {{#if include_school_psychologist}}
+        <li>School psychologist</li>
+        {{/if}}
+        {{#if include_therapists}}
+        <li>Related service providers (speech therapist, occupational therapist, etc.)</li>
+        {{/if}}
+        {{#if include_administrator}}
+        <li>A school administrator with authority to commit resources</li>
+        {{/if}}
+        {{#if include_others}}
+        <li><span class="field">{{other_participants}}</span></li>
+        {{/if}}
+      </ul>
+
+      <p>Additionally, I plan to bring the following people to the meeting:</p>
+      <ul>
+        {{#if bringing_advocate}}
+        <li>Educational advocate: <span class="field">{{advocate_name}}</span></li>
+        {{/if}}
+        {{#if bringing_specialist}}
+        <li>Specialist: <span class="field">{{specialist_name}}</span>, <span class="field">{{specialist_title}}</span></li>
+        {{/if}}
+        {{#if bringing_others}}
+        <li><span class="field">{{other_attendees}}</span></li>
+        {{/if}}
+      </ul>
+
+      <p>I kindly request that you provide me with copies of any evaluations, assessments, or reports that will be discussed at the meeting at least five days prior to the meeting date, so that I can review them beforehand.</p>
+
+      <p>Please confirm receipt of this request and let me know when the IEP meeting will be scheduled. You can contact me at <span class="field">{{parent_phone}}</span> or <span class="field">{{parent_email}}</span> to arrange the meeting.</p>
+
+      <p>I look forward to working collaboratively with the school to ensure that <span class="field">{{student_name}}</span> receives an appropriate education that meets {{#if student_gender_male}}his{{else if student_gender_female}}her{{else}}their{{/if}} unique needs.</p>
+
+      <p>Thank you for your attention to this matter.</p>
+    </div>
+
+    <div class="closing">
+      <p>Sincerely,</p>
+    </div>
+
+    <div class="signature">
+      <p><span class="field">{{parent_name}}</span><br>
+      Parent of <span class="field">{{student_name}}</span></p>
+    </div>
+
+    {{#if has_cc}}
+    <div class="cc">
+      <p>cc: <span class="field">{{cc_list}}</span></p>
+    </div>
+    {{/if}}
+  </div>
+</body>
+</html> 

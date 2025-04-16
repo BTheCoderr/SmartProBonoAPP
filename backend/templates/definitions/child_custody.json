@@ -1,0 +1,101 @@
+{
+    "id": "child_custody",
+    "name": "Child Custody Agreement",
+    "category": "Family",
+    "description": "Legal agreement outlining custody, visitation, and parental responsibilities for children",
+    "requires_signature": true,
+    "required_fields": [
+        "parent1_name",
+        "parent1_address",
+        "parent2_name",
+        "parent2_address",
+        "children_names_ages",
+        "legal_custody_arrangement",
+        "physical_custody_arrangement",
+        "visitation_schedule",
+        "holiday_schedule",
+        "decision_making_authority",
+        "effective_date"
+    ],
+    "optional_fields": [
+        "transportation_arrangements",
+        "communication_methods",
+        "relocation_provisions",
+        "child_support_terms",
+        "education_arrangements",
+        "healthcare_provisions",
+        "conflict_resolution_method",
+        "modification_terms",
+        "special_provisions"
+    ],
+    "sections": [
+        {
+            "title": "CHILD CUSTODY AGREEMENT",
+            "content": "This Child Custody Agreement (the \"Agreement\") is made and entered into on {effective_date} by and between:\n\n{parent1_name}, residing at {parent1_address} (\"Parent 1\")\n\nand\n\n{parent2_name}, residing at {parent2_address} (\"Parent 2\")\n\n(collectively referred to as \"the Parents\")."
+        },
+        {
+            "title": "1. CHILDREN",
+            "content": "This Agreement concerns the following minor children:\n\n{children_names_ages}\n\n(collectively referred to as \"the Children\")."
+        },
+        {
+            "title": "2. LEGAL CUSTODY",
+            "content": "Legal custody refers to the right and responsibility to make major decisions affecting the Children's welfare, including decisions regarding education, medical care, religious upbringing, and other important matters.\n\n{legal_custody_arrangement}"
+        },
+        {
+            "title": "3. PHYSICAL CUSTODY",
+            "content": "Physical custody refers to where the Children will physically reside.\n\n{physical_custody_arrangement}"
+        },
+        {
+            "title": "4. REGULAR VISITATION SCHEDULE",
+            "content": "The Parents agree to the following regular visitation schedule:\n\n{visitation_schedule}"
+        },
+        {
+            "title": "5. HOLIDAY AND VACATION SCHEDULE",
+            "content": "The Parents agree to the following holiday and vacation schedule, which shall take precedence over the regular visitation schedule:\n\n{holiday_schedule}"
+        },
+        {
+            "title": "6. TRANSPORTATION ARRANGEMENTS",
+            "content": "Transportation of the Children between the Parents' homes shall be arranged as follows:\n\n{transportation_arrangements}"
+        },
+        {
+            "title": "7. PARENTAL COMMUNICATION",
+            "content": "The Parents agree to communicate regarding the Children as follows:\n\n{communication_methods}"
+        },
+        {
+            "title": "8. DECISION-MAKING AUTHORITY",
+            "content": "The Parents agree to the following regarding decision-making authority for the Children:\n\n{decision_making_authority}"
+        },
+        {
+            "title": "9. EDUCATION",
+            "content": "The Parents agree to the following regarding the Children's education:\n\n{education_arrangements}"
+        },
+        {
+            "title": "10. HEALTHCARE",
+            "content": "The Parents agree to the following regarding the Children's healthcare:\n\n{healthcare_provisions}"
+        },
+        {
+            "title": "11. CHILD SUPPORT",
+            "content": "The Parents agree to the following child support arrangements:\n\n{child_support_terms}"
+        },
+        {
+            "title": "12. RELOCATION",
+            "content": "If either Parent intends to relocate their residence, the following provisions shall apply:\n\n{relocation_provisions}"
+        },
+        {
+            "title": "13. CONFLICT RESOLUTION",
+            "content": "In the event of a disagreement regarding this Agreement or other issues related to the Children, the Parents agree to resolve conflicts as follows:\n\n{conflict_resolution_method}"
+        },
+        {
+            "title": "14. MODIFICATION",
+            "content": "This Agreement may be modified as follows:\n\n{modification_terms}"
+        },
+        {
+            "title": "15. SPECIAL PROVISIONS",
+            "content": "The Parents agree to the following additional provisions:\n\n{special_provisions}"
+        },
+        {
+            "title": "16. SIGNATURES",
+            "content": "By signing below, the Parents acknowledge that they have read, understand, and agree to the terms of this Agreement, and are entering into it voluntarily, free from duress or undue influence.\n\nDate: {current_date}\n\n________________________\n{parent1_name}, Parent 1\n\n________________________\n{parent2_name}, Parent 2\n\n________________________\nWitness\n\n________________________\nWitness"
+        }
+    ]
+} 

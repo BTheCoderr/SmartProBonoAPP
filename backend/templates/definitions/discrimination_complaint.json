@@ -1,0 +1,74 @@
+{
+    "id": "discrimination_complaint",
+    "name": "Discrimination Complaint",
+    "category": "Accessibility & Rights",
+    "description": "Formal complaint documenting discrimination based on protected characteristics",
+    "requires_signature": true,
+    "required_fields": [
+        "complainant_name",
+        "complainant_address",
+        "complainant_phone",
+        "complainant_email",
+        "respondent_name",
+        "respondent_address",
+        "discrimination_basis",
+        "incident_date",
+        "incident_location",
+        "incident_description",
+        "requested_action"
+    ],
+    "optional_fields": [
+        "witness_information",
+        "prior_complaints",
+        "supporting_evidence",
+        "harm_suffered",
+        "legal_representation",
+        "agency_filing"
+    ],
+    "sections": [
+        {
+            "title": "DISCRIMINATION COMPLAINT",
+            "content": "Date: {current_date}\n\nFILED AGAINST: {respondent_name}\n{respondent_address}\n\nFILED BY: {complainant_name}\n{complainant_address}\nPhone: {complainant_phone}\nEmail: {complainant_email}"
+        },
+        {
+            "title": "1. BASIS OF DISCRIMINATION",
+            "content": "I believe I was discriminated against on the basis of:\n\n{discrimination_basis}\n\n(Examples: race, color, religion, sex, national origin, age, disability, genetic information, sexual orientation, gender identity, etc.)"
+        },
+        {
+            "title": "2. INCIDENT DETAILS",
+            "content": "Date of Discrimination: {incident_date}\nLocation: {incident_location}\n\nDescription of Discriminatory Act(s):\n{incident_description}"
+        },
+        {
+            "title": "3. WITNESSES",
+            "content": "The following individuals witnessed or have knowledge of the discriminatory act(s):\n\n{witness_information}"
+        },
+        {
+            "title": "4. PRIOR COMPLAINTS",
+            "content": "I have previously complained about this or similar discrimination as follows:\n\n{prior_complaints}"
+        },
+        {
+            "title": "5. SUPPORTING EVIDENCE",
+            "content": "I am attaching the following evidence to support my complaint:\n\n{supporting_evidence}"
+        },
+        {
+            "title": "6. HARM SUFFERED",
+            "content": "As a result of the discrimination, I have suffered the following harm or adverse effects:\n\n{harm_suffered}"
+        },
+        {
+            "title": "7. LEGAL REPRESENTATION",
+            "content": "Information about my legal representative (if applicable):\n\n{legal_representation}"
+        },
+        {
+            "title": "8. AGENCY FILING",
+            "content": "I have filed or plan to file this complaint with the following agencies:\n\n{agency_filing}"
+        },
+        {
+            "title": "9. REQUESTED ACTION",
+            "content": "To resolve this complaint, I am requesting the following remedies or actions:\n\n{requested_action}"
+        },
+        {
+            "title": "10. CERTIFICATION",
+            "content": "I certify that the information provided in this complaint is true and correct to the best of my knowledge and belief.\n\nSignature: ________________________\n\nPrinted Name: {complainant_name}\n\nDate: {current_date}"
+        }
+    ]
+} 

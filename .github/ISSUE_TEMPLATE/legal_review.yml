@@ -1,0 +1,111 @@
+name: ⚖️ Legal Content Review
+description: Request a review of legal content or AI responses
+title: "[Legal Review]: "
+labels: ["legal-review", "documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping ensure the accuracy and quality of our legal content. Your expertise is invaluable to making SmartProBono more reliable and useful.
+
+  - type: dropdown
+    attributes:
+      label: Content Type
+      description: What type of content needs review?
+      options:
+        - AI Legal Assistant Response
+        - Document Template
+        - Legal Rights Information
+        - User Guide/Documentation
+        - Disclaimer/Terms
+        - Other Legal Content
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Content Location
+      description: Where can this content be found in the system?
+      placeholder: "e.g., URL, file path, or section name"
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Current Content
+      description: Please provide the current content that needs review
+      placeholder: |
+        Paste the content here...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Concerns/Issues
+      description: What are your specific concerns about this content?
+      placeholder: |
+        Example: The legal terminology used may be outdated...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Suggested Changes
+      description: What changes would you recommend?
+      placeholder: |
+        Example: Update the terminology to reflect current legal standards...
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Jurisdiction
+      description: Which jurisdiction(s) does this content concern?
+      options:
+        - Federal
+        - State-specific
+        - Multiple States
+        - International
+        - Not Jurisdiction-specific
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Specific Jurisdiction
+      description: If state-specific or international, please specify
+      placeholder: "e.g., California, UK"
+
+  - type: textarea
+    attributes:
+      label: Legal References
+      description: Please provide any relevant legal references, citations, or sources
+      placeholder: |
+        Example: 
+        - Case law references
+        - Statutory citations
+        - Recent legal developments
+
+  - type: dropdown
+    attributes:
+      label: Priority
+      description: How urgent is this review?
+      options:
+        - Critical - Legal risk or immediate attention required
+        - High - Important inaccuracy to address
+        - Medium - Should be updated soon
+        - Low - Minor improvements suggested
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Verification
+      description: Please verify the following
+      options:
+        - label: I am qualified to review this legal content
+          required: true
+        - label: I have checked that this review request is not a duplicate
+          required: true
+        - label: I understand this review will be publicly visible
+          required: true 

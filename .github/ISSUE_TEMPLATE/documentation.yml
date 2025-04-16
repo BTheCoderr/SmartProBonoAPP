@@ -1,0 +1,106 @@
+name: 📚 Documentation Improvement
+description: Suggest improvements to SmartProBono's documentation
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us improve SmartProBono's documentation! Clear and accurate documentation helps everyone.
+
+  - type: dropdown
+    attributes:
+      label: Documentation Type
+      description: What type of documentation needs improvement?
+      options:
+        - User Guide
+        - API Documentation
+        - Installation Guide
+        - Contributing Guidelines
+        - Code Comments
+        - Legal Documentation
+        - README
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Documentation Location
+      description: Where is the documentation you want to improve?
+      placeholder: "e.g., URL, file path, or section name"
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Type of Improvement
+      description: What kind of improvement are you suggesting?
+      options:
+        - Fix Error/Inaccuracy
+        - Add Missing Information
+        - Clarify Existing Content
+        - Update Outdated Information
+        - Improve Organization/Structure
+        - Add Examples
+        - Fix Formatting/Typos
+        - Translate Content
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Current Content
+      description: Please provide the current content (if applicable)
+      placeholder: |
+        Paste the current documentation content here...
+
+  - type: textarea
+    attributes:
+      label: Suggested Changes
+      description: Describe what changes you think should be made
+      placeholder: |
+        Example: Add a section explaining how to use the API's authentication...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Justification
+      description: Why do you think this improvement is needed?
+      placeholder: |
+        Example: The current documentation lacks examples for beginners...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Add any other context about the documentation improvement
+      placeholder: |
+        You can attach screenshots or examples by clicking this area to highlight it and then dragging files in.
+
+  - type: checkboxes
+    attributes:
+      label: Contribution
+      description: Would you be willing to help with this improvement?
+      options:
+        - label: I would be willing to submit a pull request with these changes
+          required: false
+        - label: I have verified this isn't covered elsewhere in the documentation
+          required: true
+
+  - type: dropdown
+    attributes:
+      label: Target Audience
+      description: Who would benefit most from this documentation improvement?
+      options:
+        - New Users
+        - Developers
+        - Legal Professionals
+        - System Administrators
+        - All Users
+        - Other
+    validations:
+      required: true 

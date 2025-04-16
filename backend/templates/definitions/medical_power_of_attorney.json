@@ -1,0 +1,86 @@
+{
+    "id": "medical-power-of-attorney",
+    "name": "Medical Power of Attorney",
+    "category": "Healthcare",
+    "description": "A legal document appointing someone to make healthcare decisions if you become incapacitated",
+    "requires_signature": true,
+    "required_fields": [
+        "principal_name",
+        "principal_address",
+        "agent_name",
+        "agent_address",
+        "agent_phone",
+        "alternate_agent_name",
+        "alternate_agent_address",
+        "alternate_agent_phone",
+        "effective_date"
+    ],
+    "optional_fields": [
+        "life_sustaining_treatment",
+        "artificial_nutrition",
+        "pain_medication",
+        "hospital_preferences",
+        "religious_preferences",
+        "additional_instructions",
+        "organ_donation",
+        "autopsy_preferences"
+    ],
+    "sections": [
+        {
+            "title": "MEDICAL POWER OF ATTORNEY",
+            "content": "This Medical Power of Attorney is made on {effective_date} by {principal_name}, residing at {principal_address} (the 'Principal')."
+        },
+        {
+            "title": "1. APPOINTMENT OF AGENT",
+            "content": "I, {principal_name}, designate and appoint {agent_name}, residing at {agent_address}, telephone number {agent_phone}, as my agent to make healthcare decisions for me as authorized in this document."
+        },
+        {
+            "title": "2. ALTERNATE AGENT",
+            "content": "If my agent is unable or unwilling to serve, I designate {alternate_agent_name}, residing at {alternate_agent_address}, telephone number {alternate_agent_phone}, as my alternate agent."
+        },
+        {
+            "title": "3. EFFECTIVE DATE AND DURABILITY",
+            "content": "This power of attorney becomes effective when I can no longer make my own healthcare decisions and continues in effect until my death or until I revoke it."
+        },
+        {
+            "title": "4. AGENT'S POWERS",
+            "content": "My agent is authorized to obtain and review medical records, reports, and information about me and to make all healthcare decisions for me, including consent, refusal of consent, or withdrawal of consent to any care, treatment, service, or procedure to maintain, diagnose, or treat a physical or mental condition."
+        },
+        {
+            "title": "5. LIFE-SUSTAINING TREATMENT",
+            "content": "My wishes regarding life-sustaining treatment are as follows: {life_sustaining_treatment}"
+        },
+        {
+            "title": "6. ARTIFICIAL NUTRITION AND HYDRATION",
+            "content": "My wishes regarding artificial nutrition and hydration are as follows: {artificial_nutrition}"
+        },
+        {
+            "title": "7. PAIN RELIEF",
+            "content": "My wishes regarding pain relief are as follows: {pain_medication}"
+        },
+        {
+            "title": "8. HOSPITAL/HEALTHCARE FACILITY PREFERENCES",
+            "content": "My preferences regarding hospitals or healthcare facilities are as follows: {hospital_preferences}"
+        },
+        {
+            "title": "9. RELIGIOUS PREFERENCES",
+            "content": "My religious preferences concerning medical treatment are as follows: {religious_preferences}"
+        },
+        {
+            "title": "10. ORGAN DONATION",
+            "content": "My wishes regarding organ donation are as follows: {organ_donation}"
+        },
+        {
+            "title": "11. AUTOPSY PREFERENCES",
+            "content": "My preferences regarding autopsy are as follows: {autopsy_preferences}"
+        },
+        {
+            "title": "12. ADDITIONAL INSTRUCTIONS",
+            "content": "{additional_instructions}"
+        },
+        {
+            "title": "13. SIGNATURES",
+            "content": "By signing below, I indicate that I understand the purpose and effect of this document.\n\nPrincipal: {principal_name}\nDate: {effective_date}"
+        }
+    ]
+} 

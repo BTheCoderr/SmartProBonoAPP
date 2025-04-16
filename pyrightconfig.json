@@ -1,0 +1,15 @@
+{
+    "venvPath": ".",
+    "venv": ".venv",
+    "extraPaths": [
+        "backend",
+        "backend/.venv/lib/python3.9/site-packages"
+    ],
+    "pythonVersion": "3.9",
+    "typeCheckingMode": "basic",
+    "useLibraryCodeForTypes": true,
+    "reportMissingImports": false,
+    "reportUnknownMemberType": false,
+    "reportAttributeAccessIssue": false,
+    "reportUnknownVariableType": false
+} 

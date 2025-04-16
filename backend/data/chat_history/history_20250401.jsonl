@@ -1,0 +1,8 @@
+{"content": "What are my basic tenant rights?", "sender": "user", "files": [], "timestamp": "2025-04-01T15:08:59.325104"}
+{"content": "What are my basic tenant rights?", "sender": "user", "files": [], "timestamp": "2025-04-01T15:20:41.603845"}
+{"content": "What are my basic tenant rights?", "sender": "user", "files": [], "timestamp": "2025-04-01T22:14:22.688932"}
+{"content": "", "sender": "ai", "model": "mistral", "provider": "ollama", "timestamp": "2025-04-01T22:14:32.838506"}
+{"content": "What are the basics of contract law?", "sender": "user", "files": [], "timestamp": "2025-04-01T22:14:45.184304"}
+{"content": "", "sender": "ai", "model": "mistral", "provider": "ollama", "timestamp": "2025-04-01T22:14:56.005682"}
+{"content": "Hello, just testing WebSocket connection", "sender": "user", "files": [], "timestamp": "2025-04-01T23:48:15.495905"}
+{"content": "It seems that my connection to the legal database is temporarily unavailable. Please try your question again shortly.", "sender": "ai", "model": "fallback", "provider": "fallback", "timestamp": "2025-04-01T23:48:26.386974"}
