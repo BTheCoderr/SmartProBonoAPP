@@ -40,13 +40,13 @@ jobs:
     - name: Validate Cloudinary Configuration
       run: |
         cd backend
-        python -m scripts.setup_cloudinary --test-only
+        python scripts/setup_cloudinary.py --test-only
     
     - name: Setup Cloudinary Folders and Presets
       if: success()
       run: |
         cd backend
-        python -m scripts.setup_cloudinary
+        python scripts/setup_cloudinary.py
     
     - name: Cleanup
       if: always()
