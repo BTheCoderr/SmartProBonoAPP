@@ -33,9 +33,9 @@ jobs:
         CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
         CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
       run: |
-        echo "CLOUDINARY_CLOUD_NAME=$CLOUDINARY_CLOUD_NAME" >> backend/.env
-        echo "CLOUDINARY_API_KEY=$CLOUDINARY_API_KEY" >> backend/.env
-        echo "CLOUDINARY_API_SECRET=$CLOUDINARY_API_SECRET" >> backend/.env
+        echo "CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}" >> backend/.env
+        echo "CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}" >> backend/.env
+        echo "CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}" >> backend/.env
     
     - name: Validate Cloudinary Configuration
       run: |

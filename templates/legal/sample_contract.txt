@@ -1,0 +1,27 @@
+SAMPLE CONTRACT TEMPLATE
+
+This AGREEMENT is made on {date} between {party1_name} ("Party 1") and {party2_name} ("Party 2").
+
+TERMS AND CONDITIONS:
+
+1. SCOPE OF WORK
+   {scope_of_work}
+
+2. PAYMENT TERMS
+   Total payment: ${payment_amount}
+   Payment schedule: {payment_schedule}
+
+3. DURATION
+   This agreement begins on {start_date} and ends on {end_date}.
+
+4. TERMINATION
+   This agreement may be terminated by either party with {notice_period} days written notice.
+
+5. GOVERNING LAW
+   This agreement is governed by the laws of {state}.
+
+SIGNATURES:
+
+______________________     ______________________
+{party1_name}              {party2_name}
+Date: {signature_date}     Date: {signature_date} 
