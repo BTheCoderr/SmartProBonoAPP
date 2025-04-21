@@ -37,10 +37,10 @@ jobs:
         echo "CLOUDINARY_API_KEY=$CLOUDINARY_API_KEY" >> backend/.env
         echo "CLOUDINARY_API_SECRET=$CLOUDINARY_API_SECRET" >> backend/.env
     
-    - name: Validate Cloudinary Configuration
-      run: |
-        cd backend
-        python scripts/setup_cloudinary.py --test-only
+   - name: Validate Cloudinary Configuration
+     run: |
+       cd backend
+       python -c "import sys; sys.path.append('.'); from scripts.setup_cloudinary import main; main()" --test-only
     
     - name: Setup Cloudinary Folders and Presets
       if: success()
