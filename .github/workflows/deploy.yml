@@ -15,6 +15,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
+      - name: Debug - List all files in frontend directory
+        run: |
+          ls -la frontend/
+          cat frontend/package.json | grep -A 5 dependencies
+          
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -33,10 +38,12 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd frontend
-          # Remove package-lock.json to force clean install
+          echo "Current directory: $(pwd)"
+          echo "Removing package-lock.json"
           rm -f package-lock.json
-          # Install with bypass flags
+          echo "Installing dependencies with explicit flags"
           npm install --legacy-peer-deps --no-package-lock --force
+          echo "Dependency installation completed"
           
       - name: Build frontend
         env:
@@ -79,3 +86,8 @@ jobs:
             -H "Authorization: Bearer $RENDER_API_KEY" \
             -H "Content-Type: application/json" \
             -d '{"clearCache": "clear"}' 
+          
+      - name: Notify failed deployment
+        if: failure()
+        run: |
+          echo "Deployment failed! Check the logs for more information." 
