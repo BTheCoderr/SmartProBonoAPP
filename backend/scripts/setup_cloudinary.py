@@ -5,10 +5,31 @@ Script to setup Cloudinary folders and presets needed for SmartProBono
 import argparse
 import os
 import sys
-import requests
-import cloudinary
-import cloudinary.api
-from dotenv import load_dotenv
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Try to import required packages
+try:
+    import requests
+except ImportError:
+    logger.error("requests package not found. Install with 'pip install requests'")
+    sys.exit(1)
+
+try:
+    import cloudinary
+    import cloudinary.api
+except ImportError:
+    logger.error("cloudinary package not found. Install with 'pip install cloudinary'")
+    sys.exit(1)
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    logger.error("python-dotenv package not found. Install with 'pip install python-dotenv'")
+    sys.exit(1)
 
 # Add necessary directories to the path so we can import from backend
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,7 +77,7 @@ def load_environment():
     
     missing_vars = [var for var in required_vars if not os.getenv(var)]
     if missing_vars:
-        print(f"Error: Missing required environment variables: {', '.join(missing_vars)}")
+        logger.error(f"Error: Missing required environment variables: {', '.join(missing_vars)}")
         sys.exit(1)
     
     # Configure Cloudinary
@@ -71,22 +92,22 @@ def validate_configuration():
     try:
         # Try to ping Cloudinary
         result = cloudinary.api.ping()
-        print(f"Cloudinary connection successful: {result}")
+        logger.info(f"Cloudinary connection successful: {result}")
         return True
     except cloudinary.api.Error as e:
-        print(f"Cloudinary API Error: {e}")
+        logger.error(f"Cloudinary API Error: {e}")
         return False
     except requests.exceptions.RequestException as e:
-        print(f"Network error connecting to Cloudinary: {e}")
+        logger.error(f"Network error connecting to Cloudinary: {e}")
         return False
     except Exception as e:
-        print(f"Unexpected error connecting to Cloudinary: {e}")
+        logger.error(f"Unexpected error connecting to Cloudinary: {e}")
         return False
 
 def ensure_folder_exists(folder_path):
     """Ensure a folder exists in Cloudinary"""
     try:
-        print(f"Checking if folder exists: {folder_path}")
+        logger.info(f"Checking if folder exists: {folder_path}")
         # Try to get folder info
         cloudinary.api.root_folders()
         
@@ -105,18 +126,18 @@ def ensure_folder_exists(folder_path):
                 cloudinary.api.sub_folders(current_path)
             except Exception:
                 # Create the folder if it doesn't exist
-                print(f"Creating folder: {current_path}")
+                logger.info(f"Creating folder: {current_path}")
                 cloudinary.api.create_folder(current_path)
         
         return True
     except Exception as e:
-        print(f"Error ensuring folder exists: {e}")
+        logger.error(f"Error ensuring folder exists: {e}")
         return False
 
 def setup_upload_preset(name, config):
     """Set up an upload preset in Cloudinary"""
     try:
-        print(f"Setting up upload preset: {name}")
+        logger.info(f"Setting up upload preset: {name}")
         # Check if preset already exists
         presets = cloudinary.api.upload_presets()
         preset_exists = any(preset['name'] == name for preset in presets['presets'])
@@ -130,15 +151,15 @@ def setup_upload_preset(name, config):
         }
         
         if preset_exists:
-            print(f"Updating existing preset: {name}")
+            logger.info(f"Updating existing preset: {name}")
             cloudinary.api.update_upload_preset(**preset_config)
         else:
-            print(f"Creating new preset: {name}")
+            logger.info(f"Creating new preset: {name}")
             cloudinary.api.create_upload_preset(**preset_config)
             
         return True
     except Exception as e:
-        print(f"Error setting up upload preset {name}: {e}")
+        logger.error(f"Error setting up upload preset {name}: {e}")
         return False
 
 def main():
@@ -152,26 +173,26 @@ def main():
     
     # Validate configuration
     if not validate_configuration():
-        print("Failed to validate Cloudinary configuration")
+        logger.error("Failed to validate Cloudinary configuration")
         sys.exit(1)
         
     if args.test_only:
-        print("Configuration tested successfully")
+        logger.info("Configuration tested successfully")
         sys.exit(0)
     
     # Setup folders
     for folder in FOLDERS:
         if not ensure_folder_exists(folder):
-            print(f"Failed to create folder: {folder}")
+            logger.error(f"Failed to create folder: {folder}")
             sys.exit(1)
     
     # Setup upload presets
     for preset_name, preset_config in PRESETS.items():
         if not setup_upload_preset(preset_name, preset_config):
-            print(f"Failed to setup upload preset: {preset_name}")
+            logger.error(f"Failed to setup upload preset: {preset_name}")
             sys.exit(1)
     
-    print("Cloudinary setup completed successfully")
+    logger.info("Cloudinary setup completed successfully")
 
 if __name__ == "__main__":
     main()
