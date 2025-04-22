@@ -37,10 +37,17 @@ jobs:
         echo "CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}" >> backend/.env
         echo "CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}" >> backend/.env
     
-    - name: Debug directory contents
+    - name: Create scripts directory
       run: |
-        cd backend
-        ls -la scripts/
+        mkdir -p backend/scripts
+        ls -la backend/
+    
+    - name: Copy setup script to scripts directory
+      run: |
+        cp backend/setup_cloudinary.py backend/scripts/
+        chmod +x backend/scripts/setup_cloudinary.py
+        touch backend/scripts/__init__.py
+        ls -la backend/scripts/
     
     - name: Validate Cloudinary Configuration
       run: |
