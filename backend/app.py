@@ -3,6 +3,7 @@ from flask_cors import CORS
 from routes.legal_ai import bp as legal_ai
 from routes.contracts import contracts
 from routes.performance import performance
+from routes.uploads import uploads
 from dotenv import load_dotenv
 import os
 from datetime import datetime
@@ -22,6 +23,7 @@ CORS(app, resources={r"/*": {"origins": allowed_origins, "methods": ["GET", "POS
 app.register_blueprint(legal_ai)
 app.register_blueprint(contracts)
 app.register_blueprint(performance)
+app.register_blueprint(uploads)
 
 # Create data directory if it doesn't exist
 if not os.path.exists('data'):
