@@ -1,0 +1,59 @@
+name: Cloudinary Setup & Management
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/services/cloudinary_service.py'
+      - 'backend/config/cloudinary_config.py'
+      - 'hybrid_storage_demo/**'
+      - 'backend/scripts/setup_cloudinary.py'
+  workflow_dispatch:
+
+jobs:
+  cloudinary-setup:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt || pip install cloudinary python-dotenv requests
+    
+    - name: Configure Cloudinary Environment
+      env:
+        CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+        CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+        CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+      run: |
+        echo "CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}" >> backend/.env
+        echo "CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}" >> backend/.env
+        echo "CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}" >> backend/.env
+    
+    - name: Debug directory contents
+      run: |
+        cd backend
+        ls -la scripts/
+    
+    - name: Validate Cloudinary Configuration
+      run: |
+        cd backend
+        python scripts/setup_cloudinary.py --test-only
+    
+    - name: Setup Cloudinary Folders and Presets
+      if: success()
+      run: |
+        cd backend
+        python scripts/setup_cloudinary.py
+    
+    - name: Cleanup
+      if: always()
+      run: |
+        rm -f backend/.env
