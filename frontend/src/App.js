@@ -25,6 +25,7 @@ import RightsPage from './pages/RightsPage';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
 import NotFoundPage from './pages/NotFoundPage';
+import DocumentsPage from './pages/DocumentsPage';
 
 // Layout components for nested routes
 const ServicesLayout = () => (
@@ -111,6 +112,9 @@ const App = () => {
                 <Route path="/services/*" element={<ServicesLayout />} />
                 <Route path="/resources/*" element={<ResourcesLayout />} />
                 <Route path="/contact" element={<Contact />} />
+                
+                {/* Document Management route */}
+                <Route path="/documents" element={<DocumentsPage />} />
                 
                 {/* Legal Chat route */}
                 <Route path="/legal-chat/*" element={<LegalChatLayout />} />

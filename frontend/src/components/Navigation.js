@@ -26,6 +26,7 @@ import FlightIcon from '@mui/icons-material/Flight';
 import BuildIcon from '@mui/icons-material/Build';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import FolderIcon from '@mui/icons-material/Folder';
 import Logo from './Logo';
 
 function Navigation() {
@@ -39,6 +40,7 @@ function Navigation() {
     { name: 'Contracts', path: '/services/contracts', icon: <DescriptionIcon /> },
     { name: 'Rights', path: '/resources/rights', icon: <GavelIcon /> },
     { name: 'Immigration', path: '/services/immigration', icon: <FlightIcon /> },
+    { name: 'Documents', path: '/documents', icon: <FolderIcon /> },
     { name: 'Services', path: '/services', icon: <BuildIcon /> },
     { name: 'Resources', path: '/resources', icon: <LibraryBooksIcon /> },
     { name: 'Contact', path: '/contact', icon: <ContactSupportIcon /> }
