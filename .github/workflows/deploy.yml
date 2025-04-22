@@ -60,6 +60,11 @@ jobs:
       - name: Setup Cloudinary
         run: |
           cd backend
+          echo "Checking Python version"
+          python --version
+          echo "Checking script exists"
+          ls -la scripts/
+          echo "Running Cloudinary setup"
           python scripts/setup_cloudinary.py --test-only
           
       - name: Run database migrations
