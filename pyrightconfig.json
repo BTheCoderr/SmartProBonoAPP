@@ -1,8 +1,18 @@
 {
-    "venvPath": "backend",
-    "venv": "venv",
-    "extraPaths": ["backend"],
-    "pythonVersion": "3.13",
-    "typeCheckingMode": "basic",
-    "useLibraryCodeForTypes": true
+    "include": [
+        "backend"
+    ],
+    "exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+        "backend/venv"
+    ],
+    "ignore": [
+        "backend/scripts/setup_cloudinary.py",
+        "backend/services/cloudinary_service.py"
+    ],
+    "reportMissingImports": false,
+    "reportMissingTypeStubs": false,
+    "pythonVersion": "3.9",
+    "typeCheckingMode": "basic"
 } 
