@@ -1,0 +1,27 @@
+{
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/backend"
+    ],
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintPath": "pylint",
+    "python.linting.pylintArgs": [
+        "--rcfile=${workspaceFolder}/.pylintrc"
+    ],
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none",
+        "reportMissingModuleSource": "none",
+        "reportUnknownMemberType": "none",
+        "reportGeneralTypeIssues": "warning"
+    },
+    "python.languageServer": "Pylance",
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": [
+            ".github/workflows/*.yml"
+        ]
+    },
+    "files.associations": {
+        ".github/workflows/*.yml": "github-actions-workflow"
+    }
+} 
