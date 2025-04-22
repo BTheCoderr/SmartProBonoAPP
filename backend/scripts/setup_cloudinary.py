@@ -21,6 +21,7 @@ except ImportError:
 try:
     import cloudinary
     import cloudinary.api
+    from cloudinary.exceptions import AuthorizationRequired, Error as CloudinaryError
 except ImportError:
     logger.error("cloudinary package not found. Install with 'pip install cloudinary'")
     sys.exit(1)
@@ -94,8 +95,11 @@ def validate_configuration():
         result = cloudinary.api.ping()
         logger.info(f"Cloudinary connection successful: {result}")
         return True
-    except cloudinary.api.Error as e:
-        logger.error(f"Cloudinary API Error: {e}")
+    except AuthorizationRequired as e:
+        logger.error(f"Cloudinary authorization error: {e}")
+        return False
+    except CloudinaryError as e:
+        logger.error(f"Cloudinary API error: {e}")
         return False
     except requests.exceptions.RequestException as e:
         logger.error(f"Network error connecting to Cloudinary: {e}")
