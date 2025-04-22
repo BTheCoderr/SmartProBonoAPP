@@ -8,7 +8,7 @@ on:
       - 'backend/config/cloudinary_config.py'
       - 'hybrid_storage_demo/**'
       - 'backend/scripts/setup_cloudinary.py'
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch:
 
 jobs:
   cloudinary-setup:
