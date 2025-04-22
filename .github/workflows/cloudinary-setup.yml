@@ -37,6 +37,11 @@ jobs:
         echo "CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}" >> backend/.env
         echo "CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}" >> backend/.env
     
+    - name: Debug directory contents
+      run: |
+        cd backend
+        ls -la scripts/
+    
     - name: Validate Cloudinary Configuration
       run: |
         cd backend
