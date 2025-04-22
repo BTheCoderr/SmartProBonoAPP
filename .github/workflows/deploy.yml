@@ -2,8 +2,13 @@ name: Deploy
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/services/cloudinary_service.py'
+      - 'backend/config/cloudinary_config.py'
+      - 'hybrid_storage_demo/**'
+      - 'backend/scripts/setup_cloudinary.py'
+  workflow_dispatch: # Allow manual triggering
 
 jobs:
   deploy:
