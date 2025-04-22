@@ -1,3 +1,1 @@
-"""
-Utility scripts for the SmartProBono application.
-""" 
+"""Scripts package for SmartProBono backend."""
