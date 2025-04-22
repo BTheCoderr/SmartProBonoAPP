@@ -1,20 +1,26 @@
 import os
 import logging
 from dotenv import load_dotenv
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
-from cloudinary.utils import cloudinary_url
+try:
+    import cloudinary
+    import cloudinary.uploader
+    import cloudinary.api
+    from cloudinary.utils import cloudinary_url
+except ImportError:
+    print("Warning: Cloudinary packages not found. Install with 'pip install cloudinary'")
 
 # Load environment variables
 load_dotenv()
 
 # Configure Cloudinary
-cloudinary.config(
-    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
-    api_key=os.getenv('CLOUDINARY_API_KEY'),
-    api_secret=os.getenv('CLOUDINARY_API_SECRET')
-)
+try:
+    cloudinary.config(
+        cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+        api_key=os.getenv('CLOUDINARY_API_KEY'),
+        api_secret=os.getenv('CLOUDINARY_API_SECRET')
+    )
+except (NameError, AttributeError):
+    print("Warning: Could not configure Cloudinary - package not properly imported")
 
 # Initialize logger
 logger = logging.getLogger(__name__)
