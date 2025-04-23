@@ -70,6 +70,26 @@ jobs:
         env:
           RENDER_TOKEN: ${{ secrets.RENDER_API_KEY }}
         run: |
+          # Create environment variables payload for backend
+          cat > env_vars.json << EOF
+          {
+            "envVars": [
+              {"key": "CLOUDINARY_CLOUD_NAME", "value": "${{ secrets.CLOUDINARY_CLOUD_NAME }}"},
+              {"key": "CLOUDINARY_API_KEY", "value": "${{ secrets.CLOUDINARY_API_KEY }}"},
+              {"key": "CLOUDINARY_API_SECRET", "value": "${{ secrets.CLOUDINARY_API_SECRET }}"},
+              {"key": "OPENAI_API_KEY", "value": "${{ secrets.OPENAI_API_KEY }}"},
+              {"key": "HUGGINGFACE_API_KEY", "value": "${{ secrets.HUGGINGFACE_API_KEY }}"}
+            ]
+          }
+          EOF
+          
+          # Update environment variables for backend service
+          curl -X PATCH \
+            -H "Authorization: Bearer $RENDER_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d @env_vars.json \
+            "https://api.render.com/v1/services/${{ secrets.RENDER_BACKEND_ID }}/env-vars"
+            
           # Deploy backend
           curl -X POST \
             -H "Authorization: Bearer $RENDER_TOKEN" \
