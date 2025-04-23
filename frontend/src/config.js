@@ -15,4 +15,7 @@ const config = {
   }
 };
 
+// Export the API_URL for files that import it directly
+export const API_URL = config.apiUrl;
+
 export default config; 

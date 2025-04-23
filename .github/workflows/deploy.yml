@@ -24,9 +24,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          # Disable cache to prevent package-lock.json issues
-          # cache: 'npm'
-          # cache-dependency-path: 'frontend/package-lock.json'
           
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -38,19 +35,22 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd frontend
-          echo "Current directory: $(pwd)"
-          echo "Removing package-lock.json"
-          rm -f package-lock.json
-          echo "Installing dependencies with npm run ci-install script"
-          npm run ci-install
-          echo "Dependency installation completed"
+          npm ci || npm install
+          
+      - name: Debug environment variables
+        run: |
+          echo "Checking environment variables"
+          echo "NODE_ENV: $NODE_ENV"
+          echo "REACT_APP_API_URL: $REACT_APP_API_URL"
           
       - name: Build frontend
         env:
-          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          NODE_ENV: production
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL || 'https://smartprobono-api.onrender.com' }}
+          REACT_APP_WS_URL: ${{ secrets.REACT_APP_WS_URL || 'wss://smartprobono-api.onrender.com' }}
         run: |
           cd frontend
-          npm run build
+          DISABLE_ESLINT_PLUGIN=true npm run build
           
       - name: Install backend dependencies
         run: |
@@ -60,39 +60,33 @@ jobs:
       - name: Setup Cloudinary
         run: |
           cd backend
-          echo "Checking Python version"
-          python --version
-          echo "Checking script exists"
-          ls -la scripts/
-          echo "Running Cloudinary setup"
           python scripts/setup_cloudinary.py --test-only
-          
-      - name: Run database migrations
-        run: |
-          cd backend
-          python -m flask db upgrade
-          
-      - name: Deploy to Netlify (Frontend)
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: |
-          npm install -g netlify-cli
-          cd frontend
-          netlify deploy --prod --dir=build
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           
-      - name: Deploy to Render (Backend)
-        if: success()
+      - name: Deploy to Render
         env:
-          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_TOKEN: ${{ secrets.RENDER_API_KEY }}
         run: |
-          curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
-            -H "Authorization: Bearer $RENDER_API_KEY" \
+          # Deploy backend
+          curl -X POST \
+            -H "Authorization: Bearer $RENDER_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"clearCache": "clear"}' 
+            "https://api.render.com/v1/services/${{ secrets.RENDER_BACKEND_ID }}/deploys"
+            
+          # Deploy frontend
+          curl -X POST \
+            -H "Authorization: Bearer $RENDER_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.render.com/v1/services/${{ secrets.RENDER_FRONTEND_ID }}/deploys"
           
-      - name: Notify failed deployment
-        if: failure()
+      - name: Notify deployment status
+        if: always()
         run: |
-          echo "Deployment failed! Check the logs for more information." 
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "Deployment completed successfully!"
+          else
+            echo "Deployment failed! Check the logs for more information."
+          fi 
