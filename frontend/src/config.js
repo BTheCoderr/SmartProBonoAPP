@@ -1,6 +1,6 @@
 const config = {
-  apiUrl: process.env.REACT_APP_API_URL || 'http://localhost:5002',
-  wsUrl: process.env.REACT_APP_WS_URL || 'ws://localhost:5002',
+  apiUrl: process.env.REACT_APP_API_URL || 'https://smartprobonoapp.onrender.com',
+  wsUrl: process.env.REACT_APP_WS_URL || 'wss://smartprobonoapp.onrender.com',
   env: process.env.NODE_ENV || 'development',
   support: {
     email: 'support@smartprobono.org',
