@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Expungement Request Letter</title>
+    <style>
+        body {
+            font-family: Times-Roman;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 1in;
+        }
+        .header {
+            text-align: left;
+            margin-bottom: 2em;
+        }
+        .date {
+            text-align: right;
+            margin-bottom: 2em;
+        }
+        .address {
+            margin-bottom: 2em;
+        }
+        .subject {
+            font-weight: bold;
+            margin-bottom: 2em;
+            text-align: center;
+        }
+        .signature {
+            margin-top: 3em;
+        }
+        .signature-line {
+            border-top: 1px solid black;
+            width: 200px;
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        {{ petitioner_name }}<br>
+        {{ petitioner_address }}
+    </div>
+
+    <div class="date">
+        {{ current_date }}
+    </div>
+
+    <div class="address">
+        {{ court_name }}<br>
+        Attn: Hon. {{ judge_name }}<br>
+        Re: Case No. {{ case_number }}
+    </div>
+
+    <div class="subject">
+        REQUEST FOR EXPUNGEMENT OF CRIMINAL RECORD
+    </div>
+
+    <p>Dear Judge {{ judge_name }}:</p>
+
+    <p>I, {{ petitioner_name }}, respectfully request the expungement of my criminal record pursuant to [State] Code § [Statute Number]. This request pertains to the following offense:</p>
+
+    <p>
+        Offense: {{ offense_details }}<br>
+        Date of Offense: {{ offense_date }}<br>
+        Date of Completion of Sentence/Probation: {{ completion_date }}
+    </p>
+
+    <p>I believe I am eligible for expungement for the following reasons:</p>
+
+    <ol>
+        <li>I have completed all terms of my sentence, including probation and payment of all fines and fees.</li>
+        <li>The statutory waiting period has elapsed since the completion of my sentence.</li>
+        <li>I have not been convicted of any other criminal offense since this incident.</li>
+        <li>The offense in question is eligible for expungement under state law.</li>
+    </ol>
+
+    <p>Since this incident, I have made significant positive changes in my life:</p>
+
+    <p>{{ rehabilitation_details }}</p>
+
+    <p>The expungement of this record would greatly assist me in pursuing employment opportunities and contributing positively to society. I have attached all required documentation to support this request, including:</p>
+
+    <ul>
+        <li>Certified copy of the criminal record</li>
+        <li>Proof of completion of sentence/probation</li>
+        <li>Character references</li>
+        <li>Employment history</li>
+        <li>Proof of community service/rehabilitation efforts</li>
+    </ul>
+
+    <p>I respectfully request that the Court grant this petition for expungement. If any additional information is needed, please contact me at the address or phone number listed above.</p>
+
+    <p>Thank you for your consideration of this matter.</p>
+
+    <div class="signature">
+        Respectfully submitted,
+        <div class="signature-line">
+            {{ petitioner_name }}
+        </div>
+    </div>
+</body>
+</html> 

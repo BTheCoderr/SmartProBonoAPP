@@ -23,6 +23,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import TranslateIcon from '@mui/icons-material/Translate';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import HandshakeIcon from '@mui/icons-material/Handshake';
+import PersonIcon from '@mui/icons-material/Person';
 import { useNavigate } from 'react-router-dom';
 
 const services = [
@@ -41,6 +42,14 @@ const services = [
     features: ['Contract analysis', 'Document verification', 'Legal compliance check'],
     color: '#2e7d32',
     path: '/contracts'
+  },
+  {
+    title: 'Virtual Paralegal',
+    icon: <PersonIcon sx={{ fontSize: 40, color: '#d32f2f' }} />,
+    description: 'AI-powered paralegal assistance for law firms.',
+    features: ['Client intake automation', 'Document preparation', 'Case screening'],
+    color: '#d32f2f',
+    path: '/virtual-paralegal'
   },
   {
     title: 'Legal Representation',
@@ -160,7 +169,7 @@ function Services() {
               </Typography>
             </Box>
             <Typography paragraph>
-              We believe everyone deserves access to quality legal services. Our pro bono program provides free legal assistance to those who need it most.
+              We believe everyone deserves access to quality legal services. Our pro bono program provides free legal assistance to those who need it most, and our Virtual Paralegal Assistant helps lawyers serve more clients efficiently.
             </Typography>
             <List>
               <ListItem>
@@ -181,18 +190,41 @@ function Services() {
                 </ListItemIcon>
                 <ListItemText primary="Access to legal resources and education" />
               </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <CheckCircleIcon sx={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText primary="Virtual Paralegal Assistant for lawyers and legal aid organizations" />
+              </ListItem>
             </List>
           </Grid>
           <Grid item xs={12} md={4} sx={{ textAlign: 'center' }}>
             <Button
               variant="contained"
               size="large"
-              onClick={() => navigate('/legal-chat')}
+              onClick={() => navigate('/virtual-paralegal')}
               sx={{ 
                 bgcolor: 'white',
                 color: 'primary.main',
+                mb: 2,
                 '&:hover': {
                   bgcolor: 'rgba(255, 255, 255, 0.9)'
+                }
+              }}
+            >
+              Explore Virtual Paralegal
+            </Button>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={() => navigate('/legal-chat')}
+              sx={{ 
+                bgcolor: 'transparent',
+                borderColor: 'white',
+                color: 'white',
+                '&:hover': {
+                  bgcolor: 'rgba(255, 255, 255, 0.1)',
+                  borderColor: 'white'
                 }
               }}
             >

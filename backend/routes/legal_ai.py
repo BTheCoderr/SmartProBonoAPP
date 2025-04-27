@@ -12,7 +12,7 @@ bp = Blueprint('legal_ai', __name__, url_prefix='/api/legal')
 @bp.route('/chat', methods=['POST'])
 async def chat():
     try:
-        data = request.json
+        data = request.json or {}
         message = data.get('message')
         task_type = data.get('task_type', 'chat')
         requested_model = data.get('model', 'mistral')  # Default to mistral if not specified
@@ -64,7 +64,7 @@ async def chat():
 @bp.route('/analyze', methods=['POST'])
 async def analyze_document():
     try:
-        data = request.json
+        data = request.json or {}
         document = data.get('document')
         analysis_type = data.get('analysis_type', 'legal_research')
         
@@ -91,7 +91,7 @@ async def analyze_document():
 @bp.route('/draft', methods=['POST'])
 async def draft_document():
     try:
-        data = request.json
+        data = request.json or {}
         template = data.get('template')
         details = data.get('details')
         doc_type = data.get('doc_type', 'document_drafting')
@@ -119,7 +119,7 @@ async def draft_document():
 @bp.route('/rights', methods=['POST'])
 async def explain_rights():
     try:
-        data = request.json
+        data = request.json or {}
         topic = data.get('topic')
         jurisdiction = data.get('jurisdiction')
         
@@ -149,7 +149,7 @@ async def explain_rights():
 @bp.route('/procedure', methods=['POST'])
 async def explain_procedure():
     try:
-        data = request.json
+        data = request.json or {}
         procedure_type = data.get('procedure_type')
         jurisdiction = data.get('jurisdiction')
         
@@ -179,7 +179,7 @@ async def explain_procedure():
 @bp.route('/precedent', methods=['POST'])
 async def search_precedents():
     try:
-        data = request.json
+        data = request.json or {}
         case_details = data.get('case_details')
         jurisdiction = data.get('jurisdiction')
         
@@ -209,7 +209,7 @@ async def search_precedents():
 @bp.route('/statute', methods=['POST'])
 async def interpret_statute():
     try:
-        data = request.json
+        data = request.json or {}
         statute = data.get('statute')
         context = data.get('context')
         
@@ -239,7 +239,7 @@ async def interpret_statute():
 @bp.route('/review-agreement', methods=['POST'])
 async def review_agreement():
     try:
-        data = request.json
+        data = request.json or {}
         agreement = data.get('agreement')
         focus_areas = data.get('focus_areas', [])
         
@@ -269,7 +269,7 @@ async def review_agreement():
 @bp.route('/form-guidance', methods=['POST'])
 async def provide_form_guidance():
     try:
-        data = request.json
+        data = request.json or {}
         form_type = data.get('form_type')
         jurisdiction = data.get('jurisdiction')
         

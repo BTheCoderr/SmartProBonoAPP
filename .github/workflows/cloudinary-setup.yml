@@ -2,7 +2,7 @@ name: Cloudinary Setup & Management
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
     paths:
       - 'backend/services/cloudinary_service.py'
       - 'backend/config/cloudinary_config.py'
@@ -52,4 +52,4 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          rm -f backend/.env 
+          rm -f backend/.env

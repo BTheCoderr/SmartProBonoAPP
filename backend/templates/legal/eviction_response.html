@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Answer to Eviction Complaint</title>
+    <style>
+        body {
+            font-family: Times-Roman;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 1in;
+        }
+        .court-info {
+            text-align: center;
+            margin-bottom: 2em;
+            font-weight: bold;
+        }
+        .case-info {
+            margin-bottom: 2em;
+        }
+        .party-info {
+            margin-bottom: 1em;
+        }
+        .section-header {
+            font-weight: bold;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            text-decoration: underline;
+        }
+        .signature {
+            margin-top: 3em;
+        }
+        .signature-line {
+            border-top: 1px solid black;
+            width: 200px;
+            margin-top: 2em;
+        }
+        .certificate {
+            margin-top: 3em;
+            font-size: 10pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="court-info">
+        {{ court_name }}<br>
+        COUNTY OF [COUNTY NAME]<br>
+        STATE OF [STATE NAME]
+    </div>
+
+    <div class="case-info">
+        Case No. {{ case_number }}
+    </div>
+
+    <div class="party-info">
+        {{ landlord_name }},<br>
+        Plaintiff/Landlord<br><br>
+        v.<br><br>
+        {{ tenant_name }},<br>
+        Defendant/Tenant
+    </div>
+
+    <div class="section-header">
+        ANSWER TO EVICTION COMPLAINT
+    </div>
+
+    <p>COMES NOW, {{ tenant_name }}, Defendant in the above-entitled action, and in response to Plaintiff's Complaint for Eviction, states as follows:</p>
+
+    <div class="section-header">ADMISSIONS AND DENIALS</div>
+    <ol>
+        <li>Defendant admits residing at {{ tenant_address }}.</li>
+        <li>Defendant received a notice of eviction on {{ notice_date }}.</li>
+        <li>All other allegations in the Complaint are denied.</li>
+    </ol>
+
+    <div class="section-header">AFFIRMATIVE DEFENSES</div>
+    <ol>
+        {% for defense in defenses %}
+        <li>{{ defense }}</li>
+        {% endfor %}
+    </ol>
+
+    <div class="section-header">COUNTERCLAIMS</div>
+    <ol>
+        {% for counterclaim in counterclaims %}
+        <li>{{ counterclaim }}</li>
+        {% endfor %}
+    </ol>
+
+    <div class="section-header">PRAYER FOR RELIEF</div>
+    <p>WHEREFORE, Defendant respectfully requests that the Court:</p>
+    <ol>
+        <li>Dismiss Plaintiff's Complaint for Eviction;</li>
+        <li>{{ relief_requested }}</li>
+        <li>Grant such other relief as the Court deems just and proper.</li>
+    </ol>
+
+    <div class="signature">
+        Dated: {{ response_date }}<br><br>
+        Respectfully submitted,
+        <div class="signature-line">
+            {{ tenant_name }}<br>
+            Defendant/Tenant<br>
+            {{ tenant_address }}
+        </div>
+    </div>
+
+    <div class="certificate">
+        <div class="section-header">CERTIFICATE OF SERVICE</div>
+        <p>I hereby certify that on {{ response_date }}, a true and correct copy of the foregoing Answer to Eviction Complaint was served upon:</p>
+        <p>
+            {{ landlord_name }}<br>
+            {{ landlord_address }}
+        </p>
+        <p>By: [ ] First Class Mail [ ] Hand Delivery [ ] Electronic Filing System</p>
+        <div class="signature-line">
+            {{ tenant_name }}
+        </div>
+    </div>
+</body>
+</html> 

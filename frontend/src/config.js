@@ -1,6 +1,6 @@
 const config = {
-  apiUrl: process.env.REACT_APP_API_URL || 'https://smartprobonoapp.onrender.com',
-  wsUrl: process.env.REACT_APP_WS_URL || 'wss://smartprobonoapp.onrender.com',
+  apiUrl: process.env.REACT_APP_API_URL || 'http://localhost:5003',
+  wsUrl: process.env.REACT_APP_WS_URL || 'ws://localhost:5003',
   env: process.env.NODE_ENV || 'development',
   support: {
     email: 'support@smartprobono.org',
@@ -9,7 +9,7 @@ const config = {
     responseTime: '24-48 hours'
   },
   features: {
-    enableWebSocket: false, // Disable WebSocket for now until we implement it properly
+    enableWebSocket: true, // Enable WebSocket to use the notification system
     enableAnalytics: true,
     enableFeedback: true,
   }
@@ -17,5 +17,6 @@ const config = {
 
 // Export the API_URL for files that import it directly
 export const API_URL = config.apiUrl;
+export const API_BASE_URL = config.apiUrl;
 
 export default config; 

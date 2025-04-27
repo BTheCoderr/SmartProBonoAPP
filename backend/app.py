@@ -1,171 +1,139 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+"""Flask application factory"""
 import os
-import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from flask import Flask
+from logging.handlers import RotatingFileHandler
+from backend.extensions import init_extensions
+from backend.database.mongo import mongo
+from backend.middleware.security import SecurityMiddleware
+from typing import Dict, Any, Optional, Union
 
 # Load environment variables
 load_dotenv()
 
-# Initialize app
-app = Flask(__name__)
+def configure_logging(app):
+    """Configure logging for the application"""
+    if not app.debug:
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        file_handler = RotatingFileHandler('logs/smartprobono.log', maxBytes=10240, backupCount=10)
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        ))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('SmartProBono startup')
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = app.logger
+def create_app(test_config: Optional[Union[str, Dict[str, Any]]] = None):
+    """Create and configure the Flask application"""
+    app = Flask(__name__, instance_relative_config=True)
+    
+    # Configure logging
+    configure_logging(app)
 
-# Import routes
-from routes.legal_ai import bp as legal_ai
-from routes.contracts import contracts
-from routes.performance import performance
+    # Default configuration
+    app.config.from_mapping(
+        SECRET_KEY=os.environ.get('SECRET_KEY', 'dev'),
+        JWT_SECRET_KEY=os.environ.get('JWT_SECRET_KEY', 'dev'),
+        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL', 'sqlite:///app.db'),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        MONGO_URI=os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/smartprobono'),
+        MAIL_SERVER=os.environ.get('MAIL_SERVER', 'smtp.gmail.com'),
+        MAIL_PORT=int(os.environ.get('MAIL_PORT', 587)),
+        MAIL_USE_TLS=os.environ.get('MAIL_USE_TLS', 'true').lower() == 'true',
+        MAIL_USERNAME=os.environ.get('MAIL_USERNAME'),
+        MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD'),
+        MAIL_DEFAULT_SENDER=os.environ.get('MAIL_DEFAULT_SENDER'),
+        # Security settings
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE='Lax',
+        PERMANENT_SESSION_LIFETIME=timedelta(days=1),
+        REMEMBER_COOKIE_SECURE=True,
+        REMEMBER_COOKIE_HTTPONLY=True,
+        REMEMBER_COOKIE_SAMESITE='Lax',
+        # CORS settings
+        CORS_ORIGINS=['https://smartprobono.org', 'https://app.smartprobono.org'],
+        CORS_METHODS=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        CORS_ALLOW_HEADERS=['Content-Type', 'Authorization'],
+        CORS_EXPOSE_HEADERS=['Content-Range', 'X-Total-Count'],
+        CORS_SUPPORTS_CREDENTIALS=True,
+        # Rate limiting
+        RATELIMIT_DEFAULT='100 per minute',
+        RATELIMIT_STORAGE_URL='memory://',  # Use Redis in production
+        # File upload
+        MAX_CONTENT_LENGTH=16 * 1024 * 1024,  # 16MB
+        UPLOAD_FOLDER=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads'),
+        ALLOWED_EXTENSIONS={'pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'}
+    )
 
-# Conditionally import uploads if available
-try:
-    from routes.uploads import uploads
-    has_uploads = True
-except ImportError:
-    logger.warning("Could not import uploads blueprint. Cloudinary integration may not be available.")
-    has_uploads = False
+    # Override default configuration for testing
+    if test_config is not None:
+        if isinstance(test_config, dict):
+            app.config.update(test_config)
+        else:
+            # If test_config is a string, assume it's a config filename
+            app.config.from_pyfile(test_config)
 
-# Configure CORS for both development and production
-default_origins = ['http://localhost:3000', 'https://smartprobono.netlify.app']
-allowed_origins = os.environ.get('ALLOWED_ORIGINS', ','.join(default_origins)).split(',')
-CORS(app, resources={r"/*": {"origins": allowed_origins, "methods": ["GET", "POST", "OPTIONS"], "allow_headers": ["Content-Type"]}})
+    # Initialize extensions
+    init_extensions(app)
+    
+    # Initialize security middleware
+    SecurityMiddleware(app)
+    
+    # Initialize MongoDB with app context
+    with app.app_context():
+        try:
+            mongo.init_client(app.config['MONGO_URI'])
+            app.logger.info("MongoDB initialized successfully")
+        except Exception as e:
+            app.logger.warning(f"Failed to initialize MongoDB: {str(e)}")
+            app.logger.warning("Continuing without MongoDB support")
 
-# Register blueprints
-app.register_blueprint(legal_ai)
-app.register_blueprint(contracts)
-app.register_blueprint(performance)
-if has_uploads:
-    app.register_blueprint(uploads)
+    # Import blueprints after app creation
+    from .routes.auth import bp as auth_bp
+    from .routes.templates import bp as templates_bp
+    from .routes.notifications import bp as notifications_bp
+    from .routes.document_scanner import scanner_bp
+    from .routes.legal_ai import bp as legal_ai_bp
+    from .routes.admin import bp as admin_bp
+    from .routes.paralegal import paralegal_bp
+    from .routes.form_templates import form_templates_bp
+    from .routes.intake import bp as intake_bp
+    from .routes.rights import bp as rights_bp
+    from .routes.legal_templates import bp as legal_templates_bp
 
-# Create data directory if it doesn't exist
-if not os.path.exists('data'):
-    os.makedirs('data')
-    os.makedirs('data/feedback')
-    os.makedirs('data/conversations')
-
-@app.route('/')
-def home():
-    return 'SmartProBono API is running!'
-
-@app.route('/api/feedback', methods=['POST'])
-def submit_feedback():
+    # Register blueprints
+    blueprints = [
+        auth_bp,
+        templates_bp,
+        notifications_bp,
+        scanner_bp,
+        legal_ai_bp,
+        admin_bp,
+        paralegal_bp,
+        form_templates_bp,
+        intake_bp,
+        rights_bp,
+        legal_templates_bp
+    ]
+    
     try:
-        feedback_data = request.json
-        if not feedback_data:
-            return jsonify({'error': 'No feedback data provided'}), 400
-            
-        # Add timestamp
-        feedback_data['timestamp'] = datetime.now().isoformat()
-        
-        # Save feedback to a JSON file
-        filename = f"data/feedback/feedback_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        with open(filename, 'w') as f:
-            json.dump(feedback_data, f, indent=2)
-            
-        return jsonify({'message': 'Feedback submitted successfully'}), 200
+        for blueprint in blueprints:
+            if blueprint is not None:  # Type check to satisfy mypy
+                app.register_blueprint(blueprint)
+        app.logger.info('All blueprints registered successfully')
     except Exception as e:
-        logger.error(f"Error submitting feedback: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/feedback/analytics', methods=['GET'])
-def get_feedback_analytics():
-    try:
-        feedback_files = os.listdir('data/feedback')
-        all_feedback = []
-        
-        for file in feedback_files:
-            if file.endswith('.json'):
-                with open(f'data/feedback/{file}', 'r') as f:
-                    feedback = json.load(f)
-                    if feedback:  # Ensure feedback is not None
-                        all_feedback.append(feedback)
-        
-        # Handle empty feedback list
-        if not all_feedback:
-            return jsonify({
-                'total_feedback': 0,
-                'average_rating': 0,
-                'accuracy_breakdown': {'high': 0, 'medium': 0, 'low': 0},
-                'helpfulness_breakdown': {'very': 0, 'somewhat': 0, 'not': 0},
-                'clarity_breakdown': {'clear': 0, 'moderate': 0, 'unclear': 0},
-                'recent_feedback': []
-            }), 200
-            
-        # Calculate analytics
-        analytics = {
-            'total_feedback': len(all_feedback),
-            'average_rating': sum(f.get('rating', 0) for f in all_feedback) / len(all_feedback),
-            'accuracy_breakdown': {
-                'high': sum(1 for f in all_feedback if f.get('accuracy') == 'high'),
-                'medium': sum(1 for f in all_feedback if f.get('accuracy') == 'medium'),
-                'low': sum(1 for f in all_feedback if f.get('accuracy') == 'low')
-            },
-            'helpfulness_breakdown': {
-                'very': sum(1 for f in all_feedback if f.get('helpfulness') == 'very'),
-                'somewhat': sum(1 for f in all_feedback if f.get('helpfulness') == 'somewhat'),
-                'not': sum(1 for f in all_feedback if f.get('helpfulness') == 'not')
-            },
-            'clarity_breakdown': {
-                'clear': sum(1 for f in all_feedback if f.get('clarity') == 'clear'),
-                'moderate': sum(1 for f in all_feedback if f.get('clarity') == 'moderate'),
-                'unclear': sum(1 for f in all_feedback if f.get('clarity') == 'unclear')
-            },
-            'recent_feedback': sorted(all_feedback, key=lambda x: x.get('timestamp', ''), reverse=True)[:10]
-        }
-        
-        return jsonify(analytics), 200
-    except Exception as e:
-        logger.error(f"Error getting feedback analytics: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/conversations', methods=['POST'])
-def save_conversation():
-    try:
-        conversation_data = request.json
-        if not conversation_data:
-            return jsonify({'error': 'No conversation data provided'}), 400
-            
-        # Add timestamp if not present
-        if 'timestamp' not in conversation_data:
-            conversation_data['timestamp'] = datetime.now().isoformat()
-        
-        # Save conversation to a JSON file
-        filename = f"data/conversations/conversation_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        with open(filename, 'w') as f:
-            json.dump(conversation_data, f, indent=2)
-            
-        return jsonify({'message': 'Conversation saved successfully'}), 200
-    except Exception as e:
-        logger.error(f"Error saving conversation: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/conversations/<user_id>', methods=['GET'])
-def get_conversations(user_id):
-    try:
-        if not user_id:
-            return jsonify({'error': 'User ID is required'}), 400
-            
-        conversation_files = os.listdir('data/conversations')
-        user_conversations = []
-        
-        for file in conversation_files:
-            if file.endswith('.json'):
-                with open(f'data/conversations/{file}', 'r') as f:
-                    conversation = json.load(f)
-                    if conversation and conversation.get('user_id') == user_id:
-                        user_conversations.append(conversation)
-        
-        return jsonify(sorted(user_conversations, key=lambda x: x.get('timestamp', ''), reverse=True)), 200
-    except Exception as e:
-        logger.error(f"Error getting conversations: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+        app.logger.error(f'Error registering blueprints: {str(e)}')
+    
+    return app
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5002))
-    app.run(host='0.0.0.0', port=port)
+    app = create_app()
+    port = int(os.environ.get('PORT', 5003))
+    app.run(host='0.0.0.0', port=port, debug=True)
 
 

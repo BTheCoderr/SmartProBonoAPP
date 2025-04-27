@@ -9,7 +9,12 @@ import {
   Card,
   CardContent,
   CardActions,
-  Divider
+  Divider,
+  Chip,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -19,9 +24,13 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import FlightIcon from '@mui/icons-material/Flight';
 import BuildIcon from '@mui/icons-material/Build';
 import BalanceIcon from '@mui/icons-material/Balance';
+import PersonIcon from '@mui/icons-material/Person';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useAuth } from '../context/AuthContext';
 
 function HomePage() {
   const navigate = useNavigate();
+  const { mockLogin, isAuthenticated, currentUser } = useAuth();
 
   const features = [
     {
@@ -35,6 +44,12 @@ function HomePage() {
       description: "Get instant information about your legal rights and protections",
       icon: <GavelIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
       path: '/resources/rights'
+    },
+    {
+      title: "Virtual Paralegal",
+      description: "AI-powered paralegal assistance for attorneys and legal aid",
+      icon: <PersonIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
+      path: '/virtual-paralegal'
     },
     {
       title: "Immigration Help",
@@ -121,6 +136,29 @@ function HomePage() {
                 Get instant legal assistance, document generation, and professional guidance - all in one place.
               </Typography>
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                {!isAuthenticated && (
+                  <Button 
+                    variant="contained" 
+                    color="secondary" 
+                    onClick={mockLogin} 
+                    sx={{ mr: 2 }}
+                  >
+                    TEST LOGIN
+                  </Button>
+                )}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate('/scan-document')}
+                  sx={{ mr: 2 }}
+                >
+                  GO TO SCANNER
+                </Button>
+                {isAuthenticated && (
+                  <Typography variant="body2" sx={{ mt: 2, color: 'success.main' }}>
+                    Logged in as: {currentUser?.first_name} {currentUser?.last_name}
+                  </Typography>
+                )}
                 <Button
                   variant="contained"
                   size="large"
@@ -252,6 +290,102 @@ function HomePage() {
           ))}
         </Grid>
       </Container>
+
+      {/* Virtual Paralegal Assistant Highlight */}
+      <Box sx={{ 
+        bgcolor: 'secondary.light', 
+        py: 6
+      }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <Typography 
+                variant="h4" 
+                component="h2" 
+                gutterBottom 
+                fontWeight="bold"
+                sx={{ color: 'primary.main' }}
+              >
+                Virtual Paralegal Assistant
+              </Typography>
+              <Typography variant="h6" paragraph sx={{ mb: 3 }}>
+                Helping lawyers and legal aid organizations serve more clients efficiently
+              </Typography>
+              <Typography paragraph>
+                Our AI-powered Virtual Paralegal Assistant automates client intake, document preparation, 
+                and case screening - allowing legal professionals to focus on what matters most.
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
+                <Chip label="Client Intake" color="primary" />
+                <Chip label="Document Automation" color="primary" />
+                <Chip label="Case Screening" color="primary" />
+                <Chip label="Self-Service Legal Help" color="primary" />
+              </Box>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                size="large" 
+                onClick={() => navigate('/virtual-paralegal')}
+                sx={{ mt: 2 }}
+              >
+                Learn More
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box 
+                sx={{ 
+                  p: 4, 
+                  bgcolor: 'background.paper', 
+                  borderRadius: 2,
+                  boxShadow: 3
+                }}
+              >
+                <Typography variant="h6" gutterBottom color="primary.main">
+                  What Our Virtual Paralegal Can Do:
+                </Typography>
+                <List>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CheckCircleIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="Save 15+ hours per week on admin tasks" 
+                      secondary="Automate routine document preparation and client communication"
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CheckCircleIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="Streamline client intake" 
+                      secondary="Digital forms with automated data extraction and processing"
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CheckCircleIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="Pre-screen potential clients" 
+                      secondary="Use customizable questionnaires to determine eligibility"
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CheckCircleIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary="Help more clients with limited resources" 
+                      secondary="Perfect for solo attorneys, small firms, and legal aid organizations"
+                    />
+                  </ListItem>
+                </List>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
 
       {/* Call to Action */}
       <Box sx={{ bgcolor: '#f5f5f5', py: 8 }}>

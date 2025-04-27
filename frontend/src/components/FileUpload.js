@@ -1,8 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { Box, Button, Typography, CircularProgress, Alert } from '@mui/material';
+import { Box, Button, Typography, CircularProgress, Alert, AlertTitle, FormHelperText, Paper } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import DoneIcon from '@mui/icons-material/Done';
+import InfoIcon from '@mui/icons-material/Info';
 import axios from 'axios';
-import { API_URL } from '../config';
+import config from '../config';
 
 const FileUpload = ({ 
   onUploadComplete, 
@@ -16,27 +19,39 @@ const FileUpload = ({
   const [error, setError] = useState(null);
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const getUploadSignature = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/uploads/signature?type=${uploadType}`);
+      const response = await axios.get(`${config.apiUrl}/api/uploads/signature?type=${uploadType}`);
       return response.data;
     } catch (error) {
       console.error('Error getting upload signature:', error);
-      throw new Error('Failed to get upload credentials');
+      if (error.response) {
+        throw new Error(`Server error: ${error.response.data.error || error.response.statusText}`);
+      } else if (error.request) {
+        throw new Error('Network error: Unable to connect to the server');
+      } else {
+        throw new Error('Error preparing upload: ' + error.message);
+      }
     }
   };
 
   const validateFile = (file) => {
     // Check file size
     if (file.size > maxFileSize) {
-      throw new Error(`File size exceeds the maximum allowed (${maxFileSize / (1024 * 1024)}MB)`);
+      throw new Error(`File size exceeds the maximum allowed (${(maxFileSize / (1024 * 1024)).toFixed(1)}MB)`);
     }
 
     // Check file format
     const extension = file.name.split('.').pop().toLowerCase();
     if (!allowedFormats.includes(extension)) {
       throw new Error(`Invalid file format. Allowed formats: ${allowedFormats.join(', ')}`);
+    }
+    
+    // Check if file is empty
+    if (file.size === 0) {
+      throw new Error('File is empty');
     }
 
     return true;
@@ -66,13 +81,32 @@ const FileUpload = ({
       return response.data;
     } catch (error) {
       console.error('Error uploading to Cloudinary:', error);
-      throw new Error('Failed to upload file to cloud storage');
+      if (error.response) {
+        throw new Error(`Upload failed: ${error.response.data.error?.message || 'Server error'}`);
+      } else if (error.request) {
+        throw new Error('Network error: Unable to upload file');
+      } else {
+        throw new Error('Failed to upload file: ' + error.message);
+      }
     }
   };
 
   const handleFileChange = (event) => {
-    setFiles(Array.from(event.target.files));
+    const selectedFiles = Array.from(event.target.files);
+    setFiles(selectedFiles);
     setError(null);
+    setUploadSuccess(false);
+    
+    // Early validation to show errors before upload
+    try {
+      if (selectedFiles.length === 0) {
+        return;
+      }
+      
+      selectedFiles.forEach(validateFile);
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   const handleSubmit = useCallback(async (event) => {
@@ -86,6 +120,7 @@ const FileUpload = ({
     setUploading(true);
     setError(null);
     setProgress(0);
+    setUploadSuccess(false);
     
     try {
       // Validate files
@@ -110,8 +145,14 @@ const FileUpload = ({
         onUploadComplete(uploadResults[0]);
       }
       
-      // Reset the file input
+      // Reset the file input and show success
       setFiles([]);
+      setUploadSuccess(true);
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setUploadSuccess(false);
+      }, 3000);
     } catch (error) {
       setError(error.message || 'An error occurred during upload');
     } finally {
@@ -119,9 +160,27 @@ const FileUpload = ({
     }
   }, [files, onUploadComplete, multipleFiles, uploadType]);
 
+  const formatFileSize = (bytes) => {
+    if (bytes < 1024) return bytes + ' bytes';
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / 1048576).toFixed(1) + ' MB';
+  };
+
   return (
     <Box sx={{ mt: 2, mb: 2 }}>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          <AlertTitle>Upload Error</AlertTitle>
+          {error}
+        </Alert>
+      )}
+      
+      {uploadSuccess && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          <AlertTitle>Success!</AlertTitle>
+          File uploaded successfully.
+        </Alert>
+      )}
       
       <form onSubmit={handleSubmit}>
         <input
@@ -133,31 +192,73 @@ const FileUpload = ({
           accept={allowedFormats.map(format => `.${format}`).join(',')}
         />
         
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center',
+          padding: 2,
+          border: '1px dashed',
+          borderColor: 'divider',
+          borderRadius: 1,
+          backgroundColor: 'background.paper'
+        }}>
           <label htmlFor="fileUpload">
             <Button
               variant="outlined"
               component="span"
-              startIcon={<CloudUploadIcon />}
+              startIcon={files.length > 0 ? <DoneIcon /> : <CloudUploadIcon />}
               disabled={uploading}
               sx={{ mb: 2 }}
+              fullWidth
             >
-              {buttonText}
+              {files.length > 0 ? 'Change File' : buttonText}
             </Button>
           </label>
           
           {files.length > 0 && (
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {files.length} file(s) selected: {files.map(f => f.name).join(', ')}
-            </Typography>
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: 1, 
+                mb: 2, 
+                width: '100%', 
+                backgroundColor: 'background.default',
+                border: '1px solid',
+                borderColor: 'divider'
+              }}
+            >
+              {files.map((file, index) => (
+                <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: index < files.length - 1 ? 1 : 0 }}>
+                  <UploadFileIcon sx={{ mr: 1, fontSize: 20, color: 'primary.main' }} />
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Typography variant="body2" sx={{ 
+                      overflow: 'hidden', 
+                      textOverflow: 'ellipsis', 
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {file.name}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {formatFileSize(file.size)}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Paper>
           )}
+          
+          <FormHelperText sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+            <InfoIcon sx={{ fontSize: 16, mr: 0.5, color: 'info.main' }} /> 
+            Accepted formats: {allowedFormats.join(', ')} (Max size: {(maxFileSize / (1024 * 1024)).toFixed(1)}MB)
+          </FormHelperText>
           
           <Button
             variant="contained"
             color="primary"
             type="submit"
-            disabled={uploading || files.length === 0}
+            disabled={uploading || files.length === 0 || error !== null}
             sx={{ mt: 1 }}
+            fullWidth
           >
             {uploading ? (
               <>

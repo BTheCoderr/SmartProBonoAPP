@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -10,7 +11,13 @@ import {
   TextField,
   Chip,
   Paper,
-  InputAdornment
+  InputAdornment,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  CardActions
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -18,8 +25,96 @@ import SchoolIcon from '@mui/icons-material/School';
 import GavelIcon from '@mui/icons-material/Gavel';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import PageLayout from '../components/PageLayout';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import ArticleIcon from '@mui/icons-material/Article';
+import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
+import LinkIcon from '@mui/icons-material/Link';
 
-function Resources() {
+const resourceCategories = [
+  {
+    title: 'Immigration Resources',
+    description: 'Essential documents and guides for immigration processes',
+    resources: [
+      {
+        title: 'Immigration Forms Guide',
+        type: 'pdf',
+        description: 'Step-by-step guide for common immigration forms',
+        link: '/resources/immigration/forms-guide.pdf',
+        icon: <PictureAsPdfIcon />,
+      },
+      {
+        title: 'Document Checklist',
+        type: 'pdf',
+        description: 'Comprehensive checklist of required documents',
+        link: '/resources/immigration/document-checklist.pdf',
+        icon: <PictureAsPdfIcon />,
+      },
+      {
+        title: 'Know Your Rights',
+        type: 'article',
+        description: 'Understanding your rights during immigration proceedings',
+        link: '/rights/immigration',
+        icon: <ArticleIcon />,
+      },
+    ],
+  },
+  {
+    title: 'Legal Guides',
+    description: 'Comprehensive guides on various legal topics',
+    resources: [
+      {
+        title: 'Legal Process Overview',
+        type: 'video',
+        description: 'Video guide explaining the legal process',
+        link: '/resources/guides/legal-process.mp4',
+        icon: <VideoLibraryIcon />,
+      },
+      {
+        title: 'Document Templates',
+        type: 'template',
+        description: 'Common legal document templates',
+        link: '/resources/templates',
+        icon: <DescriptionIcon />,
+      },
+    ],
+  },
+  {
+    title: 'External Resources',
+    description: 'Helpful links to government and non-profit organizations',
+    resources: [
+      {
+        title: 'USCIS Official Website',
+        type: 'link',
+        description: 'U.S. Citizenship and Immigration Services',
+        link: 'https://www.uscis.gov',
+        icon: <LinkIcon />,
+      },
+      {
+        title: 'Immigration Court Information',
+        type: 'link',
+        description: 'Executive Office for Immigration Review',
+        link: 'https://www.justice.gov/eoir',
+        icon: <LinkIcon />,
+      },
+    ],
+  },
+];
+
+const Resources = ({ type = 'standard' }) => {
+  const navigate = useNavigate();
+
+  const handleAccessDocuments = () => {
+    navigate('/documents');
+  };
+
+  const handleLearnMoreRights = () => {
+    navigate('/rights');
+  };
+
+  const handleLearnMoreProcedures = () => {
+    navigate('/procedures');
+  };
+
   return (
     <PageLayout
       title="Legal Resources"
@@ -27,209 +122,84 @@ function Resources() {
     >
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ mb: 4 }}>
-          <TextField
-            fullWidth
-            placeholder="Search resources..."
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon color="action" />
-                </InputAdornment>
-              ),
-              sx: {
-                bgcolor: 'white',
-                borderRadius: 2,
-                '& fieldset': {
-                  borderColor: 'divider'
-                }
-              }
-            }}
-          />
+          <Typography variant="h4" component="h1" gutterBottom>
+            Legal Resources
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary" paragraph>
+            Access our collection of legal resources, guides, and templates to help you understand and navigate your legal journey.
+          </Typography>
         </Box>
 
-        <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 600 }}>
-          <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <DescriptionIcon color="primary" />
-            Document Resources
-          </Box>
-        </Typography>
-
-        <Grid container spacing={3} sx={{ mb: 6 }}>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Legal Forms Library</Typography>
-                <Typography color="text.secondary" sx={{ mb: 2 }}>
-                  Access common legal forms and documents
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Chip label="Forms" sx={{ mr: 1, mb: 1 }} />
-                  <Chip label="Templates" sx={{ mb: 1 }} />
-                </Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    py: 1
-                  }}
-                >
-                  Access Documents
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Court Documents</Typography>
-                <Typography color="text.secondary" sx={{ mb: 2 }}>
-                  Standard court filing templates and examples
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Chip label="Court" sx={{ mr: 1, mb: 1 }} />
-                  <Chip label="Forms" sx={{ mb: 1 }} />
-                </Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    py: 1
-                  }}
-                >
-                  Access Documents
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Legal Guides</Typography>
-                <Typography color="text.secondary" sx={{ mb: 2 }}>
-                  Step-by-step guides for legal procedures
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Chip label="Guides" sx={{ mr: 1, mb: 1 }} />
-                  <Chip label="Education" sx={{ mb: 1 }} />
-                </Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    py: 1
-                  }}
-                >
-                  Access Documents
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-
-        <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 600 }}>
-          <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <SchoolIcon color="primary" />
-            Educational Resources
-          </Box>
-        </Typography>
-
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Know Your Rights</Typography>
-                <Typography color="text.secondary" sx={{ mb: 2 }}>
-                  Essential information about legal rights and protections
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Chip label="Rights" sx={{ mr: 1, mb: 1 }} />
-                  <Chip label="Legal" sx={{ mb: 1 }} />
-                </Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    py: 1
-                  }}
-                >
-                  Learn More
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Legal Procedures</Typography>
-                <Typography color="text.secondary" sx={{ mb: 2 }}>
-                  Understanding court procedures and legal processes
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Chip label="Procedures" sx={{ mr: 1, mb: 1 }} />
-                  <Chip label="Court" sx={{ mb: 1 }} />
-                </Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    py: 1
-                  }}
-                >
-                  Learn More
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Legal Terms</Typography>
-                <Typography color="text.secondary" sx={{ mb: 2 }}>
-                  Dictionary of common legal terms and definitions
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Chip label="Terms" sx={{ mr: 1, mb: 1 }} />
-                  <Chip label="Dictionary" sx={{ mb: 1 }} />
-                </Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    py: 1
-                  }}
-                >
-                  Learn More
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
+        <Grid container spacing={4}>
+          {resourceCategories.map((category, index) => (
+            <Grid item xs={12} key={index}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom>
+                    {category.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" paragraph>
+                    {category.description}
+                  </Typography>
+                  <Divider sx={{ my: 2 }} />
+                  <List>
+                    {category.resources.map((resource, resourceIndex) => (
+                      <ListItem
+                        key={resourceIndex}
+                        sx={{
+                          mb: 2,
+                          bgcolor: 'background.paper',
+                          borderRadius: 1,
+                          '&:hover': {
+                            bgcolor: 'action.hover',
+                          },
+                        }}
+                      >
+                        <ListItemIcon>{resource.icon}</ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Box display="flex" alignItems="center" gap={1}>
+                              {resource.title}
+                              <Chip
+                                label={resource.type}
+                                size="small"
+                                color={
+                                  resource.type === 'pdf'
+                                    ? 'error'
+                                    : resource.type === 'video'
+                                    ? 'primary'
+                                    : 'default'
+                                }
+                              />
+                            </Box>
+                          }
+                          secondary={resource.description}
+                        />
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          href={resource.link}
+                          target={resource.type === 'link' ? '_blank' : '_self'}
+                          rel={resource.type === 'link' ? 'noopener noreferrer' : ''}
+                        >
+                          {resource.type === 'link' ? 'Visit' : 'View'}
+                        </Button>
+                      </ListItem>
+                    ))}
+                  </List>
+                </CardContent>
+                <CardActions>
+                  <Button size="small" color="primary">
+                    View All {category.title}
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
         </Grid>
       </Container>
     </PageLayout>
   );
-}
+};
 
 export default Resources;

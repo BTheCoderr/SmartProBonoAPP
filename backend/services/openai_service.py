@@ -13,8 +13,12 @@ SUPPORT_EMAIL = os.getenv('SUPPORT_EMAIL', 'support@smartprobono.org')
 SUPPORT_HOURS = '9:00 AM - 5:00 PM EST'
 SUPPORT_RESPONSE_TIME = '24-48 hours'
 
+# Don't raise error during initialization
 if not openai.api_key:
-    raise ValueError("OpenAI API key not found in environment variables")
+    print("WARNING: OpenAI API key not found in environment variables")
+    # For development purposes, set a dummy key
+    if os.environ.get('FLASK_ENV') != 'production':
+        openai.api_key = 'dummy_key_for_development'
 
 # Legal domain categories for context
 LEGAL_DOMAINS = {
@@ -124,11 +128,16 @@ Guidelines for responses:
         else:
             support_info = ""
 
-        if "consult" not in ai_response.lower() and "attorney" not in ai_response.lower():
-            ai_response += domain_disclaimer + general_disclaimer
-
-        # Add support information if applicable
-        ai_response += support_info
+        # Ensure ai_response is a string
+        if isinstance(ai_response, dict) and 'text' in ai_response:
+            ai_response = ai_response['text']
+            
+        if isinstance(ai_response, str):
+            if "consult" not in ai_response.lower() and "attorney" not in ai_response.lower():
+                ai_response += domain_disclaimer + general_disclaimer
+                
+            # Add support information if applicable
+            ai_response += support_info
 
         # Log the interaction for quality improvement
         log_interaction(message, ai_response, domain)
