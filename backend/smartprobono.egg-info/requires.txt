@@ -1,0 +1,6 @@
+flask
+flask-sqlalchemy
+flask-jwt-extended
+pymongo
+pillow
+numpy

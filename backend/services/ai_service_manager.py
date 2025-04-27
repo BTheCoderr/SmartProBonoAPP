@@ -185,10 +185,10 @@ class AIServiceManager:
     async def _get_openai_response(self, prompt: str, config: Dict) -> Dict[str, Any]:
         """Implementation for OpenAI models"""
         import openai
-        openai.api_key = self.config['api_keys']['openai']
+        client = openai.AsyncOpenAI(api_key=self.config['api_keys']['openai'])
         
         try:
-            response = await openai.ChatCompletion.acreate(
+            response = await client.chat.completions.create(
                 model=config['model'],
                 messages=[
                     {"role": "system", "content": "You are a helpful legal assistant."},
@@ -198,9 +198,16 @@ class AIServiceManager:
                 temperature=config['temperature']
             )
             
+            # Get token count safely
+            token_count = 0
+            if hasattr(response, 'usage') and response.usage and hasattr(response.usage, 'total_tokens'):
+                token_count = response.usage.total_tokens
+            
             return {
                 'text': response.choices[0].message.content,
-                'tokens': response.usage.total_tokens
+                'tokens': token_count,
+                'model': config['model'],
+                'provider': 'openai'
             }
         except Exception as e:
             raise Exception(f"OpenAI API error: {str(e)}")

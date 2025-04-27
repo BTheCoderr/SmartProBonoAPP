@@ -30,6 +30,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SendIcon from '@mui/icons-material/Send';
 import { useNavigate } from 'react-router-dom';
+import ImmigrationIntakeForm from '../components/ImmigrationIntakeForm';
 
 const services = [
   {
@@ -87,6 +88,8 @@ const steps = [
 
 function Immigration() {
   const [activeStep, setActiveStep] = useState(0);
+  const [showIntakeForm, setShowIntakeForm] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
   const navigate = useNavigate();
 
   const handleNext = () => {
@@ -96,12 +99,42 @@ function Immigration() {
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
+  
+  const handleServiceClick = (serviceType) => {
+    setSelectedService(serviceType);
+    setShowIntakeForm(true);
+    // Scroll to the form
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
+  };
 
   return (
     <PageLayout
       title="Immigration Legal Services"
       description="Free assistance with visa applications, citizenship, and other immigration matters"
     >
+      {/* Dashboard Button */}
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'flex-end', 
+        mb: 3,
+        mt: 1
+      }}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => navigate('/immigration-dashboard')}
+          startIcon={<AssignmentIcon />}
+          sx={{ borderRadius: 2 }}
+        >
+          Go to Immigration Dashboard
+        </Button>
+      </Box>
+      
       {/* Services Grid */}
       <Grid container spacing={4} sx={{ mb: 8 }}>
         {services.map((service, index) => (
@@ -149,7 +182,10 @@ function Immigration() {
                 <Button 
                   variant="outlined" 
                   fullWidth
-                  onClick={() => navigate('/legal-chat')}
+                  onClick={() => handleServiceClick(service.title.toLowerCase().includes('family') ? 'family' : 
+                    service.title.toLowerCase().includes('student') ? 'student' : 
+                    service.title.toLowerCase().includes('work') ? 'employment' : 
+                    service.title.toLowerCase().includes('citizenship') ? 'citizenship' : 'other')}
                   sx={{ borderColor: service.color, color: service.color }}
                 >
                   Get Help
@@ -160,108 +196,123 @@ function Immigration() {
         ))}
       </Grid>
 
-      {/* Process Section */}
-      <Paper sx={{ p: 4, mb: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Our Process
-        </Typography>
-        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-          {steps.map((step, index) => (
-            <Step key={index}>
-              <StepLabel
-                StepIconComponent={() => (
-                  <Box
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '50%',
-                      bgcolor: activeStep >= index ? 'primary.main' : 'grey.300',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white'
-                    }}
-                  >
-                    {step.icon}
-                  </Box>
-                )}
-              >
-                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                  {step.label}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {step.description}
-                </Typography>
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 2 }}>
-          <Button
-            variant="outlined"
-            disabled={activeStep === 0}
-            onClick={handleBack}
-          >
-            Back
-          </Button>
-          <Button
-            variant="contained"
-            onClick={activeStep === steps.length - 1 ? () => navigate('/legal-chat') : handleNext}
-          >
-            {activeStep === steps.length - 1 ? 'Start Application' : 'Next'}
-          </Button>
-        </Box>
-      </Paper>
-
-      {/* Free Services Highlight */}
-      <Paper sx={{ p: 4, bgcolor: 'primary.main', color: 'white' }}>
-        <Grid container spacing={4} alignItems="center">
-          <Grid item xs={12} md={8}>
-            <Typography variant="h5" gutterBottom>
-              Need Help With Immigration Paperwork?
-            </Typography>
-            <Typography paragraph>
-              We provide free assistance with document preparation, form filing, and legal guidance for immigration matters. Our team of volunteers and legal professionals is here to help you navigate the immigration process.
-            </Typography>
-            <List>
-              <ListItem>
-                <ListItemIcon>
-                  <CheckCircleIcon sx={{ color: 'white' }} />
-                </ListItemIcon>
-                <ListItemText primary="Free document review and preparation" />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <CheckCircleIcon sx={{ color: 'white' }} />
-                </ListItemIcon>
-                <ListItemText primary="Assistance with form filing" />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <CheckCircleIcon sx={{ color: 'white' }} />
-                </ListItemIcon>
-                <ListItemText primary="Legal guidance and consultation" />
-              </ListItem>
-            </List>
-          </Grid>
-          <Grid item xs={12} md={4} sx={{ textAlign: 'center' }}>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => navigate('/legal-chat')}
-              sx={{ 
-                bgcolor: 'white',
-                color: 'primary.main',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.9)'
-                }
-              }}
+      {showIntakeForm ? (
+        <Box sx={{ mb: 4 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h5">Immigration Intake Form</Typography>
+            <Button 
+              variant="outlined" 
+              onClick={() => setShowIntakeForm(false)}
             >
-              Start Free Consultation
+              Cancel
             </Button>
-          </Grid>
-        </Grid>
-      </Paper>
+          </Box>
+          <ImmigrationIntakeForm 
+            onCancel={() => setShowIntakeForm(false)} 
+            initialServiceType={selectedService}
+          />
+        </Box>
+      ) : (
+        <>
+          {/* Process Section */}
+          <Paper sx={{ p: 4, mb: 4 }}>
+            <Typography variant="h5" gutterBottom>
+              Our Process
+            </Typography>
+            <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
+              {steps.map((step, index) => (
+                <Step key={index}>
+                  <StepLabel
+                    StepIconComponent={() => (
+                      <Box
+                        sx={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: '50%',
+                          bgcolor: activeStep >= index ? 'primary.main' : 'grey.300',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white'
+                        }}
+                      >
+                        {step.icon}
+                      </Box>
+                    )}
+                  >
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                      {step.label}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {step.description}
+                    </Typography>
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 2 }}>
+              <Button
+                variant="outlined"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+              >
+                Back
+              </Button>
+              <Button
+                variant="contained"
+                onClick={activeStep === steps.length - 1 ? () => setShowIntakeForm(true) : handleNext}
+              >
+                {activeStep === steps.length - 1 ? 'Start Application' : 'Next'}
+              </Button>
+            </Box>
+          </Paper>
+
+          {/* Free Services Highlight */}
+          <Paper sx={{ p: 4, bgcolor: 'primary.main', color: 'white' }}>
+            <Grid container spacing={4} alignItems="center">
+              <Grid item xs={12} md={8}>
+                <Typography variant="h5" gutterBottom>
+                  Need Help With Immigration Paperwork?
+                </Typography>
+                <Typography paragraph>
+                  We provide free assistance with document preparation, form filing, and legal guidance for immigration matters. Our team of volunteers and legal professionals is here to help you navigate the immigration process.
+                </Typography>
+                <List>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CheckCircleIcon sx={{ color: 'white' }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Free legal consultations for qualifying individuals" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CheckCircleIcon sx={{ color: 'white' }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Document preparation assistance" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CheckCircleIcon sx={{ color: 'white' }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Access to legal resources and education" />
+                  </ListItem>
+                </List>
+              </Grid>
+              <Grid item xs={12} md={4} sx={{ textAlign: 'center' }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  color="secondary"
+                  onClick={() => setShowIntakeForm(true)}
+                  sx={{ px: 4, py: 1.5, fontWeight: 'bold', boxShadow: 3 }}
+                >
+                  START FREE CONSULTATION
+                </Button>
+              </Grid>
+            </Grid>
+          </Paper>
+        </>
+      )}
     </PageLayout>
   );
 }

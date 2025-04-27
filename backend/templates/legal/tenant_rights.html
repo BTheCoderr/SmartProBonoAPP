@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Know Your Tenant Rights</title>
+    <style>
+        body {
+            font-family: Times-Roman;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 1in;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2em;
+        }
+        .section {
+            margin-bottom: 2em;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 14pt;
+            margin-bottom: 1em;
+            color: #2c3e50;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 0.5em;
+        }
+        .subsection {
+            margin: 1em 0;
+        }
+        .subsection-title {
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+        .important-note {
+            background-color: #f8f9fa;
+            border-left: 4px solid #e74c3c;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        .checklist {
+            margin: 1em 0;
+            padding-left: 1.5em;
+        }
+        .footer {
+            margin-top: 3em;
+            font-size: 10pt;
+            text-align: center;
+            border-top: 1px solid #bdc3c7;
+            padding-top: 1em;
+        }
+        .contact-info {
+            margin-top: 2em;
+            padding: 1em;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>KNOW YOUR TENANT RIGHTS</h1>
+        <p>A Guide for Tenants in {{ state_name }}</p>
+        <p>Last Updated: {{ current_date }}</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Basic Tenant Rights</div>
+        <ul>
+            <li>Right to a habitable dwelling</li>
+            <li>Right to privacy and quiet enjoyment</li>
+            <li>Protection against discrimination</li>
+            <li>Right to proper notice before landlord entry</li>
+            <li>Right to request repairs and maintenance</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Rent and Security Deposits</div>
+        <div class="subsection">
+            <div class="subsection-title">Rent Payments</div>
+            <ul>
+                <li>Due date and grace periods</li>
+                <li>Acceptable payment methods</li>
+                <li>Late fees and penalties</li>
+                <li>Rent increase regulations</li>
+            </ul>
+        </div>
+        <div class="subsection">
+            <div class="subsection-title">Security Deposits</div>
+            <ul>
+                <li>Maximum amount: {{ max_security_deposit }}</li>
+                <li>Return timeline: {{ deposit_return_timeline }}</li>
+                <li>Allowable deductions</li>
+                <li>Interest requirements</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Maintenance and Repairs</div>
+        <div class="important-note">
+            <strong>Important:</strong> Always submit maintenance requests in writing and keep copies for your records.
+        </div>
+        <div class="subsection">
+            <div class="subsection-title">Landlord's Responsibilities</div>
+            <ul>
+                <li>Maintaining structural elements</li>
+                <li>Ensuring working plumbing and heating</li>
+                <li>Providing pest control</li>
+                <li>Meeting health and safety codes</li>
+            </ul>
+        </div>
+        <div class="subsection">
+            <div class="subsection-title">Emergency Repairs</div>
+            <p>For emergency repairs, contact: {{ emergency_contact }}</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Lease Termination</div>
+        <div class="checklist">
+            <div class="subsection-title">Notice Requirements:</div>
+            <ul>
+                <li>Month-to-month tenancy: {{ month_to_month_notice }}</li>
+                <li>Fixed-term lease: {{ fixed_term_notice }}</li>
+                <li>Early termination penalties</li>
+                <li>Military clause provisions</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Eviction Process</div>
+        <div class="important-note">
+            <strong>Note:</strong> A landlord cannot evict you without a court order or change locks without proper legal process.
+        </div>
+        <ol>
+            <li>Written notice required: {{ eviction_notice_period }}</li>
+            <li>Right to cure violations</li>
+            <li>Court hearing process</li>
+            <li>Appeal rights</li>
+        </ol>
+    </div>
+
+    <div class="contact-info">
+        <div class="section-title">Legal Resources</div>
+        <p><strong>Local Legal Aid:</strong> {{ legal_aid_contact }}</p>
+        <p><strong>Housing Authority:</strong> {{ housing_authority_contact }}</p>
+        <p><strong>Tenant Rights Organization:</strong> {{ tenant_org_contact }}</p>
+    </div>
+
+    <div class="footer">
+        <p>This document provides general information about tenant rights in {{ state_name }}. Laws may change and vary by locality. For specific legal advice, please consult with a qualified attorney.</p>
+        <p>Generated by SmartProBono Legal Services</p>
+    </div>
+</body>
+</html> 

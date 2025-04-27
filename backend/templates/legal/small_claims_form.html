@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Small Claims Court Complaint</title>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ court_name }}</h1>
+        <p>Small Claims Division</p>
+        <p>Case Number: {{ case_number }}</p>
+    </div>
+
+    <div class="title">
+        SMALL CLAIMS COMPLAINT
+    </div>
+
+    <div class="section">
+        <div class="section-title">PLAINTIFF</div>
+        <p>
+            {{ plaintiff_name }}<br>
+            {{ plaintiff_address }}<br>
+            Phone: {{ plaintiff_phone }}<br>
+            Email: {{ plaintiff_email }}
+        </p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">DEFENDANT</div>
+        <p>
+            {{ defendant_name }}<br>
+            {{ defendant_address }}
+        </p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">CLAIM AMOUNT</div>
+        <p>The amount claimed is ${{ "%.2f"|format(claim_amount) }}</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">STATEMENT OF CLAIM</div>
+        <p>{{ claim_reason }}</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">EVIDENCE</div>
+        <ul>
+            {% for item in evidence_list %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="section">
+        <div class="section-title">WITNESSES</div>
+        <ul>
+            {% for witness in witness_list %}
+            <li>{{ witness.name }} - {{ witness.relation }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="section">
+        <div class="section-title">PRAYER FOR RELIEF</div>
+        <p>WHEREFORE, Plaintiff prays for judgment against Defendant in the sum of ${{ "%.2f"|format(claim_amount) }}, plus court costs, interest, and such other relief as the Court deems just and proper.</p>
+    </div>
+
+    <div class="signature">
+        <p>I declare under penalty of perjury that the foregoing is true and correct.</p>
+        <p>Date: {{ filing_date }}</p>
+        <div class="signature-line"></div>
+        <p>{{ plaintiff_name }}, Plaintiff</p>
+    </div>
+
+    <div class="footer">
+        <p>Generated on {{ generated_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+        <p>Document ID: {{ document_id }}</p>
+    </div>
+</body>
+</html> 

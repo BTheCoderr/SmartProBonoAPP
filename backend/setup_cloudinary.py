@@ -8,6 +8,7 @@ import sys
 import requests
 import cloudinary
 import cloudinary.api
+import cloudinary.exceptions
 from dotenv import load_dotenv
 
 # Add necessary directories to the path so we can import from backend
@@ -73,7 +74,7 @@ def validate_configuration():
         result = cloudinary.api.ping()
         print(f"Cloudinary connection successful: {result}")
         return True
-    except cloudinary.api.Error as e:
+    except cloudinary.exceptions.Error as e:
         print(f"Cloudinary API Error: {e}")
         return False
     except requests.exceptions.RequestException as e:
@@ -102,7 +103,7 @@ def ensure_folder_exists(folder_path):
                 
             try:
                 # Check if this folder level exists
-                cloudinary.api.sub_folders(current_path)
+                cloudinary.api.subfolders(current_path)
             except Exception:
                 # Create the folder if it doesn't exist
                 print(f"Creating folder: {current_path}")

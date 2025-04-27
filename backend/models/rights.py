@@ -1,6 +1,8 @@
-from app import db
+from backend.database import db
 
 class Rights(db.Model):
+    __table_args__ = {'extend_existing': True}
+    
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(100), nullable=False)
     title = db.Column(db.String(200), nullable=False)

@@ -37,6 +37,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import MicIcon from '@mui/icons-material/Mic';
 import VoiceInput from './VoiceInput';
+import { toast } from 'react-hot-toast';
+import documentsApi from '../services/documentsApi';
 
 const DocumentGenerator = () => {
   const theme = useTheme();
@@ -65,10 +67,21 @@ const DocumentGenerator = () => {
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        const response = await fetch('/api/contracts/templates');
-        const data = await response.json();
-        setTemplates(Object.keys(data.templates));
-        setTemplateMetadata(data.templates);
+        const templates = await documentsApi.getTemplates();
+        // Extract template names from the response
+        const templateNames = templates.map(template => template.id);
+        setTemplates(templateNames);
+        
+        // Create metadata object
+        const metadata = {};
+        templates.forEach(template => {
+          metadata[template.id] = {
+            name: template.name,
+            description: template.description,
+            required_fields: template.fields.filter(field => field.required).map(field => field.name)
+          };
+        });
+        setTemplateMetadata(metadata);
       } catch (err) {
         setError('Failed to load templates');
       }
@@ -106,8 +119,10 @@ const DocumentGenerator = () => {
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
+    
+    // Find the template in the metadata
     const metadata = templateMetadata[template] || {};
-    setSections(metadata.sections || []);
+    
     // Initialize form data with required fields
     const requiredFields = metadata.required_fields || [];
     const initialData = {};
@@ -142,30 +157,14 @@ const DocumentGenerator = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/contracts/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          template: selectedTemplate,
-          formData: formData
-        }),
-      });
+      // Use the documentsApi service with direct method
+      await documentsApi.generateDocumentDirect(selectedTemplate, formData);
 
-      if (!response.ok) {
-        throw new Error('Failed to generate document');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${selectedTemplate.toLowerCase().replace(/\s+/g, '_')}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      // Success notification
+      setActiveStep(0);
+      setSelectedTemplate('');
+      setFormData({});
+      toast.success("Document generated successfully!");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -335,7 +334,7 @@ const DocumentGenerator = () => {
               >
                 {templates.map((template) => (
                   <MenuItem key={template} value={template}>
-                    {template}
+                    {templateMetadata[template]?.name || template}
                   </MenuItem>
                 ))}
               </Select>
@@ -345,7 +344,32 @@ const DocumentGenerator = () => {
 
         {activeStep === 1 && selectedTemplate && (
           <Box>
-            {renderDraggableSections()}
+            <Typography variant="h6" gutterBottom>
+              {templateMetadata[selectedTemplate]?.name || selectedTemplate}
+            </Typography>
+            <Typography variant="body2" gutterBottom sx={{ mb: 3 }}>
+              {templateMetadata[selectedTemplate]?.description || ''}
+            </Typography>
+            
+            {templateMetadata[selectedTemplate]?.required_fields && (
+              <Grid container spacing={2}>
+                {Object.entries(templateMetadata[selectedTemplate].required_fields).map(([field, required]) => (
+                  <Grid item xs={12} md={6} key={field}>
+                    <TextField
+                      fullWidth
+                      label={field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                      value={formData[field] || ''}
+                      onChange={handleInputChange(field)}
+                      required={required}
+                      margin="normal"
+                      error={required && (!formData[field] || formData[field].trim() === '')}
+                      helperText={required && (!formData[field] || formData[field].trim() === '') ? 'This field is required' : ''}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            )}
+            
             <Box sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
               <VoiceInput
                 onTranscript={handleVoiceTranscript}
