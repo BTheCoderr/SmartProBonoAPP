@@ -3,79 +3,164 @@
 <head>
     <meta charset="utf-8">
     <title>Small Claims Court Complaint</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 1in;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2em;
+        }
+        .section {
+            margin: 1.5em 0;
+        }
+        .indent {
+            margin-left: 2em;
+        }
+        .signature-line {
+            margin-top: 2em;
+            border-top: 1px solid black;
+            width: 50%;
+        }
+        .footer {
+            margin-top: 2em;
+            font-size: 10pt;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        td, th {
+            padding: 8px;
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
-        <h1>{{ court_name }}</h1>
-        <p>Small Claims Division</p>
-        <p>Case Number: {{ case_number }}</p>
-    </div>
-
-    <div class="title">
-        SMALL CLAIMS COMPLAINT
+        <h2>IN THE {{court.name}}</h2>
+        <h3>{{court.county}} COUNTY, {{court.state}}</h3>
+        <br>
+        <h3>SMALL CLAIMS COMPLAINT</h3>
+        {% if caseNumber %}
+        <p>Case No. {{caseNumber}}</p>
+        {% endif %}
     </div>
 
     <div class="section">
-        <div class="section-title">PLAINTIFF</div>
         <p>
-            {{ plaintiff_name }}<br>
-            {{ plaintiff_address }}<br>
-            Phone: {{ plaintiff_phone }}<br>
-            Email: {{ plaintiff_email }}
+            <strong>{{plaintiff.name}}</strong><br>
+            {{plaintiff.address}}<br>
+            {% if plaintiff.phone %}Tel: {{plaintiff.phone}}<br>{% endif %}
+            {% if plaintiff.email %}Email: {{plaintiff.email}}<br>{% endif %}
+            <em>Plaintiff</em>
+        </p>
+        
+        <p style="text-align: center;">vs.</p>
+        
+        <p>
+            <strong>{{defendant.name}}</strong><br>
+            {{defendant.address}}<br>
+            {% if defendant.phone %}Tel: {{defendant.phone}}<br>{% endif %}
+            {% if defendant.email %}Email: {{defendant.email}}<br>{% endif %}
+            <em>Defendant</em>
         </p>
     </div>
 
     <div class="section">
-        <div class="section-title">DEFENDANT</div>
-        <p>
-            {{ defendant_name }}<br>
-            {{ defendant_address }}
-        </p>
+        <h3>COMPLAINT</h3>
+        <p>COMES NOW the Plaintiff and for their claim against the Defendant states as follows:</p>
+        
+        <div class="indent">
+            <p>1. This is a claim for {{claim.amount | currency}} arising from a {{claimType | replace_underscore}} 
+               that occurred on or about {{claim.date | date}} in {{claim.location}}.</p>
+            
+            <p>2. The facts supporting this claim are as follows:</p>
+            <div class="indent">
+                {% for fact in facts %}
+                <p>{{loop.index}}. {{fact}}</p>
+                {% endfor %}
+            </div>
+
+            {% if evidence %}
+            <p>3. The following evidence supports this claim:</p>
+            <div class="indent">
+                {% for item in evidence %}
+                <p>{{loop.index}}. {{item}}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if witnesses %}
+            <p>4. The following witnesses can testify to these facts:</p>
+            <div class="indent">
+                {% for witness in witnesses %}
+                <p>{{loop.index}}. {{witness.name}} - {{witness.relation}}
+                   {% if witness.testimony %}<br>Expected testimony: {{witness.testimony}}{% endif %}
+                </p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if settlementAttempts %}
+            <p>5. Prior attempts to resolve this dispute include:</p>
+            <div class="indent">
+                {% for attempt in settlementAttempts %}
+                <p>{{loop.index}}. On {{attempt.date | date}}, via {{attempt.method}}: {{attempt.outcome}}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
     </div>
 
     <div class="section">
-        <div class="section-title">CLAIM AMOUNT</div>
-        <p>The amount claimed is ${{ "%.2f"|format(claim_amount) }}</p>
+        <h3>PRAYER FOR RELIEF</h3>
+        <p>WHEREFORE, Plaintiff prays for judgment against the Defendant as follows:</p>
+        <div class="indent">
+            <p>1. For damages in the amount of {{claim.amount | currency}};</p>
+            <p>2. For costs of this action, including filing fees in the amount of {{filingFee | currency}};</p>
+            <p>3. For such other relief as the Court deems just and proper.</p>
+        </div>
     </div>
 
     <div class="section">
-        <div class="section-title">STATEMENT OF CLAIM</div>
-        <p>{{ claim_reason }}</p>
+        <h3>VERIFICATION</h3>
+        <p>I, {{plaintiff.name}}, declare under penalty of perjury that the foregoing is true and correct to the best of my knowledge and belief.</p>
+        
+        <div class="signature-line">
+            <p>Date: {{filingDate | date}}</p>
+            <p>Signature: _________________________________</p>
+            <p>Printed Name: {{plaintiff.name}}</p>
+        </div>
     </div>
 
+    {% if exhibits %}
     <div class="section">
-        <div class="section-title">EVIDENCE</div>
-        <ul>
-            {% for item in evidence_list %}
-            <li>{{ item }}</li>
+        <h3>EXHIBITS</h3>
+        <table>
+            <tr>
+                <th>Exhibit</th>
+                <th>Description</th>
+                <th>Type</th>
+            </tr>
+            {% for exhibit in exhibits %}
+            <tr>
+                <td>{{exhibit.name}}</td>
+                <td>{{exhibit.description}}</td>
+                <td>{{exhibit.type | capitalize}}</td>
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
     </div>
-
-    <div class="section">
-        <div class="section-title">WITNESSES</div>
-        <ul>
-            {% for witness in witness_list %}
-            <li>{{ witness.name }} - {{ witness.relation }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="section">
-        <div class="section-title">PRAYER FOR RELIEF</div>
-        <p>WHEREFORE, Plaintiff prays for judgment against Defendant in the sum of ${{ "%.2f"|format(claim_amount) }}, plus court costs, interest, and such other relief as the Court deems just and proper.</p>
-    </div>
-
-    <div class="signature">
-        <p>I declare under penalty of perjury that the foregoing is true and correct.</p>
-        <p>Date: {{ filing_date }}</p>
-        <div class="signature-line"></div>
-        <p>{{ plaintiff_name }}, Plaintiff</p>
-    </div>
+    {% endif %}
 
     <div class="footer">
-        <p>Generated on {{ generated_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
-        <p>Document ID: {{ document_id }}</p>
+        <p>Generated by SmartProBono Legal Services Platform</p>
+        <p>Filing Date: {{filingDate | date}}</p>
     </div>
 </body>
 </html> 

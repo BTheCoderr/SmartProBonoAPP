@@ -55,8 +55,7 @@ import PageLayout from '../components/PageLayout';
 import { immigrationApi } from '../services/api';
 import { useTheme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
-import axios from 'axios';
-import { API_URL } from '../config';
+import apiService from '../services/ApiService';
 
 // Case status components
 const CaseStatus = ({ status }) => {
@@ -255,31 +254,29 @@ const ImmigrationDashboard = () => {
   };
   
   const uploadDocument = async () => {
-    if (!uploadFile) {
-      setUploadError('Please select a file to upload');
-      return;
-    }
+    if (!uploadFile || !documentType || !selectedCaseId) return;
+    
+    const formData = new FormData();
+    formData.append('file', uploadFile);
+    formData.append('documentType', documentType);
+    formData.append('caseId', selectedCaseId);
+    
+    setUploading(true);
+    setUploadError(null);
     
     try {
-      setUploading(true);
-      setUploadError(null);
+      await apiService.uploadDocument(formData);
       
-      await immigrationApi.uploadCaseDocument(
-        selectedCaseId,
-        uploadFile,
-        documentType,
-        accessToken
-      );
-      
-      // Refresh the case documents (ideally we'd only update the specific case)
+      // Close modal and refresh cases
+      closeUploadModal();
       const casesResponse = await immigrationApi.getCases(accessToken);
       setCases(casesResponse.cases || []);
       
-      // Show success and close modal
-      closeUploadModal();
+      setNotificationMessage('Document uploaded successfully');
+      setNotificationSent(true);
     } catch (error) {
       console.error('Error uploading document:', error);
-      setUploadError(error.message || 'Failed to upload document');
+      setUploadError(apiService.handleError(error));
     } finally {
       setUploading(false);
     }
@@ -726,47 +723,24 @@ const ImmigrationDashboard = () => {
   };
   
   const sendTestNotification = async () => {
-    if (!currentUser || !accessToken) {
-      setTestStatus({
-        type: 'error',
-        message: 'You need to be logged in to send a test notification'
-      });
-      return;
-    }
-    
     try {
-      setTestStatus({
+      setTestStatus({ loading: true });
+      const response = await apiService.client.post('/api/notifications/test', {
+        message: 'Test notification from Immigration Dashboard',
         type: 'info',
-        message: 'Sending test notification...'
+        category: 'immigration'
       });
       
-      const response = await axios.post(
-        `${API_URL}/api/test/notification/${currentUser.id}`,
-        {
-          title: 'Test Notification',
-          message: 'This is a test notification from the dashboard',
-          type: 'info',
-          category: 'system'
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        }
-      );
-      
-      if (response.status === 200) {
-        setTestStatus({
-          type: 'success',
-          message: 'Test notification sent successfully! Check your notifications.'
-        });
+      if (response.data.success) {
+        setTestStatus({ success: true, message: 'Test notification sent!' });
       } else {
         throw new Error('Failed to send test notification');
       }
     } catch (error) {
       console.error('Error sending test notification:', error);
-      setTestStatus({
-        type: 'error',
-        message: `Failed to send test notification: ${error.message}`
-      });
+      setTestStatus({ error: true, message: apiService.handleError(error) });
+    } finally {
+      setTimeout(() => setTestStatus(null), 3000);
     }
   };
   

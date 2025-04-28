@@ -16,6 +16,7 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 // Validation schema
 const RegisterSchema = Yup.object().shape({
@@ -61,11 +62,11 @@ const RegisterPage = () => {
       const { success, error, data } = await register(userData);
       
       if (success) {
-        setSuccessMessage('Registration successful! You can now log in.');
+        setSuccessMessage('Registration successful! Let\'s get you started.');
         resetForm();
         setTimeout(() => {
-          navigate('/login');
-        }, 2000);
+          navigate('/onboarding');
+        }, 1500);
       } else {
         setError(error);
         setShowAlert(true);
@@ -110,6 +111,11 @@ const RegisterPage = () => {
           {successMessage && (
             <Alert severity="success" sx={{ width: '100%', mb: 2 }}>
               {successMessage}
+            </Alert>
+          )}
+          {error && (
+            <Alert severity="error" icon={<ErrorOutlineIcon />} sx={{ width: '100%', mb: 2 }}>
+              {error}
             </Alert>
           )}
           
@@ -166,7 +172,9 @@ const RegisterPage = () => {
                   name="username"
                   autoComplete="username"
                   error={touched.username && Boolean(errors.username)}
-                  helperText={touched.username && errors.username}
+                  helperText={touched.username && errors.username ? (
+                    <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />{errors.username}</span>
+                  ) : ''}
                 />
                 
                 <Field
@@ -178,7 +186,9 @@ const RegisterPage = () => {
                   name="email"
                   autoComplete="email"
                   error={touched.email && Boolean(errors.email)}
-                  helperText={touched.email && errors.email}
+                  helperText={touched.email && errors.email ? (
+                    <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />{errors.email}</span>
+                  ) : ''}
                 />
                 
                 <Field
@@ -190,7 +200,9 @@ const RegisterPage = () => {
                   label="I am a"
                   name="role"
                   error={touched.role && Boolean(errors.role)}
-                  helperText={touched.role && errors.role}
+                  helperText={touched.role && errors.role ? (
+                    <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />{errors.role}</span>
+                  ) : ''}
                 >
                   {roles.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
@@ -209,7 +221,9 @@ const RegisterPage = () => {
                   id="password"
                   autoComplete="new-password"
                   error={touched.password && Boolean(errors.password)}
-                  helperText={touched.password && errors.password}
+                  helperText={touched.password && errors.password ? (
+                    <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />{errors.password}</span>
+                  ) : ''}
                 />
                 
                 <Field
@@ -221,7 +235,9 @@ const RegisterPage = () => {
                   type="password"
                   id="confirmPassword"
                   error={touched.confirmPassword && Boolean(errors.confirmPassword)}
-                  helperText={touched.confirmPassword && errors.confirmPassword}
+                  helperText={touched.confirmPassword && errors.confirmPassword ? (
+                    <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />{errors.confirmPassword}</span>
+                  ) : ''}
                 />
                 
                 <Button

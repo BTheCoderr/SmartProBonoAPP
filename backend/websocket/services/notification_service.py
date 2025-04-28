@@ -2,7 +2,7 @@
 Notification Service for WebSockets.
 
 This module provides functionality for sending, tracking, and managing
-user notifications through WebSockets.
+user notifications through WebSockets with Redis pub/sub support.
 """
 
 import json
@@ -13,11 +13,12 @@ from datetime import datetime
 from flask import current_app
 from flask_socketio import emit
 
-# Import connection service
+# Import connection service and Redis client
 from backend.websocket.services.connection_service import (
     get_user_sessions,
     is_user_connected
 )
+from backend import get_redis
 
 # Configure logging
 logger = logging.getLogger('websocket.services.notification')
@@ -39,6 +40,70 @@ NOTIFICATION_TYPES = ['info', 'success', 'warning', 'error']
 
 # Default notification expiry (in seconds)
 DEFAULT_EXPIRY = 7 * 24 * 60 * 60  # 7 days
+
+def _publish_notification(notification):
+    """Publish notification to Redis channel"""
+    try:
+        redis_client = get_redis()
+        channel = f"notifications:{notification.get('user_id', 'broadcast')}"
+        redis_client.publish(channel, json.dumps(notification))
+        logger.debug(f"Published notification to Redis channel: {channel}")
+        return True
+    except Exception as e:
+        logger.error(f"Error publishing notification to Redis: {str(e)}")
+        return False
+
+def _subscribe_to_notifications():
+    """Subscribe to notification channels"""
+    try:
+        redis_client = get_redis()
+        pubsub = redis_client.pubsub()
+        
+        # Subscribe to broadcast channel
+        pubsub.subscribe('notifications:broadcast')
+        
+        # Start listening thread
+        def listen_for_notifications():
+            for message in pubsub.listen():
+                if message['type'] == 'message':
+                    try:
+                        notification = json.loads(message['data'])
+                        _handle_notification(notification)
+                    except Exception as e:
+                        logger.error(f"Error handling Redis notification: {str(e)}")
+        
+        thread = threading.Thread(target=listen_for_notifications)
+        thread.daemon = True
+        thread.start()
+        
+        logger.info("Successfully subscribed to Redis notification channels")
+    except Exception as e:
+        logger.error(f"Error subscribing to Redis notifications: {str(e)}")
+
+def _handle_notification(notification):
+    """Handle incoming notification from Redis"""
+    try:
+        user_id = notification.get('user_id')
+        if not user_id:
+            # Broadcast notification
+            socketio = current_app.extensions.get('socketio')
+            if socketio:
+                socketio.emit('notification', notification, namespace='/ws')
+        else:
+            # User-specific notification
+            sessions = get_user_sessions(user_id)
+            if sessions:
+                socketio = current_app.extensions.get('socketio')
+                if socketio:
+                    for sid in sessions:
+                        socketio.emit('notification', notification, to=sid, namespace='/ws')
+    except Exception as e:
+        logger.error(f"Error handling notification: {str(e)}")
+
+# Initialize Redis subscription when module loads
+def init_redis_subscription():
+    """Initialize Redis subscription for notifications"""
+    _subscribe_to_notifications()
 
 def send_notification(user_id, title, message, notification_type='info', 
                      category=None, data=None, persist=True):
@@ -68,16 +133,15 @@ def send_notification(user_id, title, message, notification_type='info',
     # Create notification object
     notification = {
         'id': str(uuid.uuid4()),
+        'user_id': user_id,
         'title': title,
         'message': message,
         'type': notification_type,
         'category': category,
         'data': data or {},
-        'createdAt': datetime.utcnow().isoformat(),
-        'sentTo': user_id,
+        'timestamp': datetime.utcnow().isoformat(),
         'read': False,
-        'delivered': False,
-        'error': None
+        'delivered': False
     }
     
     # Track notification stats
@@ -89,6 +153,9 @@ def send_notification(user_id, title, message, notification_type='info',
     
     # Check if user is connected
     sessions = get_user_sessions(user_id)
+    
+    # Publish to Redis for multi-server support
+    _publish_notification(notification)
     
     if sessions:
         try:
@@ -222,8 +289,8 @@ def mark_notification_read(notification_id, user_id=None):
             notification = _notifications[notification_id]
             
             # If user_id provided, check ownership
-            if user_id and notification['sentTo'] != user_id:
-                logger.warning(f"User {user_id} attempted to mark notification {notification_id} as read, but it belongs to {notification['sentTo']}")
+            if user_id and notification['user_id'] != user_id:
+                logger.warning(f"User {user_id} attempted to mark notification {notification_id} as read, but it belongs to {notification['user_id']}")
                 return False
             
             if not notification['read']:
@@ -254,12 +321,12 @@ def get_user_notifications(user_id, include_read=False, limit=50):
     with _notification_lock:
         user_notifications = [
             notification for notification in _notifications.values()
-            if notification['sentTo'] == user_id and (include_read or not notification['read'])
+            if notification['user_id'] == user_id and (include_read or not notification['read'])
         ]
     
     # Sort by creation date, newest first
     user_notifications.sort(
-        key=lambda n: n.get('createdAt', ''), 
+        key=lambda n: n.get('timestamp', ''), 
         reverse=True
     )
     
@@ -282,8 +349,8 @@ def delete_notification(notification_id, user_id=None, admin=False):
             notification = _notifications[notification_id]
             
             # If not admin and user_id provided, check ownership
-            if not admin and user_id and notification['sentTo'] != user_id:
-                logger.warning(f"User {user_id} attempted to delete notification {notification_id}, but it belongs to {notification['sentTo']}")
+            if not admin and user_id and notification['user_id'] != user_id:
+                logger.warning(f"User {user_id} attempted to delete notification {notification_id}, but it belongs to {notification['user_id']}")
                 return False
             
             del _notifications[notification_id]

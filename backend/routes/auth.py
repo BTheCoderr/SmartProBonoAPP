@@ -3,13 +3,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from backend.models.user import User
 from backend.extensions import mongo, db
 from backend.utils.decorators import token_required
+from backend.middleware.rate_limiting import rate_limiter
 import os
 import secrets
 import uuid
 from datetime import datetime, timedelta
 from functools import wraps
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from services.email_service import EmailService
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
@@ -42,13 +41,6 @@ email_verification_tokens = {}
 # For tracking active sessions (user_id -> {token -> expiry})
 active_sessions = {}
 
-# Initialize rate limiter
-limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=["1000 per day", "200 per hour"],
-    storage_uri="memory://",
-)
-
 # Token blacklist
 jwt_blocklist = set()
 
@@ -69,7 +61,7 @@ def token_required(f):
     return decorated
 
 @bp.route('/register', methods=['POST'])
-@limiter.limit("5/hour")
+@rate_limiter.limit('register')
 def register():
     try:
         data = request.get_json()
@@ -152,7 +144,7 @@ def verify_email(token):
     return jsonify({'message': 'Email verified successfully. Your account is now active.'}), 200
 
 @bp.route('/login', methods=['POST'])
-@limiter.limit("10/minute;30/hour")
+@rate_limiter.limit('login')
 def login():
     try:
         data = request.get_json()
@@ -191,7 +183,7 @@ def login():
         return jsonify({'error': 'Internal server error'}), 500
 
 @bp.route('/refresh', methods=['POST'])
-@limiter.limit("300 per hour")
+@rate_limiter.limit('default')
 @jwt_required(refresh=True)
 def refresh():
     try:
@@ -207,7 +199,7 @@ def refresh():
         return jsonify({'error': 'Internal server error'}), 500
 
 @bp.route('/logout', methods=['POST'])
-@limiter.limit("300 per hour")
+@rate_limiter.limit('default')
 @jwt_required()
 def logout():
     jti = get_jwt()['jti']
@@ -242,7 +234,7 @@ def get_user_profile(current_user):
         return jsonify({'error': 'Internal server error'}), 500
 
 @bp.route('/forgot-password', methods=['POST'])
-@limiter.limit("5/hour")
+@rate_limiter.limit('forgot_password')
 def forgot_password():
     data = request.json
     
@@ -283,7 +275,7 @@ def forgot_password():
     }), 200
 
 @bp.route('/reset-password', methods=['POST'])
-@limiter.limit("5/hour")
+@rate_limiter.limit('forgot_password')
 def reset_password():
     data = request.json
     
@@ -326,14 +318,4 @@ def reset_password():
 # Initialize limiter with the app
 def init_app(app):
     """Initialize the auth module with the Flask app."""
-    limiter.init_app(app)
-    
-    # Register JWT blocklist loader
-    jwt = app.extensions['flask-jwt-extended']
-    
-    @jwt.token_in_blocklist_loader
-    def check_if_token_in_blocklist(jwt_header, jwt_payload):
-        jti = jwt_payload['jti']
-        return jti in jwt_blocklist
-    
     return app 

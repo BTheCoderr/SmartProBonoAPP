@@ -8,7 +8,16 @@ from logging.handlers import RotatingFileHandler
 from backend.extensions import init_extensions
 from backend.database.mongo import mongo
 from backend.middleware.security import SecurityMiddleware
+from backend.middleware.rate_limiting import rate_limiter
+from backend.services.error_logging_service import error_logging_service
 from typing import Dict, Any, Optional, Union
+from flask_cors import CORS
+from flask_socketio import SocketIO
+from pymongo import MongoClient
+import redis
+from .services.mongodb_service import mongodb_service
+from .services.redis_service import redis_service
+from .services.websocket_service import WebSocketService
 
 # Load environment variables
 load_dotenv()
@@ -59,15 +68,24 @@ def create_app(test_config: Optional[Union[str, Dict[str, Any]]] = None):
         CORS_ORIGINS=['https://smartprobono.org', 'https://app.smartprobono.org'],
         CORS_METHODS=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         CORS_ALLOW_HEADERS=['Content-Type', 'Authorization'],
-        CORS_EXPOSE_HEADERS=['Content-Range', 'X-Total-Count'],
+        CORS_EXPOSE_HEADERS=['Content-Range', 'X-Total-Count', 'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
         CORS_SUPPORTS_CREDENTIALS=True,
         # Rate limiting
-        RATELIMIT_DEFAULT='100 per minute',
-        RATELIMIT_STORAGE_URL='memory://',  # Use Redis in production
+        RATE_LIMITS={
+            'default': '100/minute',
+            'login': '5/minute',
+            'register': '3/minute',
+            'forgot_password': '3/minute',
+            'api': '200/minute',
+            'document_upload': '10/minute',
+            'document_generate': '20/minute'
+        },
         # File upload
         MAX_CONTENT_LENGTH=16 * 1024 * 1024,  # 16MB
         UPLOAD_FOLDER=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads'),
-        ALLOWED_EXTENSIONS={'pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'}
+        ALLOWED_EXTENSIONS={'pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'},
+        MONGODB_URI='mongodb://mongodb:27017/smartprobono',
+        REDIS_URL='redis://redis:6379/0'
     )
 
     # Override default configuration for testing
@@ -84,15 +102,35 @@ def create_app(test_config: Optional[Union[str, Dict[str, Any]]] = None):
     # Initialize security middleware
     SecurityMiddleware(app)
     
+    # Initialize rate limiter
+    rate_limiter.init_app(app)
+    
+    # Initialize error logging service
+    error_logging_service.init_app(app)
+    
     # Initialize MongoDB with app context
     with app.app_context():
         try:
-            mongo.init_client(app.config['MONGO_URI'])
+            mongo_client = MongoClient(app.config['MONGODB_URI'])
+            app.mongo = mongo_client
+            app.mongo.db = mongo_client.get_database()
             app.logger.info("MongoDB initialized successfully")
         except Exception as e:
             app.logger.warning(f"Failed to initialize MongoDB: {str(e)}")
             app.logger.warning("Continuing without MongoDB support")
 
+    # Configure Redis
+    redis_client = redis.from_url(app.config['REDIS_URL'])
+    app.redis = redis_client
+    
+    # Configure SocketIO
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
+    app.socketio = socketio
+    
+    # Initialize WebSocket service
+    websocket_service = WebSocketService(socketio)
+    app.websocket_service = websocket_service
+    
     # Import blueprints after app creation
     from .routes.auth import bp as auth_bp
     from .routes.templates import bp as templates_bp
@@ -131,9 +169,12 @@ def create_app(test_config: Optional[Union[str, Dict[str, Any]]] = None):
     
     return app
 
-if __name__ == '__main__':
+def run_app():
     app = create_app()
     port = int(os.environ.get('PORT', 5003))
     app.run(host='0.0.0.0', port=port, debug=True)
+
+if __name__ == '__main__':
+    run_app()
 
 

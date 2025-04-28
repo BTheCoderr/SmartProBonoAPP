@@ -2,6 +2,7 @@
   "name": "pro-bono-app-frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://smartprobonoapp.onrender.com",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -23,12 +24,17 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^14.1.3",
     "react-json-pretty": "^2.2.0",
+    "react-pdf": "^7.7.0",
     "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
     "recharts": "^2.15.1",
     "socket.io-client": "^4.7.2",
     "web-vitals": "^2.1.4",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "@mui/lab": "^5.0.0-alpha.165",
+    "@react-pdf/renderer": "^3.3.4",
+    "@sentry/react": "^7.101.1",
+    "workbox-webpack-plugin": "^7.0.0"
   },
   "scripts": {
     "start": "DISABLE_ESLINT_PLUGIN=true PORT=3100 react-scripts start",
@@ -56,6 +62,16 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/user-event": "^14.5.2",
+    "prettier": "^3.2.5",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^9.0.10",
+    "lint-staged": "^15.2.2",
     "gh-pages": "^6.3.0",
     "typescript": "4.9.5"
   },
@@ -66,5 +82,16 @@
     "@babel/plugin-transform-react-jsx": "7.22.5",
     "webpack": "5.90.1",
     "@mui/x-data-grid/ajv": "8.12.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }

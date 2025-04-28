@@ -1,178 +1,116 @@
-from flask import Blueprint, request, jsonify
-from backend.utils.error_handlers import handle_exceptions
-from backend.utils.decorators import token_required
-from backend.websocket.services.notification_service import (
-    get_user_notifications,
-    mark_notification_read,
-    delete_notification,
-    get_notification_stats
-)
-from backend.websocket.services.application_notifications import (
-    send_user_notification,
-    send_case_status_update,
-    send_document_request,
-    send_document_uploaded_notification,
-    send_appointment_reminder,
-    send_message_notification,
-    send_immigration_form_notification
-)
+from flask import Blueprint, request, jsonify, current_app
+from flask_socketio import emit
+from datetime import datetime
+from bson import ObjectId
+from ..models.notification import Notification
+from ..utils.auth import login_required, admin_required
+from ..services.notification_service import NotificationService
+from ..utils.validation import validate_notification
 
-bp = Blueprint('notifications', __name__)
+notifications = Blueprint('notifications', __name__)
+notification_service = NotificationService()
 
-@bp.route('/notifications', methods=['GET'])
-@token_required
-@handle_exceptions
-def get_notifications(current_user):
-    """Get notifications for the current user."""
-    include_read = request.args.get('include_read', 'false').lower() == 'true'
-    limit = int(request.args.get('limit', 50))
-    
-    notifications = get_user_notifications(
-        user_id=current_user['_id'],
-        include_read=include_read,
-        limit=limit
-    )
-    return jsonify(notifications)
+@notifications.route('/notifications', methods=['GET'])
+@login_required
+def get_notifications():
+    """Get notifications for the current user"""
+    try:
+        user_id = request.user_id
+        notifications = notification_service.get_user_notifications(user_id)
+        return jsonify(notifications), 200
+    except Exception as e:
+        current_app.logger.error(f"Error fetching notifications: {str(e)}")
+        return jsonify({"error": "Failed to fetch notifications"}), 500
 
-@bp.route('/notifications/<notification_id>/read', methods=['POST'])
-@token_required
-@handle_exceptions
-def mark_read(current_user, notification_id):
-    """Mark a notification as read."""
-    success = mark_notification_read(
-        notification_id=notification_id,
-        user_id=current_user['_id']
-    )
-    if success:
-        return jsonify({'message': 'Notification marked as read'}), 200
-    return jsonify({'error': 'Notification not found'}), 404
+@notifications.route('/notifications/mark-read', methods=['POST'])
+@login_required
+def mark_notification_read():
+    """Mark a notification as read"""
+    try:
+        notification_id = request.json.get('notification_id')
+        if not notification_id:
+            return jsonify({"error": "Notification ID is required"}), 400
+            
+        notification_service.mark_notification_read(notification_id, request.user_id)
+        return jsonify({"message": "Notification marked as read"}), 200
+    except Exception as e:
+        current_app.logger.error(f"Error marking notification as read: {str(e)}")
+        return jsonify({"error": "Failed to mark notification as read"}), 500
 
-@bp.route('/notifications/<notification_id>', methods=['DELETE'])
-@token_required
-@handle_exceptions
-def delete_user_notification(current_user, notification_id):
-    """Delete a notification."""
-    result = delete_notification(
-        notification_id=notification_id,
-        user_id=current_user['_id']
-    )
-    return jsonify(result)
+@notifications.route('/notifications/mark-all-read', methods=['POST'])
+@login_required
+def mark_all_read():
+    """Mark all notifications as read for the current user"""
+    try:
+        notification_service.mark_all_read(request.user_id)
+        return jsonify({"message": "All notifications marked as read"}), 200
+    except Exception as e:
+        current_app.logger.error(f"Error marking all notifications as read: {str(e)}")
+        return jsonify({"error": "Failed to mark all notifications as read"}), 500
 
-@bp.route('/notifications/stats', methods=['GET'])
-@token_required
-@handle_exceptions
-def notification_stats(current_user):
-    """Get notification statistics."""
-    stats = get_notification_stats()
-    return jsonify(stats)
+@notifications.route('/notifications', methods=['POST'])
+@admin_required
+def create_notification():
+    """Create a new notification (admin only)"""
+    try:
+        data = request.json
+        if not validate_notification(data):
+            return jsonify({"error": "Invalid notification data"}), 400
+            
+        notification = notification_service.create_notification(data)
+        return jsonify(notification), 201
+    except Exception as e:
+        current_app.logger.error(f"Error creating notification: {str(e)}")
+        return jsonify({"error": "Failed to create notification"}), 500
 
-@bp.route('/notifications/send', methods=['POST'])
-@token_required
-@handle_exceptions
-def send_notification_endpoint(current_user):
-    """Send a notification to a user."""
-    data = request.get_json()
-    
-    notification_type = data.get('type', 'info')
-    if notification_type not in ['info', 'success', 'warning', 'error']:
-        return jsonify({'error': 'Invalid notification type'}), 400
-    
-    result = send_user_notification(
-        user_id=data['user_id'],
-        title=data['title'],
-        message=data['message'],
-        notification_type=notification_type,
-        data=data.get('data')
-    )
-    return jsonify(result)
+@notifications.route('/notifications/broadcast', methods=['POST'])
+@admin_required
+def broadcast_notification():
+    """Broadcast a notification to all users (admin only)"""
+    try:
+        data = request.json
+        if not validate_notification(data):
+            return jsonify({"error": "Invalid notification data"}), 400
+            
+        notification_service.broadcast_notification(data)
+        return jsonify({"message": "Notification broadcasted successfully"}), 200
+    except Exception as e:
+        current_app.logger.error(f"Error broadcasting notification: {str(e)}")
+        return jsonify({"error": "Failed to broadcast notification"}), 500
 
-@bp.route('/notifications/case-status', methods=['POST'])
-@token_required
-@handle_exceptions
-def send_case_status_notification(current_user):
-    """Send a case status update notification."""
-    data = request.get_json()
-    
-    result = send_case_status_update(
-        user_id=data['user_id'],
-        case_id=data['case_id'],
-        status=data['status'],
-        details=data.get('details')
-    )
-    return jsonify(result)
+@notifications.route('/notifications/<notification_id>', methods=['DELETE'])
+@login_required
+def delete_notification(notification_id):
+    """Delete a notification"""
+    try:
+        notification_service.delete_notification(notification_id, request.user_id)
+        return jsonify({"message": "Notification deleted successfully"}), 200
+    except Exception as e:
+        current_app.logger.error(f"Error deleting notification: {str(e)}")
+        return jsonify({"error": "Failed to delete notification"}), 500
 
-@bp.route('/notifications/document-request', methods=['POST'])
-@token_required
-@handle_exceptions
-def send_document_request_notification(current_user):
-    """Send a document request notification."""
-    data = request.get_json()
-    
-    result = send_document_request(
-        user_id=data['user_id'],
-        document_type=data['document_type'],
-        due_date=data.get('due_date'),
-        case_id=data.get('case_id')
-    )
-    return jsonify(result)
+@notifications.route('/notifications/settings', methods=['GET'])
+@login_required
+def get_notification_settings():
+    """Get notification settings for the current user"""
+    try:
+        settings = notification_service.get_notification_settings(request.user_id)
+        return jsonify(settings), 200
+    except Exception as e:
+        current_app.logger.error(f"Error fetching notification settings: {str(e)}")
+        return jsonify({"error": "Failed to fetch notification settings"}), 500
 
-@bp.route('/notifications/document-uploaded', methods=['POST'])
-@token_required
-@handle_exceptions
-def send_document_uploaded(current_user):
-    """Send a document uploaded notification."""
-    data = request.get_json()
-    
-    result = send_document_uploaded_notification(
-        attorney_id=data['attorney_id'],
-        client_id=data['client_id'],
-        document_type=data['document_type'],
-        case_id=data.get('case_id')
-    )
-    return jsonify(result)
-
-@bp.route('/notifications/appointment-reminder', methods=['POST'])
-@token_required
-@handle_exceptions
-def send_appointment_reminder_notification(current_user):
-    """Send an appointment reminder notification."""
-    data = request.get_json()
-    
-    result = send_appointment_reminder(
-        user_id=data['user_id'],
-        appointment_type=data['appointment_type'],
-        date_time=data['date_time'],
-        location=data.get('location'),
-        zoom_link=data.get('zoom_link')
-    )
-    return jsonify(result)
-
-@bp.route('/notifications/message', methods=['POST'])
-@token_required
-@handle_exceptions
-def send_message_notification_endpoint(current_user):
-    """Send a message notification."""
-    data = request.get_json()
-    
-    result = send_message_notification(
-        user_id=data['user_id'],
-        sender_name=data['sender_name'],
-        message_preview=data['message_preview'],
-        conversation_id=data['conversation_id']
-    )
-    return jsonify(result)
-
-@bp.route('/notifications/immigration-form', methods=['POST'])
-@token_required
-@handle_exceptions
-def send_immigration_form_notification_endpoint(current_user):
-    """Send an immigration form notification."""
-    data = request.get_json()
-    
-    result = send_immigration_form_notification(
-        user_id=data['user_id'],
-        form_type=data['form_type'],
-        status=data['status'],
-        case_id=data.get('case_id')
-    )
-    return jsonify(result) 
+@notifications.route('/notifications/settings', methods=['PUT'])
+@login_required
+def update_notification_settings():
+    """Update notification settings for the current user"""
+    try:
+        settings = request.json
+        updated_settings = notification_service.update_notification_settings(
+            request.user_id, 
+            settings
+        )
+        return jsonify(updated_settings), 200
+    except Exception as e:
+        current_app.logger.error(f"Error updating notification settings: {str(e)}")
+        return jsonify({"error": "Failed to update notification settings"}), 500 

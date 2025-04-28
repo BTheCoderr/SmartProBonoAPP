@@ -47,7 +47,7 @@ const SystemSettings: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await api.get('/api/admin/settings');
+      const response = await api.get<{data: SystemSettings}>('/api/admin/settings');
       setSettings(response.data);
       setLoading(false);
     } catch (err) {

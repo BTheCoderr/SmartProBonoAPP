@@ -42,8 +42,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/Warning';
 import ErrorIcon from '@mui/icons-material/Error';
-import axios from 'axios';
-import { API_URL } from '../config';
+import apiService from '../services/ApiService';
 
 // Validation schema for profile update
 const ProfileSchema = Yup.object().shape({
@@ -159,10 +158,7 @@ const ProfilePage = () => {
     // Fetch notification settings
     const fetchNotificationSettings = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/users/notification-settings`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
-        });
-        
+        const response = await apiService.client.get('/api/users/notification-settings');
         if (response.data && response.data.settings) {
           setNotificationSettings(response.data.settings);
         }
@@ -176,9 +172,7 @@ const ProfilePage = () => {
     const fetchNotifications = async () => {
       try {
         setLoadingNotifications(true);
-        const response = await axios.get(`${API_URL}/api/notifications`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
-        });
+        const response = await apiService.client.get('/api/notifications');
         
         if (response.data && Array.isArray(response.data.notifications)) {
           setNotifications(response.data.notifications);
@@ -198,33 +192,22 @@ const ProfilePage = () => {
               title: 'Documents Required',
               message: 'Please upload your identification documents for your immigration case.',
               type: 'warning',
-              isRead: true,
-              createdAt: new Date(Date.now() - 3 * 86400000).toISOString()
-            },
-            {
-              _id: '3',
-              title: 'Case Status Updated',
-              message: 'Your case status has been updated to "In Progress".',
-              type: 'info',
-              isRead: true,
-              createdAt: new Date(Date.now() - 5 * 86400000).toISOString()
+              isRead: false,
+              createdAt: new Date(Date.now() - 86400000).toISOString()
             }
           ]);
         }
       } catch (error) {
         console.error('Error fetching notifications:', error);
-        // Use fallback data
         setNotifications([]);
       } finally {
         setLoadingNotifications(false);
       }
     };
-    
-    if (currentUser) {
-      fetchNotificationSettings();
-      fetchNotifications();
-    }
-  }, [currentUser, location.search]);
+
+    fetchNotificationSettings();
+    fetchNotifications();
+  }, [location.search]);
 
   if (!currentUser) {
     navigate('/login');
@@ -233,19 +216,12 @@ const ProfilePage = () => {
 
   const handleProfileUpdate = async (values, { setSubmitting }) => {
     try {
-      const { success, error } = await updateProfile(values);
-      
-      if (success) {
-        setMessage('Profile updated successfully');
-        setAlertType('success');
-      } else {
-        setMessage(error);
-        setAlertType('error');
-      }
-      
+      await apiService.client.put('/api/users/profile', values);
+      setMessage('Profile updated successfully');
+      setAlertType('success');
       setShowAlert(true);
-    } catch (error) {
-      setMessage('An error occurred. Please try again.');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to update profile');
       setAlertType('error');
       setShowAlert(true);
     } finally {
@@ -255,24 +231,16 @@ const ProfilePage = () => {
 
   const handlePasswordChange = async (values, { setSubmitting, resetForm }) => {
     try {
-      const { currentPassword, newPassword } = values;
-      const { success, error } = await updateProfile({
-        current_password: currentPassword,
-        password: newPassword
+      await apiService.client.put('/api/users/password', {
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword
       });
-      
-      if (success) {
-        setMessage('Password updated successfully');
-        setAlertType('success');
-        resetForm();
-      } else {
-        setMessage(error);
-        setAlertType('error');
-      }
-      
+      setMessage('Password changed successfully');
+      setAlertType('success');
       setShowAlert(true);
-    } catch (error) {
-      setMessage('An error occurred. Please try again.');
+      resetForm();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to change password');
       setAlertType('error');
       setShowAlert(true);
     } finally {
@@ -307,45 +275,44 @@ const ProfilePage = () => {
 
   const handleNotificationSettingChange = async (event) => {
     const { name, checked } = event.target;
-    
-    // Update UI immediately for better UX
-    setNotificationSettings(prev => ({
-      ...prev,
-      [name]: checked
-    }));
-    
-    // Save to server
     try {
-      await axios.put(`${API_URL}/api/users/notification-settings`, 
-        { [name]: checked },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` } }
-      );
+      const updatedSettings = {
+        ...notificationSettings,
+        [name]: checked
+      };
+      setNotificationSettings(updatedSettings);
+      
+      await apiService.client.put('/api/users/notification-settings', {
+        settings: updatedSettings
+      });
+      
+      setMessage('Notification settings updated');
+      setAlertType('success');
+      setShowAlert(true);
     } catch (error) {
       console.error('Error updating notification settings:', error);
-      // Revert the setting if server update fails
-      setNotificationSettings(prev => ({
-        ...prev,
-        [name]: !checked
-      }));
-      setMessage('Failed to update notification settings');
+      setError('Failed to update notification settings');
       setAlertType('error');
       setShowAlert(true);
+      
+      // Revert the setting change on error
+      setNotificationSettings(prevSettings => ({
+        ...prevSettings,
+        [name]: !checked
+      }));
     }
   };
 
   const clearAllNotifications = async () => {
     try {
-      await axios.delete(`${API_URL}/api/notifications/clear-all`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
-      });
-      
+      await apiService.client.delete('/api/notifications');
       setNotifications([]);
       setMessage('All notifications cleared');
       setAlertType('success');
       setShowAlert(true);
     } catch (error) {
       console.error('Error clearing notifications:', error);
-      setMessage('Failed to clear notifications');
+      setError('Failed to clear notifications');
       setAlertType('error');
       setShowAlert(true);
     }
@@ -353,15 +320,16 @@ const ProfilePage = () => {
 
   const deleteNotification = async (notificationId) => {
     try {
-      await axios.delete(`${API_URL}/api/notifications/${notificationId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
-      });
-      
-      // Update UI
-      setNotifications(prev => prev.filter(n => n._id !== notificationId));
+      await apiService.client.delete(`/api/notifications/${notificationId}`);
+      setNotifications(prevNotifications => 
+        prevNotifications.filter(notification => notification._id !== notificationId)
+      );
+      setMessage('Notification deleted');
+      setAlertType('success');
+      setShowAlert(true);
     } catch (error) {
       console.error('Error deleting notification:', error);
-      setMessage('Failed to delete notification');
+      setError('Failed to delete notification');
       setAlertType('error');
       setShowAlert(true);
     }

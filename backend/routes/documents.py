@@ -12,10 +12,20 @@ import os
 from bson import ObjectId
 import logging
 from database.mongo import mongo
+from ..utils.auth import login_required
+from ..services.notification_service import NotificationService
 
 # Import OCR services
 from services.ocr_service import ocr_service
 from services.ocr_storage_service import ocr_storage_service
+
+from backend.middleware.validation import validate_json_request, validate_query_params
+from backend.middleware.rate_limiting import rate_limiter
+from backend.services.document_management_service import document_management_service
+from backend.services.validation_service import validation_service
+from backend.services.error_logging_service import error_logging_service
+from backend.utils.decorators import token_required
+from typing import Dict, Any, List, Optional
 
 bp = Blueprint('documents', __name__, url_prefix='/api/documents')
 logger = logging.getLogger(__name__)
@@ -26,6 +36,33 @@ ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'}
 
 # Create upload folder if it doesn't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+notification_service = NotificationService()
+
+# Document metadata validation schema
+DOCUMENT_METADATA_SCHEMA = {
+    'title': {
+        'required': True,
+        'type': str,
+        'minLength': 1,
+        'maxLength': 255
+    },
+    'description': {
+        'type': str,
+        'maxLength': 1000
+    },
+    'document_type': {
+        'type': str,
+        'enum': ['contract', 'court_filing', 'legal_letter', 'immigration_form', 'small_claims', 'other']
+    },
+    'tags': {
+        'type': list
+    },
+    'access_level': {
+        'type': str,
+        'enum': ['public', 'internal', 'confidential', 'restricted']
+    }
+}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -189,22 +226,56 @@ def revert_to_version(document_id, version):
         return jsonify({'error': str(e)}), 500
 
 @bp.route('/<int:document_id>/share', methods=['POST'])
-@jwt_required()
+@login_required
 def share_document(document_id):
+    """Share a document with other users"""
     try:
-        data = request.get_json()
-        if 'users' not in data or not isinstance(data['users'], list):
-            return jsonify({'error': 'Missing users to share with'}), 400
-            
-        document = Document.query.get(document_id)
+        data = request.json
+        recipient_ids = data.get('recipient_ids', [])
+        access_level = data.get('access_level', 'view')
+        expiry_date = data.get('expiry_date')
+        
+        # Validate document ownership
+        document = Document.find_one({
+            '_id': ObjectId(document_id),
+            'owner_id': request.user_id
+        })
+        
         if not document:
-            return jsonify({'error': 'Document not found'}), 404
+            return jsonify({'error': 'Document not found or access denied'}), 404
             
-        # TODO: Implement document sharing logic
-        # This would typically involve creating share records in a separate table
-        # For now, we'll just return success
+        # Update document sharing settings
+        Document.update_one(
+            {'_id': ObjectId(document_id)},
+            {
+                '$set': {
+                    'shared_with': [{
+                        'user_id': recipient_id,
+                        'access_level': access_level,
+                        'expiry_date': expiry_date
+                    } for recipient_id in recipient_ids]
+                }
+            }
+        )
+        
+        # Notify recipients
+        for recipient_id in recipient_ids:
+            notification_service.send_notification(
+                user_id=recipient_id,
+                notification_type='document_shared',
+                data={
+                    'document_id': str(document_id),
+                    'document_name': document.get('name'),
+                    'shared_by': request.user_id,
+                    'access_level': access_level
+                }
+            )
+        
+        return jsonify({
+            'message': 'Document shared successfully',
+            'shared_with': recipient_ids
+        }), 200
             
-        return jsonify({'message': 'Document shared successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -647,4 +718,345 @@ def get_case_documents(case_id):
         
     except Exception as e:
         logger.error(f"Get case documents error: {str(e)}")
-        return jsonify({'error': 'Internal server error'}), 500 
+        return jsonify({'error': 'Internal server error'}), 500
+
+@bp.route('/shared', methods=['GET'])
+@login_required
+def get_shared_documents():
+    """Get documents shared with the current user"""
+    try:
+        shared_docs = Document.find({
+            'shared_with': {
+                '$elemMatch': {
+                    'user_id': request.user_id,
+                    '$or': [
+                        {'expiry_date': {'$exists': False}},
+                        {'expiry_date': {'$gt': datetime.utcnow()}}
+                    ]
+                }
+            }
+        })
+        
+        return jsonify({
+            'documents': [{
+                'id': str(doc['_id']),
+                'name': doc.get('name'),
+                'owner_id': doc.get('owner_id'),
+                'access_level': next(
+                    share['access_level'] 
+                    for share in doc.get('shared_with', [])
+                    if share['user_id'] == request.user_id
+                ),
+                'created_at': doc.get('created_at')
+            } for doc in shared_docs]
+        }), 200
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@bp.route('', methods=['POST'])
+@token_required
+@rate_limiter.limit('document_upload')
+async def upload_document(current_user):
+    """Upload a new document."""
+    try:
+        # Check if file is in request
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+            
+        file = request.files['file']
+        
+        # Check if file has a name
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        # Get metadata from form or JSON
+        metadata = {}
+        if request.form:
+            for key in request.form:
+                metadata[key] = request.form[key]
+        elif request.is_json:
+            metadata.update(request.get_json())
+                
+        # Validate metadata
+        is_valid, field_errors = validation_service.validate_input(metadata, DOCUMENT_METADATA_SCHEMA)
+        if not is_valid:
+            return jsonify({'error': 'Invalid metadata', 'field_errors': field_errors}), 400
+        
+        # Create document
+        document = await document_management_service.create_document(
+            file, 
+            metadata, 
+            current_user.id
+        )
+        
+        return jsonify({'message': 'Document uploaded successfully', 'document': document}), 201
+        
+    except Exception as e:
+        error_id = error_logging_service.log_exception(e)
+        logger.error(f"Error uploading document: {str(e)}")
+        return jsonify({'error': 'Failed to upload document', 'error_id': error_id}), 500
+
+@bp.route('', methods=['GET'])
+@token_required
+@validate_query_params(['page', 'limit', 'sort', 'direction'])
+async def list_documents(current_user):
+    """List documents with pagination and filtering."""
+    try:
+        # Parse query parameters
+        page = int(request.args.get('page', 1))
+        limit = min(int(request.args.get('limit', 20)), 100)  # Maximum 100 items per page
+        skip = (page - 1) * limit
+        
+        # Get sort parameters
+        sort_field = request.args.get('sort', 'created_at')
+        sort_direction = request.args.get('direction', 'desc')
+        
+        # Get filter parameters
+        filters = {}
+        
+        # Handle search query
+        search_query = request.args.get('search')
+        if search_query:
+            documents = await document_management_service.search_documents(
+                search_query, 
+                current_user.id, 
+                skip, 
+                limit
+            )
+            total = len(documents)  # This is not accurate for total, but a limitation of the current setup
+        else:
+            # Apply filters from query parameters
+            for param in ['document_type', 'access_level', 'status']:
+                if param in request.args:
+                    filters[param] = request.args.get(param)
+                    
+            # Filter by tags (comma-separated list)
+            if 'tags' in request.args:
+                tags = request.args.get('tags').split(',')
+                filters['tags'] = {'$in': tags}
+                
+            # Filter by date range
+            if 'start_date' in request.args and 'end_date' in request.args:
+                filters['created_at'] = {
+                    '$gte': request.args.get('start_date'),
+                    '$lte': request.args.get('end_date')
+                }
+                
+            # Get documents
+            documents = await document_management_service.list_documents(
+                current_user.id, 
+                filters, 
+                skip, 
+                limit
+            )
+            
+            # TODO: Get total count for pagination
+            total = len(documents) + skip  # This is not accurate, but a limitation of the current setup
+        
+        return jsonify({
+            'documents': documents,
+            'page': page,
+            'limit': limit,
+            'total': total
+        }), 200
+        
+    except Exception as e:
+        error_id = error_logging_service.log_exception(e)
+        logger.error(f"Error listing documents: {str(e)}")
+        return jsonify({'error': 'Failed to list documents', 'error_id': error_id}), 500
+
+@bp.route('/<document_id>', methods=['GET'])
+@token_required
+async def get_document(current_user, document_id):
+    """Get document by ID."""
+    try:
+        document = await document_management_service.get_document(document_id, current_user.id)
+        
+        if not document:
+            return jsonify({'error': 'Document not found or you do not have permission to access it'}), 404
+            
+        return jsonify({'document': document}), 200
+        
+    except Exception as e:
+        error_id = error_logging_service.log_exception(e)
+        logger.error(f"Error getting document: {str(e)}")
+        return jsonify({'error': 'Failed to get document', 'error_id': error_id}), 500
+
+@bp.route('/<document_id>/file', methods=['GET'])
+@token_required
+async def download_document(current_user, document_id):
+    """Download document file."""
+    try:
+        document = await document_management_service.get_document(document_id, current_user.id)
+        
+        if not document:
+            return jsonify({'error': 'Document not found or you do not have permission to access it'}), 404
+            
+        # Get file path
+        file_path = document.get('file_path')
+        
+        if not file_path or not os.path.exists(file_path):
+            return jsonify({'error': 'Document file not found'}), 404
+            
+        # Set download name to original filename
+        return send_file(
+            file_path, 
+            as_attachment=True,
+            download_name=document.get('original_filename', 'document')
+        )
+        
+    except Exception as e:
+        error_id = error_logging_service.log_exception(e)
+        logger.error(f"Error downloading document: {str(e)}")
+        return jsonify({'error': 'Failed to download document', 'error_id': error_id}), 500
+
+@bp.route('/<document_id>', methods=['PUT'])
+@token_required
+@validate_json_request(['metadata'])
+async def update_document(current_user, document_id):
+    """Update document metadata."""
+    try:
+        # Get update data
+        update_data = request.get_json()
+        
+        # Validate metadata if provided
+        if 'metadata' in update_data:
+            is_valid, field_errors = validation_service.validate_input(
+                update_data['metadata'], 
+                DOCUMENT_METADATA_SCHEMA
+            )
+            if not is_valid:
+                return jsonify({'error': 'Invalid metadata', 'field_errors': field_errors}), 400
+        
+        # Update document
+        document = await document_management_service.update_document(
+            document_id, 
+            update_data, 
+            current_user.id
+        )
+        
+        if not document:
+            return jsonify({'error': 'Document not found or you do not have permission to update it'}), 404
+            
+        return jsonify({'message': 'Document updated successfully', 'document': document}), 200
+        
+    except PermissionError as e:
+        logger.warning(f"Permission denied: {str(e)}")
+        return jsonify({'error': str(e)}), 403
+        
+    except Exception as e:
+        error_id = error_logging_service.log_exception(e)
+        logger.error(f"Error updating document: {str(e)}")
+        return jsonify({'error': 'Failed to update document', 'error_id': error_id}), 500
+
+@bp.route('/<document_id>/file', methods=['PUT'])
+@token_required
+@rate_limiter.limit('document_upload')
+async def replace_document_file(current_user, document_id):
+    """Replace document file with a new version."""
+    try:
+        # Check if file is in request
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+            
+        file = request.files['file']
+        
+        # Check if file has a name
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        # Replace document file
+        document = await document_management_service.replace_document_file(
+            document_id, 
+            file, 
+            current_user.id
+        )
+        
+        if not document:
+            return jsonify({'error': 'Document not found or you do not have permission to update it'}), 404
+            
+        return jsonify({'message': 'Document file replaced successfully', 'document': document}), 200
+        
+    except PermissionError as e:
+        logger.warning(f"Permission denied: {str(e)}")
+        return jsonify({'error': str(e)}), 403
+        
+    except Exception as e:
+        error_id = error_logging_service.log_exception(e)
+        logger.error(f"Error replacing document file: {str(e)}")
+        return jsonify({'error': 'Failed to replace document file', 'error_id': error_id}), 500
+
+@bp.route('/<document_id>', methods=['DELETE'])
+@token_required
+async def delete_document(current_user, document_id):
+    """Delete a document."""
+    try:
+        # Delete document
+        success = await document_management_service.delete_document(document_id, current_user.id)
+        
+        if not success:
+            return jsonify({'error': 'Document not found or you do not have permission to delete it'}), 404
+            
+        return jsonify({'message': 'Document deleted successfully'}), 200
+        
+    except PermissionError as e:
+        logger.warning(f"Permission denied: {str(e)}")
+        return jsonify({'error': str(e)}), 403
+        
+    except Exception as e:
+        error_id = error_logging_service.log_exception(e)
+        logger.error(f"Error deleting document: {str(e)}")
+        return jsonify({'error': 'Failed to delete document', 'error_id': error_id}), 500
+
+@bp.route('/<document_id>/share', methods=['POST'])
+@token_required
+@validate_json_request(['share_with_ids'])
+async def share_document(current_user, document_id):
+    """Share a document with other users."""
+    try:
+        # Get share data
+        share_data = request.get_json()
+        share_with_ids = share_data.get('share_with_ids', [])
+        
+        if not isinstance(share_with_ids, list):
+            return jsonify({'error': 'share_with_ids must be a list of user IDs'}), 400
+            
+        # Share document
+        document = await document_management_service.share_document(
+            document_id, 
+            current_user.id, 
+            share_with_ids
+        )
+        
+        if not document:
+            return jsonify({'error': 'Document not found or you do not have permission to share it'}), 404
+            
+        return jsonify({'message': 'Document shared successfully', 'document': document}), 200
+        
+    except PermissionError as e:
+        logger.warning(f"Permission denied: {str(e)}")
+        return jsonify({'error': str(e)}), 403
+        
+    except Exception as e:
+        error_id = error_logging_service.log_exception(e)
+        logger.error(f"Error sharing document: {str(e)}")
+        return jsonify({'error': 'Failed to share document', 'error_id': error_id}), 500
+
+@bp.route('/<document_id>/versions', methods=['GET'])
+@token_required
+async def get_document_versions(current_user, document_id):
+    """Get all versions of a document."""
+    try:
+        # Get document versions
+        versions = await document_management_service.get_document_versions(document_id, current_user.id)
+        
+        if not versions:
+            return jsonify({'error': 'Document not found or you do not have permission to access it'}), 404
+            
+        return jsonify({'versions': versions}), 200
+        
+    except Exception as e:
+        error_id = error_logging_service.log_exception(e)
+        logger.error(f"Error getting document versions: {str(e)}")
+        return jsonify({'error': 'Failed to get document versions', 'error_id': error_id}), 500 

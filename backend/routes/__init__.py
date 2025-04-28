@@ -8,6 +8,7 @@ from .rights import bp as rights_bp
 from .document_scanner import scanner_bp
 from .templates import bp as template_bp
 from .notifications import bp as notifications_bp
+from .onboarding import bp as onboarding_bp
 
 __all__ = [
     'admin_bp',
@@ -18,5 +19,6 @@ __all__ = [
     'rights_bp',
     'scanner_bp',
     'template_bp',
-    'notifications_bp'
+    'notifications_bp',
+    'onboarding_bp'
 ]

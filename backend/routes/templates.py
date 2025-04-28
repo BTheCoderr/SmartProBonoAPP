@@ -1,7 +1,7 @@
 """
 Routes for handling document templates and PDF generation
 """
-from flask import Blueprint, request, jsonify, send_file
+from flask import Blueprint, request, jsonify, send_file, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.models.user import User
 from backend.models.template import Template
@@ -12,6 +12,7 @@ from reportlab.lib.pagesizes import letter
 from io import BytesIO
 import os
 from datetime import datetime
+from backend.services.pdf_service import get_pdf_service
 
 logger = logging.getLogger(__name__)
 bp = Blueprint('templates', __name__)
@@ -47,11 +48,129 @@ def create_pdf_template(template: Template, data: dict) -> BytesIO:
 @bp.route('/api/templates', methods=['GET'])
 @jwt_required()
 def list_templates():
-    """List available templates"""
-    templates = Template.query.filter_by(is_active=True).all()
-    return jsonify({
-        'templates': [template.to_dict() for template in templates]
-    }), 200
+    """List all templates"""
+    try:
+        templates = Template.query.all()
+        return jsonify([t.to_dict() for t in templates])
+    except Exception as e:
+        logger.error(f'Error listing templates: {str(e)}')
+        return jsonify({'error': 'Failed to list templates'}), 500
+
+@bp.route('/api/templates/<string:template_id>', methods=['GET'])
+@jwt_required()
+def get_template(template_id):
+    """Get a template by ID"""
+    try:
+        template = Template.query.filter_by(template_id=template_id).first()
+        if not template:
+            return jsonify({'error': 'Template not found'}), 404
+        return jsonify(template.to_dict())
+    except Exception as e:
+        logger.error(f'Error getting template: {str(e)}')
+        return jsonify({'error': 'Failed to get template'}), 500
+
+@bp.route('/api/templates/preview', methods=['POST'])
+def preview_template():
+    """Generate a document preview from template"""
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+            
+        template_id = data.get('template_id')
+        if not template_id:
+            return jsonify({'error': 'No template_id provided'}), 400
+            
+        template_data = data.get('data', {})
+        
+        # Validate required fields based on template type
+        # This is a simple validation, more complex validation should be implemented
+        if not template_data.get('court_county') and template_id == 'small_claims_complaint':
+            return jsonify({'error': 'Missing required fields'}), 400
+        
+        # Generate PDF preview
+        pdf_service = get_pdf_service()
+        output_format = data.get('output_format', 'pdf')
+        
+        # Check if watermark is requested
+        watermark_text = data.get('watermark_text', 'PREVIEW')
+        
+        # Generate document with preview watermark
+        file_path = pdf_service.generate_legal_document(
+            template_id=template_id,
+            data=template_data,
+            output_format=output_format,
+            watermark_text=watermark_text
+        )
+        
+        # Return the file
+        return send_file(
+            file_path,
+            mimetype='application/pdf' if output_format == 'pdf' else 'text/html',
+            as_attachment=True,
+            download_name=f"{template_id}_preview.{output_format}"
+        )
+        
+    except ValueError as e:
+        logger.error(f'Validation error in template preview: {str(e)}')
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        logger.error(f'Error generating template preview: {str(e)}')
+        return jsonify({'error': 'Failed to generate preview'}), 500
+        
+@bp.route('/api/templates/generate', methods=['POST'])
+@jwt_required()
+def generate_document():
+    """Generate a document from template and save it to the user's documents"""
+    try:
+        user_id = get_jwt_identity()
+        data = request.json
+        
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+            
+        template_id = data.get('template_id')
+        if not template_id:
+            return jsonify({'error': 'No template_id provided'}), 400
+            
+        template_data = data.get('data', {})
+        
+        # Generate document
+        pdf_service = get_pdf_service()
+        file_path = pdf_service.generate_legal_document(
+            template_id=template_id,
+            data=template_data
+        )
+        
+        # Save document to user's documents
+        from backend.models.document import Document
+        
+        document = Document(
+            user_id=user_id,
+            title=f"{template_id.replace('_', ' ').title()} - {datetime.now().strftime('%Y-%m-%d')}",
+            file_path=file_path,
+            file_type='application/pdf',
+            source='generated',
+            metadata={
+                'template_id': template_id,
+                'template_data': template_data
+            }
+        )
+        
+        db.session.add(document)
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Document generated successfully',
+            'document_id': document.id
+        }), 201
+        
+    except ValueError as e:
+        logger.error(f'Validation error in document generation: {str(e)}')
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        logger.error(f'Error generating document: {str(e)}')
+        return jsonify({'error': 'Failed to generate document'}), 500
 
 @bp.route('/api/templates', methods=['POST'])
 @jwt_required()

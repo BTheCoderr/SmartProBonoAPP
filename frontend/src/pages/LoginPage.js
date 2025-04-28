@@ -17,6 +17,7 @@ import * as Yup from 'yup';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { isSocketConnected } from '../services/socket';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 // Validation schema
 const LoginSchema = Yup.object().shape({
@@ -149,6 +150,11 @@ const LoginPage = () => {
           >
             {({ errors, touched, isSubmitting }) => (
               <Form style={{ width: '100%' }}>
+                {showAlert && (
+                  <Alert severity={alertType} icon={<ErrorOutlineIcon />} sx={{ width: '100%', mb: 2 }}>
+                    {alertMessage}
+                  </Alert>
+                )}
                 <Field
                   as={TextField}
                   margin="normal"
@@ -159,7 +165,9 @@ const LoginPage = () => {
                   autoComplete="email"
                   autoFocus
                   error={touched.email && Boolean(errors.email)}
-                  helperText={touched.email && errors.email}
+                  helperText={touched.email && errors.email ? (
+                    <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />{errors.email}</span>
+                  ) : ''}
                   disabled={isSubmitting || isConnectingWebSocket}
                 />
                 
@@ -173,7 +181,9 @@ const LoginPage = () => {
                   id="password"
                   autoComplete="current-password"
                   error={touched.password && Boolean(errors.password)}
-                  helperText={touched.password && errors.password}
+                  helperText={touched.password && errors.password ? (
+                    <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />{errors.password}</span>
+                  ) : ''}
                   disabled={isSubmitting || isConnectingWebSocket}
                 />
                 

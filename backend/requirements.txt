@@ -23,3 +23,29 @@ pymongo==4.5.0
 Flask-JWT-Extended==4.5.3
 pytesseract==0.3.10
 Pillow==10.0.1
+redis>=4.5.4
+cryptography
+flask-socketio==5.3.6
+flask-pymongo==2.3.0
+
+# Development Tools
+python-dotenv==1.0.0
+black==24.1.1
+flake8==7.0.0
+mypy==1.8.0
+pytest-cov==4.1.0
+
+# Production Dependencies
+gunicorn==21.2.0
+sentry-sdk[flask]==1.39.1
+celery==5.3.6
+redis==5.0.1
+
+# Monitoring and Logging
+prometheus-flask-exporter==0.22.3
+structlog==24.1.0
+
+# Type Stubs
+types-requests==2.31.0.20240125
+types-python-dateutil==2.8.19.14
+types-PyYAML==6.0.12.12
