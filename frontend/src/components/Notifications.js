@@ -31,8 +31,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { API_URL } from '../config';
+import apiService from '../services/ApiService';
 import { 
   isSocketConnected, 
   addSocketEventHandler, 
@@ -91,7 +90,7 @@ const Notifications = () => {
   
   // Memoized fetch notifications function
   const fetchNotifications = useCallback(async () => {
-    if (!accessToken) return;
+    if (!isAuthenticated) return;
     
     try {
       setLoading(true);
@@ -105,19 +104,48 @@ const Notifications = () => {
           return;
         } catch (socketError) {
           console.error('Failed to get notifications via WebSocket, falling back to API:', socketError);
-          // Fall back to REST API
         }
       }
       
-      // Fallback to REST API
-      const response = await axios.get(`${API_URL}/api/notifications`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      });
-      
-      if (response.data && Array.isArray(response.data.notifications)) {
-        setNotifications(response.data.notifications);
-      } else {
-        // Use fallback data for development/demo purposes
+      // Fallback to REST API using ApiService
+      try {
+        const response = await apiService.client.get('/api/notifications');
+        if (response.data && Array.isArray(response.data.notifications)) {
+          setNotifications(response.data.notifications);
+        } else {
+          // Use fallback data for development/demo purposes
+          setNotifications([
+            {
+              _id: '1',
+              title: 'Form Submitted',
+              message: 'Your immigration form has been submitted successfully.',
+              type: 'success',
+              isRead: false,
+              createdAt: new Date(Date.now() - 30 * 60000).toISOString()
+            },
+            {
+              _id: '2',
+              title: 'Documents Required',
+              message: 'Please upload your identification documents for your immigration case.',
+              type: 'warning',
+              isRead: false,
+              createdAt: new Date(Date.now() - 3 * 3600000).toISOString()
+            },
+            {
+              _id: '3',
+              title: 'Case Status Updated',
+              message: 'Your case status has been updated to "In Progress".',
+              type: 'info',
+              isRead: true,
+              createdAt: new Date(Date.now() - 2 * 86400000).toISOString()
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+        setError(apiService.handleError(error));
+        
+        // Use fallback data in case of error
         setNotifications([
           {
             _id: '1',
@@ -125,45 +153,14 @@ const Notifications = () => {
             message: 'Your immigration form has been submitted successfully.',
             type: 'success',
             isRead: false,
-            createdAt: new Date(Date.now() - 30 * 60000).toISOString() // 30 minutes ago
-          },
-          {
-            _id: '2',
-            title: 'Documents Required',
-            message: 'Please upload your identification documents for your immigration case.',
-            type: 'warning',
-            isRead: false,
-            createdAt: new Date(Date.now() - 3 * 3600000).toISOString() // 3 hours ago
-          },
-          {
-            _id: '3',
-            title: 'Case Status Updated',
-            message: 'Your case status has been updated to "In Progress".',
-            type: 'info',
-            isRead: true,
-            createdAt: new Date(Date.now() - 2 * 86400000).toISOString() // 2 days ago
+            createdAt: new Date(Date.now() - 30 * 60000).toISOString()
           }
         ]);
       }
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-      setError('Failed to load notifications. Please try again.');
-      
-      // Use fallback data in case of error
-      setNotifications([
-        {
-          _id: '1',
-          title: 'Form Submitted',
-          message: 'Your immigration form has been submitted successfully.',
-          type: 'success',
-          isRead: false,
-          createdAt: new Date(Date.now() - 30 * 60000).toISOString()
-        }
-      ]);
     } finally {
       setLoading(false);
     }
-  }, [accessToken]);
+  }, [isAuthenticated]);
   
   // Handle socket connection status
   useEffect(() => {
@@ -332,9 +329,7 @@ const Notifications = () => {
       }
       
       // Fallback to REST API
-      await axios.post(`${API_URL}/api/notifications/${notificationId}/read`, {}, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      });
+      await apiService.client.post(`/api/notifications/${notificationId}/read`);
     } catch (error) {
       console.error('Error marking notification as read:', error);
       // Revert the UI change if the server update failed
@@ -370,9 +365,7 @@ const Notifications = () => {
       }
       
       // Fallback to REST API
-      await axios.post(`${API_URL}/api/notifications/mark-all-read`, {}, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      });
+      await apiService.client.post('/api/notifications/mark-all-read');
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
       // Revert the UI change if the server update failed

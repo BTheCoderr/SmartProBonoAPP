@@ -2,26 +2,33 @@ import React, { createContext, useState, useEffect, useContext, useMemo, useCall
 import axios from 'axios';
 import { API_URL } from '../config';
 import { initializeSocket, disconnectSocket, addSocketEventHandler, removeSocketEventHandler } from '../services/socket';
+import { useNavigate } from 'react-router-dom';
+import ApiService from '../services/ApiService';
 
 // Create the Auth Context
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 // Custom hook to use the Auth Context
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
 
 // Auth Provider Component
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState(localStorage.getItem('access_token'));
   const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refresh_token'));
-  const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshAttempts, setRefreshAttempts] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const MAX_REFRESH_ATTEMPTS = 3;
+  const navigate = useNavigate();
 
   // Add this at the top of the AuthProvider component
   const isTestMode = window.location.href.includes('scanner-test') || 
@@ -37,9 +44,9 @@ export const AuthProvider = ({ children }) => {
 
   // Initialize socket when user is authenticated
   useEffect(() => {
-    if (currentUser && currentUser.id) {
-      console.log('Initializing socket for user:', currentUser.id);
-      initializeSocket(currentUser.id)
+    if (user && user.id) {
+      console.log('Initializing socket for user:', user.id);
+      initializeSocket(user.id)
         .then(() => {
           console.log('Socket initialized and registered successfully');
           // Set up notification handler
@@ -54,7 +61,7 @@ export const AuthProvider = ({ children }) => {
         removeSocketEventHandler('notification', handleNotification);
       };
     }
-  }, [currentUser, handleNotification]);
+  }, [user, handleNotification]);
 
   // Set up axios interceptor for authorization - memoized to prevent recreation on every render
   useEffect(() => {
@@ -170,17 +177,8 @@ export const AuthProvider = ({ children }) => {
       }
 
       try {
-        const response = await axios.get(`${API_URL}/api/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          },
-          // Add cache control to prevent duplicate requests
-          cache: {
-            maxAge: 15 * 60 * 1000, // 15 minutes
-            excludeFromCache: false,
-          }
-        });
-        setCurrentUser(response.data.user);
+        const response = await ApiService.get('/api/auth/profile');
+        setUser(response.data);
       } catch (error) {
         // Token might be expired or invalid
         console.error('Error loading user:', error);
@@ -215,7 +213,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('refresh_token', mockToken);
     setAccessToken(mockToken);
     setRefreshToken(mockToken);
-    setCurrentUser(mockUser);
+    setUser(mockUser);
     
     return { success: true, user: mockUser };
   }, []);
@@ -223,62 +221,34 @@ export const AuthProvider = ({ children }) => {
   // Login function with memoization
   const login = useCallback(async (email, password) => {
     try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, {
-        email,
-        password
-      });
-
-      const { access_token, refresh_token, user } = response.data;
-      
-      // Save tokens to localStorage and state
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('refresh_token', refresh_token);
-      setAccessToken(access_token);
-      setRefreshToken(refresh_token);
-      setCurrentUser(user);
-      
-      return { success: true, user };
+      const response = await ApiService.post('/api/auth/login', { email, password });
+      setUser(response.data);
+      return response.data;
     } catch (error) {
-      console.error('Login error:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Login failed'
-      };
+      throw error;
     }
   }, []);
 
   // Register function with memoization
   const register = useCallback(async (userData) => {
     try {
-      const response = await axios.post(`${API_URL}/api/auth/register`, userData);
-      return { success: true, data: response.data };
+      const response = await ApiService.post('/api/auth/register', userData);
+      return response.data;
     } catch (error) {
-      console.error('Registration error:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Registration failed'
-      };
+      throw error;
     }
   }, []);
 
   // Update profile function with memoization
-  const updateProfile = useCallback(async (userData) => {
+  const updateProfile = useCallback(async (profileData) => {
     try {
-      const response = await axios.put(`${API_URL}/api/auth/update`, userData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-      setCurrentUser(response.data.user);
-      return { success: true, user: response.data.user };
+      const response = await ApiService.put('/api/auth/profile', profileData);
+      setUser(response.data);
+      return response.data;
     } catch (error) {
-      console.error('Update profile error:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Profile update failed'
-      };
+      throw error;
     }
-  }, [accessToken]);
+  }, []);
 
   // Logout function with debounce
   const logout = useCallback(async () => {
@@ -293,13 +263,7 @@ export const AuthProvider = ({ children }) => {
     if (accessToken) {
       try {
         // Call the logout endpoint to invalidate the token
-        await axios.post(`${API_URL}/api/auth/logout`, {}, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          },
-          // Add timeout to prevent hanging requests
-          timeout: 5000
-        });
+        await ApiService.post('/api/auth/logout');
       } catch (error) {
         // Just log the error, but continue with local logout
         console.error('Logout API error:', error);
@@ -313,18 +277,20 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token'); // Remove old token format as well
     setAccessToken(null);
     setRefreshToken(null);
-    setCurrentUser(null);
+    setUser(null);
     
     // Reset logout status after a short delay
     setTimeout(() => {
       setIsLoggingOut(false);
     }, 1000);
-  }, [accessToken, isLoggingOut]);
+
+    navigate('/login');
+  }, [accessToken, isLoggingOut, navigate]);
 
   // Memoize the context value to prevent unnecessary re-renders
   const value = useMemo(() => ({
-    currentUser,
-    isAuthenticated: !!currentUser,
+    user,
+    isAuthenticated: !!user,
     login,
     register,
     logout,
@@ -332,7 +298,7 @@ export const AuthProvider = ({ children }) => {
     mockLogin,
     loading,
     notifications
-  }), [currentUser, login, register, logout, updateProfile, mockLogin, loading, notifications]);
+  }), [user, login, register, logout, updateProfile, mockLogin, loading, notifications]);
 
   // Return Provider with context value
   return (

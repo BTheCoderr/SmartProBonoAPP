@@ -2,7 +2,7 @@ import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
-import { theme } from './components/theme';
+import legalTheme from './theme/legalTheme';
 import i18n from './translations/i18n';
 
 // Auth Context
@@ -44,11 +44,13 @@ import ImmigrationDashboard from './pages/ImmigrationDashboard';
 import VirtualParalegalPage from './pages/VirtualParalegalPage';
 import ThankYouPage from './pages/ThankYouPage';
 import OnboardingPage from './pages/OnboardingPage';
+import SmallClaimsComplaintForm from './pages/SmallClaimsComplaintForm';
+import FormsIndexPage from './pages/FormsIndexPage';
+import EvictionResponseForm from './pages/EvictionResponseForm';
 
 // Layout components for nested routes
 const ServicesLayout = () => (
-  <div>
-    <Navigation />
+  <div style={{ height: '100vh', overflow: 'auto' }}>
     <Routes>
       <Route index element={<Services />} />
       <Route path="contracts/*" element={<ContractsPage />} />
@@ -67,8 +69,7 @@ const ServicesLayout = () => (
 );
 
 const ResourcesLayout = () => (
-  <div>
-    <Navigation />
+  <div style={{ height: '100vh', overflow: 'auto' }}>
     <Routes>
       <Route index element={<Resources />} />
       <Route path="rights" element={<RightsPage />} />
@@ -85,8 +86,7 @@ const ResourcesLayout = () => (
 );
 
 const LegalChatLayout = () => (
-  <div>
-    <Navigation />
+  <div style={{ height: '100vh', overflow: 'auto' }}>
     <Routes>
       <Route index element={<LegalAIChat />} />
       <Route 
@@ -115,7 +115,7 @@ const App = () => {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={legalTheme}>
         <AuthProvider>
           {/* Add WebSocketClient here to handle socket connections */}
           <WebSocketClient />
@@ -126,88 +126,95 @@ const App = () => {
             }}
           >
             <ErrorBoundary>
-              <div className="App">
+              <div className="App" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
                 <Navigation />
-                <Routes>
-                  {/* Main routes */}
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/thank-you" element={<ThankYouPage />} />
-                  <Route path="/onboarding" element={<OnboardingPage />} />
-                  <Route path="/contracts" element={<ContractsPage />} />
-                  <Route path="/rights" element={<RightsPage />} />
-                  <Route path="/rights/:categorySlug" element={<RightsPage />} />
-                  <Route path="/services/*" element={<ServicesLayout />} />
-                  <Route path="/virtual-paralegal" element={<VirtualParalegalPage />} />
-                  <Route path="/resources/*" element={<ResourcesLayout />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/immigration" element={<Immigration />} />
-                  <Route path="/expungement" element={<ExpungementPage />} />
-                  <Route path="/scanner-test" element={<ScannerTestPage />} />
-                  
-                  {/* Make ScanDocument publicly accessible for testing */}
-                  <Route path="/scan-document" element={<ScanDocument />} />
-                  
-                  {/* Authentication routes */}
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route path="/unauthorized" element={<UnauthorizedPage />} />
-                  
-                  {/* Protected routes */}
-                  <Route element={<ProtectedRoute />}>
-                    <Route path="/profile" element={<ProfilePage />} />
+                <div style={{ flex: 1, overflow: 'auto' }}>
+                  <Routes>
+                    {/* Main routes */}
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/thank-you" element={<ThankYouPage />} />
+                    <Route path="/onboarding" element={<OnboardingPage />} />
+                    <Route path="/contracts" element={<ContractsPage />} />
+                    <Route path="/rights" element={<RightsPage />} />
+                    <Route path="/rights/:categorySlug" element={<RightsPage />} />
+                    <Route path="/services/*" element={<ServicesLayout />} />
+                    <Route path="/virtual-paralegal" element={<VirtualParalegalPage />} />
+                    <Route path="/resources/*" element={<ResourcesLayout />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/immigration" element={<Immigration />} />
+                    <Route path="/expungement" element={<ExpungementPage />} />
+                    <Route path="/scanner-test" element={<ScannerTestPage />} />
                     
-                    {/* Document Management route - requires authentication */}
-                    <Route path="/documents" element={<DocumentsPage />} />
-                    
-                    {/* Immigration Dashboard - requires authentication */}
-                    <Route path="/immigration-dashboard" element={<ImmigrationDashboard />} />
-                    
-                    {/* Scan Document route commented out - now public above
+                    {/* Make ScanDocument publicly accessible for testing */}
                     <Route path="/scan-document" element={<ScanDocument />} />
-                    */}
                     
-                    {/* Identity Verification route */}
-                    <Route 
-                      path="/verify" 
-                      element={
-                        <PremiumRouteGuard isPremium={isPremium}>
-                          <IdentityVerification />
-                        </PremiumRouteGuard>
-                      } 
-                    />
+                    {/* Legal Forms - publicly accessible for now */}
+                    <Route path="/forms" element={<FormsIndexPage />} />
+                    <Route path="/forms/small-claims" element={<SmallClaimsComplaintForm />} />
+                    <Route path="/forms/eviction-response" element={<EvictionResponseForm />} />
+                    
+                    {/* Authentication routes */}
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                    
+                    {/* Protected routes */}
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/profile" element={<ProfilePage />} />
+                      
+                      {/* Document Management route - requires authentication */}
+                      <Route path="/documents" element={<DocumentsPage />} />
+                      
+                      {/* Immigration Dashboard - requires authentication */}
+                      <Route path="/immigration-dashboard" element={<ImmigrationDashboard />} />
+                      
+                      {/* Scan Document route commented out - now public above
+                      <Route path="/scan-document" element={<ScanDocument />} />
+                      */}
+                      
+                      {/* Identity Verification route */}
+                      <Route 
+                        path="/verify" 
+                        element={
+                          <PremiumRouteGuard isPremium={isPremium}>
+                            <IdentityVerification />
+                          </PremiumRouteGuard>
+                        } 
+                      />
 
-                    {/* Progress and subscription routes */}
-                    <Route 
-                      path="/progress" 
-                      element={
-                        <PremiumRouteGuard isPremium={isPremium}>
-                          <ProgressTracker />
-                        </PremiumRouteGuard>
-                      } 
-                    />
-                  </Route>
+                      {/* Progress and subscription routes */}
+                      <Route 
+                        path="/progress" 
+                        element={
+                          <PremiumRouteGuard isPremium={isPremium}>
+                            <ProgressTracker />
+                          </PremiumRouteGuard>
+                        } 
+                      />
+                    </Route>
 
-                  {/* Lawyer-specific routes */}
-                  <Route element={<ProtectedRoute requiredRole="lawyer" />}>
-                    <Route path="/lawyer-dashboard" element={<LawyerDashboard />} />
-                    {/* Add other lawyer-specific routes as needed */}
-                  </Route>
+                    {/* Lawyer-specific routes */}
+                    <Route element={<ProtectedRoute requiredRole="lawyer" />}>
+                      <Route path="/lawyer-dashboard" element={<LawyerDashboard />} />
+                      {/* Add other lawyer-specific routes as needed */}
+                    </Route>
 
-                  {/* Admin-specific routes */}
-                  <Route element={<ProtectedRoute requiredRole="admin" />}>
-                    <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                    {/* Add other admin-specific routes as needed */}
-                  </Route>
-                  
-                  {/* Legal Chat route */}
-                  <Route path="/legal-chat/*" element={<LegalChatLayout />} />
-                  
-                  {/* Subscription route - publicly accessible */}
-                  <Route path="/subscription" element={<SubscriptionPlans />} />
-                  
-                  {/* Catch-all route for 404 */}
-                  <Route path="*" element={<NotFoundPage />} />
-                </Routes>
+                    {/* Admin-specific routes */}
+                    <Route element={<ProtectedRoute requiredRole="admin" />}>
+                      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                      {/* Add other admin-specific routes as needed */}
+                    </Route>
+                    
+                    {/* Legal Chat route */}
+                    <Route path="/legal-chat/*" element={<LegalChatLayout />} />
+                    
+                    {/* Subscription route - publicly accessible */}
+                    <Route path="/subscription" element={<SubscriptionPlans />} />
+                    
+                    {/* Catch-all route for 404 */}
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Routes>
+                </div>
               </div>
             </ErrorBoundary>
           </HashRouter>

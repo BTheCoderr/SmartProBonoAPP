@@ -59,7 +59,8 @@ async def chat():
         return jsonify({'error': str(e)}), 500
     finally:
         # Ensure cleanup of resources
-        await ai_service_manager.cleanup()
+        if ai_service_manager.cleanup():
+            await ai_service_manager.cleanup()
 
 @bp.route('/analyze', methods=['POST'])
 async def analyze_document():

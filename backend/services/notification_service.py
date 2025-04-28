@@ -11,6 +11,10 @@ from flask import current_app
 from backend.database.mongo import mongo
 from backend.websocket.services.connection_service import get_connected_users
 from backend.utils.logging_setup import get_logger
+from flask_socketio import emit
+from backend.models.notification import Notification
+from backend.notifications.templates import get_notification_template
+from backend.services.email_service import send_email
 
 # Configure logger
 logger = get_logger(__name__)
@@ -163,6 +167,81 @@ class NotificationService:
             send_notification(user_id, notification)
         except Exception as e:
             logger.error(f"Failed to emit notification: {str(e)}")
+
+def send_user_notification(
+    user_id: str,
+    template_type: str,
+    template_params: Dict[str, Any],
+    send_email: bool = True,
+    send_socket: bool = True
+) -> Optional[str]:
+    """
+    Send a notification to a user using specified template and delivery methods.
+    
+    Args:
+        user_id: ID of the user to send notification to
+        template_type: Type of notification template to use
+        template_params: Parameters to format the template with
+        send_email: Whether to send an email notification
+        send_socket: Whether to send a real-time socket notification
+        
+    Returns:
+        ID of the created notification if successful, None otherwise
+    """
+    try:
+        # Get user details
+        user = mongo.db.users.find_one({'_id': user_id})
+        if not user:
+            current_app.logger.error(f"User not found for notification: {user_id}")
+            return None
+            
+        # Get formatted notification content
+        template_params['user_name'] = user.get('name', 'User')
+        notification_content = get_notification_template(template_type, template_params)
+        
+        # Create notification record
+        notification = {
+            'user_id': user_id,
+            'title': notification_content['title'],
+            'message': notification_content['message'],
+            'type': template_type,
+            'read': False,
+            'created_at': datetime.utcnow(),
+            'metadata': template_params
+        }
+        
+        result = mongo.db.notifications.insert_one(notification)
+        notification_id = str(result.inserted_id)
+        
+        # Send email if enabled
+        if send_email and user.get('email'):
+            try:
+                send_email(
+                    recipient=user['email'],
+                    subject=notification_content['email_subject'],
+                    body=notification_content['email_body']
+                )
+            except Exception as e:
+                current_app.logger.error(f"Failed to send email notification: {str(e)}")
+        
+        # Send socket notification if enabled
+        if send_socket:
+            try:
+                emit('notification', {
+                    'id': notification_id,
+                    'title': notification_content['title'],
+                    'message': notification_content['message'],
+                    'type': template_type,
+                    'created_at': notification['created_at'].isoformat()
+                }, room=f"user_{user_id}")
+            except Exception as e:
+                current_app.logger.error(f"Failed to send socket notification: {str(e)}")
+        
+        return notification_id
+        
+    except Exception as e:
+        current_app.logger.error(f"Error sending notification: {str(e)}")
+        return None
 
 # Create a singleton instance
 notification_service = NotificationService()

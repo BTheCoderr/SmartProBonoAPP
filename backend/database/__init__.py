@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
 from dotenv import load_dotenv
+from pymongo import MongoClient
+from urllib.parse import urlparse
 from .mongo import mongo
 
 # Load environment variables
@@ -36,10 +38,20 @@ def init_db(app):
     # Initialize MongoDB (optional)
     with app.app_context():
         try:
-            mongo.init_client()
+            mongo_uri = app.config.get('MONGO_URI') or os.environ.get('MONGO_URI') or 'mongodb://localhost:27017/smartprobono'
+            # Parse the URI to get database name
+            parsed_uri = urlparse(mongo_uri)
+            db_name = parsed_uri.path.lstrip('/') or 'smartprobono'
+            
+            mongo.client = MongoClient(mongo_uri)
+            mongo.db = mongo.client[db_name]
+            # Test connection
+            mongo.client.server_info()
             app.logger.info("MongoDB initialized successfully")
         except Exception as e:
             app.logger.warning(f"Failed to initialize MongoDB: {str(e)}")
             app.logger.warning("Continuing without MongoDB support")
+            mongo.client = None
+            mongo.db = None
 
     return db 

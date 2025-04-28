@@ -14,7 +14,9 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Rating,
+  Avatar
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -26,6 +28,8 @@ import BuildIcon from '@mui/icons-material/Build';
 import BalanceIcon from '@mui/icons-material/Balance';
 import PersonIcon from '@mui/icons-material/Person';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import SecurityIcon from '@mui/icons-material/Security';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { useAuth } from '../context/AuthContext';
 
 function HomePage() {
@@ -74,6 +78,48 @@ function HomePage() {
       description: "Get instant answers to your legal questions 24/7",
       icon: <ChatIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
       path: '/legal-chat'
+    }
+  ];
+
+  const testimonials = [
+    {
+      name: "Sarah M.",
+      role: "Immigration Client",
+      rating: 5,
+      text: "SmartProBono helped me understand my visa application process clearly. The AI guidance was incredibly helpful.",
+      avatar: "S"
+    },
+    {
+      name: "James R.",
+      role: "Pro Bono Attorney",
+      rating: 5,
+      text: "This platform streamlines document preparation and client intake. It's a game-changer for pro bono work.",
+      avatar: "J"
+    },
+    {
+      name: "Maria L.",
+      role: "Housing Rights Client",
+      rating: 5,
+      text: "The eviction defense tools helped me understand my rights and prepare my response. Thank you!",
+      avatar: "M"
+    }
+  ];
+
+  const trustSignals = [
+    {
+      icon: <SecurityIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
+      title: "Bank-Level Security",
+      description: "Your data is protected with enterprise-grade encryption"
+    },
+    {
+      icon: <VerifiedUserIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
+      title: "Licensed Attorneys",
+      description: "All legal content reviewed by qualified professionals"
+    },
+    {
+      icon: <CheckCircleIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
+      title: "ABA Guidelines",
+      description: "Compliant with American Bar Association standards"
     }
   ];
 
@@ -162,8 +208,7 @@ function HomePage() {
                 <Button
                   variant="contained"
                   size="large"
-                  startIcon={<ChatIcon />}
-                  onClick={() => navigate('/legal-chat')}
+                  onClick={() => navigate('/onboarding')}
                   sx={{ 
                     py: 1.5, 
                     px: 3,
@@ -175,7 +220,26 @@ function HomePage() {
                     }
                   }}
                 >
-                  Start Legal Chat
+                  Get Started
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  startIcon={<ChatIcon />}
+                  onClick={() => navigate('/legal-chat')}
+                  sx={{ 
+                    py: 1.5, 
+                    px: 3,
+                    fontSize: '1rem',
+                    borderColor: 'white',
+                    color: 'white',
+                    '&:hover': {
+                      borderColor: 'rgba(255, 255, 255, 0.9)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                    }
+                  }}
+                >
+                  Talk to AI Assistant
                 </Button>
                 <Button
                   variant="outlined"
@@ -239,6 +303,32 @@ function HomePage() {
           </Grid>
         </Container>
       </Box>
+
+      {/* Trust Signals Section */}
+      <Container maxWidth="lg" sx={{ py: 6 }}>
+        <Grid container spacing={4}>
+          {trustSignals.map((signal) => (
+            <Grid item xs={12} md={4} key={signal.title}>
+              <Paper 
+                elevation={0} 
+                sx={{ 
+                  p: 3, 
+                  textAlign: 'center',
+                  backgroundColor: 'transparent'
+                }}
+              >
+                {signal.icon}
+                <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+                  {signal.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {signal.description}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
 
       {/* Features Section */}
       <Container maxWidth="lg" sx={{ mb: 8, mt: 8 }}>
@@ -387,29 +477,37 @@ function HomePage() {
         </Container>
       </Box>
 
-      {/* Call to Action */}
-      <Box sx={{ bgcolor: '#f5f5f5', py: 8 }}>
-        <Container maxWidth="md">
+      {/* Testimonials Section */}
+      <Box sx={{ bgcolor: 'background.default', py: 6 }}>
+        <Container maxWidth="lg">
           <Typography variant="h4" align="center" gutterBottom>
-            Need Legal Assistance?
+            What Our Users Say
           </Typography>
-          <Typography variant="h6" align="center" color="text.secondary" paragraph>
-            Our AI-powered legal assistant is available 24/7 to help you with your legal questions.
-          </Typography>
-          <Box sx={{ textAlign: 'center', mt: 4 }}>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => navigate('/legal-chat')}
-              sx={{ 
-                py: 2, 
-                px: 6,
-                fontSize: '1.1rem'
-              }}
-            >
-              Get Started Now
-            </Button>
-          </Box>
+          <Grid container spacing={4} sx={{ mt: 2 }}>
+            {testimonials.map((testimonial) => (
+              <Grid item xs={12} md={4} key={testimonial.name}>
+                <Card sx={{ height: '100%' }}>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                        {testimonial.avatar}
+                      </Avatar>
+                      <Box>
+                        <Typography variant="h6">{testimonial.name}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {testimonial.role}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Rating value={testimonial.rating} readOnly sx={{ mb: 2 }} />
+                    <Typography variant="body1">
+                      "{testimonial.text}"
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
         </Container>
       </Box>
     </Box>

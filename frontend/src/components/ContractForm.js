@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const ContractForm = ({ open, onClose, onGenerate, template, loading }) => {
   const [formData, setFormData] = React.useState({});
@@ -67,7 +68,7 @@ const ContractForm = ({ open, onClose, onGenerate, template, loading }) => {
       <form onSubmit={handleSubmit}>
         <DialogContent dividers>
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
+            <Alert severity="error" icon={<ErrorOutlineIcon />} sx={{ mb: 2 }}>
               {error}
             </Alert>
           )}
@@ -81,6 +82,10 @@ const ContractForm = ({ open, onClose, onGenerate, template, loading }) => {
               margin="normal"
               required
               disabled={loading}
+              error={!!error && (!formData[field] || formData[field] === '')}
+              helperText={!!error && (!formData[field] || formData[field] === '') ? (
+                <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />Required</span>
+              ) : ''}
             />
           ))}
         </DialogContent>

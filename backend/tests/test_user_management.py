@@ -33,7 +33,7 @@ def test_user_registration(client):
 def test_user_login(client):
     """Test user login"""
     # Create a test user
-    user = User(username='logintest', email='login@test.com')
+    user = User(email='login@test.com')
     user.set_password('testpass123')
     user.role = 'client'
     db.session.add(user)
@@ -167,9 +167,8 @@ def test_role_management(client, auth_headers):
     # Create users with different roles
     roles = ['client', 'lawyer', 'admin']
     users = []
-    
     for i, role in enumerate(roles):
-        user = User(username=f'roletest{i}', email=f'role{i}@test.com')
+        user = User(email=f'role{i}@test.com')
         user.set_password('testpass123')
         user.role = role
         db.session.add(user)
@@ -219,7 +218,7 @@ def test_user_search(client, auth_headers):
 def test_user_deactivation(client, auth_headers):
     """Test deactivating and reactivating users"""
     # Create a test user
-    user = User(username='deactivatetest', email='deactivate@test.com')
+    user = User(email='deactivate@test.com')
     user.set_password('testpass123')
     user.role = 'client'
     user.active = True

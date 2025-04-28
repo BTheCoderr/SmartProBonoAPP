@@ -3,9 +3,11 @@ from pymongo.collection import Collection
 from pymongo.database import Database
 from pymongo.cursor import Cursor
 from pymongo.results import InsertOneResult, UpdateResult, DeleteResult
+from pymongo.operations import InsertOne, DeleteOne, DeleteMany, ReplaceOne, UpdateOne
 from bson import ObjectId
 import logging
 from flask import current_app
+from flask_pymongo import PyMongo
 
 logger = logging.getLogger(__name__)
 
@@ -21,20 +23,23 @@ class MongoDBError(Exception):
 
 def get_mongo_db() -> Database:
     """Get MongoDB database instance."""
-    if not hasattr(current_app, 'mongo') or not current_app.mongo:
-        raise MongoDBError("MongoDB not initialized")
-    db = current_app.mongo.db
-    if not db:
-        raise MongoDBError("MongoDB database not available")
-    return cast(Database, db)
+    try:
+        mongo: PyMongo = current_app.extensions['pymongo'][0]
+        db = mongo.db
+        if db is None:
+            raise MongoDBError("MongoDB database not available")
+        return cast(Database, db)
+    except (KeyError, AttributeError) as e:
+        raise MongoDBError("MongoDB not initialized") from e
 
 def get_collection(name: str) -> Collection:
     """Get MongoDB collection by name."""
     db = get_mongo_db()
-    collection = db.get_collection(name)
-    if not collection:
-        raise MongoDBError(f"Collection {name} not found")
-    return collection
+    try:
+        collection = db[name]
+        return collection
+    except Exception as e:
+        raise MongoDBError(f"Collection {name} not found") from e
 
 def safe_insert_one(collection_name: str, document: Document) -> InsertOneResult:
     """Safely insert one document into a collection."""
@@ -191,7 +196,7 @@ def safe_distinct(
 
 def safe_bulk_write(
     collection_name: str,
-    operations: List[Dict[str, Any]],
+    operations: List[Union[InsertOne, DeleteOne, DeleteMany, ReplaceOne, UpdateOne]],
     ordered: bool = True
 ) -> Dict[str, int]:
     """Safely perform bulk write operations with type checking."""
@@ -210,10 +215,12 @@ def safe_bulk_write(
 def object_id_to_str(obj: Union[Document, List[Document]]) -> Union[Document, List[Document]]:
     """Convert ObjectId to string in a document or list of documents."""
     if isinstance(obj, list):
-        return [object_id_to_str(item) for item in obj]
+        converted = [object_id_to_str(item) for item in obj]
+        return cast(List[Document], converted)
     elif isinstance(obj, dict):
-        return {
+        converted = {
             k: str(v) if isinstance(v, ObjectId) else object_id_to_str(v) if isinstance(v, (dict, list)) else v
             for k, v in obj.items()
         }
+        return cast(Document, converted)
     return obj 

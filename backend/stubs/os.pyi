@@ -1,0 +1,3 @@
+from typing import Union, Any, Optional
+
+def system(command: str) -> int: ... 

@@ -1,0 +1,130 @@
+{
+  "name": "small_claims_complaint",
+  "version": "1.0",
+  "description": "Small Claims Court Complaint Template",
+  "sections": [
+    {
+      "type": "header",
+      "content": "IN THE SMALL CLAIMS COURT OF {{court_county}} COUNTY\n{{court_state}}"
+    },
+    {
+      "type": "text",
+      "content": "\nCase No: {{case_number}}\n"
+    },
+    {
+      "type": "table",
+      "content": [
+        ["{{plaintiff_name}}", ""],
+        ["Plaintiff", "COMPLAINT FOR MONEY"],
+        ["vs.", "Amount: ${{claim_amount}}"],
+        ["{{defendant_name}}", ""],
+        ["Defendant", ""]
+      ]
+    },
+    {
+      "type": "header",
+      "content": "\nSTATEMENT OF CLAIM"
+    },
+    {
+      "type": "text",
+      "content": "1. Plaintiff {{plaintiff_name}}, residing at {{plaintiff_address}}, brings this action against Defendant {{defendant_name}}, residing at {{defendant_address}}.\n\n2. The events giving rise to this claim occurred in {{incident_location}} on or about {{incident_date}}.\n\n3. The amount claimed is ${{claim_amount}}, based on the following:"
+    },
+    {
+      "type": "text",
+      "content": "{{claim_description}}"
+    },
+    {
+      "type": "header",
+      "content": "\nFACTS"
+    },
+    {
+      "type": "list",
+      "content": [
+        "{{fact_1}}",
+        "{{fact_2}}",
+        "{{fact_3}}"
+      ]
+    },
+    {
+      "type": "header",
+      "content": "\nEVIDENCE"
+    },
+    {
+      "type": "text",
+      "content": "The following evidence supports this claim:\n\n{{evidence_list}}"
+    },
+    {
+      "type": "header",
+      "content": "\nWITNESSES"
+    },
+    {
+      "type": "text",
+      "content": "The following witnesses may be called to testify:\n\n{{witness_list}}"
+    },
+    {
+      "type": "header",
+      "content": "\nPRAYER FOR RELIEF"
+    },
+    {
+      "type": "text",
+      "content": "WHEREFORE, Plaintiff requests judgment against Defendant in the amount of ${{claim_amount}}, plus court costs, interest, and any other relief the Court deems just and proper."
+    },
+    {
+      "type": "text",
+      "content": "\nRespectfully submitted,"
+    },
+    {
+      "type": "signature",
+      "content": {
+        "name": "{{plaintiff_name}}",
+        "date": "{{filing_date}}"
+      }
+    },
+    {
+      "type": "text",
+      "content": "\nVERIFICATION\n\nI, {{plaintiff_name}}, verify that the statements made in this Complaint are true and correct to the best of my knowledge, information, and belief. I understand that false statements herein are made subject to the penalties of perjury."
+    },
+    {
+      "type": "signature",
+      "content": {
+        "name": "{{plaintiff_name}}",
+        "date": "{{filing_date}}"
+      }
+    }
+  ],
+  "metadata": {
+    "jurisdiction": "{{court_county}} County Small Claims Court",
+    "document_type": "Complaint",
+    "filing_fee": "{{filing_fee}}",
+    "service_instructions": "This complaint must be served on the Defendant according to court rules."
+  },
+  "validation": {
+    "required_fields": [
+      "plaintiff_name",
+      "plaintiff_address",
+      "defendant_name",
+      "defendant_address",
+      "claim_amount",
+      "claim_description",
+      "court_county",
+      "court_state",
+      "filing_date"
+    ],
+    "optional_fields": [
+      "case_number",
+      "incident_location",
+      "incident_date",
+      "fact_1",
+      "fact_2",
+      "fact_3",
+      "evidence_list",
+      "witness_list",
+      "filing_fee"
+    ],
+    "numeric_fields": [
+      "claim_amount",
+      "filing_fee"
+    ],
+    "date_fields": [
+      "incident_date",
+ 

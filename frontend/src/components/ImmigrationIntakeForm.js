@@ -39,8 +39,8 @@ import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import ApiService from '../services/api';
+import { useSnackbar } from 'notistack';
 
 const visaTypes = [
   { value: 'family', label: 'Family-Based Immigration' },
@@ -329,6 +329,7 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
     severity: 'success'
   });
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (initialServiceType) {
@@ -377,51 +378,20 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-  const handleSubmit = async (values) => {
-    setIsSubmitting(true);
-    setError('');
-
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // Validate all required documents are present
-      const requiredDocs = requiredDocuments[values.visaType] || [];
-      const missingDocs = requiredDocs.filter(doc => !values.documents.includes(doc));
+      const response = await ApiService.post('/api/intake/immigration', values);
       
-      if (missingDocs.length > 0) {
-        setError(`Missing required documents: ${missingDocs.join(', ')}`);
-        return;
+      if (response.success) {
+        enqueueSnackbar('Form submitted successfully!', { variant: 'success' });
+        resetForm();
+        navigate('/thank-you');
       }
-
-      const response = await axios.post(`${API_BASE_URL}/api/intake/immigration`, {
-        ...values,
-        submissionDate: new Date().toISOString(),
-        status: 'pending_review',
-        documents: values.documents,
-        metadata: {
-          browser: navigator.userAgent,
-          submissionPlatform: 'web',
-          formVersion: '1.0',
-        }
-      });
-
-      if (response.status === 201) {
-        // Navigate to thank you page with form data
-        navigate('/thank-you', {
-          state: {
-            formData: values,
-            intakeId: response.data.id
-          }
-        });
-      }
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'An error occurred while submitting the form';
-      setError(errorMessage);
-      setNotification({
-        open: true,
-        message: errorMessage,
-        severity: 'error'
-      });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      enqueueSnackbar(error.message || 'Error submitting form', { variant: 'error' });
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
