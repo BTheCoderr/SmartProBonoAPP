@@ -1,11 +1,16 @@
-import { useState, useEffect, useContext, createContext } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useContext, createContext, ReactNode } from 'react';
+import axios, { AxiosError } from 'axios';
 
 interface User {
   id: string;
   email: string;
   role: string;
   name?: string;
+}
+
+interface AuthResponse {
+  token: string;
+  user: User;
 }
 
 interface AuthContextType {
@@ -19,7 +24,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: AuthProviderProps): React.ReactElement => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth();
   }, []);
 
-  const checkAuth = async () => {
+  const checkAuth = async (): Promise<void> => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -36,61 +45,83 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      const response = await axios.get('/api/auth/me', {
+      const response = await axios.get<User>('/api/auth/me', {
         headers: { Authorization: `Bearer ${token}` }
       });
 
       setUser(response.data);
     } catch (err) {
       localStorage.removeItem('token');
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || 'Authentication failed');
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<void> => {
     try {
       setError(null);
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post<AuthResponse>('/api/auth/login', { email, password });
       localStorage.setItem('token', response.data.token);
       setUser(response.data.user);
     } catch (err) {
-      setError('Invalid email or password');
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || 'Invalid email or password');
+      } else {
+        setError('An unexpected error occurred');
+      }
       throw err;
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
       await axios.post('/api/auth/logout');
     } catch (err) {
-      console.error('Logout error:', err);
+      if (err instanceof AxiosError) {
+        console.error('Logout error:', err.response?.data);
+      }
     } finally {
       localStorage.removeItem('token');
       setUser(null);
     }
   };
 
-  const signup = async (email: string, password: string, name: string) => {
+  const signup = async (email: string, password: string, name: string): Promise<void> => {
     try {
       setError(null);
-      const response = await axios.post('/api/auth/signup', { email, password, name });
+      const response = await axios.post<AuthResponse>('/api/auth/signup', { email, password, name });
       localStorage.setItem('token', response.data.token);
       setUser(response.data.user);
     } catch (err) {
-      setError('Signup failed. Please try again.');
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || 'Signup failed. Please try again.');
+      } else {
+        setError('An unexpected error occurred during signup');
+      }
       throw err;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, logout, signup }}>
+    <AuthContext.Provider 
+      value={{
+        user,
+        loading,
+        error,
+        login,
+        logout,
+        signup
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
