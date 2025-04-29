@@ -23,7 +23,8 @@ import {
     ResponsiveContainer,
     PieChart,
     Pie,
-    Cell
+    Cell,
+    Legend
 } from 'recharts';
 import { analytics } from '../../services/analytics';
 import { format } from 'date-fns';
@@ -50,7 +51,15 @@ interface MetricsData {
         averageCompletionTime: number;
         abandonmentRate: number;
     };
+    timestamp?: string;
 }
+
+interface PieChartData {
+    name: string;
+    value: number;
+}
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const Dashboard: React.FC = () => {
     const theme = useTheme();
@@ -59,6 +68,7 @@ const Dashboard: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [timeRange, setTimeRange] = useState('24h');
     const [activeTab, setActiveTab] = useState(0);
+    const [historicalData, setHistoricalData] = useState<MetricsData[]>([]);
 
     useEffect(() => {
         fetchMetrics();
@@ -73,6 +83,7 @@ const Dashboard: React.FC = () => {
             const data = await response.json();
             setMetrics(data);
             setError(null);
+            setHistoricalData(data.performance.history);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -89,13 +100,16 @@ const Dashboard: React.FC = () => {
             <CardHeader title="Performance Metrics" />
             <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={metrics.performance.history}>
+                    <LineChart data={historicalData}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="timestamp" tickFormatter={(time) => format(time, 'HH:mm')} />
                         <YAxis />
                         <Tooltip />
+                        <Legend />
                         <Line type="monotone" dataKey="responseTime" stroke={theme.palette.primary.main} />
                         <Line type="monotone" dataKey="cpuUsage" stroke={theme.palette.secondary.main} />
+                        <Line type="monotone" dataKey="memoryUsage" stroke="#ff7300" />
+                        <Line type="monotone" dataKey="errorRate" stroke="#82ca9d" />
                     </LineChart>
                 </ResponsiveContainer>
             </CardContent>
@@ -186,6 +200,13 @@ const Dashboard: React.FC = () => {
         </Card>
     );
 
+    const pieData: PieChartData[] = [
+        { name: 'CPU Usage', value: metrics.performance.cpuUsage },
+        { name: 'Memory Usage', value: metrics.performance.memoryUsage },
+        { name: 'Error Rate', value: metrics.performance.errorRate },
+        { name: 'Response Time', value: metrics.performance.responseTime },
+    ];
+
     return (
         <Box sx={{ p: 3 }}>
             <Typography variant="h4" gutterBottom>
@@ -238,6 +259,52 @@ const Dashboard: React.FC = () => {
                         <FormMetrics />
                     </Grid>
                 )}
+            </Grid>
+
+            <Grid container spacing={3} sx={{ mt: 3 }}>
+                <Grid item xs={12} md={8}>
+                    <Card>
+                        <CardHeader title="Historical Metrics" />
+                        <CardContent>
+                            <LineChart width={800} height={400} data={historicalData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="timestamp" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Line type="monotone" dataKey="responseTime" stroke="#8884d8" />
+                                <Line type="monotone" dataKey="errorRate" stroke="#82ca9d" />
+                                <Line type="monotone" dataKey="cpuUsage" stroke="#ffc658" />
+                                <Line type="monotone" dataKey="memoryUsage" stroke="#ff7300" />
+                            </LineChart>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                    <Card>
+                        <CardHeader title="Resource Usage Distribution" />
+                        <CardContent>
+                            <PieChart width={400} height={400}>
+                                <Pie
+                                    data={pieData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    paddingAngle={5}
+                                    dataKey="value"
+                                >
+                                    {pieData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </CardContent>
+                    </Card>
+                </Grid>
             </Grid>
         </Box>
     );
