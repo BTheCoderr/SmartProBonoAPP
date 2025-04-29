@@ -194,4 +194,6 @@ class ApiService {
   }
 }
 
-export default ApiService.getInstance(); 
+const api = ApiService.getInstance();
+export { api };
+export default api; 
