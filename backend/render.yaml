@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: smartprobono-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd backend && gunicorn simple_app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11 
