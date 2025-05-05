@@ -6,6 +6,7 @@ flask-migrate==4.0.5
 flask-sqlalchemy==3.1.1
 flask-pymongo==2.3.0
 flask-mail==0.9.1
+flask-socketio==5.3.6
 gunicorn==21.2.0
 
 # Database
