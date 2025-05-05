@@ -4,8 +4,8 @@ Routes for handling intake form submissions
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
-from backend.database.mongo import mongo
-from backend.models.user import User
+from database.mongo import mongo
+from models.user import User
 from bson import ObjectId
 import logging
 from typing import Tuple, Dict, Any

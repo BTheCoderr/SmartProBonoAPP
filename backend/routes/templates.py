@@ -3,16 +3,16 @@ Routes for handling document templates and PDF generation
 """
 from flask import Blueprint, request, jsonify, send_file, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.models.user import User
-from backend.models.template import Template
-from backend.extensions import db
+from models.user import User
+from models.template import Template
+from extensions import db
 import logging
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from io import BytesIO
 import os
 from datetime import datetime
-from backend.services.pdf_service import get_pdf_service
+from services.pdf_service import get_pdf_service
 
 logger = logging.getLogger(__name__)
 bp = Blueprint('templates', __name__)
@@ -143,7 +143,7 @@ def generate_document():
         )
         
         # Save document to user's documents
-        from backend.models.document import Document
+        from models.document import Document
         
         document = Document(
             user_id=user_id,
