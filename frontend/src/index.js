@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,7 +13,16 @@ root.render(
 );
 
 // Register service worker for offline support
-serviceWorker.register();
+// Using try-catch to prevent errors breaking the app
+try {
+  serviceWorkerRegistration.register({
+    onSuccess: () => console.log('Service Worker registered successfully'),
+    onUpdate: () => console.log('Service Worker update available'),
+    onError: (error) => console.error('Service Worker registration failed:', error)
+  });
+} catch (error) {
+  console.error('Failed to register service worker:', error);
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
