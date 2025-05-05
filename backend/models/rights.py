@@ -1,4 +1,4 @@
-from backend.database import db
+from database import db
 
 class Rights(db.Model):
     __table_args__ = {'extend_existing': True}
