@@ -1,7 +1,7 @@
 from datetime import datetime
 from bson import ObjectId
-from backend.database.mongo import mongo
-from backend.models.user import User
+from database.mongo import mongo
+from models.user import User
 import logging
 from typing import Optional, List, Dict, Any, cast
 from pymongo.database import Database

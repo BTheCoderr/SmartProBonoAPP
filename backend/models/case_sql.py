@@ -1,6 +1,6 @@
 from datetime import datetime
-from backend.database import db
-from backend.models.user import User
+from database import db
+from models.user import User
 
 class SQLCase(db.Model):
     __tablename__ = 'cases'
