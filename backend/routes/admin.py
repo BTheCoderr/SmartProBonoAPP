@@ -14,7 +14,7 @@ import json
 import psutil
 import os
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from websocket import (
+from backend.websocket import (
     send_broadcast_notification,
     send_notification,
     get_connected_users,
