@@ -1,7 +1,7 @@
 const config = {
   // API Configuration
-  API_URL: process.env.REACT_APP_API_URL || 'https://smartprobonoapp.onrender.com',
-  baseURL: process.env.REACT_APP_API_URL || 'https://smartprobonoapp.onrender.com',
+  API_URL: process.env.REACT_APP_API_URL || 'https://api.smartprobono.org',
+  baseURL: process.env.REACT_APP_API_URL || 'https://api.smartprobono.org',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const config = {
   
   // Websocket
   websocket: {
-    url: process.env.REACT_APP_WEBSOCKET_URL || 'wss://smartprobonoapp.onrender.com',
+    url: process.env.REACT_APP_WEBSOCKET_URL || 'wss://api.smartprobono.org',
     reconnectInterval: 3000,
     maxReconnectAttempts: 5,
   },
