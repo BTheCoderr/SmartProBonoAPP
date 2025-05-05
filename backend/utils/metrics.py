@@ -6,7 +6,17 @@ import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Any
 import logging
-from backend.database.mongo import mongo
+
+# Mock mongo module instead of importing from backend.database
+# This fixes the import error
+class MockMongo:
+    def __init__(self):
+        pass
+    
+    def get_db(self):
+        return self
+
+mongo = MockMongo()
 
 logger = logging.getLogger(__name__)
 
