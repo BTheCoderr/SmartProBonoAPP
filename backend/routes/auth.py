@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
-from backend.models.user import User
-from backend.extensions import mongo, db
-from backend.utils.decorators import token_required
-from backend.middleware.rate_limiting import rate_limiter
+from models.user import User
+from extensions import mongo, db
+from utils.decorators import token_required
+from middleware.rate_limiting import rate_limiter
 import os
 import secrets
 import uuid
