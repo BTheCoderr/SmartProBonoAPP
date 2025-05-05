@@ -33,6 +33,3 @@ def register_blueprints(app):
     app.register_blueprint(scanner_routes)
     app.register_blueprint(template_routes)
     app.register_blueprint(beta_routes)
-
-# Import routes modules
-import routes.beta_routes_flask
