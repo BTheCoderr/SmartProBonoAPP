@@ -2,9 +2,9 @@
 Admin routes for user management in SmartProBono
 """
 from flask import Blueprint, request, jsonify
-from backend.models.user import User
-from backend.extensions import mongo, db
-from backend.utils.decorators import token_required
+from models.user import User
+from extensions import mongo, db
+from utils.decorators import token_required
 from bson import ObjectId
 from datetime import datetime, timedelta
 from functools import wraps
@@ -14,7 +14,7 @@ import json
 import psutil
 import os
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.websocket import (
+from websocket import (
     send_broadcast_notification,
     send_notification,
     get_connected_users,
