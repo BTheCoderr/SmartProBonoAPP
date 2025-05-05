@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.websocket import send_notification, get_connected_users, send_broadcast_notification
+from websocket import send_notification, get_connected_users, send_broadcast_notification
 import random
 import time
 from datetime import datetime

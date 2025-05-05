@@ -1,16 +1,16 @@
 from flask import Blueprint, request, jsonify, Response, current_app
 from datetime import datetime, timedelta
 from bson import ObjectId
-from backend.database import db
+from database import db
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from functools import wraps
-from backend.models.user import User
+from models.user import User
 import uuid  # Add this for generating mock IDs
 import os
 import werkzeug
 from werkzeug.utils import secure_filename
-from backend.services.notification_service import get_notification_service
-from backend.database.mongo import mongo
+from services.notification_service import get_notification_service
+from database.mongo import mongo
 import logging
 from typing import Dict, List, Optional, Any, TypeVar, cast, Union, NoReturn, Callable, TYPE_CHECKING
 from datetime import date
@@ -25,7 +25,7 @@ from copy import deepcopy
 from pymongo.collection import Collection
 from pymongo.database import Database
 from flask_pymongo import PyMongo
-from backend.database.mongo_utils import (
+from database.mongo_utils import (
     safe_insert_one,
     safe_find_one,
     safe_find,

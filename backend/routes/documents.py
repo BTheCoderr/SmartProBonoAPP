@@ -19,12 +19,12 @@ from ..services.notification_service import NotificationService
 from services.ocr_service import ocr_service
 from services.ocr_storage_service import ocr_storage_service
 
-from backend.middleware.validation import validate_json_request, validate_query_params
-from backend.middleware.rate_limiting import rate_limiter
-from backend.services.document_management_service import document_management_service
-from backend.services.validation_service import validation_service
-from backend.services.error_logging_service import error_logging_service
-from backend.utils.decorators import token_required
+from middleware.validation import validate_json_request, validate_query_params
+from middleware.rate_limiting import rate_limiter
+from services.document_management_service import document_management_service
+from services.validation_service import validation_service
+from services.error_logging_service import error_logging_service
+from utils.decorators import token_required
 from typing import Dict, Any, List, Optional
 
 bp = Blueprint('documents', __name__, url_prefix='/api/documents')

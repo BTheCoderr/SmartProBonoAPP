@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, current_app
-from backend.models.rights import Rights
-from backend.database import db
+from models.rights import Rights
+from database import db
 
 bp = Blueprint('rights', __name__)
 

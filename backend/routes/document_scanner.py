@@ -37,17 +37,17 @@ import pytesseract
 from werkzeug.utils import secure_filename
 
 # Local imports
-from backend.database.mongo_utils import (
+from database.mongo_utils import (
     MongoDBError,
     safe_count_documents,
     safe_find,
     safe_insert_one,
 )
-from backend.utils.mongo import (
+from utils.mongo import (
     get_mongo_collection,
     get_mongo_db,
 )
-from backend.database.mongo import mongo
+from database.mongo import mongo
 
 import fitz  # PyMuPDF
 
