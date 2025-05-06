@@ -1,126 +1,96 @@
-"""Flask application entry point"""
+"""
+Flask application for the SmartProBono backend API
+Simplified version that removes problematic imports
+"""
 import os
-import sys
 import logging
-from dotenv import load_dotenv
 from flask import Flask, jsonify
-from extensions import init_extensions, db, socketio
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from config import config
-import redis
-from datetime import datetime
+from logging.handlers import RotatingFileHandler
 
-# Add backend directory to Python path
-backend_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, backend_dir)
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/app.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
-
-def create_app(config_name='development'):
-    """Create and configure the Flask application"""
+def create_app(config_name=None):
+    """
+    Create Flask application with the given configuration
+    
+    Args:
+        config_name: Configuration name ('development', 'production', 'testing')
+        
+    Returns:
+        Flask application
+    """
     app = Flask(__name__)
     
-    # Load configuration
-    app.config.from_object(config[config_name])
+    # Configure logging
+    setup_logging(app)
     
-    # Initialize Redis with proper error handling
-    redis_url = app.config.get('REDIS_URL', 'redis://localhost:6379/0')
-    try:
-        redis_client = redis.from_url(redis_url)
-        redis_client.ping()  # Test connection
-        app.redis = redis_client
-        logger.info("Redis connection established successfully")
-    except redis.ConnectionError as e:
-        logger.warning(f"Redis connection failed: {str(e)}. Using in-memory storage for rate limiting.")
-        redis_client = None
+    # Log startup information
+    app.logger.info(f"Starting application in {config_name or 'default'} mode")
     
-    # Initialize rate limiter with Redis storage if available
-    limiter = Limiter(
-        app=app,
-        key_func=get_remote_address,
-        storage_uri=redis_url if redis_client else None
+    # Set up configuration
+    if config_name is None:
+        config_name = os.environ.get('FLASK_ENV', 'development')
+    
+    # Configure the app with basic security settings
+    app.config.update(
+        SECRET_KEY=os.environ.get('SECRET_KEY', 'dev-key-for-testing-only'),
+        SESSION_COOKIE_SECURE=config_name == 'production',
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE='Lax',
     )
     
-    # Initialize extensions
-    init_extensions(app)
-    
-    # Register blueprints
-    from routes import register_blueprints
-    register_blueprints(app)
-    
-    # Initialize middleware
-    from middleware import init_middleware
-    init_middleware(app)
-    
-    # Add health check endpoints
-    @app.route('/health')
+    # Add a basic health check endpoint
+    @app.route('/api/health', methods=['GET'])
     def health_check():
-        """Health check endpoint"""
-        try:
-            # Check Redis connection
-            redis_status = "healthy" if redis_client and redis_client.ping() else "unhealthy"
-            
-            # Check database connection
-            db_status = "healthy"
-            try:
-                db.session.execute("SELECT 1")
-            except Exception as e:
-                logger.error(f"Database health check failed: {str(e)}")
-                db_status = "unhealthy"
-            
-            return jsonify({
-                "status": "healthy",
-                "timestamp": datetime.utcnow().isoformat(),
-                "services": {
-                    "redis": redis_status,
-                    "database": db_status
-                }
-            })
-        except Exception as e:
-            logger.error(f"Health check failed: {str(e)}")
-            return jsonify({"status": "unhealthy", "error": str(e)}), 500
+        return jsonify({
+            'status': 'ok',
+            'message': 'API is running',
+            'version': '1.0.0'
+        })
     
-    # Add rate limiting monitoring endpoint
-    @app.route('/rate-limit-status')
-    def rate_limit_status():
-        """Rate limiting status endpoint"""
-        try:
-            if redis_client:
-                return jsonify({
-                    "status": "healthy",
-                    "storage": "redis",
-                    "limits": limiter.limits
-                })
+    # Simplified blueprint registration
+    try:
+        # Create a simple admin blueprint
+        from flask import Blueprint
+        admin_bp = Blueprint('admin', __name__, url_prefix='/api/admin')
+        
+        @admin_bp.route('/health', methods=['GET'])
+        def admin_health():
             return jsonify({
-                "status": "healthy",
-                "storage": "memory",
-                "limits": limiter.limits
+                'status': 'ok',
+                'message': 'Admin API is running',
+                'version': '1.0.0'
             })
-        except Exception as e:
-            logger.error(f"Rate limit status check failed: {str(e)}")
-            return jsonify({"status": "unhealthy", "error": str(e)}), 500
+            
+        app.register_blueprint(admin_bp)
+        app.logger.info("Registered admin blueprint")
+        
+    except Exception as e:
+        app.logger.error(f"Error registering blueprints: {str(e)}")
     
+    @app.route('/', methods=['GET'])
+    def index():
+        return jsonify({
+            'message': 'SmartProBono API',
+            'status': 'running',
+            'endpoints': ['/api/health', '/api/admin/health']
+        })
+
     return app
 
-# Load environment variables
-load_dotenv()
+def setup_logging(app):
+    """Set up logging for the application"""
+    if not os.path.exists('logs'):
+        os.mkdir('logs')
+        
+    file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=10)
+    file_handler.setFormatter(logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    ))
+    file_handler.setLevel(logging.INFO)
+    
+    app.logger.addHandler(file_handler)
+    app.logger.setLevel(logging.INFO)
 
-# Create Flask application
+# Create the application instance
 app = create_app('development')
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5003))
-    logger.info(f"Starting application on port {port}")
-    socketio.run(app, host='0.0.0.0', port=port, debug=True)
 
 
