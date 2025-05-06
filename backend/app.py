@@ -51,9 +51,19 @@ def create_app(config_name=None):
     # Setup CORS
     try:
         from flask_cors import CORS
-        default_origins = ['http://localhost:3000', 'https://smartprobono.org']
+        default_origins = [
+            'http://localhost:3000',
+            'https://smartprobono.org',
+            'https://www.smartprobono.org',
+            'https://smartprobono.netlify.app',
+            'https://smartprobono.netlify.com'
+        ]
         allowed_origins = os.environ.get('ALLOWED_ORIGINS', ','.join(default_origins)).split(',')
-        CORS(app, resources={r"/*": {"origins": allowed_origins}})
+        CORS(app, resources={r"/*": {
+            "origins": allowed_origins,
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
+        }})
         app.logger.info(f"CORS configured with origins: {allowed_origins}")
     except ImportError:
         app.logger.warning("Flask-CORS not available, CORS not configured")
