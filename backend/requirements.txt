@@ -48,3 +48,9 @@ pytest-cov==4.1.0
 
 # Production dependencies
 sentry-sdk==1.32.0
+
+# Missing dependencies found in error logs
+openai==1.0.0
+docxtpl==0.16.7
+opencv-python==4.8.0.74
+phonenumbers==8.13.28
