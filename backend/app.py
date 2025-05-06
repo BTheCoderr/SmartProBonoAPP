@@ -1,11 +1,16 @@
 """
 Flask application for the SmartProBono backend API
-Simplified version that removes problematic imports
 """
 import os
 import logging
-from flask import Flask, jsonify
+import json
+from datetime import datetime
+from flask import Flask, jsonify, request
 from logging.handlers import RotatingFileHandler
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def create_app(config_name=None):
     """
@@ -37,6 +42,19 @@ def create_app(config_name=None):
         SESSION_COOKIE_SAMESITE='Lax',
     )
     
+    # Setup CORS
+    try:
+        from flask_cors import CORS
+        default_origins = ['http://localhost:3000', 'https://smartprobono.org']
+        allowed_origins = os.environ.get('ALLOWED_ORIGINS', ','.join(default_origins)).split(',')
+        CORS(app, resources={r"/*": {"origins": allowed_origins}})
+        app.logger.info(f"CORS configured with origins: {allowed_origins}")
+    except ImportError:
+        app.logger.warning("Flask-CORS not available, CORS not configured")
+    
+    # Create required directories
+    create_required_dirs()
+    
     # Add a basic health check endpoint
     @app.route('/api/health', methods=['GET'])
     def health_check():
@@ -46,7 +64,37 @@ def create_app(config_name=None):
             'version': '1.0.0'
         })
     
-    # Simplified blueprint registration
+    # Add root endpoint
+    @app.route('/', methods=['GET'])
+    def index():
+        return jsonify({
+            'message': 'SmartProBono API',
+            'status': 'running',
+            'endpoints': ['/api/health', '/api/admin/health']
+        })
+    
+    # Add feedback endpoints
+    @app.route('/api/feedback', methods=['POST'])
+    def submit_feedback():
+        try:
+            feedback_data = request.json
+            if not feedback_data:
+                return jsonify({'error': 'No feedback data provided'}), 400
+                
+            # Add timestamp
+            feedback_data['timestamp'] = datetime.now().isoformat()
+            
+            # Save feedback to a JSON file
+            filename = f"data/feedback/feedback_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            with open(filename, 'w') as f:
+                json.dump(feedback_data, f, indent=2)
+                
+            return jsonify({'message': 'Feedback submitted successfully'}), 200
+        except Exception as e:
+            app.logger.error(f"Error submitting feedback: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+    
+    # Try to register admin blueprint
     try:
         # Create a simple admin blueprint
         from flask import Blueprint
@@ -64,15 +112,15 @@ def create_app(config_name=None):
         app.logger.info("Registered admin blueprint")
         
     except Exception as e:
-        app.logger.error(f"Error registering blueprints: {str(e)}")
+        app.logger.error(f"Error registering admin blueprint: {str(e)}")
     
-    @app.route('/', methods=['GET'])
-    def index():
-        return jsonify({
-            'message': 'SmartProBono API',
-            'status': 'running',
-            'endpoints': ['/api/health', '/api/admin/health']
-        })
+    # Try to register auth blueprint
+    try:
+        from routes.auth import bp as auth_bp
+        app.register_blueprint(auth_bp, url_prefix='/api/auth')
+        app.logger.info("Registered auth blueprint")
+    except Exception as e:
+        app.logger.error(f"Error registering auth blueprint: {str(e)}")
 
     return app
 
@@ -90,7 +138,20 @@ def setup_logging(app):
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.INFO)
 
+def create_required_dirs():
+    """Create required directories for the application"""
+    directories = [
+        'data',
+        'data/feedback',
+        'data/conversations',
+        'logs'
+    ]
+    
+    for directory in directories:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
 # Create the application instance
-app = create_app('development')
+app = create_app(os.environ.get('FLASK_ENV', 'development'))
 
 
