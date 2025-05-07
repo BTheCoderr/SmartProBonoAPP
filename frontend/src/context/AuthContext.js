@@ -27,13 +27,64 @@ export const AuthProvider = ({ children }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshAttempts, setRefreshAttempts] = useState(0);
   const [notifications, setNotifications] = useState([]);
+  const [authError, setAuthError] = useState(null);
   const MAX_REFRESH_ATTEMPTS = 3;
   const navigate = useNavigate();
 
-  // Add this at the top of the AuthProvider component
-  const isTestMode = window.location.href.includes('scanner-test') || 
-                    window.location.href.includes('test-mode') || 
-                    process.env.NODE_ENV === 'development';
+  // Define isTestMode first
+  const isTestMode = useMemo(() => {
+    return window.location.href.includes('scanner-test') || 
+           window.location.href.includes('test-mode') || 
+           process.env.NODE_ENV === 'development';
+  }, []);
+
+  // Then define logout
+  const logout = useCallback(async () => {
+    if (isLoggingOut) return; // Prevent multiple logout attempts
+    
+    setIsLoggingOut(true);
+    try {
+      // Only make the API call if not in test mode
+      if (!isTestMode && accessToken) {
+        await ApiService.post('/api/auth/logout');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear all auth state
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      setAccessToken(null);
+      setRefreshToken(null);
+      setUser(null);
+      setIsLoggingOut(false);
+      setRefreshAttempts(0);
+      
+      // Disconnect socket
+      disconnectSocket();
+      
+      // Navigate to home
+      navigate('/', { replace: true });
+    }
+  }, [navigate, isTestMode, accessToken, isLoggingOut]);
+
+  // Handle navigation errors
+  useEffect(() => {
+    if (navigate && window.location.pathname === '/dashboard' && !user) {
+      const navigateToHome = async () => {
+        try {
+          await navigate('/', { replace: true });
+        } catch (error) {
+          console.error('Navigation error:', error);
+          // Fallback to window.location if navigation fails
+          if (error.message.includes('history')) {
+            window.location.href = '/';
+          }
+        }
+      };
+      navigateToHome();
+    }
+  }, [navigate, user]);
 
   // Handle notifications from socket
   const handleNotification = useCallback((data) => {
@@ -44,24 +95,35 @@ export const AuthProvider = ({ children }) => {
 
   // Initialize socket when user is authenticated
   useEffect(() => {
-    if (user && user.id) {
-      console.log('Initializing socket for user:', user.id);
-      initializeSocket(user.id)
-        .then(() => {
-          console.log('Socket initialized and registered successfully');
-          // Set up notification handler
-          addSocketEventHandler('notification', handleNotification);
-        })
-        .catch(error => {
+    let mounted = true;
+
+    const initSocket = async () => {
+      if (user && user.id) {
+        try {
+          console.log('Initializing socket for user:', user.id);
+          await initializeSocket(user.id);
+          if (mounted) {
+            console.log('Socket initialized and registered successfully');
+            // Set up notification handler
+            addSocketEventHandler('notification', handleNotification);
+          }
+        } catch (error) {
           console.error('Failed to initialize socket:', error);
-        });
-      
-      // Cleanup function
-      return () => {
-        removeSocketEventHandler('notification', handleNotification);
-      };
-    }
-  }, [user, handleNotification]);
+          // If socket initialization fails, log out the user
+          await logout();
+        }
+      }
+    };
+
+    initSocket();
+    
+    // Cleanup function
+    return () => {
+      mounted = false;
+      removeSocketEventHandler('notification', handleNotification);
+      disconnectSocket();
+    };
+  }, [user, handleNotification, logout]);
 
   // Set up axios interceptor for authorization - memoized to prevent recreation on every render
   useEffect(() => {
@@ -161,7 +223,7 @@ export const AuthProvider = ({ children }) => {
     };
   }, [accessToken, refreshToken, isRefreshing, refreshAttempts]);
 
-  // Load user from token on mount - use memoization to prevent unnecessary API calls
+  // Load user from token on mount
   useEffect(() => {
     const loadUser = async () => {
       if (!accessToken) {
@@ -179,12 +241,12 @@ export const AuthProvider = ({ children }) => {
       try {
         const response = await ApiService.get('/api/auth/profile');
         setUser(response.data);
+        setAuthError(null);
       } catch (error) {
-        // Token might be expired or invalid
         console.error('Error loading user:', error);
-        // Don't logout here - let the interceptor handle token refresh
+        setAuthError('Authentication failed. Please log in again or contact support.');
         if (error.response?.status !== 401 || !refreshToken) {
-          logout();
+          await logout();
         }
       } finally {
         setLoading(false);
@@ -192,31 +254,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     loadUser();
-  }, [accessToken, isTestMode]); // Only dependency is accessToken
-
-  // Mock login function for testing purposes without backend
-  const mockLogin = useCallback(() => {
-    // Create a mock user and token
-    const mockUser = {
-      id: 1,
-      username: 'testuser',
-      email: 'test@example.com',
-      first_name: 'Test',
-      last_name: 'User',
-      role: 'user'
-    };
-    
-    const mockToken = 'mock-jwt-token-for-testing-purposes';
-    
-    // Save to localStorage and state
-    localStorage.setItem('access_token', mockToken);
-    localStorage.setItem('refresh_token', mockToken);
-    setAccessToken(mockToken);
-    setRefreshToken(mockToken);
-    setUser(mockUser);
-    
-    return { success: true, user: mockUser };
-  }, []);
+  }, [accessToken, isTestMode, refreshToken, logout]);
 
   // Login function with memoization
   const login = useCallback(async (email, password) => {
@@ -233,77 +271,51 @@ export const AuthProvider = ({ children }) => {
   const register = useCallback(async (userData) => {
     try {
       const response = await ApiService.post('/api/auth/register', userData);
-      return response.data;
+      const { access_token, refresh_token, user } = response.data;
+      
+      // Save tokens
+      localStorage.setItem('access_token', access_token);
+      localStorage.setItem('refresh_token', refresh_token);
+      
+      // Update state
+      setAccessToken(access_token);
+      setRefreshToken(refresh_token);
+      setUser(user);
+      
+      return { success: true, user };
     } catch (error) {
+      console.error('Registration error:', error);
       throw error;
     }
   }, []);
-
-  // Update profile function with memoization
-  const updateProfile = useCallback(async (profileData) => {
-    try {
-      const response = await ApiService.put('/api/auth/profile', profileData);
-      setUser(response.data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }, []);
-
-  // Logout function with debounce
-  const logout = useCallback(async () => {
-    // Prevent multiple logout attempts in succession
-    if (isLoggingOut) return;
-    
-    setIsLoggingOut(true);
-    
-    // Disconnect socket
-    disconnectSocket();
-    
-    if (accessToken) {
-      try {
-        // Call the logout endpoint to invalidate the token
-        await ApiService.post('/api/auth/logout');
-      } catch (error) {
-        // Just log the error, but continue with local logout
-        console.error('Logout API error:', error);
-        // Don't retry the API call if it fails
-      }
-    }
-    
-    // Clear tokens and user state regardless of API success
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('token'); // Remove old token format as well
-    setAccessToken(null);
-    setRefreshToken(null);
-    setUser(null);
-    
-    // Reset logout status after a short delay
-    setTimeout(() => {
-      setIsLoggingOut(false);
-    }, 1000);
-
-    navigate('/login');
-  }, [accessToken, isLoggingOut, navigate]);
 
   // Memoize the context value to prevent unnecessary re-renders
   const value = useMemo(() => ({
     user,
-    isAuthenticated: !!user,
+    loading,
     login,
     register,
     logout,
-    updateProfile,
-    mockLogin,
-    loading,
-    notifications
-  }), [user, login, register, logout, updateProfile, mockLogin, loading, notifications]);
+    accessToken,
+    refreshToken,
+    notifications,
+    isTestMode
+  }), [user, loading, login, register, logout, accessToken, refreshToken, notifications, isTestMode]);
 
-  // Return Provider with context value
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {authError ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', color: 'red' }}>
+          <h2>Authentication Error</h2>
+          <p>{authError}</p>
+        </div>
+      ) : loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+          <h2>Loading authentication...</h2>
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };
