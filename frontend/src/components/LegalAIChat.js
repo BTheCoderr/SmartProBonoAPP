@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -51,7 +51,7 @@ import ModelSelector from './ModelSelector';
 import LegalCategories from './LegalCategories';
 import ContractForm from './ContractForm';
 
-const LegalAIChat = () => {
+const LegalAIChat = ({ premium = false }) => {
   const { t } = useTranslation();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -70,6 +70,15 @@ const LegalAIChat = () => {
   const [contractFormOpen, setContractFormOpen] = useState(false);
   
   const { loading, error, execute: sendMessage } = useApi(legalChatApi.sendMessage);
+
+  // Add config object
+  const config = {
+    maxTokens: 2000,
+    temperature: 0.7,
+    topP: 0.9,
+    frequencyPenalty: 0.5,
+    presencePenalty: 0.5
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -518,7 +527,7 @@ const LegalAIChat = () => {
   const handleGenerateContract = async (templateName, formData) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${config.apiUrl}/api/contracts/generate`, {
+      const response = await fetch('/api/contracts/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -526,7 +535,8 @@ const LegalAIChat = () => {
         body: JSON.stringify({
           template: templateName,
           formData: formData,
-          model: currentModel
+          model: currentModel,
+          config: config
         }),
       });
 

@@ -1,9 +1,29 @@
+import os
 from functools import wraps
 from flask import request, g
 import time
 from typing import Callable
-from services.analytics_service import analytics_service
-from services.performance_monitor import performance_monitor
+
+# Only import analytics services if enabled
+ANALYTICS_ENABLED = os.getenv('ENABLE_ANALYTICS', 'false').lower() == 'true'
+
+if ANALYTICS_ENABLED:
+    try:
+        from services.analytics_service import analytics_service
+        from services.performance_monitor import performance_monitor
+    except ImportError:
+        print("Warning: Analytics services not available")
+        ANALYTICS_ENABLED = False
+
+class AnalyticsMiddleware:
+    def __init__(self, app=None):
+        self.app = app
+        if app is not None:
+            self.init_app(app)
+
+    def init_app(self, app):
+        """Initialize the middleware with a Flask app."""
+        init_analytics_middleware(app)
 
 def track_analytics(f: Callable) -> Callable:
     """Middleware decorator to track request analytics.
@@ -16,6 +36,9 @@ def track_analytics(f: Callable) -> Callable:
     """
     @wraps(f)
     async def decorated(*args, **kwargs):
+        if not ANALYTICS_ENABLED:
+            return await f(*args, **kwargs)
+            
         start_time = time.time()
         
         try:
@@ -79,6 +102,8 @@ def track_analytics(f: Callable) -> Callable:
 
 def init_analytics_middleware(app):
     """Initialize analytics middleware for the Flask app."""
+    if not ANALYTICS_ENABLED:
+        return
     
     @app.before_request
     def before_request():

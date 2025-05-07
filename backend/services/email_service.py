@@ -9,6 +9,9 @@ from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from typing import List
+from jinja2 import Environment, select_autoescape, PackageLoader
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +23,27 @@ EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')
 EMAIL_FROM = os.environ.get('EMAIL_FROM', 'noreply@smartprobono.example.com')
 EMAIL_FROM_NAME = os.environ.get('EMAIL_FROM_NAME', 'SmartProBono')
 APP_URL = os.environ.get('APP_URL', 'http://localhost:3000')
+
+# Email configuration
+conf = ConnectionConfig(
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
+    MAIL_FROM=os.getenv("MAIL_FROM", "noreply@smartprobono.org"),
+    MAIL_PORT=int(os.getenv("MAIL_PORT", 587)),
+    MAIL_SERVER=os.getenv("MAIL_SERVER", "smtp.gmail.com"),
+    MAIL_TLS=True,
+    MAIL_SSL=False,
+    USE_CREDENTIALS=True
+)
+
+# Initialize FastMail
+fastmail = FastMail(conf)
+
+# Initialize Jinja2 templates
+env = Environment(
+    loader=PackageLoader('services', 'email_templates'),
+    autoescape=select_autoescape(['html', 'xml'])
+)
 
 class EmailService:
     """Service for sending emails from the application"""
@@ -371,4 +395,166 @@ def send_document_share_email(recipient_email, subject, message, document_title,
         
     except Exception as e:
         logger.error(f"Failed to send email to {recipient_email}: {str(e)}")
-        return False 
+        return False
+
+async def send_confirmation_email(to_email: str, confirmation_token: str):
+    """
+    Send a confirmation email for beta signup
+    
+    Args:
+        to_email: Recipient email address
+        confirmation_token: Confirmation token
+    """
+    try:
+        # Load the template
+        template = env.get_template('beta_confirmation.html')
+        
+        # Build the confirmation URL
+        confirmation_url = f"{APP_URL}/beta/confirm/{confirmation_token}"
+        
+        # Render the template
+        html_content = template.render(
+            confirmation_url=confirmation_url
+        )
+        
+        # Create subject
+        subject = "Confirm Your SmartProBono Beta Access"
+        
+        # Send the email
+        return EmailService.send_email(to_email, subject, html_content)
+    except Exception as e:
+        logger.error(f"Error sending confirmation email: {str(e)}")
+        return False
+
+async def send_welcome_email(to_email: str):
+    """
+    Send a welcome email after beta signup confirmation
+    
+    Args:
+        to_email: Recipient email address
+    """
+    try:
+        # Load the template
+        template = env.get_template('beta_welcome.html')
+        
+        # Render the template
+        html_content = template.render()
+        
+        # Create subject
+        subject = "Welcome to SmartProBono Beta!"
+        
+        # Send the email
+        return EmailService.send_email(to_email, subject, html_content)
+    except Exception as e:
+        logger.error(f"Error sending welcome email: {str(e)}")
+        return False
+
+def send_confirmation_email_flask(to_email, confirmation_token):
+    """
+    Flask-compatible version of send_confirmation_email
+    """
+    try:
+        # Load the template
+        template = env.get_template('beta_confirmation.html')
+        
+        # Build the confirmation URL
+        confirmation_url = f"{APP_URL}/beta/confirm/{confirmation_token}"
+        
+        # Render the template
+        html_content = template.render(
+            confirmation_url=confirmation_url
+        )
+        
+        # Create subject
+        subject = "Confirm Your SmartProBono Beta Access"
+        
+        # Send the email
+        return EmailService.send_email(to_email, subject, html_content)
+    except Exception as e:
+        logger.error(f"Error sending confirmation email: {str(e)}")
+        return False
+
+def send_welcome_email_flask(to_email):
+    """
+    Flask-compatible version of send_welcome_email
+    """
+    try:
+        # Load the template
+        template = env.get_template('beta_welcome.html')
+        
+        # Render the template
+        html_content = template.render()
+        
+        # Create subject
+        subject = "Welcome to SmartProBono Beta!"
+        
+        # Send the email
+        return EmailService.send_email(to_email, subject, html_content)
+    except Exception as e:
+        logger.error(f"Error sending welcome email: {str(e)}")
+        return False
+
+# Add a function to send subscription confirmation emails
+def send_subscription_confirmation(to_email, preferences):
+    """
+    Send confirmation email after subscribing to updates
+    
+    Args:
+        to_email: Recipient email address
+        preferences: Dictionary of subscription preferences
+    """
+    subject = "Thanks for Subscribing to SmartProBono Updates"
+    
+    # Get the preference names that are enabled
+    enabled_preferences = [k for k, v in preferences.items() if v]
+    
+    # Map preference keys to display names
+    preference_display = {
+        'productUpdates': 'Product Updates',
+        'legalNews': 'Legal News and Insights',
+        'tips': 'Tips and Best Practices'
+    }
+    
+    # Get the display names for enabled preferences
+    enabled_display = [preference_display.get(pref, pref) for pref in enabled_preferences]
+    
+    html_content = f"""
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+            .header {{ background-color: #1976d2; color: white; padding: 10px 20px; border-radius: 8px 8px 0 0; }}
+            .content {{ padding: 20px; border: 1px solid #ddd; border-radius: 0 0 8px 8px; }}
+            .footer {{ font-size: 12px; color: #777; margin-top: 20px; text-align: center; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Thank You for Subscribing</h1>
+            </div>
+            <div class="content">
+                <p>Thank you for subscribing to SmartProBono updates!</p>
+                
+                <p>You've chosen to receive:</p>
+                <ul>
+                    {
+                        ''.join([f'<li>{pref}</li>' for pref in enabled_display])
+                    }
+                </ul>
+                
+                <p>You can update your preferences at any time by visiting your account settings.</p>
+                
+                <p>We're excited to keep you updated on our progress and share valuable legal resources with you.</p>
+            </div>
+            <div class="footer">
+                <p>&copy; {datetime.now().year} SmartProBono. All rights reserved.</p>
+                <p>You can unsubscribe at any time by clicking the unsubscribe link in the footer of our emails.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
+    return EmailService.send_email(to_email, subject, html_content) 

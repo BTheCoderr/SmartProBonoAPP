@@ -38,3 +38,9 @@ __pycache__/
 
 Miniforge3-MacOSX-arm64.sh
 Miniforge3-MacOSX-arm64.sh
+
+# Redis configuration
+REDIS_PASSWORD=***REMOVED***
+
+# JWT configuration (needed for authentication)
+JWT_SECRET_KEY=***REMOVED***

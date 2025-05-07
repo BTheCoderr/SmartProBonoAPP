@@ -1,5 +1,5 @@
 """
-SmartProBono backend application
+SmartProBono Backend Package
 """
 from flask import Flask, g, current_app
 from flask_jwt_extended import JWTManager
@@ -8,9 +8,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_cors import CORS
 from flask_migrate import Migrate
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import redis
 
-from .extensions import db, mongo, mail, socketio, jwt
+from .extensions import db, mongo, mail, socketio, jwt, migrate, limiter
 from .config import config
 from .utils.template_filters import register_filters
 
@@ -24,24 +26,23 @@ def get_redis():
         redis_client = redis.from_url(current_app.config.get('REDIS_URL', 'redis://localhost:6379/0'))
     return redis_client
 
-def create_app(config_name='default'):
-    """Create and configure the Flask application."""
+def create_app(config_object=None):
+    """Create and configure the Flask application"""
     app = Flask(__name__)
     
     # Load configuration
-    if isinstance(config_name, dict):
-        app.config.update(config_name)
-    else:
-        app.config.from_object(config[config_name])
+    if config_object:
+        app.config.from_object(config_object)
     
     # Initialize extensions
     CORS(app)
     db.init_app(app)
     mongo.init_app(app)
     mail.init_app(app)
-    migrate = Migrate(app, db)
+    migrate.init_app(app, db)
     jwt.init_app(app)
-    socketio.init_app(app, cors_allowed_origins="*", async_mode='gevent')
+    socketio.init_app(app, cors_allowed_origins="*")
+    limiter.init_app(app)
     
     # Initialize Redis client
     global redis_client
@@ -51,19 +52,12 @@ def create_app(config_name='default'):
     register_filters(app)
     
     # Register blueprints
-    from .routes import (
-        admin_bp, auth_bp, document_bp, immigration_bp,
-        intake_bp, rights_bp, scanner_bp, template_bp
-    )
+    from .routes import register_blueprints
+    register_blueprints(app)
     
-    app.register_blueprint(admin_bp)
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(document_bp)
-    app.register_blueprint(immigration_bp)
-    app.register_blueprint(intake_bp)
-    app.register_blueprint(rights_bp)
-    app.register_blueprint(scanner_bp)
-    app.register_blueprint(template_bp)
+    # Initialize middleware
+    from .middleware import init_middleware
+    init_middleware(app)
     
     # Initialize WebSocket notification service
     from backend.websocket.services.notification_service import init_redis_subscription

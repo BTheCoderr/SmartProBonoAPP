@@ -1,0 +1,58 @@
+# Use Python 3.11 slim base image
+FROM python:3.11-slim
+
+# Create a non-root user
+RUN useradd -m -s /bin/bash appuser
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    python3-dev \
+    libpango-1.0-0 \
+    libharfbuzz0b \
+    libpangoft2-1.0-0 \
+    libffi-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python packages
+RUN pip uninstall -y bson pymongo flask-pymongo && \
+    pip install --no-cache-dir pymongo==3.12.3 flask-pymongo==2.3.0 && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Install the application in editable mode
+RUN pip install -e .
+
+# Set ownership to appuser
+RUN chown -R appuser:appuser /app
+
+# Create necessary directories and set permissions
+RUN mkdir -p /app/logs /app/uploads /app/instance \
+    && chmod 755 /app/logs /app/uploads /app/instance
+
+# Switch to non-root user
+USER appuser
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=production
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5001/health || exit 1
+
+# Expose port
+EXPOSE 5001
+
+# Run the application
+CMD ["gunicorn", "--workers=4", "--bind=0.0.0.0:5001", "app:app"] 

@@ -206,4 +206,38 @@ def encrypt_document(document: Dict[str, Any], sensitive_fields: List[str]) -> D
 
 def decrypt_document(document: Dict[str, Any], sensitive_fields: List[str]) -> Dict[str, Any]:
     """Decrypt sensitive fields in a document."""
-    return get_encryption_service().decrypt_dict(document, sensitive_fields) 
+    return get_encryption_service().decrypt_dict(document, sensitive_fields)
+
+def get_encryption_key():
+    """Get or create encryption key"""
+    key = os.environ.get('ENCRYPTION_KEY')
+    if not key:
+        key = Fernet.generate_key()
+        os.environ['ENCRYPTION_KEY'] = key.decode()
+    return key
+
+def encrypt_field(value):
+    """Encrypt a field value"""
+    if not value:
+        return value
+    f = Fernet(get_encryption_key())
+    return f.encrypt(str(value).encode()).decode()
+
+def decrypt_field(value):
+    """Decrypt a field value"""
+    if not value:
+        return value
+    try:
+        f = Fernet(get_encryption_key())
+        return f.decrypt(value.encode()).decode()
+    except Exception:
+        return value
+
+def mask_field(value, visible_chars=4):
+    """Mask a field value, showing only the last few characters"""
+    if not value:
+        return value
+    value = str(value)
+    if len(value) <= visible_chars:
+        return '*' * len(value)
+    return '*' * (len(value) - visible_chars) + value[-visible_chars:] 

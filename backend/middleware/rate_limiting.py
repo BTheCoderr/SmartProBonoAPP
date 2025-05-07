@@ -142,4 +142,36 @@ class RateLimiter:
         return decorator
 
 # Create a singleton instance
-rate_limiter = RateLimiter() 
+rate_limiter = RateLimiter()
+
+class RateLimitingMiddleware:
+    """Middleware class for rate limiting"""
+    
+    def __init__(self, app=None):
+        self.app = app
+        if app is not None:
+            self.init_app(app)
+    
+    def init_app(self, app):
+        """Initialize the middleware with the Flask app"""
+        self.app = app
+        rate_limiter.init_app(app)
+        
+        # Apply rate limiting to all routes by default
+        @app.before_request
+        def check_rate_limit():
+            # Skip rate limiting for excluded paths
+            if request.path in app.config.get('RATE_LIMIT_EXCLUDED_PATHS', []):
+                return None
+                
+            # Get the appropriate rate limit based on the path
+            limit_name = 'default'
+            for path, name in app.config.get('RATE_LIMIT_PATHS', {}).items():
+                if request.path.startswith(path):
+                    limit_name = name
+                    break
+            
+            # Apply the decorator manually
+            return rate_limiter.limit(limit_name)(lambda: None)()
+        
+        logger.info("Rate limiting middleware initialized successfully") 

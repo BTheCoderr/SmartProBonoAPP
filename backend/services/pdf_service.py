@@ -28,6 +28,8 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 from .document_filter_service import get_document_filter_service
+from reportlab.pdfgen import canvas
+from io import BytesIO
 
 class PDFService:
     """Service for generating PDF documents."""
@@ -283,6 +285,233 @@ class PDFService:
             return decrypted_path
         except Exception as e:
             raise Exception(f"Failed to decrypt PDF: {str(e)}")
+
+def generate_pdf(form_type, data):
+    """
+    Generate a PDF document from form data.
+    
+    Args:
+        form_type (str): Type of form to generate
+        data (dict): Form data to use in generation
+    
+    Returns:
+        bytes: Generated PDF file data
+    """
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    # Add title
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=16,
+        spaceAfter=30
+    )
+    title = form_type.replace('_', ' ').title()
+    story.append(Paragraph(title, title_style))
+
+    if form_type == 'small_claims':
+        story.extend(_generate_small_claims(data, styles))
+    elif form_type == 'eviction_response':
+        story.extend(_generate_eviction_response(data, styles))
+    elif form_type == 'fee_waiver':
+        story.extend(_generate_fee_waiver(data, styles))
+    else:
+        raise ValueError(f'Unknown form type: {form_type}')
+
+    # Build PDF
+    doc.build(story)
+    pdf_data = buffer.getvalue()
+    buffer.close()
+    
+    return pdf_data
+
+def _generate_small_claims(data, styles):
+    """Generate Small Claims form content."""
+    story = []
+    
+    # Court Information
+    story.append(Paragraph('Court Information', styles['Heading2']))
+    court_data = [
+        ['County:', data['court_county']],
+        ['State:', data['court_state']],
+        ['Case Number:', data.get('case_number', 'Not Assigned')]
+    ]
+    story.append(_create_table(court_data))
+    story.append(Spacer(1, 20))
+    
+    # Parties
+    story.append(Paragraph('Plaintiff', styles['Heading2']))
+    plaintiff_data = [
+        ['Name:', data['plaintiff_name']],
+        ['Address:', data['plaintiff_address']]
+    ]
+    story.append(_create_table(plaintiff_data))
+    story.append(Spacer(1, 20))
+    
+    story.append(Paragraph('Defendant', styles['Heading2']))
+    defendant_data = [
+        ['Name:', data['defendant_name']],
+        ['Address:', data['defendant_address']]
+    ]
+    story.append(_create_table(defendant_data))
+    story.append(Spacer(1, 20))
+    
+    # Claim Information
+    story.append(Paragraph('Claim Information', styles['Heading2']))
+    claim_data = [
+        ['Amount:', f"${data['claim_amount']:.2f}"],
+        ['Filing Date:', data['filing_date']],
+        ['Incident Date:', data['incident_date']],
+        ['Incident Location:', data.get('incident_location', 'Not Specified')],
+        ['Filing Fee:', f"${data.get('filing_fee', 0):.2f}"]
+    ]
+    story.append(_create_table(claim_data))
+    story.append(Spacer(1, 20))
+    
+    # Claim Description
+    story.append(Paragraph('Claim Description', styles['Heading2']))
+    story.append(Paragraph(data['claim_description'], styles['Normal']))
+    story.append(Spacer(1, 20))
+    
+    # Facts
+    story.append(Paragraph('Supporting Facts', styles['Heading2']))
+    story.append(Paragraph('1. ' + data['fact_1'], styles['Normal']))
+    if data.get('fact_2'):
+        story.append(Paragraph('2. ' + data['fact_2'], styles['Normal']))
+    if data.get('fact_3'):
+        story.append(Paragraph('3. ' + data['fact_3'], styles['Normal']))
+    story.append(Spacer(1, 20))
+    
+    # Evidence and Witnesses
+    if data.get('evidence_list'):
+        story.append(Paragraph('Evidence', styles['Heading2']))
+        story.append(Paragraph(data['evidence_list'], styles['Normal']))
+        story.append(Spacer(1, 20))
+    
+    if data.get('witness_list'):
+        story.append(Paragraph('Witnesses', styles['Heading2']))
+        story.append(Paragraph(data['witness_list'], styles['Normal']))
+    
+    return story
+
+def _generate_eviction_response(data, styles):
+    """Generate Eviction Response form content."""
+    story = []
+    
+    # Case Information
+    story.append(Paragraph('Case Information', styles['Heading2']))
+    case_data = [
+        ['Case Number:', data['case_number']],
+        ['Response Date:', data['response_date']]
+    ]
+    story.append(_create_table(case_data))
+    story.append(Spacer(1, 20))
+    
+    # Parties
+    story.append(Paragraph('Tenant Information', styles['Heading2']))
+    tenant_data = [
+        ['Name:', data['tenant_name']],
+        ['Address:', data['tenant_address']]
+    ]
+    story.append(_create_table(tenant_data))
+    story.append(Spacer(1, 20))
+    
+    story.append(Paragraph('Landlord Information', styles['Heading2']))
+    landlord_data = [
+        ['Name:', data['landlord_name']],
+        ['Address:', data['landlord_address']]
+    ]
+    story.append(_create_table(landlord_data))
+    story.append(Spacer(1, 20))
+    
+    # Property
+    story.append(Paragraph('Property Information', styles['Heading2']))
+    property_data = [['Property Address:', data['property_address']]]
+    story.append(_create_table(property_data))
+    story.append(Spacer(1, 20))
+    
+    # Defense
+    story.append(Paragraph('Defense Explanation', styles['Heading2']))
+    story.append(Paragraph(data['defense_explanation'], styles['Normal']))
+    story.append(Spacer(1, 20))
+    
+    # Additional Information
+    if data.get('rent_details'):
+        story.append(Paragraph('Rent Details', styles['Heading2']))
+        story.append(Paragraph(data['rent_details'], styles['Normal']))
+        story.append(Spacer(1, 20))
+    
+    if data.get('maintenance_issues'):
+        story.append(Paragraph('Maintenance Issues', styles['Heading2']))
+        story.append(Paragraph(data['maintenance_issues'], styles['Normal']))
+        story.append(Spacer(1, 20))
+    
+    if data.get('additional_facts'):
+        story.append(Paragraph('Additional Facts', styles['Heading2']))
+        story.append(Paragraph(data['additional_facts'], styles['Normal']))
+    
+    return story
+
+def _generate_fee_waiver(data, styles):
+    """Generate Fee Waiver form content."""
+    story = []
+    
+    # Applicant Information
+    story.append(Paragraph('Applicant Information', styles['Heading2']))
+    applicant_data = [
+        ['Name:', data['applicant_name']],
+        ['Case Number:', data.get('case_number', 'Not Assigned')],
+        ['Court Name:', data['court_name']],
+        ['Filing Date:', data['filing_date']]
+    ]
+    story.append(_create_table(applicant_data))
+    story.append(Spacer(1, 20))
+    
+    # Financial Information
+    story.append(Paragraph('Financial Information', styles['Heading2']))
+    financial_data = [
+        ['Monthly Income:', f"${data['monthly_income']:.2f}"],
+        ['Household Size:', str(data['household_size'])]
+    ]
+    story.append(_create_table(financial_data))
+    story.append(Spacer(1, 20))
+    
+    # Public Benefits
+    if data.get('public_benefits'):
+        story.append(Paragraph('Public Benefits', styles['Heading2']))
+        benefits_text = ', '.join(data['public_benefits'])
+        story.append(Paragraph(benefits_text, styles['Normal']))
+        story.append(Spacer(1, 20))
+    
+    # Expenses
+    if data.get('expenses'):
+        story.append(Paragraph('Monthly Expenses', styles['Heading2']))
+        expenses_data = [[k, f"${v:.2f}"] for k, v in data['expenses'].items()]
+        story.append(_create_table(expenses_data))
+        story.append(Spacer(1, 20))
+    
+    # Hardship Explanation
+    if data.get('hardship_explanation'):
+        story.append(Paragraph('Hardship Explanation', styles['Heading2']))
+        story.append(Paragraph(data['hardship_explanation'], styles['Normal']))
+    
+    return story
+
+def _create_table(data):
+    """Create a formatted table for the PDF."""
+    table = Table(data, colWidths=[2*inch, 4*inch])
+    table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
+    ]))
+    return table
 
 # Create a singleton instance
 pdf_service = PDFService()
