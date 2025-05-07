@@ -41,8 +41,7 @@ const legalForms = [
     fee: '$0',
     category: 'Financial',
     icon: <AttachMoney sx={{ fontSize: 40 }} />,
-    tags: ['Financial', 'Court Fees', 'Waiver'],
-    comingSoon: true
+    tags: ['Financial', 'Court Fees', 'Waiver']
   }
 ];
 
@@ -57,6 +56,16 @@ const FormsIndexPage = () => {
           Create professional legal documents instantly. Fill out the information, preview the document,
           and download or print your completed forms.
         </Typography>
+        <Box sx={{ mt: 2 }}>
+          <Button 
+            variant="contained" 
+            color="secondary"
+            component={RouterLink}
+            to="/forms/dashboard"
+          >
+            View Forms Dashboard
+          </Button>
+        </Box>
       </Paper>
 
       <Grid container spacing={3}>
@@ -76,19 +85,6 @@ const FormsIndexPage = () => {
                 }
               }}
             >
-              {form.comingSoon && (
-                <Chip 
-                  label="Coming Soon" 
-                  color="secondary" 
-                  size="small"
-                  sx={{ 
-                    position: 'absolute', 
-                    top: 10, 
-                    right: 10,
-                    zIndex: 1
-                  }} 
-                />
-              )}
               <Box sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
                 <Box sx={{ mr: 2, color: 'primary.main' }}>
                   {form.icon}
@@ -150,10 +146,9 @@ const FormsIndexPage = () => {
                   component={RouterLink} 
                   to={form.route}
                   variant="contained" 
-                  disabled={form.comingSoon}
                   fullWidth
                 >
-                  {form.comingSoon ? 'Coming Soon' : 'Create Form'}
+                  Create Form
                 </Button>
               </CardActions>
             </Card>
@@ -197,6 +192,16 @@ const FormsIndexPage = () => {
               fullWidth
             >
               Contact Support
+            </Button>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Button 
+              variant="outlined"
+              component={RouterLink}
+              to="/forms/dashboard"
+              fullWidth
+            >
+              View Your Forms
             </Button>
           </Grid>
         </Grid>

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://smartprobono.netlify.app",
+  "proxy": "http://localhost:5003",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -19,6 +20,7 @@
     "date-fns": "^4.1.0",
     "diff": "^5.1.0",
     "formik": "^2.4.6",
+    "framer-motion": "^12.9.2",
     "i18next": "^23.16.8",
     "i18next-browser-languagedetector": "^7.2.2",
     "jspdf": "^2.5.2",
@@ -42,9 +44,9 @@
     "yup": "^1.4.0"
   },
   "scripts": {
-    "start": "DISABLE_ESLINT_PLUGIN=true PORT=3100 react-scripts start",
-    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
-    "test": "react-scripts test",
+    "start": "PORT=3002 craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "ci-install": "npm install --legacy-peer-deps --no-package-lock --force"
   },
@@ -67,6 +69,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.2",

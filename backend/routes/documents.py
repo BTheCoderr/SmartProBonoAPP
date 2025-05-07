@@ -12,8 +12,8 @@ import os
 from bson import ObjectId
 import logging
 from database.mongo import mongo
-from ..utils.auth import login_required
-from ..services.notification_service import NotificationService
+from utils.auth import login_required
+from services.notification_service import NotificationService
 
 # Import OCR services
 from services.ocr_service import ocr_service

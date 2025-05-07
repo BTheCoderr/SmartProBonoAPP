@@ -586,7 +586,7 @@ def get_case(case_id):
         # Get case
         case = users_collection.find_one({'_id': ObjectId(case_id)})
         if not case:
-        return jsonify({'error': 'Case not found'}), 404
+            return jsonify({'error': 'Case not found'}), 404
         
         # Check permission
         role = user.get('role', 'client')
@@ -688,7 +688,7 @@ def add_case_note(case_id):
         )
         
         if result.modified_count == 0:
-        return jsonify({'error': 'Case not found'}), 404
+            return jsonify({'error': 'Case not found'}), 404
         
         return jsonify({'message': 'Note added successfully'}), 200
         

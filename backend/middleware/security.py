@@ -1,16 +1,29 @@
 """Security middleware for the application."""
+import logging
 from functools import wraps
-from flask import request, abort, current_app
+from flask import request, jsonify, current_app
 import re
 from datetime import datetime
-from backend.config.security import (
+from werkzeug.security import check_password_hash
+from config.security import (
     SECURITY_HEADERS,
     RATE_LIMIT_CONFIG,
     PASSWORD_POLICY,
     API_SECURITY,
-    SENSITIVE_FIELDS
+    SENSITIVE_FIELDS,
+    ALLOWED_ORIGINS,
+    ALLOWED_METHODS,
+    ALLOWED_HEADERS,
+    MAX_CONTENT_LENGTH,
+    RATE_LIMIT_RULES,
+    AUTH_REQUIRED_ROUTES,
+    EXEMPT_ROUTES,
+    API_KEY_HEADER,
+    JWT_SECRET_KEY
 )
-from backend.utils.encryption import encrypt_field, mask_field
+from utils.encryption import encrypt_field, mask_field
+
+logger = logging.getLogger(__name__)
 
 class SecurityMiddleware:
     """Middleware for handling security concerns."""
@@ -25,12 +38,36 @@ class SecurityMiddleware:
         @app.before_request
         def before_request():
             """Handle security checks before each request."""
-            if API_SECURITY['require_https'] and not request.is_secure:
-                abort(403, description="HTTPS required")
-            
-            self._validate_content_type()
-            self._check_rate_limit()
-        
+            # Skip security checks for exempt routes
+            if request.path in EXEMPT_ROUTES:
+                return None
+
+            # CORS check
+            origin = request.headers.get('Origin')
+            if origin and origin not in ALLOWED_ORIGINS:
+                return jsonify({'error': 'Invalid origin'}), 403
+
+            # Method check
+            if request.method not in ALLOWED_METHODS:
+                return jsonify({'error': 'Method not allowed'}), 405
+
+            # Content length check
+            content_length = request.content_length
+            if content_length and content_length > MAX_CONTENT_LENGTH:
+                return jsonify({'error': 'Request too large'}), 413
+
+            # API key check for protected routes
+            if request.path in AUTH_REQUIRED_ROUTES:
+                api_key = request.headers.get(API_KEY_HEADER)
+                if not api_key or not self._validate_api_key(api_key):
+                    return jsonify({'error': 'Invalid API key'}), 401
+
+            # Rate limiting
+            if not self._check_rate_limit(request):
+                return jsonify({'error': 'Rate limit exceeded'}), 429
+
+            return None
+
         @app.after_request
         def after_request(response):
             """Add security headers to response."""
@@ -38,17 +75,37 @@ class SecurityMiddleware:
                 response.headers[header] = value
             return response
     
-    def _validate_content_type(self):
-        """Validate the Content-Type header."""
-        if request.method in ['POST', 'PUT'] and API_SECURITY['validate_content_type']:
-            content_type = request.headers.get('Content-Type', '')
-            if not content_type.startswith('application/json'):
-                abort(415, description="Content-Type must be application/json")
-    
-    def _check_rate_limit(self):
-        """Check rate limiting for the current request."""
-        # Implementation would use Redis or similar for production
-        pass
+    def _validate_api_key(self, api_key):
+        """Validate the API key"""
+        return check_password_hash(current_app.config['API_KEY_HASH'], api_key)
+
+    def _check_rate_limit(self, request):
+        """Check if the request exceeds rate limits"""
+        client_ip = request.remote_addr
+        path = request.path
+
+        # Get applicable rate limit rule
+        rule = next((r for r in RATE_LIMIT_RULES if r['path'] == path), None)
+        if not rule:
+            return True
+
+        # Check rate limit using Redis
+        key = f"rate_limit:{client_ip}:{path}"
+        try:
+            current = current_app.redis.get(key)
+            if current and int(current) >= rule['limit']:
+                return False
+            
+            # Update counter
+            if current:
+                current_app.redis.incr(key)
+            else:
+                current_app.redis.setex(key, rule['window'], 1)
+            
+            return True
+        except Exception as e:
+            current_app.logger.error(f"Rate limit check failed: {str(e)}")
+            return True  # Allow request if rate limiting fails
 
 def validate_password(password):
     """Validate password against policy."""
@@ -125,4 +182,36 @@ def validate_schema(schema):
             
             return f(*args, **kwargs)
         return decorated_function
-    return decorator 
+    return decorator
+
+def requires_encryption(f):
+    """Decorator to ensure sensitive data is encrypted"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        try:
+            if request.is_json:
+                sensitive_fields = current_app.config.get('SENSITIVE_FIELDS', [])
+                data = request.json
+                for field in sensitive_fields:
+                    if field in data:
+                        data[field] = encrypt_field(data[field])
+            return f(*args, **kwargs)
+        except Exception as e:
+            logger.error(f"Encryption error: {str(e)}")
+            return jsonify({"error": "Failed to process sensitive data"}), 500
+    return decorated_function
+
+def mask_sensitive_data(data, fields_to_mask=None):
+    """Mask sensitive data in the response"""
+    if not data or not fields_to_mask:
+        return data
+
+    if isinstance(data, dict):
+        for field in fields_to_mask:
+            if field in data:
+                data[field] = mask_field(data[field])
+    elif isinstance(data, list):
+        for item in data:
+            mask_sensitive_data(item, fields_to_mask)
+
+    return data 

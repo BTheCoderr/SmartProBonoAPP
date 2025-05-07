@@ -38,3 +38,9 @@ __pycache__/
 
 Miniforge3-MacOSX-arm64.sh
 Miniforge3-MacOSX-arm64.sh
+
+# Redis configuration
+REDIS_PASSWORD=smartprobono_redis_2024_secure
+
+# JWT configuration (needed for authentication)
+JWT_SECRET_KEY=smartprobono_jwt_secret_key_2024_secure

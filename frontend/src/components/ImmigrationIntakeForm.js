@@ -17,22 +17,18 @@ import {
   FormControlLabel,
   Divider,
   Alert,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Chip,
   FormHelperText,
   Snackbar,
-  CircularProgress
+  CircularProgress,
+  FormLabel,
+  RadioGroup,
+  Radio
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DescriptionIcon from '@mui/icons-material/Description';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
 import PersonIcon from '@mui/icons-material/Person';
 import FlagIcon from '@mui/icons-material/Flag';
-import EventIcon from '@mui/icons-material/Event';
-import { immigrationApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -321,7 +317,7 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
     howDidYouHear: ''
   });
   const [submitted, setSubmitted] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notification, setNotification] = useState({
     open: false,
@@ -346,26 +342,27 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
     setFormData({ ...formData, [field]: value });
     
     // Clear error for this field if it exists
-    if (errors[field]) {
-      setErrors({
-        ...errors,
+    if (formError && formError[field]) {
+      setFormError({
+        ...formError,
         [field]: ''
       });
     }
   };
 
   const handleDateChange = (event) => {
-    setFormData({
-      ...formData,
-      dateOfBirth: event.target.value
-    });
+    const value = event.target.value;
+    setFormData(prev => ({
+      ...prev,
+      dateOfBirth: value
+    }));
     
-    // Clear error for this field if it exists
-    if (errors.dateOfBirth) {
-      setErrors({
-        ...errors,
+    // Clear any existing date validation errors
+    if (formError?.dateOfBirth) {
+      setFormError(prev => ({
+        ...prev,
         dateOfBirth: ''
-      });
+      }));
     }
   };
 
@@ -378,11 +375,47 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Validate required fields
+    if (!formData.firstName?.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName?.trim()) newErrors.lastName = 'Last name is required';
+    if (!formData.email?.trim()) newErrors.email = 'Email is required';
+    if (!formData.phone?.trim()) newErrors.phone = 'Phone number is required';
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
+    if (!formData.nationality) newErrors.nationality = 'Nationality is required';
+    if (!formData.currentImmigrationStatus) newErrors.currentImmigrationStatus = 'Current immigration status is required';
+    if (!formData.desiredService) newErrors.desiredService = 'Desired service is required';
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      newErrors.email = 'Invalid email format';
+    }
+    
+    // Validate phone format (basic validation)
+    const phoneRegex = /^[0-9-+()]*$/;
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      newErrors.phone = 'Invalid phone number format';
+    }
+    
+    setFormError(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setIsSubmitting(true);
     try {
+      if (!validateForm()) {
+        setIsSubmitting(false);
+        return;
+      }
+
       const response = await ApiService.post('/api/intake/immigration', values);
       
       if (response.success) {
+        setSubmitted(true);
         enqueueSnackbar('Form submitted successfully!', { variant: 'success' });
         resetForm();
         navigate('/thank-you');
@@ -391,39 +424,9 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
       console.error('Error submitting form:', error);
       enqueueSnackbar(error.message || 'Error submitting form', { variant: 'error' });
     } finally {
+      setIsSubmitting(false);
       setSubmitting(false);
     }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    
-    // Validate required personal information
-    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
-    if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
-    
-    // Validate immigration information
-    if (!formData.nationality) newErrors.nationality = 'Nationality is required';
-    if (!formData.currentImmigrationStatus) newErrors.currentImmigrationStatus = 'Current immigration status is required';
-    if (!formData.desiredService) newErrors.desiredService = 'Desired service is required';
-    if (!formData.caseDescription.trim()) newErrors.caseDescription = 'Case description is required';
-    
-    // Validate visa type if on that step
-    if (activeStep >= 1 && !formData.visaType) newErrors.visaType = 'Please select an immigration matter type';
-    
-    // If prior applications is checked, require details
-    if (formData.priorApplications && !formData.priorApplicationDetails.trim()) {
-      newErrors.priorApplicationDetails = 'Please provide details about prior applications';
-    }
-    
-    setErrors(newErrors);
-    
-    // Form is valid if there are no errors
-    return Object.keys(newErrors).length === 0;
   };
 
   const renderStepContent = () => {
@@ -627,9 +630,9 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
                     </RadioGroup>
                   </FormControl>
                 </Box>
-                {error && (
+                {formError && (
                   <Alert severity="error" sx={{ mb: 2 }}>
-                    {error}
+                    {formError.caseDescription}
                   </Alert>
                 )}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -837,7 +840,7 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
               </Grid>
               
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={!!errors.nationality}>
+                <FormControl fullWidth error={!!formError.nationality}>
                   <InputLabel>Nationality</InputLabel>
                   <Select
                     name="nationality"
@@ -860,14 +863,14 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.nationality && (
-                    <FormHelperText error>{errors.nationality}</FormHelperText>
+                  {formError.nationality && (
+                    <FormHelperText error>{formError.nationality}</FormHelperText>
                   )}
                 </FormControl>
               </Grid>
               
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={!!errors.currentImmigrationStatus}>
+                <FormControl fullWidth error={!!formError.currentImmigrationStatus}>
                   <InputLabel>Current Immigration Status</InputLabel>
                   <Select
                     name="currentImmigrationStatus"
@@ -886,7 +889,7 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
               </Grid>
               
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={!!errors.desiredService}>
+                <FormControl fullWidth error={!!formError.desiredService}>
                   <InputLabel>Desired Immigration Service</InputLabel>
                   <Select
                     name="desiredService"
@@ -913,8 +916,8 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
                   onChange={handleInputChange('caseDescription')}
                   multiline
                   rows={4}
-                  error={!!errors.caseDescription}
-                  helperText={errors.caseDescription}
+                  error={!!formError.caseDescription}
+                  helperText={formError.caseDescription}
                   required
                 />
               </Grid>

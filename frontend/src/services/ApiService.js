@@ -79,6 +79,51 @@ class ApiService {
     return response.data;
   }
 
+  // Form submission methods
+  async submitForm(formType, formData) {
+    const response = await this.client.post(`/api/forms/${formType}/submit`, formData);
+    return response.data;
+  }
+
+  async saveDraft(formType, draftData) {
+    const response = await this.client.post(`/api/forms/${formType}/draft`, draftData);
+    return response.data;
+  }
+
+  async getDraft(formType) {
+    const response = await this.client.get(`/api/forms/${formType}/draft`);
+    return response.data;
+  }
+
+  async generateDocument(formType, formData) {
+    const response = await this.client.post(`/api/forms/${formType}/generate`, formData);
+    return response.data;
+  }
+
+  // PDF methods
+  async generatePDF(templateId, data) {
+    const response = await this.client.post('/api/documents/generate', {
+      template_id: templateId,
+      data: data
+    }, { responseType: 'blob' });
+    return response.data;
+  }
+
+  async downloadPDF(documentId) {
+    const response = await this.client.get(`/api/documents/${documentId}/download`, {
+      responseType: 'blob'
+    });
+    return response.data;
+  }
+
+  async previewPDF(templateId, data) {
+    const response = await this.client.post('/api/documents/preview', {
+      template_id: templateId,
+      data: data
+    }, { responseType: 'blob' });
+    return response.data;
+  }
+
   // Error handler
   handleError(error) {
     if (error.response) {

@@ -1,34 +1,88 @@
 """Security configuration for the application."""
 from datetime import timedelta
 
-# Security Headers
+# CORS settings
+ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:3100',
+    'https://smartprobono.org',
+    'https://www.smartprobono.org'
+]
+
+ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+
+ALLOWED_HEADERS = [
+    'Content-Type',
+    'Authorization',
+    'X-API-Key',
+    'X-Requested-With',
+    'Accept'
+]
+
+# Request size limits
+MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB
+
+# Rate limiting rules
+RATE_LIMIT_RULES = [
+    {'path': '/api/forms', 'limit': 100, 'window': 3600},  # 100 requests per hour
+    {'path': '/api/documents', 'limit': 50, 'window': 3600},  # 50 requests per hour
+    {'path': '/api/auth', 'limit': 20, 'window': 3600}  # 20 requests per hour
+]
+
+# Authentication settings
+AUTH_REQUIRED_ROUTES = [
+    '/api/forms',
+    '/api/documents',
+    '/api/analytics'
+]
+
+EXEMPT_ROUTES = [
+    '/health',
+    '/api/auth/login',
+    '/api/auth/register'
+]
+
+API_KEY_HEADER = 'X-API-Key'
+JWT_SECRET_KEY = 'your-secret-key'  # Change in production
+
+# Security headers
 SECURITY_HEADERS = {
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'SAMEORIGIN',
     'X-XSS-Protection': '1; mode=block',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';",
-    'Referrer-Policy': 'strict-origin-when-cross-origin'
+    'X-Content-Type-Options': 'nosniff',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+    'Content-Security-Policy': "default-src 'self'"
 }
 
-# Rate Limiting
+# Rate limiting configuration
 RATE_LIMIT_CONFIG = {
-    'default': '100 per minute',
-    'login': '5 per minute',
-    'register': '3 per minute',
-    'forgot_password': '3 per minute',
-    'api': '1000 per hour'
+    'default': '100 per hour',
+    'auth': '20 per hour'
 }
 
-# Password Policy
+# Password policy
 PASSWORD_POLICY = {
-    'min_length': 12,
+    'min_length': 8,
     'require_uppercase': True,
     'require_lowercase': True,
     'require_numbers': True,
-    'require_special': True,
-    'max_length': 128
+    'require_special': True
 }
+
+# API security settings
+API_SECURITY = {
+    'require_https': True,
+    'validate_content_type': True,
+    'max_token_age': 3600
+}
+
+# Fields to be treated as sensitive
+SENSITIVE_FIELDS = [
+    'password',
+    'ssn',
+    'credit_card',
+    'bank_account'
+]
 
 # JWT Configuration
 JWT_CONFIG = {
@@ -68,23 +122,4 @@ UPLOAD_CONFIG = {
     'upload_folder': 'uploads',
     'scan_uploads': True,
     'sanitize_filenames': True
-}
-
-# API Security
-API_SECURITY = {
-    'require_https': True,
-    'validate_content_type': True,
-    'validate_schemas': True,
-    'sanitize_inputs': True,
-    'encrypt_sensitive_data': True
-}
-
-# Sensitive Data Fields (for encryption/masking)
-SENSITIVE_FIELDS = {
-    'ssn': 'encrypt',
-    'dob': 'encrypt',
-    'phone': 'mask',
-    'email': 'mask',
-    'address': 'mask',
-    'case_details': 'encrypt'
 } 

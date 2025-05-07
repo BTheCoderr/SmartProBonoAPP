@@ -37,6 +37,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import SecurityIcon from '@mui/icons-material/Security';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import BusinessIcon from '@mui/icons-material/Business';
 import Logo from './Logo';
 import Notifications from './Notifications';
 import { useAuth } from '../context/AuthContext';
@@ -59,6 +60,7 @@ function Navigation() {
     { name: 'Rights', path: '/rights', icon: <GavelIcon /> },
     { name: 'Services', path: '/services', icon: <BuildIcon /> },
     { name: 'Resources', path: '/resources', icon: <LibraryBooksIcon /> },
+    { name: 'Business Model', path: '/business-model', icon: <BusinessIcon /> },
     { name: 'Contact', path: '/contact', icon: <ContactSupportIcon /> }
   ];
 

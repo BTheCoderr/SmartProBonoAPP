@@ -29,12 +29,18 @@ const startHeartbeat = () => {
   
   heartbeatInterval = setInterval(() => {
     if (socket && isConnected) {
-      // Ping the server to check connection
+      // Use a timeout to handle unresponsive pings
+      const timeoutId = setTimeout(() => {
+        console.warn('Heartbeat timeout - no response received');
+        if (socket) {
+          socket.disconnect().connect();
+        }
+      }, 5000); // 5 second timeout
+
       socket.emit('ping', {}, (response) => {
+        clearTimeout(timeoutId);
         if (!response) {
-          console.warn('No heartbeat response received, connection may be lost');
-          // The socket might think it's connected but isn't receiving responses
-          // Force a reconnection attempt
+          console.warn('Invalid heartbeat response');
           if (socket) {
             socket.disconnect().connect();
           }
@@ -203,7 +209,7 @@ export const initializeSocket = (userId) => {
       eventHandlers.notification.forEach(handler => {
         try {
           handler(data);
-    } catch (error) {
+        } catch (error) {
           console.error('Error in notification handler:', error);
         }
       });
@@ -244,28 +250,47 @@ export const registerUser = (userId) => {
       return reject(new Error('Socket not connected'));
     }
 
+    // Add timeout for registration
+    const timeoutId = setTimeout(() => {
+      reject(new Error('Registration timeout'));
+    }, 10000); // 10 second timeout
+
     socket.emit('register', { user_id: userId }, (response) => {
+      clearTimeout(timeoutId);
       if (response && response.status === 'success') {
         resolve(response);
       } else {
-        reject(new Error(response?.message || 'Registration failed'));
+        reject(new Error('Registration failed: ' + (response?.error || 'Unknown error')));
       }
     });
   });
 };
 
 /**
- * Add an event handler for a specific event
- * @param {string} event - The event to listen for ('notification', 'direct_message', 'connect', 'disconnect', 'connect_error', 'reconnecting', 'reconnect_failed')
- * @param {Function} handler - The handler function to call when the event occurs
+ * Add event handler with timeout protection
  */
 export const addSocketEventHandler = (event, handler) => {
   if (!eventHandlers[event]) {
-    console.warn(`Unknown socket event: ${event}`);
-    return;
+    eventHandlers[event] = [];
   }
   
-  eventHandlers[event].push(handler);
+  // Wrap handler with timeout and error protection
+  const wrappedHandler = async (...args) => {
+    try {
+      const result = handler(...args);
+      if (result && typeof result.then === 'function') {
+        // If handler returns a promise, add timeout
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Handler timeout')), 5000);
+        });
+        await Promise.race([result, timeoutPromise]);
+      }
+    } catch (error) {
+      console.error(`Error in ${event} handler:`, error);
+    }
+  };
+  
+  eventHandlers[event].push(wrappedHandler);
 };
 
 /**

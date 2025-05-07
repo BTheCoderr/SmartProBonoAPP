@@ -106,21 +106,49 @@ function VirtualParalegalPage() {
 
   // Check backend connection status
   useEffect(() => {
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 2000; // 2 seconds
+    let retryCount = 0;
+    let retryTimeout;
+
     const checkConnection = async () => {
       try {
         const response = await ApiService.get('/ping');
         setConnectionStatus(response.status === 'ok' ? 'connected' : 'disconnected');
+        retryCount = 0; // Reset retry count on success
       } catch (error) {
         console.error('Error checking service status:', error);
         setConnectionStatus('disconnected');
-        enqueueSnackbar('Could not connect to backend server. Using demo mode.', { 
-          variant: 'warning',
-          autoHideDuration: 5000
-        });
+        
+        // Implement retry logic
+        if (retryCount < MAX_RETRIES) {
+          retryCount++;
+          console.log(`Retrying connection (${retryCount}/${MAX_RETRIES})...`);
+          retryTimeout = setTimeout(checkConnection, RETRY_DELAY);
+          enqueueSnackbar(`Connection attempt ${retryCount}/${MAX_RETRIES}...`, {
+            variant: 'info',
+            autoHideDuration: 2000
+          });
+        } else {
+          enqueueSnackbar('Could not connect to backend server. Using demo mode.', {
+            variant: 'warning',
+            autoHideDuration: 5000
+          });
+        }
       }
     };
     
+    // Initial check
     checkConnection();
+
+    // Implement periodic connection check
+    const connectionCheckInterval = setInterval(checkConnection, 30000); // Check every 30 seconds
+
+    // Cleanup
+    return () => {
+      clearInterval(connectionCheckInterval);
+      clearTimeout(retryTimeout);
+    };
   }, [enqueueSnackbar]);
 
   // Load data from API on component mount
@@ -129,23 +157,42 @@ function VirtualParalegalPage() {
       if (isAuthenticated) {
         setIsLoading(true);
         try {
-          // Fetch document templates
-          const templatesResponse = await paralegalService.getDocumentTemplates();
+          // Fetch document templates with timeout
+          const templatesPromise = Promise.race([
+            paralegalService.getDocumentTemplates(),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Request timeout')), 10000)
+            )
+          ]);
+          
+          const templatesResponse = await templatesPromise;
           if (templatesResponse.success) {
             setDocumentTemplates(templatesResponse.templates);
           }
           
-          // Fetch screening questions
-          const questionsResponse = await paralegalService.getScreeningQuestions();
+          // Fetch screening questions with timeout
+          const questionsPromise = Promise.race([
+            paralegalService.getScreeningQuestions(),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Request timeout')), 10000)
+            )
+          ]);
+          
+          const questionsResponse = await questionsPromise;
           if (questionsResponse.success) {
             setScreeningQuestions(questionsResponse.questions);
           }
         } catch (error) {
           console.error('Error fetching data:', error);
-          enqueueSnackbar('Failed to load data. Using demo data instead.', { 
-            variant: 'warning',
-            autoHideDuration: 4000
-          });
+          enqueueSnackbar(
+            error.message === 'Request timeout' 
+              ? 'Request timed out. Using demo data.'
+              : 'Failed to load data. Using demo data instead.',
+            { 
+              variant: 'warning',
+              autoHideDuration: 4000
+            }
+          );
           // Use mock data if API fails
           setDocumentTemplates(mockDocumentTemplates);
           setScreeningQuestions(mockScreeningQuestions);
