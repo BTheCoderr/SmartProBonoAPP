@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Paper,
@@ -23,7 +23,8 @@ import {
   CircularProgress,
   FormLabel,
   RadioGroup,
-  Radio
+  Radio,
+  LinearProgress
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -37,6 +38,8 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import ApiService from '../services/api';
 import { useSnackbar } from 'notistack';
+import ProgressTracker from './ProgressTracker';
+import { saveFormProgress, getFormProgress } from '../services/StorageService';
 
 const visaTypes = [
   { value: 'family', label: 'Family-Based Immigration' },
@@ -324,8 +327,85 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
     message: '',
     severity: 'success'
   });
+  // Add state for form completion tracking
+  const [formProgress, setFormProgress] = useState(0);
+  const [lastSaved, setLastSaved] = useState(null);
+  const [sessionId, setSessionId] = useState(`immigration-form-${Date.now()}`);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+
+  // Calculate form completion percentage 
+  const calculateCompletion = useCallback(() => {
+    // Define required fields
+    const requiredFields = [
+      'firstName', 
+      'lastName', 
+      'email', 
+      'phone', 
+      'currentImmigrationStatus', 
+      'nationality', 
+      'desiredService', 
+      'caseDescription'
+    ];
+    
+    // Get all fields that have values
+    const completedFields = requiredFields.filter(field => 
+      formData[field] && formData[field].toString().trim() !== ''
+    );
+    
+    // Calculate percentage
+    const percentage = Math.floor((completedFields.length / requiredFields.length) * 100);
+    
+    return percentage;
+  }, [formData]);
+
+  // Load saved form progress
+  useEffect(() => {
+    const savedProgress = getFormProgress('immigrationIntakeForm');
+    if (savedProgress) {
+      try {
+        const { formData: savedData, lastSaved: savedTime } = savedProgress;
+        setFormData(prevData => ({ ...prevData, ...savedData }));
+        setLastSaved(savedTime);
+        enqueueSnackbar('Form progress restored from previous session', { variant: 'info' });
+      } catch (error) {
+        console.error('Error loading saved form data:', error);
+      }
+    }
+  }, [enqueueSnackbar]);
+
+  // Update progress whenever formData changes
+  useEffect(() => {
+    const progress = calculateCompletion();
+    setFormProgress(progress);
+    
+    // Save progress automatically
+    if (Object.keys(formData).some(key => formData[key])) {
+      const now = new Date().toISOString();
+      saveFormProgress('immigrationIntakeForm', { 
+        formData, 
+        sessionId,
+        lastSaved: now,
+        progress
+      });
+      setLastSaved(now);
+    }
+  }, [formData, sessionId, calculateCompletion]);
+
+  // Log form abandonment
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (!submitted && formProgress > 0 && formProgress < 100) {
+        // Could log this event to analytics
+        console.log(`Form abandoned at ${formProgress}% completion`);
+      }
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [formProgress, submitted]);
 
   useEffect(() => {
     if (initialServiceType) {
@@ -416,6 +496,8 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
       
       if (response.success) {
         setSubmitted(true);
+        // Clear saved form data on successful submission
+        saveFormProgress('immigrationIntakeForm', null);
         enqueueSnackbar('Form submitted successfully!', { variant: 'success' });
         resetForm();
         navigate('/thank-you');
@@ -737,41 +819,34 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
   };
 
   return (
-    <Paper 
-      elevation={3} 
-      sx={{ 
-        p: { xs: 2, sm: 4 }, // Reduce padding on mobile
-        maxWidth: 800, 
-        mx: 'auto', 
-        my: 3,
-        overflowX: 'hidden' // Prevent horizontal scroll on mobile
-      }}
-    >
-      <Typography 
-        variant={isMobile ? "h5" : "h4"} 
-        align="center" 
-        gutterBottom
-      >
-        Immigration Services Intake Form
+    <Paper elevation={3} sx={{ p: 3, maxWidth: '100%' }}>
+      <Typography variant="h5" gutterBottom>
+        Immigration Intake Form
       </Typography>
-      
-      <Typography 
-        variant="body1" 
-        paragraph 
-        align="center" 
-        color="text.secondary" 
-        sx={{ mb: 4 }}
-      >
+      <Typography variant="body2" color="text.secondary" paragraph>
         Please complete this form to help us understand your immigration needs. All information is confidential.
       </Typography>
       
+      {/* Use the ProgressTracker component instead of inline progress indicator */}
+      <ProgressTracker 
+        progress={formProgress} 
+        lastSaved={lastSaved}
+        showSaveIcon={true}
+      />
+
       {/* Mobile stepper view */}
       {isMobile && (
-        <Stepper 
-          activeStep={activeStep} 
-          alternativeLabel 
-          sx={{ mb: 3 }}
-        >
+        <>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="body1">{steps[activeStep]}</Typography>
+            <Typography variant="body2" color="text.secondary">Step {activeStep + 1} of {steps.length}</Typography>
+          </Box>
+        </>
+      )}
+
+      {/* Stepper - Desktop view */}
+      {!isMobile && (
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>

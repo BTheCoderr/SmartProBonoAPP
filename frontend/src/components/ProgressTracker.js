@@ -1,194 +1,94 @@
 import React from 'react';
-import {
-  Box,
-  Paper,
-  Typography,
-  LinearProgress,
-  Chip,
-  Grid,
-  Card,
-  CardContent,
-  Badge,
-  IconButton,
-  Tooltip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-} from '@mui/material';
-import {
-  EmojiEvents as TrophyIcon,
-  Share as ShareIcon,
-  Star as StarIcon,
-  CheckCircle as CheckCircleIcon,
-  Lock as LockIcon,
-} from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+import { Box, Typography, LinearProgress, Paper, Tooltip } from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
 
-const ProgressTracker = ({ 
-  progress, 
-  achievements = [], 
-  isPremium = false,
-  onUpgradeClick 
-}) => {
-  const { t } = useTranslation();
-  const [showBadgeDialog, setShowBadgeDialog] = React.useState(false);
-  const [selectedBadge, setSelectedBadge] = React.useState(null);
-
-  const badges = [
-    {
-      id: 'first_doc',
-      title: t('progress.badges.firstDoc'),
-      description: t('progress.badges.firstDocDesc'),
-      icon: <StarIcon />,
-      unlocked: progress >= 20
-    },
-    {
-      id: 'expert',
-      title: t('progress.badges.expert'),
-      description: t('progress.badges.expertDesc'),
-      icon: <TrophyIcon />,
-      unlocked: progress >= 50,
-      premium: true
-    },
-    // Add more badges as needed
-  ];
-
-  const handleBadgeClick = (badge) => {
-    if (badge.premium && !isPremium) {
-      onUpgradeClick();
-      return;
-    }
-    setSelectedBadge(badge);
-    setShowBadgeDialog(true);
+/**
+ * ProgressTracker - A reusable component for displaying form completion progress
+ * 
+ * @param {Object} props
+ * @param {number} props.progress - The progress percentage (0-100)
+ * @param {string|Date} [props.lastSaved] - Timestamp of when the form was last saved
+ * @param {boolean} [props.showSaveIcon=true] - Whether to show the save icon beside the last saved date
+ * @param {Object} [props.sx] - Additional MUI styling for the component
+ */
+const ProgressTracker = ({ progress, lastSaved, showSaveIcon = true, sx = {} }) => {
+  // Calculate color based on progress
+  const getProgressColor = (value) => {
+    if (value < 33) return 'error.main';
+    if (value < 66) return 'warning.main';
+    return 'success.main';
   };
 
-  const handleShare = async (achievement) => {
+  // Format the last saved date
+  const formatLastSaved = (timestamp) => {
+    if (!timestamp) return null;
     try {
-      await navigator.share({
-        title: 'My Legal Achievement',
-        text: `I just earned the ${achievement.title} badge on ProBono App!`,
-        url: window.location.href,
-      });
-    } catch (err) {
-      console.error('Error sharing:', err);
+      const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
+      return date.toLocaleString();
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return null;
     }
   };
+
+  const formattedLastSaved = formatLastSaved(lastSaved);
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 3 }}>
-        <Typography variant="h5" gutterBottom>
-          {t('progress.title')}
+    <Paper 
+      elevation={1} 
+      sx={{ 
+        p: 2, 
+        mb: 3, 
+        borderRadius: 2,
+        backgroundColor: 'background.paper',
+        ...sx
+      }}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+        <Typography variant="body1" fontWeight="medium">
+          Form Completion: {progress}%
         </Typography>
         
-        <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              {t('progress.overall')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {progress}%
+        {formattedLastSaved && (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {showSaveIcon && (
+              <Tooltip title="Autosaved">
+                <SaveIcon fontSize="small" sx={{ mr: 0.5, color: 'text.secondary' }} />
+              </Tooltip>
+            )}
+            <Typography variant="caption" color="text.secondary">
+              Last saved: {formattedLastSaved}
             </Typography>
           </Box>
-          <LinearProgress 
-            variant="determinate" 
-            value={progress} 
-            sx={{ height: 10, borderRadius: 5 }}
-          />
-        </Box>
-
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          {badges.map((badge) => (
-            <Grid item key={badge.id}>
-              <Tooltip title={badge.premium && !isPremium ? t('progress.premiumFeature') : badge.title}>
-                <Badge
-                  badgeContent={badge.premium && !isPremium ? <LockIcon /> : null}
-                  color="primary"
-                >
-                  <Chip
-                    icon={badge.icon}
-                    label={badge.title}
-                    color={badge.unlocked ? 'primary' : 'default'}
-                    onClick={() => handleBadgeClick(badge)}
-                    sx={{ 
-                      opacity: badge.unlocked ? 1 : 0.6,
-                      cursor: 'pointer'
-                    }}
-                  />
-                </Badge>
-              </Tooltip>
-            </Grid>
-          ))}
-        </Grid>
-
-        <Typography variant="h6" gutterBottom>
-          {t('progress.recentAchievements')}
+        )}
+      </Box>
+      
+      <LinearProgress 
+        variant="determinate" 
+        value={progress} 
+        sx={{ 
+          height: 10, 
+          borderRadius: 5,
+          mb: 1,
+          backgroundColor: 'grey.200',
+          '& .MuiLinearProgress-bar': {
+            backgroundColor: getProgressColor(progress)
+          }
+        }} 
+      />
+      
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography variant="caption" color="text.secondary">
+          Not Started
         </Typography>
-        
-        <Grid container spacing={2}>
-          {achievements.map((achievement) => (
-            <Grid item xs={12} sm={6} md={4} key={achievement.id}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <CheckCircleIcon color="success" sx={{ mr: 1 }} />
-                    <Typography variant="subtitle1">
-                      {achievement.title}
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    {achievement.description}
-                  </Typography>
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                    <IconButton 
-                      size="small" 
-                      onClick={() => handleShare(achievement)}
-                      aria-label="share achievement"
-                    >
-                      <ShareIcon />
-                    </IconButton>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-
-        <Dialog open={showBadgeDialog} onClose={() => setShowBadgeDialog(false)}>
-          <DialogTitle>
-            {selectedBadge?.title}
-          </DialogTitle>
-          <DialogContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              {selectedBadge?.icon}
-              <Typography sx={{ ml: 1 }}>
-                {selectedBadge?.description}
-              </Typography>
-            </Box>
-            {selectedBadge?.unlocked ? (
-              <Button
-                startIcon={<ShareIcon />}
-                onClick={() => handleShare(selectedBadge)}
-                fullWidth
-              >
-                {t('common.share')}
-              </Button>
-            ) : (
-              <Typography color="text.secondary">
-                {t('progress.lockedBadgeMessage')}
-              </Typography>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setShowBadgeDialog(false)}>
-              {t('common.close')}
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Paper>
-    </Box>
+        <Typography variant="caption" color="text.secondary">
+          In Progress
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          Complete
+        </Typography>
+      </Box>
+    </Paper>
   );
 };
 
