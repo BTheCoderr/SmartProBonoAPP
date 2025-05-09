@@ -30,67 +30,69 @@ if [ ! -f "backend/templates/sample_template.html" ]; then
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
   <title>{{title}}</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; }
-    .header { text-align: center; margin-bottom: 30px; }
-    .content { line-height: 1.6; }
-    .signature { margin-top: 50px; }
-    .footer { margin-top: 50px; text-align: center; font-size: 12px; }
+    h1 { color: #333366; }
+    .section { margin-bottom: 20px; }
+    .footer { margin-top: 50px; font-size: 0.8em; color: #666; }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>{{title}}</h1>
-    <p>Generated on {{current_date}}</p>
+    <p>Generated on: {{current_date}}</p>
   </div>
   
-  <div class="content">
-    <p>This document certifies that <strong>{{client_name}}</strong> has received legal assistance from SmartProBono regarding <strong>{{matter_description}}</strong>.</p>
-    
+  <div class="section">
+    <h2>Document Information</h2>
+    <p><strong>Client Name:</strong> {{client_name}}</p>
+    <p><strong>Document Type:</strong> {{document_type}}</p>
+    <p><strong>Reference Number:</strong> {{reference_number}}</p>
+  </div>
+  
+  <div class="section">
+    <h2>Content</h2>
     <p>{{content}}</p>
-    
-    <div class="signature">
-      <p>Signed:</p>
-      <p>___________________________</p>
-      <p>{{user_name}}</p>
-      <p>Date: {{current_date}}</p>
-    </div>
   </div>
   
   <div class="footer">
-    <p>SmartProBono Legal Platform | Document ID: {{document_id}} | Confidential</p>
+    <p>SmartProBono Legal Platform - Confidential Document</p>
   </div>
 </body>
 </html>
 EOL
 fi
 
-# Start backend server in the background
+# Start backend server
 echo -e "${YELLOW}Starting backend server...${NC}"
-(cd backend && python3 app.py > ../logs/backend.log 2>&1) &
+cd backend
+python app.py > ../logs/backend.log 2>&1 &
 BACKEND_PID=$!
-echo -e "${GREEN}Backend server started with PID: ${BACKEND_PID}${NC}"
+cd ..
+echo -e "${GREEN}Backend server started with PID: $BACKEND_PID${NC}"
 
-# Wait a bit for backend to initialize
-sleep 2
-
-# Start frontend server in the background
+# Start frontend server
 echo -e "${YELLOW}Starting frontend server...${NC}"
-(cd frontend && npm start > ../logs/frontend.log 2>&1) &
+cd frontend
+npm start > ../logs/frontend.log 2>&1 &
 FRONTEND_PID=$!
-echo -e "${GREEN}Frontend server started with PID: ${FRONTEND_PID}${NC}"
+cd ..
+echo -e "${GREEN}Frontend server started with PID: $FRONTEND_PID${NC}"
 
-# Output helpful info
+# Success message
 echo -e "\n${GREEN}SmartProBono MVP is running!${NC}"
-echo -e "Frontend: http://localhost:3003"
+echo -e "Frontend: http://localhost:3000"
 echo -e "Backend API: http://localhost:5000"
+
 echo -e "\nKey pages to test:"
-echo -e "- Homepage: http://localhost:3003/"
-echo -e "- Legal Chat: http://localhost:3003/legal-chat"
-echo -e "- Documents: http://localhost:3003/documents"
-echo -e "- Expert Help: http://localhost:3003/expert-help"
+echo -e "- Homepage: http://localhost:3000/"
+echo -e "- Legal Chat: http://localhost:3000/legal-chat"
+echo -e "- Documents: http://localhost:3000/documents"
+echo -e "- Expert Help: http://localhost:3000/expert-help"
+echo -e "- Login (Demo): http://localhost:3000/login"
+echo -e "- Register (Demo): http://localhost:3000/register"
+
 echo -e "\nCheck MVP_COMPLETION_PLAN.md for next steps"
 echo -e "\nPress Ctrl+C to stop servers"
 
@@ -103,10 +105,8 @@ cleanup() {
   exit 0
 }
 
-# Trap SIGINT (Ctrl+C) and call cleanup
-trap cleanup INT
+# Set trap for clean exit
+trap cleanup SIGINT SIGTERM
 
-# Wait for user to press Ctrl+C
-while true; do
-  sleep 1
-done 
+# Wait for both processes
+wait $BACKEND_PID $FRONTEND_PID 
