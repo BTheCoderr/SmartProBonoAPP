@@ -118,14 +118,32 @@ cd frontend && npm start
 ./test_jwt_auth.py
 ```
 
-## 📱 Demo Routes
+## 📱 Working Routes & Pages
 
-- **Home**: http://localhost:3000/
-- **Legal AI Chat**: http://localhost:3000/legal-chat
-- **Document Management**: http://localhost:3000/documents
-- **Expert Network**: http://localhost:3000/expert-help
-- **Immigration Forms**: http://localhost:3000/immigration
-- **Admin Dashboard**: http://localhost:3000/admin
+### **Core MVP Pages (Public)**
+- **Home**: http://localhost:3000/ - Landing page with features
+- **Legal AI Chat**: http://localhost:3000/legal-chat - AI-powered legal assistance
+- **Document Management**: http://localhost:3000/documents - Upload and manage legal documents
+- **Expert Network**: http://localhost:3000/expert-help - Connect with pro bono attorneys
+- **About**: http://localhost:3000/about - Platform information
+- **Contact**: http://localhost:3000/contact - Contact form
+- **Services**: http://localhost:3000/services - Available legal services
+- **Resources**: http://localhost:3000/resources - Legal resources and guides
+
+### **Authentication Pages**
+- **Login**: http://localhost:3000/login - User login
+- **Register**: http://localhost:3000/register - User registration
+
+### **Protected Pages (Require Authentication)**
+- **Dashboard**: http://localhost:3000/dashboard - User dashboard
+- **Forms**: http://localhost:3000/forms - Legal form generator
+- **Profile**: http://localhost:3000/profile - User profile management
+- **Admin**: http://localhost:3000/admin - Admin dashboard (admin only)
+
+### **Additional Features**
+- **Document Scan**: http://localhost:3000/document-scan - AI document analysis
+- **Expungement Toolkit**: http://localhost:3000/expungement-toolkit - Criminal record expungement
+- **Chat**: http://localhost:3000/chat - Alternative chat interface
 
 ## 🏗 System Architecture
 
@@ -150,12 +168,11 @@ cd frontend && npm start
 
 ## 📚 Documentation
 
-- [Complete Setup Guide](COMPLETE_SETUP_GUIDE.md)
-- [Supabase Quick Setup](SUPABASE_QUICK_SETUP.md)
-- [JWT Authentication Guide](JWT_AUTH_GUIDE.md)
-- [Deployment Instructions](DEPLOY_INSTRUCTIONS.md)
-- [Testing Checklist](TESTING_CHECKLIST.md)
-- [MVP Routes](MVP_ROUTES.md)
+- [Complete Setup Guide](COMPLETE_SETUP_GUIDE.md) - Comprehensive setup instructions
+- [Supabase Quick Setup](SUPABASE_QUICK_SETUP.md) - Database and authentication setup
+- [Document AI Setup](DOCUMENT_AI_SETUP.md) - AI document processing configuration
+- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to the project
+- [Security Policy](SECURITY.md) - Security policies and incident response
 
 ## 🤝 Contributing
 
