@@ -3,87 +3,148 @@ import {
   Box,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
-  Chip,
+  Select,
+  Typography,
+  Paper,
   Tooltip,
-  Typography
+  Chip
 } from '@mui/material';
-import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import MemoryIcon from '@mui/icons-material/Memory';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import SchoolIcon from '@mui/icons-material/School';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import DescriptionIcon from '@mui/icons-material/Description';
 
-const ModelSelector = ({ currentModel, onModelChange, isLoading }) => {
+// Component for selecting different AI models
+const ModelSelector = ({ currentModel, onChange, premium = false }) => {
+  // Model data with capabilities and characteristics
   const models = [
-    { 
-      id: 'mistral', 
-      name: 'TinyLlama Chat', 
-      description: 'Best for general legal chat and Q&A',
-      specialization: ['chat', 'legal_qa']
+    {
+      id: 'custom',
+      name: 'SmartProBono Assistant',
+      icon: <AutoAwesomeIcon />,
+      description: 'Our custom-tuned legal assistant with improved capabilities',
+      capabilities: ['General Legal Advice', 'Document Analysis', 'Citation'],
+      premium: false
     },
-    { 
-      id: 'llama', 
-      name: 'GPT2 Legal', 
-      description: 'Specialized in document drafting and contracts',
-      specialization: ['document_drafting', 'contract_generation']
+    {
+      id: 'mistral',
+      name: 'Mistral AI',
+      icon: <MemoryIcon />,
+      description: 'Good general-purpose model for legal advice',
+      capabilities: ['Clear Explanations', 'Fast Responses', 'Conversational'],
+      premium: false
     },
-    { 
-      id: 'falcon', 
-      name: 'Falcon 7B', 
-      description: 'Advanced legal analysis and interpretation',
-      specialization: ['statute_interpretation', 'complex_analysis']
+    {
+      id: 'llama',
+      name: 'LlaMA Legal Advisor',
+      icon: <SmartToyIcon />,
+      description: 'Specialized in detailed legal analysis with references',
+      capabilities: ['Legal References', 'Statute Citations', 'Thorough Explanations'],
+      premium: true
     },
-    { 
-      id: 'deepseek', 
-      name: 'BLOOM', 
-      description: 'Focused on legal research and rights analysis',
-      specialization: ['legal_research', 'rights_research']
+    {
+      id: 'deepseek',
+      name: 'DeepSeek Legal',
+      icon: <SchoolIcon />,
+      description: 'Research-oriented model with comprehensive legal knowledge',
+      capabilities: ['Research', 'Case Law', 'Legal Procedures'],
+      premium: true
+    },
+    {
+      id: 'falcon',
+      name: 'Falcon Legal Assistant',
+      icon: <PsychologyIcon />,
+      description: 'Focused on explaining complex legal concepts clearly',
+      capabilities: ['Simple Explanations', 'Plain Language', 'User-Friendly'],
+      premium: false
+    },
+    {
+      id: 'document',
+      name: 'Document Expert',
+      icon: <DescriptionIcon />,
+      description: 'Specialized in document analysis and drafting',
+      capabilities: ['Document Generation', 'Contract Analysis', 'Form Filling'],
+      premium: true
     }
   ];
 
+  // Filter models based on premium status
+  const availableModels = premium 
+    ? models 
+    : models.filter(model => !model.premium);
+
+  const handleChange = (e) => {
+    onChange(e.target.value);
+  };
+
   return (
-    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-      <FormControl size="small" sx={{ minWidth: 200 }}>
-        <InputLabel>AI Model</InputLabel>
+    <Paper elevation={1} sx={{ p: 2, mb: 3 }}>
+      <Typography variant="subtitle2" gutterBottom>
+        AI Model Selection
+      </Typography>
+      <FormControl fullWidth size="small">
+        <InputLabel id="model-select-label">Choose AI Model</InputLabel>
         <Select
-          value={currentModel || 'mistral'}
-          onChange={(e) => onModelChange(e.target.value)}
-          disabled={isLoading}
-          label="AI Model"
-        >
-          {models.map((model) => (
-            <MenuItem key={model.id} value={model.id}>
-              <Box>
-                <Typography variant="body2">{model.name}</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {model.description}
-                </Typography>
+          labelId="model-select-label"
+          id="model-select"
+          value={currentModel}
+          label="Choose AI Model"
+          onChange={handleChange}
+          renderValue={(selected) => {
+            const model = models.find(m => m.id === selected);
+            return (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {model?.icon}
+                <Typography variant="body2">{model?.name}</Typography>
+                {model?.premium && (
+                  <Chip 
+                    label="Premium" 
+                    size="small" 
+                    color="secondary"
+                    sx={{ height: 20, fontSize: '0.7rem' }}
+                  />
+                )}
               </Box>
+            );
+          }}
+        >
+          {availableModels.map((model) => (
+            <MenuItem key={model.id} value={model.id}>
+              <Tooltip title={model.description} placement="right">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                  <Box sx={{ mr: 1 }}>{model.icon}</Box>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Typography variant="body2">{model.name}</Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                      {model.capabilities.map((capability, index) => (
+                        <Chip 
+                          key={index} 
+                          label={capability} 
+                          size="small"
+                          variant="outlined"
+                          sx={{ height: 20, fontSize: '0.7rem' }} 
+                        />
+                      ))}
+                    </Box>
+                  </Box>
+                  {model.premium && (
+                    <Chip 
+                      label="Premium" 
+                      size="small" 
+                      color="secondary"
+                      sx={{ height: 20, fontSize: '0.7rem' }}
+                    />
+                  )}
+                </Box>
+              </Tooltip>
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-
-      <Tooltip title="Current Model Specializations">
-        <Box>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-            Specializations:
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-            {models
-              .find(m => m.id === (currentModel || 'mistral'))
-              ?.specialization.map((spec) => (
-                <Chip
-                  key={spec}
-                  label={spec.replace('_', ' ')}
-                  size="small"
-                  color="primary"
-                  variant="outlined"
-                  icon={<AutoFixHighIcon />}
-                />
-              ))}
-          </Box>
-        </Box>
-      </Tooltip>
-    </Box>
+    </Paper>
   );
 };
 

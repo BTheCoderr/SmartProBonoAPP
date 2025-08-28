@@ -240,7 +240,7 @@ const DocumentTemplateDialog = ({ open, onClose, onSave, initialTemplate = null 
                 Template Content
               </Typography>
               <Typography variant="caption" color="textSecondary">
-                Use {{variable_name}} syntax to add placeholders that can be replaced when using the template.
+                Use {'{{'}'variable_name{'}}'} syntax to add placeholders that can be replaced when using the template.
               </Typography>
             </Box>
             

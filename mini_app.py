@@ -1,10 +1,18 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
 from datetime import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+@app.route('/api/health')
+def health_check():
+    return jsonify({
+        "message": "API is running",
+        "status": "ok",
+        "version": "1.0.0"
+    })
 
 @app.route('/api/ping', methods=['GET'])
 def ping():
@@ -43,6 +51,21 @@ def legal_chat():
         }
     }), 200
 
+@app.route('/api/beta/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    email = data.get('email', '')
+    
+    if not email or '@' not in email:
+        return jsonify({"status": "error", "message": "Invalid email address"}), 400
+    
+    # In a real application, you would save this to a database
+    print(f"Received signup for email: {email}")
+    
+    return jsonify({
+        "status": "success", 
+        "message": "Thank you for signing up! We'll be in touch soon."
+    })
+
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5003))
-    app.run(host='0.0.0.0', port=port, debug=True) 
+    app.run(host='0.0.0.0', port=8080, debug=True) 

@@ -5,8 +5,8 @@ import time
 import jwt
 from flask import Flask
 from backend.app import create_app
-from backend.extensions import db, mongo
-from backend.models.user import User
+from extensions import db, mongo
+from models.user import User
 
 class AuthenticationTestCase(unittest.TestCase):
     """Test case for the authentication blueprint."""

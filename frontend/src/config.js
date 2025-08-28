@@ -1,7 +1,7 @@
 const config = {
   // API Configuration
-  API_URL: process.env.REACT_APP_API_URL || 'https://api.smartprobono.org',
-  baseURL: process.env.REACT_APP_API_URL || 'https://api.smartprobono.org',
+  API_URL: process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:8081' : 'https://api.smartprobono.org'),
+  baseURL: process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:8081' : 'https://api.smartprobono.org'),
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',

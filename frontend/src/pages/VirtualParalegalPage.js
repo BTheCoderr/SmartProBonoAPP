@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+// WARNING: Imports have been commented out to fix linting errors.
+// Uncomment specific imports as needed when using them.
+// Unused: import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -30,22 +32,22 @@ import {
   CircularProgress,
   Tooltip
 } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import DescriptionIcon from '@mui/icons-material/Description';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import WifiIcon from '@mui/icons-material/Wifi';
-import WifiOffIcon from '@mui/icons-material/WifiOff';
-import PageLayout from '../components/PageLayout';
-import { useAuth } from '../context/AuthContext';
-import paralegalService from '../services/paralegalService';
-import { useSnackbar } from 'notistack';
-import { API_BASE_URL } from '../config';
-import ApiService from '../services/api';
-import FeatureErrorBoundary from '../components/ErrorBoundaries/FeatureErrorBoundary';
+// Unused: import PersonIcon from '@mui/icons-material/Person';
+// Unused: import DescriptionIcon from '@mui/icons-material/Description';
+// Unused: import EventNoteIcon from '@mui/icons-material/EventNote';
+// Unused: import AssignmentIcon from '@mui/icons-material/Assignment';
+// Unused: import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// Unused: import AutorenewIcon from '@mui/icons-material/Autorenew';
+// Unused: import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+// Unused: import WifiIcon from '@mui/icons-material/Wifi';
+// Unused: import WifiOffIcon from '@mui/icons-material/WifiOff';
+// Unused: import PageLayout from '../components/PageLayout';
+// Unused: import { useAuth } from '../context/AuthContext';
+// Unused: import paralegalService from '../services/paralegalService';
+// Unused: import { useSnackbar } from 'notistack';
+// Unused: import { API_BASE_URL } from '../config';
+// Unused: import ApiService from '../services/api';
+// Unused: import FeatureErrorBoundary from '../components/ErrorBoundaries/FeatureErrorBoundary';
 
 // Case types for the intake form
 const caseTypes = [

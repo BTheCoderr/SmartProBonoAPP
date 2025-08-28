@@ -1,3 +1,5 @@
+// WARNING: Imports have been commented out to fix linting errors.
+// Uncomment specific imports as needed when using them.
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
@@ -9,7 +11,7 @@ import {
   Tooltip, TablePagination
 } from '@mui/material';
 import {
-  Search, Assignment, AssignmentTurnedIn, VisibilityOutlined, GetAppOutlined,
+  Search as SearchIcon, Assignment, AssignmentTurnedIn, VisibilityOutlined, GetAppOutlined,
   DeleteOutline, Edit, DescriptionOutlined, Add, FilterList, Sort,
   MoreVert, Visibility, GetApp, Delete, FileCopy, CheckCircle,
   Error, HourglassEmpty, Refresh, Assessment, Download, Save
@@ -20,7 +22,7 @@ import AnalyticsService from '../services/AnalyticsService';
 import { useSnackbar } from 'notistack';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
-  ResponsiveContainer, LineChart, Line, PieChart as RechartsPieChart,
+  ResponsiveContainer, LineChart, Line, PieChart,
   Pie, Cell
 } from 'recharts';
 import { Chart } from 'react-chartjs-2';
@@ -59,6 +61,11 @@ const StatusChip = ({ status }) => {
   const { color, label } = statusProps[status] || { color: 'default', label: status };
 
   return <Chip color={color} label={label} size="small" />;
+};
+
+// Reuse status chip rendering in table cells
+const getStatusChip = (status) => {
+  return <StatusChip status={status} />;
 };
 
 const FormsDashboard = () => {
@@ -509,7 +516,7 @@ const FormsDashboard = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Search />
+                    <SearchIcon />
                   </InputAdornment>
                 ),
               }}

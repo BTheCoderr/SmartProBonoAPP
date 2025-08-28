@@ -46,7 +46,9 @@ export const AuthProvider = ({ children }) => {
     try {
       // Only make the API call if not in test mode
       if (!isTestMode && accessToken) {
-        await ApiService.post('/api/auth/logout');
+        await ApiService.post('/api/auth/logout', {}, {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
       }
     } catch (error) {
       console.error('Logout error:', error);
@@ -68,62 +70,81 @@ export const AuthProvider = ({ children }) => {
     }
   }, [navigate, isTestMode, accessToken, isLoggingOut]);
 
-  // Handle navigation errors
-  useEffect(() => {
-    if (navigate && window.location.pathname === '/dashboard' && !user) {
-      const navigateToHome = async () => {
-        try {
-          await navigate('/', { replace: true });
-        } catch (error) {
-          console.error('Navigation error:', error);
-          // Fallback to window.location if navigation fails
-          if (error.message.includes('history')) {
-            window.location.href = '/';
-          }
-        }
-      };
-      navigateToHome();
+  // Function to refresh the access token
+  const refreshAccessToken = useCallback(async () => {
+    if (!refreshToken || isRefreshing) return null;
+    
+    try {
+      setIsRefreshing(true);
+      const response = await axios.post(`${API_URL}/api/auth/refresh`, {}, {
+        headers: { Authorization: `Bearer ${refreshToken}` }
+      });
+      
+      const newAccessToken = response.data.access_token;
+      setAccessToken(newAccessToken);
+      localStorage.setItem('access_token', newAccessToken);
+      setRefreshAttempts(0);
+      return newAccessToken;
+    } catch (error) {
+      setRefreshAttempts(prev => prev + 1);
+      console.error('Token refresh error:', error);
+      
+      // If too many refresh attempts, log out
+      if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
+        console.warn('Maximum refresh attempts reached. Logging out.');
+        await logout();
+      }
+      return null;
+    } finally {
+      setIsRefreshing(false);
     }
-  }, [navigate, user]);
+  }, [refreshToken, isRefreshing, refreshAttempts, logout]);
 
-  // Handle notifications from socket
-  const handleNotification = useCallback((data) => {
-    setNotifications(prev => [data, ...prev].slice(0, 10)); // Keep only the 10 most recent notifications
-    // You can also show a toast/snackbar here to alert the user
-    console.log('New notification received:', data);
-  }, []);
-
-  // Initialize socket when user is authenticated
+  // Check auth status on initial load
   useEffect(() => {
-    let mounted = true;
-
-    const initSocket = async () => {
-      if (user && user.id) {
-        try {
-          console.log('Initializing socket for user:', user.id);
-          await initializeSocket(user.id);
-          if (mounted) {
-            console.log('Socket initialized and registered successfully');
-            // Set up notification handler
-            addSocketEventHandler('notification', handleNotification);
+    const checkAuth = async () => {
+      if (!accessToken) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+      
+      try {
+        const response = await axios.get(`${API_URL}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        
+        setUser(response.data.user);
+      } catch (error) {
+        console.error('Auth check error:', error);
+        
+        // Try to refresh token if access token is expired
+        if (error.response?.status === 401 && refreshToken) {
+          const newToken = await refreshAccessToken();
+          if (newToken) {
+            // Try again with new token
+            try {
+              const retryResponse = await axios.get(`${API_URL}/api/auth/me`, {
+                headers: { Authorization: `Bearer ${newToken}` }
+              });
+              setUser(retryResponse.data.user);
+            } catch (retryError) {
+              console.error('Auth retry error:', retryError);
+              setUser(null);
+            }
+          } else {
+            setUser(null);
           }
-        } catch (error) {
-          console.error('Failed to initialize socket:', error);
-          // If socket initialization fails, log out the user
-          await logout();
+        } else {
+          setUser(null);
         }
+      } finally {
+        setLoading(false);
       }
     };
-
-    initSocket();
     
-    // Cleanup function
-    return () => {
-      mounted = false;
-      removeSocketEventHandler('notification', handleNotification);
-      disconnectSocket();
-    };
-  }, [user, handleNotification, logout]);
+    checkAuth();
+  }, [accessToken, refreshToken, refreshAccessToken]);
 
   // Set up axios interceptor for authorization - memoized to prevent recreation on every render
   useEffect(() => {
@@ -150,62 +171,16 @@ export const AuthProvider = ({ children }) => {
         
         // If the error is 401 and we have a refresh token
         if (error.response?.status === 401 && refreshToken && !originalRequest._retry) {
-          // If already refreshing, wait until it's done
-          if (isRefreshing) {
-            return new Promise(resolve => {
-              setTimeout(() => {
-                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-                resolve(authAxios(originalRequest));
-              }, 1000); // Wait 1 second and retry with the new token
-            });
-          }
-          
-          // Check if we've exceeded max refresh attempts
-          if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
-            console.log('Max refresh attempts reached, logging out');
-            logout();
-            return Promise.reject(error);
-          }
-          
           originalRequest._retry = true;
-          setIsRefreshing(true);
           
           try {
-            // Attempt to refresh the token
-            const refreshResponse = await axios.post(`${API_URL}/api/auth/refresh`, {}, {
-              headers: {
-                'Authorization': `Bearer ${refreshToken}`
-              },
-              timeout: 5000 // Add timeout to prevent hanging requests
-            });
-            
-            const { access_token } = refreshResponse.data;
-            
-            // Update tokens
-            localStorage.setItem('access_token', access_token);
-            setAccessToken(access_token);
-            
-            // Reset refresh state
-            setRefreshAttempts(0);
-            setIsRefreshing(false);
-            
-            // Update authorization header and retry
-            originalRequest.headers.Authorization = `Bearer ${access_token}`;
-            return authAxios(originalRequest);
-          } catch (refreshError) {
-            // Handle rate limiting (429)
-            if (refreshError.response?.status === 429) {
-              console.log('Rate limited during token refresh, will retry later');
-              setIsRefreshing(false);
-              // Increment attempts counter
-              setRefreshAttempts(prevAttempts => prevAttempts + 1);
-              return Promise.reject(refreshError);
+            const newToken = await refreshAccessToken();
+            if (newToken) {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              return authAxios(originalRequest);
             }
-            
-            // If refresh fails, logout user
+          } catch (refreshError) {
             console.error('Token refresh failed:', refreshError);
-            setIsRefreshing(false);
-            logout();
             return Promise.reject(refreshError);
           }
         }
@@ -214,55 +189,59 @@ export const AuthProvider = ({ children }) => {
       }
     );
 
-    // Make auth instance available
-    window.authAxios = authAxios;
-    
+    // Clean up interceptors on unmount
     return () => {
       authAxios.interceptors.request.eject(requestInterceptor);
       authAxios.interceptors.response.eject(responseInterceptor);
     };
-  }, [accessToken, refreshToken, isRefreshing, refreshAttempts]);
+  }, [accessToken, refreshToken, refreshAccessToken]);
 
-  // Load user from token on mount
+  // Connect to socket and subscribe to notifications
   useEffect(() => {
-    const loadUser = async () => {
-      if (!accessToken) {
-        setLoading(false);
-        return;
-      }
-
-      // Skip actual auth API calls when in test mode
-      if (isTestMode) {
-        console.log('🧪 Test mode detected - skipping real authentication API calls');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await ApiService.get('/api/auth/profile');
-        setUser(response.data);
-        setAuthError(null);
-      } catch (error) {
-        console.error('Error loading user:', error);
-        setAuthError('Authentication failed. Please log in again or contact support.');
-        if (error.response?.status !== 401 || !refreshToken) {
-          await logout();
+    const connectToSocket = async () => {
+      if (user && accessToken) {
+        try {
+          const socket = await initializeSocket(accessToken);
+          
+          // Add notification handler
+          const handleNotification = (notification) => {
+            setNotifications(prev => [notification, ...prev]);
+          };
+          
+          addSocketEventHandler('notification', handleNotification);
+          
+          // Clean up on unmount
+          return () => {
+            removeSocketEventHandler('notification', handleNotification);
+            disconnectSocket();
+          };
+        } catch (error) {
+          console.error('Socket connection error:', error);
         }
-      } finally {
-        setLoading(false);
       }
     };
-
-    loadUser();
-  }, [accessToken, isTestMode, refreshToken, logout]);
+    
+    connectToSocket();
+  }, [user, accessToken]);
 
   // Login function with memoization
   const login = useCallback(async (email, password) => {
     try {
-      const response = await ApiService.post('/api/auth/login', { email, password });
-      setUser(response.data);
-      return response.data;
+      const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
+      const { access_token, refresh_token, user } = response.data;
+      
+      // Save tokens
+      localStorage.setItem('access_token', access_token);
+      localStorage.setItem('refresh_token', refresh_token);
+      
+      // Update state
+      setAccessToken(access_token);
+      setRefreshToken(refresh_token);
+      setUser(user);
+      
+      return { success: true, user };
     } catch (error) {
+      console.error('Login error:', error);
       throw error;
     }
   }, []);
@@ -270,7 +249,7 @@ export const AuthProvider = ({ children }) => {
   // Register function with memoization
   const register = useCallback(async (userData) => {
     try {
-      const response = await ApiService.post('/api/auth/register', userData);
+      const response = await axios.post(`${API_URL}/api/auth/register`, userData);
       const { access_token, refresh_token, user } = response.data;
       
       // Save tokens
@@ -299,8 +278,11 @@ export const AuthProvider = ({ children }) => {
     accessToken,
     refreshToken,
     notifications,
-    isTestMode
-  }), [user, loading, login, register, logout, accessToken, refreshToken, notifications, isTestMode]);
+    isTestMode,
+    isAuthenticated: !!user,
+    clearNotifications: () => setNotifications([]),
+    refreshAccessToken
+  }), [user, loading, login, register, logout, accessToken, refreshToken, notifications, isTestMode, refreshAccessToken]);
 
   return (
     <AuthContext.Provider value={value}>

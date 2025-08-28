@@ -14,7 +14,7 @@ from flask import current_app
 from flask_socketio import emit
 
 # Import connection service and Redis client
-from backend.websocket.services.connection_service import (
+from websocket.services.connection_service import (
     get_user_sessions,
     is_user_connected
 )
@@ -172,7 +172,7 @@ def send_notification(user_id, title, message, notification_type='info',
             else:
                 # If we can't use socketio directly, use Flask-SocketIO's emit
                 # This will only work if called from within a socket event handler
-                from backend.websocket.core import socketio as core_socketio
+                from websocket.core import socketio as core_socketio
                 for sid in sessions:
                     core_socketio.emit('notification', notification, to=sid, namespace='/ws')
                     logger.debug(f"Notification sent via core_socketio to {sid}")
@@ -221,7 +221,7 @@ def send_broadcast_notification(title, message, notification_type='info',
     exclude_users = exclude_users or []
     
     # Get all connected sessions from connection service
-    from backend.websocket.services.connection_service import get_connected_users
+    from websocket.services.connection_service import get_connected_users
     
     connected_users = get_connected_users()
     broadcast_id = str(uuid.uuid4())

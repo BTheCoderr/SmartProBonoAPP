@@ -8,8 +8,8 @@ import logging
 from flask import request, current_app
 from flask_socketio import emit, join_room, leave_room
 
-from backend.websocket.utils.auth import authenticate_connection
-from backend.websocket.services.connection_service import (
+from websocket.utils.auth import authenticate_connection
+from websocket.services.connection_service import (
     register_connection,
     unregister_connection,
     get_connection_user,

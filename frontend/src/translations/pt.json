@@ -1,0 +1,181 @@
+{
+  "common": {
+    "appName": "SmartProBono",
+    "next": "Próximo",
+    "back": "Voltar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "loading": "Carregando...",
+    "changeLanguage": "Mudar Idioma",
+    "search": "Buscar",
+    "view": "Ver",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "create": "Criar"
+  },
+  "navigation": {
+    "home": "Início",
+    "dashboard": "Painel",
+    "forms": "Formulários",
+    "documents": "Documentos",
+    "resources": "Recursos",
+    "chat": "Chat Legal IA",
+    "profile": "Perfil",
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "logout": "Sair"
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "forgotPassword": "Esqueceu a senha?",
+    "resetPassword": "Redefinir Senha",
+    "email": "E-mail",
+    "password": "Senha",
+    "confirmPassword": "Confirmar Senha",
+    "username": "Nome de Usuário",
+    "firstName": "Nome",
+    "lastName": "Sobrenome",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "dontHaveAccount": "Não tem uma conta?",
+    "createAccount": "Criar conta",
+    "passwordRequirements": "A senha deve ter pelo menos 8 caracteres e incluir pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial."
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo novamente",
+    "recentDocuments": "Documentos Recentes",
+    "upcomingDeadlines": "Prazos Próximos",
+    "notifications": "Notificações",
+    "quickActions": "Ações Rápidas",
+    "documents": "Documentos",
+    "completedDocuments": "Concluídos",
+    "inProgressDocuments": "Em Andamento",
+    "pendingReview": "Aguardando Revisão",
+    "noDocuments": "Você ainda não tem documentos",
+    "noDeadlines": "Sem prazos próximos",
+    "noNotifications": "Você não tem notificações",
+    "viewAll": "Ver Todos",
+    "createNew": "Criar Novo"
+  },
+  "documents": {
+    "title": "Documentos",
+    "createNew": "Criar Novo Documento",
+    "myDocuments": "Meus Documentos",
+    "documentTypes": "Tipos de Documentos",
+    "status": "Status",
+    "lastUpdated": "Última Atualização",
+    "progress": "Progresso",
+    "actions": "Ações",
+    "preview": "Visualizar",
+    "download": "Baixar",
+    "share": "Compartilhar",
+    "delete": "Excluir",
+    "submitDocument": "Enviar Documento",
+    "saveDraft": "Salvar Rascunho",
+    "documentSaved": "Documento salvo com sucesso!",
+    "documentSubmitted": "Documento enviado com sucesso!",
+    "steps": {
+      "personalInfo": "Informações Pessoais",
+      "details": "Detalhes do Documento",
+      "review": "Revisar e Enviar"
+    },
+    "types": {
+      "expungement": "Pedido de Limpeza de Antecedentes",
+      "housing": "Carta de Defesa de Moradia",
+      "fee_waiver": "Solicitação de Isenção de Taxas"
+    },
+    "status": {
+      "completed": "Concluído",
+      "in_progress": "Em Andamento",
+      "pending_review": "Aguardando Revisão",
+      "draft": "Rascunho"
+    },
+    "ai": {
+      "help": "Assistência IA",
+      "analyzing": "Analisando formulário...",
+      "generating": "Gerando sugestões...",
+      "applied": "Sugestões aplicadas!",
+      "error": "Erro ao gerar sugestões"
+    }
+  },
+  "forms": {
+    "title": "Formulários",
+    "selectType": "Selecionar Tipo de Formulário",
+    "expungement": {
+      "title": "Formulário de Pedido de Limpeza de Antecedentes",
+      "description": "Solicite a limpeza do seu registro criminal"
+    },
+    "housing": {
+      "title": "Carta de Defesa de Moradia",
+      "description": "Carta para defesa contra despejo ou problemas de moradia"
+    },
+    "feeWaiver": {
+      "title": "Solicitação de Isenção de Taxas",
+      "description": "Solicite isenção de taxas judiciais"
+    }
+  },
+  "chat": {
+    "title": "Chat Legal IA",
+    "placeholder": "Faça uma pergunta jurídica...",
+    "send": "Enviar",
+    "loadingResponse": "Assistente está digitando...",
+    "welcomeMessage": "Olá! Sou seu assistente jurídico. Como posso ajudar você hoje?",
+    "generateDocument": "Gerar Documento",
+    "saveConversation": "Salvar Conversa",
+    "startNewChat": "Iniciar Nova Conversa",
+    "suggestedQuestions": "Perguntas Sugeridas",
+    "modelSelection": "Selecionar Modelo de IA",
+    "feedback": "Esta resposta foi útil?"
+  },
+  "resources": {
+    "title": "Recursos Jurídicos",
+    "description": "Acesse recursos jurídicos gratuitos, documentos e materiais educativos",
+    "categories": {
+      "immigration": "Recursos de Imigração",
+      "housing": "Direitos de Moradia e Inquilinos",
+      "expungement": "Limpeza de Antecedentes Criminais",
+      "familyLaw": "Direito Familiar",
+      "consumerRights": "Direitos do Consumidor"
+    },
+    "types": {
+      "pdf": "PDF",
+      "article": "Artigo",
+      "video": "Vídeo",
+      "link": "Link Externo",
+      "template": "Modelo"
+    },
+    "actions": {
+      "view": "Ver",
+      "download": "Baixar",
+      "visit": "Visitar"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "personalInfo": "Informações Pessoais",
+    "security": "Segurança",
+    "notifications": "Notificações",
+    "preferences": "Preferências",
+    "updateProfile": "Atualizar Perfil",
+    "changePassword": "Alterar Senha",
+    "notificationPreferences": "Preferências de Notificação",
+    "emailNotifications": "Notificações por E-mail",
+    "pushNotifications": "Notificações no Aplicativo",
+    "notificationTypes": "Tipos de Notificações",
+    "language": "Idioma",
+    "darkMode": "Modo Escuro",
+    "accessibility": "Acessibilidade"
+  },
+  "errors": {
+    "general": "Ocorreu um erro. Por favor, tente novamente.",
+    "login": "E-mail ou senha inválidos.",
+    "register": "Falha no cadastro. Por favor, tente novamente.",
+    "requiredField": "Este campo é obrigatório",
+    "invalidEmail": "Endereço de e-mail inválido",
+    "passwordMatch": "As senhas não coincidem",
+    "networkError": "Erro de rede. Por favor, verifique sua conexão.",
+    "unauthorized": "Você não está autorizado a visualizar esta página.",
+    "notFound": "O recurso solicitado não foi encontrado."
+  }
+} 

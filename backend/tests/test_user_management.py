@@ -3,8 +3,8 @@ Tests for user management functionality
 """
 import pytest
 from datetime import datetime
-from backend.models.user import User
-from backend.database import db
+from models.user import User
+from database import db
 
 def test_user_registration(client):
     """Test user registration"""

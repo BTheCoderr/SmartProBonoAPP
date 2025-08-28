@@ -10,8 +10,8 @@ from weasyprint import HTML
 import os
 import tempfile
 from weasyprint import CSS
-from backend.services.pdf_service import PDFService
-from backend.models.template import Template
+from services.pdf_service import PDFService
+from models.template import Template
 
 def test_get_templates(client):
     """Test getting all templates."""

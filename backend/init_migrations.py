@@ -27,7 +27,7 @@ migrate = Migrate(app, db)
 from models.user import User
 from models.case import Case
 from models.document import Document
-from backend.models.rights import Rights
+from models.rights import Rights
 
 if __name__ == '__main__':
     print("Migration environment initialized.")

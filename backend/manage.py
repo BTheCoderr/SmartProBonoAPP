@@ -3,8 +3,8 @@ import os
 import click
 from flask.cli import FlaskGroup
 from backend import create_app
-from backend.database import db
-from backend.models import User, Rights
+from database import db
+from models import User, Rights
 
 cli = FlaskGroup(create_app=create_app)
 

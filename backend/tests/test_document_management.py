@@ -6,10 +6,16 @@ import os
 from datetime import datetime
 from werkzeug.datastructures import FileStorage
 from io import BytesIO
-from backend.models.document import Document
-from backend.models.case_sql import SQLCase
-from backend.models.user import User
-from backend.database import db
+from models.document import Document
+from models.case_sql import SQLCase
+from models.user import User
+from database import db
+import unittest
+import json
+import io
+from flask import current_app
+from backend.app import create_app
+from models.template import Template
 
 def test_upload_document(client, auth_headers, test_user):
     """Test uploading a document"""
@@ -260,4 +266,255 @@ def test_document_tags(client, auth_headers):
     assert response.status_code == 200
     data = response.get_json()
     assert 'pending' not in data['tags']
-    assert len(data['tags']) == 2 
+    assert len(data['tags']) == 2
+
+class DocumentManagementTest(unittest.TestCase):
+    """Test class for document management functionality."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.app = create_app('testing')
+        self.client = self.app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+        
+        # Create test user
+        self.user = User(
+            email='test@example.com',
+            first_name='Test',
+            last_name='User',
+            role='attorney'
+        )
+        self.user.set_password('Test1234!')
+        db.session.add(self.user)
+        db.session.commit()
+        
+        # Login and get auth token
+        response = self.client.post(
+            '/api/auth/login',
+            data=json.dumps({
+                'email': 'test@example.com',
+                'password': 'Test1234!'
+            }),
+            content_type='application/json'
+        )
+        data = json.loads(response.data.decode())
+        self.token = data['token']
+        self.auth_headers = {
+            'Authorization': f'Bearer {self.token}',
+            'Content-Type': 'application/json'
+        }
+        
+        # Create test file data
+        self.test_file_content = "This is a test document content."
+        
+    def tearDown(self):
+        """Clean up test environment."""
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+        
+        # Clean up test uploads
+        uploads_dir = os.path.join(current_app.root_path, 'uploads')
+        if os.path.exists(uploads_dir):
+            for filename in os.listdir(uploads_dir):
+                if filename.startswith('test_'):
+                    os.remove(os.path.join(uploads_dir, filename))
+    
+    def test_document_upload(self):
+        """Test uploading a document."""
+        # Create test file
+        file_data = io.BytesIO(self.test_file_content.encode('utf-8'))
+        
+        # Upload document
+        response = self.client.post(
+            '/api/documents',
+            data={
+                'file': (file_data, 'test_document.txt'),
+                'title': 'Test Document',
+                'description': 'A test document',
+                'document_type': 'case_document'
+            },
+            headers={'Authorization': f'Bearer {self.token}'},
+            content_type='multipart/form-data'
+        )
+        
+        data = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(data['message'], 'Document uploaded successfully')
+        self.assertTrue('document' in data)
+        
+        # Verify document in database
+        document_id = data['document'].get('id')
+        document = Document.query.get(document_id)
+        self.assertIsNotNone(document)
+        self.assertEqual(document.title, 'Test Document')
+        self.assertEqual(document.document_type, 'case_document')
+        self.assertEqual(document.uploaded_by, self.user.id)
+    
+    def test_document_download(self):
+        """Test downloading a document."""
+        # First upload a document
+        file_data = io.BytesIO(self.test_file_content.encode('utf-8'))
+        upload_response = self.client.post(
+            '/api/documents',
+            data={
+                'file': (file_data, 'test_document.txt'),
+                'title': 'Test Document',
+                'description': 'A test document',
+                'document_type': 'case_document'
+            },
+            headers={'Authorization': f'Bearer {self.token}'},
+            content_type='multipart/form-data'
+        )
+        upload_data = json.loads(upload_response.data.decode())
+        document_id = upload_data['document'].get('id')
+        
+        # Download document
+        download_response = self.client.get(
+            f'/api/documents/{document_id}/file',
+            headers={'Authorization': f'Bearer {self.token}'}
+        )
+        
+        self.assertEqual(download_response.status_code, 200)
+        self.assertEqual(download_response.data.decode(), self.test_file_content)
+    
+    def test_document_list(self):
+        """Test retrieving a list of documents."""
+        # Upload multiple documents
+        for i in range(3):
+            file_data = io.BytesIO(f"Test content {i}".encode('utf-8'))
+            self.client.post(
+                '/api/documents',
+                data={
+                    'file': (file_data, f'test_document_{i}.txt'),
+                    'title': f'Test Document {i}',
+                    'description': f'A test document {i}',
+                    'document_type': 'case_document'
+                },
+                headers={'Authorization': f'Bearer {self.token}'},
+                content_type='multipart/form-data'
+            )
+        
+        # Get document list
+        response = self.client.get(
+            '/api/documents',
+            headers=self.auth_headers
+        )
+        
+        data = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('documents' in data)
+        self.assertEqual(len(data['documents']), 3)
+    
+    def test_document_update(self):
+        """Test updating document metadata."""
+        # First upload a document
+        file_data = io.BytesIO(self.test_file_content.encode('utf-8'))
+        upload_response = self.client.post(
+            '/api/documents',
+            data={
+                'file': (file_data, 'test_document.txt'),
+                'title': 'Original Title',
+                'description': 'Original description',
+                'document_type': 'case_document'
+            },
+            headers={'Authorization': f'Bearer {self.token}'},
+            content_type='multipart/form-data'
+        )
+        upload_data = json.loads(upload_response.data.decode())
+        document_id = upload_data['document'].get('id')
+        
+        # Update document metadata
+        update_response = self.client.put(
+            f'/api/documents/{document_id}',
+            data=json.dumps({
+                'title': 'Updated Title',
+                'description': 'Updated description'
+            }),
+            headers=self.auth_headers
+        )
+        
+        update_data = json.loads(update_response.data.decode())
+        self.assertEqual(update_response.status_code, 200)
+        self.assertEqual(update_data['document']['title'], 'Updated Title')
+        self.assertEqual(update_data['document']['description'], 'Updated description')
+        
+        # Verify in database
+        document = Document.query.get(document_id)
+        self.assertEqual(document.title, 'Updated Title')
+        self.assertEqual(document.description, 'Updated description')
+    
+    def test_document_template_creation(self):
+        """Test creating a document template."""
+        # Create template
+        response = self.client.post(
+            '/api/templates',
+            data=json.dumps({
+                'title': 'Test Template',
+                'description': 'A test template',
+                'content': 'Hello ${name}, welcome to ${organization}!',
+                'template_type': 'letter',
+                'variables': ['name', 'organization']
+            }),
+            headers=self.auth_headers
+        )
+        
+        data = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(data['message'], 'Template created successfully')
+        self.assertTrue('template' in data)
+        
+        # Verify template in database
+        template_id = data['template'].get('id')
+        template = Template.query.get(template_id)
+        self.assertIsNotNone(template)
+        self.assertEqual(template.title, 'Test Template')
+        self.assertEqual(template.template_type, 'letter')
+    
+    def test_document_generation_from_template(self):
+        """Test generating a document from a template."""
+        # First create a template
+        template_response = self.client.post(
+            '/api/templates',
+            data=json.dumps({
+                'title': 'Test Template',
+                'description': 'A test template',
+                'content': 'Hello ${name}, welcome to ${organization}!',
+                'template_type': 'letter',
+                'variables': ['name', 'organization']
+            }),
+            headers=self.auth_headers
+        )
+        template_data = json.loads(template_response.data.decode())
+        template_id = template_data['template'].get('id')
+        
+        # Generate document from template
+        generate_response = self.client.post(
+            f'/api/templates/{template_id}/generate',
+            data=json.dumps({
+                'variables': {
+                    'name': 'John Doe',
+                    'organization': 'SmartProBono'
+                },
+                'title': 'Generated Document',
+                'document_type': 'case_document'
+            }),
+            headers=self.auth_headers
+        )
+        
+        generate_data = json.loads(generate_response.data.decode())
+        self.assertEqual(generate_response.status_code, 201)
+        self.assertEqual(generate_data['message'], 'Document generated successfully')
+        self.assertTrue('document' in generate_data)
+        
+        # Verify generated document content
+        document_id = generate_data['document'].get('id')
+        document = Document.query.get(document_id)
+        self.assertIsNotNone(document)
+        self.assertEqual(document.title, 'Generated Document')
+        self.assertEqual(document.content, 'Hello John Doe, welcome to SmartProBono!')
+        
+if __name__ == '__main__':
+    unittest.main() 

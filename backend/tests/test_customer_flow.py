@@ -14,9 +14,9 @@ from pymongo.collection import Collection
 from flask import Flask
 
 from backend.app import create_app
-from backend.database.mongo import mongo
-from backend.websocket import socketio
-from backend.models.user import User
+from database.mongo import mongo
+from websocket import socketio
+from models.user import User
 
 def init_mongo(app) -> Database:
     """Initialize MongoDB connection"""

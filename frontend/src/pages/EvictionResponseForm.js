@@ -7,6 +7,7 @@ import {
   Stepper,
   Step,
   StepLabel,
+  StepContent,
   Button,
   Box,
   Grid,
@@ -43,6 +44,15 @@ const steps = [
   'Defenses',
   'Additional Information',
   'Review & Submit'
+];
+
+const availableDefenses = [
+  "Improper notice to vacate",
+  "Landlord retaliation",
+  "Landlord failed to maintain habitable conditions",
+  "Paid rent during notice period",
+  "Discriminatory eviction",
+  "Procedural defect in filing"
 ];
 
 const EvictionResponseForm = () => {
@@ -436,20 +446,20 @@ const EvictionResponseForm = () => {
                 <FormLabel component="legend">Select Your Defenses</FormLabel>
                 <Grid container spacing={2}>
                   {availableDefenses.map((defense) => (
-                    <Grid item xs={12} sm={6} key={defense.value}>
+                    <Grid item xs={12} sm={6} key={defense}>
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={formik.values.defenses.includes(defense.value)}
+                            checked={formik.values.defenses.includes(defense)}
                             onChange={(e) => {
                               const newDefenses = e.target.checked
-                                ? [...formik.values.defenses, defense.value]
-                                : formik.values.defenses.filter(d => d !== defense.value);
+                                ? [...formik.values.defenses, defense]
+                                : formik.values.defenses.filter(d => d !== defense);
                               formik.setFieldValue('defenses', newDefenses);
                             }}
                           />
                         }
-                        label={defense.label}
+                        label={defense}
                       />
                     </Grid>
                   ))}

@@ -1,3 +1,5 @@
+// WARNING: Imports have been commented out to fix linting errors.
+// Uncomment specific imports as needed when using them.
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {

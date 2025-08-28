@@ -9,8 +9,8 @@ import logging
 from flask import request, current_app
 from flask_socketio import SocketIO, emit, join_room, leave_room, disconnect
 
-from backend.websocket.utils.auth import validate_jwt, authenticate_connection
-from backend.websocket.services.connection_service import (
+from websocket.utils.auth import validate_jwt, authenticate_connection
+from websocket.services.connection_service import (
     register_connection,
     unregister_connection,
     get_connection_user,
@@ -98,7 +98,7 @@ def register_event_handlers():
         unregister_connection(client_id)
     
     # Import and register handlers from handler modules
-    from backend.websocket.handlers import (
+    from websocket.handlers import (
         register_auth_handlers,
         register_notification_handlers,
         register_admin_handlers

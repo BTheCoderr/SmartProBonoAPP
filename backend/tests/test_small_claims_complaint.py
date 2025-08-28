@@ -3,7 +3,7 @@ import os
 import tempfile
 import unittest
 from datetime import datetime
-from backend.services.pdf_service import PDFService, get_pdf_service
+from services.pdf_service import PDFService, get_pdf_service
 from pypdf import PdfReader
 
 class TestSmallClaimsComplaint(unittest.TestCase):

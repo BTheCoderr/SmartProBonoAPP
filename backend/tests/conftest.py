@@ -4,9 +4,9 @@ Pytest configuration for production testing
 import pytest
 from flask import Flask
 from backend.app import create_app
-from backend.extensions import db
-from backend.models.user import User
-from backend.models.template import Template
+from extensions import db
+from models.user import User
+from models.template import Template
 from datetime import datetime
 import os
 from pathlib import Path

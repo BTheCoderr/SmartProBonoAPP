@@ -2,7 +2,7 @@
 import unittest
 import os
 import tempfile
-from backend.services.pdf_service import PDFService, get_pdf_service
+from services.pdf_service import PDFService, get_pdf_service
 from weasyprint import HTML
 from pypdf import PdfReader
 from datetime import datetime

@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 from flask import current_app
 
-from backend.websocket.services.notification_service import send_notification
+from websocket.services.notification_service import send_notification
 
 # Configure logging
 logger = logging.getLogger('websocket.services.application_notifications')

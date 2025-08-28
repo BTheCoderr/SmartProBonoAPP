@@ -1,11 +1,11 @@
 """
 WebSocket module for SmartProBono
 """
-from backend.websocket.core import (
+from websocket.core import (
     socketio, 
     init_websocket
 )
-from backend.websocket.services.notification_service import (
+from websocket.services.notification_service import (
     send_notification,
     send_broadcast_notification,
     get_user_notifications,
@@ -14,12 +14,12 @@ from backend.websocket.services.notification_service import (
     get_notification_stats,
     NOTIFICATION_TYPES
 )
-from backend.websocket.services.connection_service import (
+from websocket.services.connection_service import (
     get_connected_users,
     get_connection_stats,
     is_user_connected
 )
-from backend.websocket.services.application_notifications import (
+from websocket.services.application_notifications import (
     send_user_notification,
     send_case_status_update,
     send_document_request,

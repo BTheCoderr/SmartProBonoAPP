@@ -1,139 +1,219 @@
-# SmartProBono
+# SmartProBono Platform
 
-SmartProBono is a legal-tech platform designed to assist with pro bono legal services.
+An AI-powered legal platform providing accessible legal assistance for pro bono cases.
 
-## AI-Powered Legal Assistance
+## MVP Status
 
-SmartProBono leverages advanced AI models to provide intelligent legal assistance:
+SmartProBono now has a functioning MVP with the following key features:
 
-- **Legal Q&A**: Get answers to common legal questions using natural language
-- **Document Analysis**: AI-powered analysis of legal documents and contracts
-- **Document Generation**: Draft legal documents based on requirements and templates
-- **Rights Research**: Research legal rights and requirements across different jurisdictions
+- ✅ **Legal AI Chat** with multiple model options (fixed model selection)
+- ✅ **Document Management** for uploading and organizing legal documents
+- ✅ **Expert Help** interface for connecting with pro bono attorneys
+- ✅ **Email System** with Zoho integration and DKIM authentication
+- ✅ **User Management** for beta signup and demo accounts
 
-## Document Management Features
+For detailed documentation on available routes and features, see:
+- [MVP_ROUTES.md](MVP_ROUTES.md) - List of working MVP routes
+- [MVP_NEXT_STEPS.md](MVP_NEXT_STEPS.md) - Current status and future development plans
+- [TESTING_CHECKLIST.md](TESTING_CHECKLIST.md) - Testing guidance
 
-The document management system within SmartProBono offers robust functionality for legal professionals:
+## Recent Fixes
 
-### Core Features
+### Model Selection Fix
+- Fixed model selection persistence in the legal chat
+- Added clearer indication of which model is being used
+- Fixed UI inconsistencies in model display
+- Added test script `test_model_selection.py` to verify model selection
 
-- **Document Storage & Organization**: Upload, organize, and securely store legal documents
-- **Template System**: Create and manage reusable document templates with variable placeholders
-- **Document Generation**: Generate new documents from templates by filling in variables
-- **Version Control**: Track document changes with full version history and revert capabilities
+### UI Improvements
+- Fixed testimonial styling issues in the landing page
+- Cleaned up unused imports across multiple components
+- Improved error handling in document upload
 
-### Advanced Features
-
-- **Document Sharing**: Share documents with specific users directly or via email
-- **Document Tagging**: Categorize documents with custom tags for better organization
-- **Document Comparison**: Side-by-side or unified comparison of documents with change highlighting
-- **Collaborative Editing**: Real-time collaboration on document editing
-
-### Security
-
-- User-based permissions
-- Secure document storage
-- Access control and audit trails
-
-## Immigration Services
-
-SmartProBono provides comprehensive immigration assistance features:
-
-- **Immigration Intake Form**: Collect and process client information for immigration cases
-- **Document Generation**: Create necessary immigration documents based on client information
-- **Case Tracking**: Follow case progress through the immigration system
-- **Resource Library**: Access guides and information about immigration processes
-
-### Immigration Dashboard (New Feature)
-
-The new Immigration Dashboard provides a centralized location for users to:
-
-- **Track Case Status**: View the status and progress of all immigration cases
-- **Manage Forms**: Access and manage all submitted immigration intake forms
-- **View Upcoming Events**: See deadlines, appointments, and other important events
-- **Start New Applications**: Easily initiate new immigration applications
-
-The dashboard includes:
-- Status cards showing numbers of active cases, pending forms, completed cases, and upcoming deadlines
-- Tabs to toggle between viewing active cases and forms
-- A timeline of upcoming events and deadlines
-- Mobile-responsive design for access on any device
-
-## Recent Improvements
-
-### UI/UX Enhancements (July 2023)
-- Fixed dropdown menu functionality in the Immigration Intake Form
-- Improved navigation between resource pages and document sections
-- Enhanced mobile responsiveness across all form components
-- Pre-filling of form fields based on selected immigration service type
-- Added Immigration Dashboard for case tracking and management
-
-### Performance Optimizations
-- Implemented debounce mechanisms to prevent excessive API calls
-- Increased backend rate limits for auth endpoints to prevent 429 errors
-- Improved error handling and user feedback for form submissions
-- Added token refresh handling with retry logic for better authentication flow
-- Optimized context providers to reduce unnecessary re-renders
-
-### Documentation and Testing
-- Added comprehensive manual testing guides
-- Improved form validation with clear error messaging
-- Enhanced accessibility for all interactive components
-- Added mobile-specific optimizations for touch interfaces
-
-## Development
-
-### Frontend
-
-The frontend is built with React and Material-UI for a modern, responsive user interface.
+## Running the Platform
 
 ### Backend
-
-The backend is powered by Flask and MongoDB, providing a robust API for document management.
-
-### Installation
-
 ```bash
-npm run install-all
+./run_with_email_alt.sh
 ```
 
-### Running the Application
-
+### Frontend
 ```bash
+cd frontend
 npm start
 ```
 
+### Testing Model Selection
+```bash
+./test_model_selection.py
+```
+
+## Demo Routes
+
+- Home: http://localhost:3000/
+- Legal Chat: http://localhost:3000/legal-chat
+- Documents: http://localhost:3000/documents
+- Expert Help: http://localhost:3000/expert-help
+
+## Project Structure
+
+- `backend/` - Flask backend API
+- `frontend/` - React frontend application
+- `scripts/` - Utility scripts for the platform
+- `templates/` - Email and document templates
+
+## Next Steps
+
+See [MVP_NEXT_STEPS.md](MVP_NEXT_STEPS.md) for the detailed roadmap of future development.
+
+## Key Features
+
+- **AI-powered Legal Chat**: Get answers to common legal questions
+- **Document Generation**: Create legal documents based on your needs
+- **Expert Guidance**: Connect with pro bono lawyers when needed
+- **Email Notifications**: Receive confirmation emails and updates
+
+## Development
+
+### Code Quality
+
+To maintain code quality in the project:
+
+1. We use ESLint for code linting. Run the following commands in the frontend directory:
+   ```bash
+   # Check for linting issues
+   npm run lint
+   
+   # Automatically fix simple issues
+   npm run lint:fix
+   ```
+
+2. See [LINTING_GUIDE.md](LINTING_GUIDE.md) for information on:
+   - Common linting issues and how to fix them
+   - Best practices for clean code
+   - Maintenance scripts for code cleanup
+
+## Getting Started
+
+Follow these steps to set up and run the SmartProBono platform:
+
+### Prerequisites
+
+- Node.js (v14+) and npm (v6+)
+- Python 3.8+
+- Virtual environment tool (venv)
+
+### Setup
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/SmartProBono.git
+   cd SmartProBono
+   ```
+
+2. **Set up Python environment**:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+3. **Set up frontend dependencies**:
+   ```bash
+   cd frontend
+   npm install
+   cd ..
+   ```
+
+4. **Configure email (optional but recommended)**:
+   ```bash
+   ./setup_email.sh
+   ```
+   Follow the prompts to configure your email settings. This enables email notifications for signups.
+
+### Running the Application
+
+#### Option 1: Using the deployment script (recommended)
+
+This will start both the frontend and backend with proper configuration:
+
+```bash
+./deploy.sh
+```
+
+#### Option 2: Manual start
+
+1. **Start the backend API**:
+   ```bash
+   # With email configuration:
+   source load_email_config.sh
+   python fix_api.py
+   
+   # Without email:
+   python fix_api.py
+   ```
+
+2. **Start the frontend development server** (in a separate terminal):
+   ```bash
+   cd frontend
+   npm start
+   ```
+
 ### Testing
 
-For manual testing instructions, see the [testing guide](tests/manual-testing.md).
+#### Test Email Configuration
 
-#### Testing New Features
+To verify your email setup is working correctly:
 
-To test the new features added in the latest update:
+```bash
+# Make sure your email config is loaded
+source load_email_config.sh
 
-1. **Immigration Form Dropdowns**
-   - Navigate to `/immigration`
-   - Click "Get Help" on any service card
-   - Verify all dropdown menus display options and work correctly
+# Send a test email
+python test_email.py your-email@example.com
+```
 
-2. **Mobile-Optimized Forms**
-   - Access the application on a mobile device or use browser dev tools to simulate a mobile view
-   - Open the Immigration Intake Form
-   - Verify the form is properly formatted for mobile screens
-   - Test all interaction elements for touch-friendliness
+#### Test Legal Chat API
 
-3. **Immigration Dashboard**
-   - Login to the application
-   - Navigate to `/immigration-dashboard`
-   - Verify that the dashboard shows case statistics, form information, and upcoming events
-   - Test the tab navigation between "Active Cases" and "Forms"
-   - Try clicking the "New Application" button to start a new immigration form
+To test the legal chat functionality:
 
-4. **Performance Improvements**
-   - Monitor network requests in browser dev tools
-   - Verify no excessive API calls during authentication
-   - Test authentication persistence after page reloads
+```bash
+# Test all models and questions
+./test_legal_chat.py
+
+# Test specific model and question
+./test_legal_chat.py deepseek "What are my tenant rights?"
+```
+
+## System Architecture
+
+- **Frontend**: React.js with Material UI
+- **Backend API**: Flask with REST endpoints
+- **Email System**: SMTP-based email notifications
+- **Storage**: File-based storage for beta (database for production)
+
+## Deployment
+
+For production deployment, see [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
+
+## Email Notification System
+
+The platform includes an email notification system that:
+
+1. Sends confirmation emails to users who sign up
+2. Notifies administrators about new signups
+3. Provides professional-looking HTML emails
+
+See [EMAIL_CAPTURE_README.md](EMAIL_CAPTURE_README.md) for details on the email system.
+
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-[MIT License](LICENSE)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For questions or support, please contact info@smartprobono.org

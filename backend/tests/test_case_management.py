@@ -4,9 +4,9 @@ Tests for case management functionality
 import pytest
 from datetime import datetime
 from bson import ObjectId
-from backend.models.case_sql import SQLCase
-from backend.models.user import User
-from backend.database import db
+from models.case_sql import SQLCase
+from models.user import User
+from database import db
 
 def test_create_case(client, auth_headers, regular_user, mongo_client):
     """Test creating a new case"""

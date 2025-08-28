@@ -18,7 +18,7 @@ from flask_socketio import SocketIOTestClient
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from backend.app import create_app  # Import the Flask app factory
-from backend.websocket import (
+from websocket import (
     socketio as server_socketio,
     send_notification,
     send_broadcast_notification,
@@ -28,7 +28,7 @@ from backend.websocket import (
     NOTIFICATION_TYPE_SUCCESS,
     CATEGORY_IMMIGRATION
 )
-from backend.websocket.utils.persistence import (
+from websocket.utils.persistence import (
     save_notification,
     get_notifications_for_user,
     mark_as_read
@@ -38,7 +38,7 @@ from backend.websocket.utils.persistence import (
 @pytest.fixture
 def socket_client(app, client):
     """Create a test socket client"""
-    from backend.websocket import socketio
+    from websocket import socketio
     return SocketIOTestClient(app, socketio)
 
 @pytest.fixture

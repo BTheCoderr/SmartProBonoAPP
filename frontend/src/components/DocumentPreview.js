@@ -12,7 +12,8 @@ import {
   Slider,
   Typography,
   Alert,
-  Paper
+  Paper,
+  Divider
 } from '@mui/material';
 import {
   ZoomIn as ZoomInIcon,
