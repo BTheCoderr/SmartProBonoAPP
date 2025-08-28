@@ -1,8 +1,18 @@
 {
-  "name": "pro-bono-app",
-  "version": "1.0.0",
-  "private": true,
-  "homepage": "https://bthecoderr.github.io/smartProBonoAPP/",
+  "name": "smartprobono-platform",
+  "version": "2.0.0",
+  "description": "AI-powered legal platform providing accessible legal assistance for pro bono cases",
+  "keywords": ["legal", "ai", "pro-bono", "legal-tech", "document-processing", "legal-assistance"],
+  "author": "BTheCoderr",
+  "license": "MIT",
+  "homepage": "https://github.com/BTheCoderr/SmartProBonoAPP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BTheCoderr/SmartProBonoAPP.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BTheCoderr/SmartProBonoAPP/issues"
+  },
   "dependencies": {
     "@mui/lab": "^6.0.0-beta.25",
     "@mui/x-date-pickers": "^8.1.0",
