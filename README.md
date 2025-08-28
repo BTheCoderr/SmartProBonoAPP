@@ -92,11 +92,14 @@ cp .env.example .env
 
 ### Running the Application
 ```bash
-# Full stack deployment
-./deploy.sh
-
-# Backend only
+# Start complete MVP (recommended)
 ./start_mvp.sh
+
+# Stop MVP
+./stop_mvp.sh
+
+# Production deployment
+./deploy.sh
 
 # Frontend only
 cd frontend && npm start
@@ -105,8 +108,8 @@ cd frontend && npm start
 ## 🧪 Testing
 
 ```bash
-# Run comprehensive tests
-./run_comprehensive_audit.sh
+# Test complete system
+./test_complete_system.py
 
 # Test AI chat functionality
 ./test_legal_chat.py
