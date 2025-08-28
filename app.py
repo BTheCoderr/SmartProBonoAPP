@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Working SmartProBono Backend with Supabase Integration
-Simplified version that definitely works
+SmartProBono - Hybrid Application
+Combines the best of working apps with advanced backend features
 """
 
 from flask import Flask, jsonify, request
@@ -14,6 +14,11 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 import requests
 import re
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -29,36 +34,72 @@ SUPABASE_HEADERS = {
     "Content-Type": "application/json"
 }
 
+# Import advanced services from backend
+try:
+    from backend.services.ai_service import AIService
+    from backend.services.document_service import DocumentService
+    from backend.services.auth_service import AuthService
+    ADVANCED_SERVICES_AVAILABLE = True
+    logger.info("✅ Advanced services loaded from backend")
+except ImportError as e:
+    ADVANCED_SERVICES_AVAILABLE = False
+    logger.warning(f"⚠️ Advanced services not available: {e}")
+
+# Try to import simplified backend
+try:
+    from backend.__init__simple import create_app as create_backend_app
+    BACKEND_APP_AVAILABLE = True
+    logger.info("✅ Simplified backend app available")
+except ImportError as e:
+    BACKEND_APP_AVAILABLE = False
+    logger.warning(f"⚠️ Backend app not available: {e}")
+
+# Initialize services
+if ADVANCED_SERVICES_AVAILABLE:
+    ai_service = AIService()
+    document_service = DocumentService()
+    auth_service = AuthService()
+
 def route_to_agent(message):
     """Route message to appropriate AI agent"""
     lower_message = message.lower().strip()
     
-    # Greeting patterns
-    if re.match(r'^(hello|hi|hey|good morning|good afternoon|good evening)$', lower_message):
-        return 'greeting'
-    
-    # Compliance patterns
-    if any(keyword in lower_message for keyword in ['gdpr', 'privacy', 'data protection', 'soc 2', 'compliance']):
+    # Compliance keywords
+    if any(keyword in lower_message for keyword in ['gdpr', 'compliance', 'privacy', 'data protection', 'regulation']):
         return 'compliance'
     
-    # Business patterns
-    if any(keyword in lower_message for keyword in ['incorporat', 'llc', 'corporation', 'fundraising', 'business']):
+    # Business keywords
+    if any(keyword in lower_message for keyword in ['business', 'company', 'startup', 'funding', 'contract', 'agreement']):
         return 'business'
     
-    # Document patterns
-    if any(keyword in lower_message for keyword in ['document', 'contract', 'agreement', 'generate']):
+    # Document keywords
+    if any(keyword in lower_message for keyword in ['document', 'contract', 'agreement', 'template', 'form']):
         return 'document'
     
     # Default to greeting
     return 'greeting'
 
 def generate_ai_response(message, agent_type):
-    """Generate AI response based on agent type"""
+    """Generate AI response using advanced service if available"""
+    if ADVANCED_SERVICES_AVAILABLE:
+        try:
+            # Use advanced AI service
+            response = ai_service.generate_legal_response(
+                message=message,
+                task_type="chat",
+                model="advanced"
+            )
+            return response.get('content', 'I apologize, but I encountered an error processing your request.')
+        except Exception as e:
+            logger.error(f"Advanced AI service error: {e}")
+            # Fall back to simple response
+    
+    # Simple fallback responses
     lower_message = message.lower().strip()
     
     if agent_type == "greeting":
         if re.match(r'^(hello|hi|hey|good morning|good afternoon|good evening)$', lower_message):
-            return "Hello! How can I help you with legal questions today?"
+            return "Hello! I'm your AI legal assistant. I can help with compliance, business law, document analysis, and more. What specific legal question can I help you with today?"
         else:
             return "I'm here to help with your legal questions! What specific area would you like assistance with?"
     
@@ -95,30 +136,31 @@ def save_to_supabase(table, data):
         response = requests.post(url, headers=SUPABASE_HEADERS, json=data, timeout=5)
         
         if response.status_code in [200, 201]:
-            print(f"✅ Data saved to Supabase {table}")
+            logger.info(f"✅ Data saved to Supabase {table}")
             return True
         else:
-            print(f"❌ Error saving to Supabase {table}: {response.status_code}")
+            logger.error(f"❌ Error saving to Supabase {table}: {response.status_code}")
             return False
     except Exception as e:
-        print(f"❌ Exception saving to Supabase {table}: {str(e)}")
+        logger.error(f"❌ Exception saving to Supabase {table}: {str(e)}")
         return False
 
 @app.route('/api/health')
 def health_check():
     """Health check endpoint"""
     return jsonify({
-        "message": "SmartProBono API with Supabase Integration is running",
+        "message": "SmartProBono Hybrid API is running",
         "status": "ok",
-        "version": "2.3.0",
+        "version": "3.0.0",
         "database": "Supabase PostgreSQL with RLS",
-        "ai_system": "Multi-Agent with 5 specialized agents",
+        "ai_system": "Hybrid: Advanced + Simple fallback",
+        "advanced_services": ADVANCED_SERVICES_AVAILABLE,
         "migration_status": "COMPLETED"
     })
 
 @app.route('/api/legal/chat', methods=['POST', 'OPTIONS'])
 def legal_chat():
-    """Handle legal chat requests with improved AI agents"""
+    """Handle legal chat requests with hybrid AI system"""
     if request.method == 'OPTIONS':
         response = jsonify({})
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
@@ -132,32 +174,33 @@ def legal_chat():
         if not message:
             return jsonify({"status": "error", "message": "Message is required"}), 400
         
-        print(f"💬 Received: {message}")
+        logger.info(f"💬 Received: {message}")
         
         # Route to appropriate agent
         agent_type = route_to_agent(message)
         
-        # Generate response
+        # Generate response using hybrid system
         response_text = generate_ai_response(message, agent_type)
         
-        print(f"🤖 Agent: {agent_type}, Response length: {len(response_text)}")
+        logger.info(f"🤖 Agent: {agent_type}, Response length: {len(response_text)}")
         
         return jsonify({
             "response": response_text,
             "model_info": {
                 "name": f"{agent_type.title()} Agent",
                 "type": agent_type,
-                "version": "2.3.0",
-                "system": "Multi-Agent AI with Supabase Integration"
-            }
+                "advanced": ADVANCED_SERVICES_AVAILABLE
+            },
+            "status": "success"
         })
+        
     except Exception as e:
-        print(f"❌ Error: {str(e)}")
+        logger.error(f"❌ Error in legal chat: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/beta/signup', methods=['POST', 'OPTIONS'])
-def signup():
-    """Handle signup requests with email"""
+def beta_signup():
+    """Handle beta signup requests"""
     if request.method == 'OPTIONS':
         response = jsonify({})
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
@@ -168,33 +211,34 @@ def signup():
         data = request.get_json()
         email = data.get('email', '')
         
-        if not email or '@' not in email:
-            return jsonify({"status": "error", "message": "Invalid email address"}), 400
+        if not email:
+            return jsonify({"status": "error", "message": "Email is required"}), 400
         
-        print(f"📧 Signup: {email}")
+        logger.info(f"📧 Beta signup: {email}")
         
         # Save to Supabase
         signup_data = {
             "email": email,
-            "status": "confirmed",
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
+            "status": "pending"
         }
         
         success = save_to_supabase("beta_signups", signup_data)
         
         return jsonify({
-            "status": "success", 
-            "message": "Thank you for signing up! We'll be in touch soon.",
+            "status": "success",
+            "message": "Thank you for your interest! We'll be in touch soon.",
             "database": "Supabase with RLS",
             "migration_status": "COMPLETED"
         })
+        
     except Exception as e:
-        print(f"❌ Error: {str(e)}")
+        logger.error(f"❌ Error in beta signup: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/feedback', methods=['POST', 'OPTIONS'])
 def feedback():
-    """Handle feedback submission"""
+    """Handle feedback requests"""
     if request.method == 'OPTIONS':
         response = jsonify({})
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
@@ -206,7 +250,7 @@ def feedback():
         feedback_text = data.get('feedback', '')
         rating = data.get('rating', 0)
         
-        print(f"📝 Feedback: {feedback_text}, Rating: {rating}")
+        logger.info(f"📝 Feedback: {feedback_text}, Rating: {rating}")
         
         # Save to Supabase
         feedback_data = {
@@ -223,15 +267,54 @@ def feedback():
             "database": "Supabase with RLS",
             "migration_status": "COMPLETED"
         })
+        
     except Exception as e:
-        print(f"❌ Error: {str(e)}")
+        logger.error(f"❌ Error in feedback: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/documents/history', methods=['GET'])
+def document_history():
+    """Get document history"""
+    try:
+        # This would integrate with the advanced document service
+        if ADVANCED_SERVICES_AVAILABLE:
+            # Use advanced document service
+            pass
+        
+        return jsonify({
+            "documents": [],
+            "status": "success",
+            "message": "Document history endpoint ready"
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Error in document history: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/documents/templates', methods=['GET'])
+def document_templates():
+    """Get document templates"""
+    try:
+        # This would integrate with the advanced document service
+        if ADVANCED_SERVICES_AVAILABLE:
+            # Use advanced document service
+            pass
+        
+        return jsonify({
+            "templates": [],
+            "status": "success",
+            "message": "Document templates endpoint ready"
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Error in document templates: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8081))
-    print(f"🚀 Starting SmartProBono API with Supabase Integration")
+    print(f"🚀 Starting SmartProBono Hybrid API")
     print(f"🔐 Security: Row Level Security (RLS) enabled")
-    print(f"🤖 AI System: Multi-Agent with contextual responses")
+    print(f"🤖 AI System: Hybrid (Advanced + Simple fallback)")
     print(f"📊 Database: Supabase PostgreSQL")
     print(f"🔄 Migration Status: COMPLETED")
     print(f"")
@@ -240,10 +323,9 @@ if __name__ == '__main__':
     print(f"  • Legal Chat: http://localhost:{port}/api/legal/chat")
     print(f"  • Beta Signup: http://localhost:{port}/api/beta/signup")
     print(f"  • Feedback: http://localhost:{port}/api/feedback")
+    print(f"  • Document History: http://localhost:{port}/api/documents/history")
+    print(f"  • Document Templates: http://localhost:{port}/api/documents/templates")
     print(f"")
-    print(f"🎯 Test the improvements:")
-    print(f"  • Say 'hello' → Brief, friendly response")
-    print(f"  • Ask 'What is GDPR?' → Detailed compliance guidance")
-    print(f"")
+    print(f"🎯 Advanced Services: {'✅ Available' if ADVANCED_SERVICES_AVAILABLE else '❌ Not Available'}")
     print(f"🔗 Supabase Project: {SUPABASE_URL}")
     app.run(host='0.0.0.0', port=port, debug=False)
