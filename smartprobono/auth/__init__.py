@@ -1,1 +1,0 @@
-# smartprobono/auth package
