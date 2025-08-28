@@ -58,7 +58,7 @@ def generate_ai_response(message, agent_type):
     
     if agent_type == "greeting":
         if re.match(r'^(hello|hi|hey|good morning|good afternoon|good evening)$', lower_message):
-            return "Hello! I'm your AI legal assistant. I can help with compliance, business law, document analysis, and more. What specific legal question can I help you with today?"
+            return "Hello! How can I help you with legal questions today?"
         else:
             return "I'm here to help with your legal questions! What specific area would you like assistance with?"
     
