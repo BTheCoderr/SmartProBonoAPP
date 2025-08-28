@@ -16,7 +16,7 @@ from unittest.mock import patch, MagicMock
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from backend.app import create_app  # Import the Flask app factory
-from backend.websocket import socketio as server_socketio
+from websocket import socketio as server_socketio
 
 class TestWebSocketE2E(unittest.TestCase):
     """End-to-end tests for WebSocket functionality"""

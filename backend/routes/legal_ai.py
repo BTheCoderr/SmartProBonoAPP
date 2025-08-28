@@ -1,298 +1,193 @@
 from flask import Blueprint, request, jsonify
-import os
-from dotenv import load_dotenv
-from services.openai_service import get_legal_response
-from services.ai_service_manager import ai_service_manager, AIProvider
-import asyncio
+from werkzeug.exceptions import BadRequest
+import json
+from datetime import datetime
+import logging
+from backend.services.auth_service import require_auth, get_current_user
+from backend.services.ai_service import generate_legal_response, analyze_document
 
-load_dotenv()
-
-bp = Blueprint('legal_ai', __name__, url_prefix='/api/legal')
+bp = Blueprint('legal_ai', __name__)
+logger = logging.getLogger(__name__)
 
 @bp.route('/chat', methods=['POST'])
-async def chat():
+def chat():
+    """Endpoint for legal AI chat"""
     try:
-        data = request.json or {}
-        message = data.get('message')
-        task_type = data.get('task_type', 'chat')
-        requested_model = data.get('model', 'mistral')  # Default to mistral if not specified
-        
-        if not message:
-            return jsonify({'error': 'Message is required'}), 400
-
-        try:
-            # Try requested model first
-            provider = AIProvider(requested_model)
-            response = await ai_service_manager.get_response(
-                prompt=message,
-                provider=provider,
-                task_type=task_type
-            )
+        data = request.json
+        if not data or not data.get('message'):
+            raise BadRequest("Missing message")
             
-            return jsonify({
-                'response': response['text'],
-                'model': response['model'],
-                'provider': response['provider'],
-                'tokens': response['tokens'],
-                'status': 'success'
-            })
-        except Exception as model_error:
-            # If requested model fails, try OpenAI as fallback
+        message = data['message']
+        task_type = data.get('task_type', 'chat')  # Default to chat if no task type is specified
+        conversation_id = data.get('conversation_id')
+        history = data.get('history', [])
+        model = data.get('model', 'default')
+        
+        logger.info(f"Received legal chat message: {message}, task_type: {task_type}")
+        
+        # Optional user context
+        user_id = None
+        try:
+            user = get_current_user()
+            if user:
+                user_id = user.get('id')
+        except:
+            # User not authenticated - still allow chat as guest
+            pass
+        
+        # Generate response using the appropriate model
+        response = generate_legal_response(
+            message=message,
+            task_type=task_type,
+            conversation_id=conversation_id,
+            history=history,
+            model=model,
+            user_id=user_id
+        )
+        
+        return jsonify(response)
+    except BadRequest as e:
+        logger.error(f"Bad request in legal chat: {str(e)}")
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error in legal chat: {str(e)}")
+        return jsonify({"error": "An error occurred while processing your request"}), 500
+
+@bp.route('/analyze-document', methods=['POST'])
+def analyze_document_route():
+    """Endpoint for analyzing legal documents"""
+    try:
+        if 'file' not in request.files:
+            raise BadRequest("No file part")
+            
+        file = request.files['file']
+        if file.filename == '':
+            raise BadRequest("No selected file")
+            
+        # Get document type from request
+        document_type = request.form.get('document_type', 'generic')
+        
+        # Get questions to answer about the document (if any)
+        questions = request.form.get('questions', '')
+        if questions:
             try:
-                response = await ai_service_manager.get_response(
-                    prompt=message,
-                    provider=AIProvider.OPENAI,
-                    task_type='default'
-                )
-                return jsonify({
-                    'response': response['text'],
-                    'model': response['model'],
-                    'provider': response['provider'],
-                    'tokens': response['tokens'],
-                    'status': 'success'
-                })
-            except Exception as fallback_error:
-                return jsonify({
-                    'error': f'All providers failed. Primary error: {str(model_error)}. Fallback error: {str(fallback_error)}'
-                }), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    finally:
-        # Ensure cleanup of resources
-        if ai_service_manager.cleanup():
-            await ai_service_manager.cleanup()
-
-@bp.route('/analyze', methods=['POST'])
-async def analyze_document():
-    try:
-        data = request.json or {}
-        document = data.get('document')
-        analysis_type = data.get('analysis_type', 'legal_research')
+                questions = json.loads(questions)
+            except:
+                questions = []
         
-        if not document:
-            return jsonify({'error': 'Document is required'}), 400
+        # Analyze the document
+        analysis = analyze_document(file, document_type, questions)
+        
+        return jsonify(analysis)
+    except BadRequest as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error analyzing document: {str(e)}")
+        return jsonify({"error": "An error occurred while analyzing the document"}), 500
 
-        # Use Falcon for deep legal analysis
-        response = await ai_service_manager.get_response(
-            prompt=document,
-            provider=AIProvider.FALCON,
-            task_type=analysis_type
-        )
+@bp.route('/conversations', methods=['GET'])
+@require_auth
+def get_conversations():
+    """Get user's chat conversations"""
+    try:
+        user = get_current_user()
+        
+        # In a real app, this would fetch from a database
+        # Mocked response for demonstration
+        conversations = [
+            {
+                "id": "conv_001",
+                "title": "Tenant Rights Question",
+                "last_message": "What are my rights as a tenant?",
+                "last_updated": "2023-11-10T14:30:00Z",
+                "model": "default"
+            },
+            {
+                "id": "conv_002",
+                "title": "Small Claims Court Process",
+                "last_message": "How do I file a small claims case?",
+                "last_updated": "2023-11-09T10:15:00Z",
+                "model": "default"
+            }
+        ]
+        
+        return jsonify({"conversations": conversations})
+    except Exception as e:
+        logger.error(f"Error getting conversations: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/conversation/<conversation_id>', methods=['GET'])
+@require_auth
+def get_conversation(conversation_id):
+    """Get a specific conversation history"""
+    try:
+        user = get_current_user()
+        
+        # In a real app, this would fetch from a database and validate the user has access
+        # Mocked response for demonstration
+        messages = [
+            {
+                "id": "msg_001",
+                "conversation_id": conversation_id,
+                "role": "user",
+                "content": "What are my rights as a tenant if my landlord hasn't fixed a leaking pipe?",
+                "timestamp": "2023-11-10T14:30:00Z"
+            },
+            {
+                "id": "msg_002",
+                "conversation_id": conversation_id,
+                "role": "assistant",
+                "content": "As a tenant, you generally have the right to habitable living conditions. If your landlord hasn't fixed a leaking pipe, you may have several options depending on your jurisdiction:\n\n1. Send a written notice to your landlord requesting repairs\n2. In some states, you may be able to withhold rent or \"repair and deduct\"\n3. Contact local housing authorities\n4. Consider legal action if the issue persists\n\nWould you like more specific information about tenant rights in your state?",
+                "timestamp": "2023-11-10T14:30:30Z"
+            }
+        ]
         
         return jsonify({
-            'analysis': response['text'],
-            'model': response['model'],
-            'provider': response['provider'],
-            'tokens': response['tokens'],
-            'status': 'success'
+            "conversation_id": conversation_id,
+            "messages": messages
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error getting conversation: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
-@bp.route('/draft', methods=['POST'])
-async def draft_document():
+@bp.route('/models', methods=['GET'])
+def get_available_models():
+    """Get available AI models for legal assistance"""
     try:
-        data = request.json or {}
-        template = data.get('template')
-        details = data.get('details')
-        doc_type = data.get('doc_type', 'document_drafting')
+        models = [
+            {
+                "id": "default",
+                "name": "Legal Assistant",
+                "description": "General-purpose legal assistant for most questions",
+                "capabilities": ["question-answering", "document-explanation"]
+            },
+            {
+                "id": "mistral",
+                "name": "Mistral Legal Expert",
+                "description": "Specialized legal reasoning model for complex scenarios",
+                "capabilities": ["complex-reasoning", "case-analysis"]
+            },
+            {
+                "id": "llama",
+                "name": "Llama Document Drafter",
+                "description": "Specialized for drafting legal documents and letters",
+                "capabilities": ["document-drafting", "template-completion"]
+            },
+            {
+                "id": "deepseek",
+                "name": "DeepSeek Research",
+                "description": "Research-focused model for legal precedent and case law",
+                "capabilities": ["legal-research", "precedent-finding"]
+            },
+            {
+                "id": "falcon",
+                "name": "Falcon MultiLingual",
+                "description": "Supports multiple languages for global legal questions",
+                "capabilities": ["multilingual", "international-law"]
+            }
+        ]
         
-        if not template or not details:
-            return jsonify({'error': 'Template and details are required'}), 400
-
-        # Use Llama for document drafting
-        response = await ai_service_manager.get_response(
-            prompt=f"Template: {template}\nDetails: {details}",
-            provider=AIProvider.LLAMA,
-            task_type=doc_type
-        )
-        
-        return jsonify({
-            'document': response['text'],
-            'model': response['model'],
-            'provider': response['provider'],
-            'tokens': response['tokens'],
-            'status': 'success'
-        })
+        return jsonify({"models": models})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@bp.route('/rights', methods=['POST'])
-async def explain_rights():
-    try:
-        data = request.json or {}
-        topic = data.get('topic')
-        jurisdiction = data.get('jurisdiction')
-        
-        if not topic:
-            return jsonify({'error': 'Topic is required'}), 400
-
-        prompt = f"Explain legal rights regarding {topic}"
-        if jurisdiction:
-            prompt += f" in {jurisdiction}"
-
-        response = await ai_service_manager.get_response(
-            prompt=prompt,
-            provider=AIProvider.MISTRAL,
-            task_type='rights_explanation'
-        )
-        
-        return jsonify({
-            'explanation': response['text'],
-            'model': response['model'],
-            'provider': response['provider'],
-            'tokens': response['tokens'],
-            'status': 'success'
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@bp.route('/procedure', methods=['POST'])
-async def explain_procedure():
-    try:
-        data = request.json or {}
-        procedure_type = data.get('procedure_type')
-        jurisdiction = data.get('jurisdiction')
-        
-        if not procedure_type:
-            return jsonify({'error': 'Procedure type is required'}), 400
-
-        prompt = f"Explain the procedure for {procedure_type}"
-        if jurisdiction:
-            prompt += f" in {jurisdiction}"
-
-        response = await ai_service_manager.get_response(
-            prompt=prompt,
-            provider=AIProvider.MISTRAL,
-            task_type='procedure_guidance'
-        )
-        
-        return jsonify({
-            'guidance': response['text'],
-            'model': response['model'],
-            'provider': response['provider'],
-            'tokens': response['tokens'],
-            'status': 'success'
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@bp.route('/precedent', methods=['POST'])
-async def search_precedents():
-    try:
-        data = request.json or {}
-        case_details = data.get('case_details')
-        jurisdiction = data.get('jurisdiction')
-        
-        if not case_details:
-            return jsonify({'error': 'Case details are required'}), 400
-
-        prompt = f"Find relevant precedents for: {case_details}"
-        if jurisdiction:
-            prompt += f" in {jurisdiction}"
-
-        response = await ai_service_manager.get_response(
-            prompt=prompt,
-            provider=AIProvider.FALCON,
-            task_type='precedent_search'
-        )
-        
-        return jsonify({
-            'precedents': response['text'],
-            'model': response['model'],
-            'provider': response['provider'],
-            'tokens': response['tokens'],
-            'status': 'success'
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@bp.route('/statute', methods=['POST'])
-async def interpret_statute():
-    try:
-        data = request.json or {}
-        statute = data.get('statute')
-        context = data.get('context')
-        
-        if not statute:
-            return jsonify({'error': 'Statute reference is required'}), 400
-
-        prompt = f"Interpret statute: {statute}"
-        if context:
-            prompt += f"\nContext: {context}"
-
-        response = await ai_service_manager.get_response(
-            prompt=prompt,
-            provider=AIProvider.FALCON,
-            task_type='statute_interpretation'
-        )
-        
-        return jsonify({
-            'interpretation': response['text'],
-            'model': response['model'],
-            'provider': response['provider'],
-            'tokens': response['tokens'],
-            'status': 'success'
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@bp.route('/review-agreement', methods=['POST'])
-async def review_agreement():
-    try:
-        data = request.json or {}
-        agreement = data.get('agreement')
-        focus_areas = data.get('focus_areas', [])
-        
-        if not agreement:
-            return jsonify({'error': 'Agreement text is required'}), 400
-
-        prompt = f"Review this agreement: {agreement}"
-        if focus_areas:
-            prompt += f"\nFocus on these areas: {', '.join(focus_areas)}"
-
-        response = await ai_service_manager.get_response(
-            prompt=prompt,
-            provider=AIProvider.LLAMA,
-            task_type='agreement_review'
-        )
-        
-        return jsonify({
-            'review': response['text'],
-            'model': response['model'],
-            'provider': response['provider'],
-            'tokens': response['tokens'],
-            'status': 'success'
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@bp.route('/form-guidance', methods=['POST'])
-async def provide_form_guidance():
-    try:
-        data = request.json or {}
-        form_type = data.get('form_type')
-        jurisdiction = data.get('jurisdiction')
-        
-        if not form_type:
-            return jsonify({'error': 'Form type is required'}), 400
-
-        prompt = f"Provide guidance for completing {form_type} form"
-        if jurisdiction:
-            prompt += f" in {jurisdiction}"
-
-        response = await ai_service_manager.get_response(
-            prompt=prompt,
-            provider=AIProvider.LLAMA,
-            task_type='legal_form_filling'
-        )
-        
-        return jsonify({
-            'guidance': response['text'],
-            'model': response['model'],
-            'provider': response['provider'],
-            'tokens': response['tokens'],
-            'status': 'success'
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500 
+        logger.error(f"Error getting models: {str(e)}")
+        return jsonify({"error": str(e)}), 500 

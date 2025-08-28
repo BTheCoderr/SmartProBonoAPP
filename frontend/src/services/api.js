@@ -8,7 +8,7 @@ const getToken = () => {
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: config.apiUrl,
+  baseURL: config.baseURL || '',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -29,16 +29,29 @@ export const legalRightsApi = {
 
 // Legal Chat API
 export const legalChatApi = {
-  sendMessage: async (message, taskType = 'chat') => {
+  sendMessage: async (params, taskType) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/legal/chat`, {
+      // Handle both old and new parameter formats for backward compatibility
+      let message, task_type;
+      
+      if (typeof params === 'object') {
+        // New format: {message: '...', task_type: '...'}
+        message = params.message;
+        task_type = params.task_type || 'chat';
+      } else {
+        // Old format: (message, taskType)
+        message = params;
+        task_type = taskType || 'chat';
+      }
+      
+      const response = await fetch('/api/legal/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
           message,
-          task_type: taskType,
+          task_type,
           include_model_info: true
         }),
       });
@@ -58,7 +71,7 @@ export const legalChatApi = {
   // Add specialized endpoints for different tasks
   generateDocument: async (prompt, documentType) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/legal/draft`, {
+      const response = await fetch('/api/legal/draft', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +96,7 @@ export const legalChatApi = {
 
   researchRights: async (query) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/legal/research`, {
+      const response = await fetch('/api/legal/research', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +120,7 @@ export const legalChatApi = {
 
   analyzeLegal: async (query) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/legal/analyze`, {
+      const response = await fetch('/api/legal/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -454,7 +467,7 @@ export const documentsApi = {
       }
       
       // If not in test mode, use the real API
-      const response = await fetch('http://localhost:5003/api/documents/scan', {
+      const response = await fetch('/api/documents/scan', {
         method: 'POST',
         body: formData,
       });
@@ -478,11 +491,11 @@ export const immigrationApi = {
   async getVisaRequirements(visaType, accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/visa-requirements?type=${visaType}`, {
+      const response = await fetch('/api/immigration/visa-requirements?type=' + visaType, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         }
       });
       
@@ -500,11 +513,11 @@ export const immigrationApi = {
   async submitApplication(applicationData, accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/submit-application`, {
+      const response = await fetch('/api/immigration/submit-application', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify(applicationData)
       });
@@ -523,11 +536,11 @@ export const immigrationApi = {
   async submitImmigrationForm(formData, accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/intake-form`, {
+      const response = await fetch('/api/immigration/intake-form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify(formData)
       });
@@ -547,11 +560,11 @@ export const immigrationApi = {
   async getIntakeForms(accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/intake-forms`, {
+      const response = await fetch('/api/immigration/intake-forms', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         }
       });
       
@@ -569,11 +582,11 @@ export const immigrationApi = {
   async getIntakeFormById(formId, accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/intake-forms/${formId}`, {
+      const response = await fetch('/api/immigration/intake-forms/' + formId, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         }
       });
       
@@ -591,11 +604,11 @@ export const immigrationApi = {
   async updateFormStatus(formId, status, accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/intake-forms/${formId}/status`, {
+      const response = await fetch('/api/immigration/intake-forms/' + formId + '/status', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify({ status })
       });
@@ -615,11 +628,11 @@ export const immigrationApi = {
   async getCases(accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/cases`, {
+      const response = await fetch('/api/immigration/cases', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         }
       });
       
@@ -637,11 +650,11 @@ export const immigrationApi = {
   async getCaseById(caseId, accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/cases/${caseId}`, {
+      const response = await fetch('/api/immigration/cases/' + caseId, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         }
       });
       
@@ -659,11 +672,11 @@ export const immigrationApi = {
   async updateCaseStatus(caseId, status, accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/cases/${caseId}/status`, {
+      const response = await fetch('/api/immigration/cases/' + caseId + '/status', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify({ status })
       });
@@ -686,10 +699,10 @@ export const immigrationApi = {
       formData.append('file', file);
       formData.append('documentType', documentType);
       
-      const response = await fetch(`${config.apiUrl}/api/immigration/cases/${caseId}/documents`, {
+      const response = await fetch('/api/immigration/cases/' + caseId + '/documents', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         },
         body: formData
       });
@@ -708,11 +721,11 @@ export const immigrationApi = {
   async getCaseDocuments(caseId, accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/cases/${caseId}/documents`, {
+      const response = await fetch('/api/immigration/cases/' + caseId + '/documents', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         }
       });
       
@@ -730,11 +743,11 @@ export const immigrationApi = {
   async getNotifications(accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/notifications`, {
+      const response = await fetch('/api/immigration/notifications', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         }
       });
       
@@ -752,11 +765,11 @@ export const immigrationApi = {
   async markNotificationAsRead(notificationId, accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/notifications/${notificationId}/read`, {
+      const response = await fetch('/api/immigration/notifications/' + notificationId + '/read', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         }
       });
       
@@ -774,11 +787,11 @@ export const immigrationApi = {
   async getUpcomingEvents(accessToken) {
     try {
       const token = accessToken || getToken();
-      const response = await fetch(`${config.apiUrl}/api/immigration/events`, {
+      const response = await fetch('/api/immigration/events', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         }
       });
       
@@ -808,7 +821,7 @@ export const expungementApi = {
 
   getStateRules: async (state) => {
     try {
-      const response = await api.get(`/api/expungement/rules/${state}`);
+      const response = await api.get('/api/expungement/rules/' + state);
       return response.data;
     } catch (error) {
       console.error('Error fetching state rules:', error);
@@ -828,7 +841,7 @@ export const expungementApi = {
 
   saveProgress: async (caseId, progressData) => {
     try {
-      const response = await api.put(`/api/expungement/${caseId}/progress`, progressData);
+      const response = await api.put('/api/expungement/' + caseId + '/progress', progressData);
       return response.data;
     } catch (error) {
       console.error('Error saving progress:', error);
@@ -838,7 +851,7 @@ export const expungementApi = {
 
   getRequiredDocuments: async (state, caseType) => {
     try {
-      const response = await api.get(`/api/expungement/documents/${state}/${caseType}`);
+      const response = await api.get('/api/expungement/documents/' + state + '/' + caseType);
       return response.data;
     } catch (error) {
       console.error('Error fetching required documents:', error);
@@ -851,7 +864,7 @@ export const expungementApi = {
 export const feedbackApi = {
   submit: async (feedbackData) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/feedback`, {
+      const response = await fetch('/api/feedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -873,7 +886,7 @@ export const feedbackApi = {
 
   getAnalytics: async () => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/feedback/analytics`);
+      const response = await fetch('/api/feedback/analytics');
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -892,7 +905,7 @@ export const feedbackApi = {
 export const conversationApi = {
   save: async (conversationData) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/conversations`, {
+      const response = await fetch('/api/conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -914,7 +927,7 @@ export const conversationApi = {
 
   getByUserId: async (userId) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/conversations/${userId}`);
+      const response = await fetch('/api/conversations/' + userId);
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -933,7 +946,7 @@ export const conversationApi = {
 export const contractsApi = {
   generate: async (templateName, formData, language) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/contracts/generate`, {
+      const response = await fetch('/api/contracts/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -974,7 +987,7 @@ export const contractsApi = {
 
   getTemplates: async () => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/contracts/templates`);
+      const response = await fetch('/api/contracts/templates');
       if (!response.ok) {
         throw new Error('Failed to fetch templates');
       }

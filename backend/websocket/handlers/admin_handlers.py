@@ -8,13 +8,13 @@ import logging
 from flask import request, current_app
 from flask_socketio import emit
 
-from backend.websocket.utils.auth import authenticate_connection, check_authorization
-from backend.websocket.services.connection_service import (
+from websocket.utils.auth import authenticate_connection, check_authorization
+from websocket.services.connection_service import (
     get_connection_user,
     get_connected_users,
     get_connection_stats
 )
-from backend.websocket.services.notification_service import (
+from websocket.services.notification_service import (
     get_notification_stats,
     send_broadcast_notification
 )

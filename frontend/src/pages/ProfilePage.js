@@ -1,3 +1,5 @@
+// WARNING: Imports have been commented out to fix linting errors.
+// Uncomment specific imports as needed when using them.
 import React, { useState, useEffect } from 'react';
 import { 
   Container, 
@@ -36,8 +38,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SecurityIcon from '@mui/icons-material/Security';
-import EmailIcon from '@mui/icons-material/Email';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/Warning';

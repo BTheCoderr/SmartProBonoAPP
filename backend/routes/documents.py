@@ -1,30 +1,29 @@
-from flask import Blueprint, request, jsonify, current_app, send_file
+from flask import Blueprint, request, jsonify, Response, current_app, send_file
 from datetime import datetime
 import re
-from database import db
-from models.document import Document
-from models.user import User
-from services.email_service import send_document_share_email
+from bson import ObjectId
+from ..database import db, mongo
+from ..models.document import Document
+from ..models.user import User
+from ..services.email_service import send_document_share_email
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from document_service import DocumentService
+from ..services.document_service import DocumentService
 from werkzeug.utils import secure_filename
 import os
-from bson import ObjectId
 import logging
-from database.mongo import mongo
-from utils.auth import login_required
-from services.notification_service import NotificationService
+from ..utils.auth import login_required
+from ..services.notification_service import NotificationService
 
 # Import OCR services
-from services.ocr_service import ocr_service
-from services.ocr_storage_service import ocr_storage_service
+from ..services.ocr_service import ocr_service
+from ..services.ocr_storage_service import ocr_storage_service
 
-from middleware.validation import validate_json_request, validate_query_params
-from middleware.rate_limiting import rate_limiter
-from services.document_management_service import document_management_service
-from services.validation_service import validation_service
-from services.error_logging_service import error_logging_service
-from utils.decorators import token_required
+from ..middleware.validation import validate_json_request, validate_query_params
+from ..middleware.rate_limiting import rate_limiter
+from ..services.document_management_service import document_management_service
+from ..services.validation_service import validation_service
+from ..services.error_logging_service import error_logging_service
+from ..utils.decorators import token_required
 from typing import Dict, Any, List, Optional
 
 bp = Blueprint('documents', __name__, url_prefix='/api/documents')

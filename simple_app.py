@@ -154,6 +154,36 @@ def create_app(test_config=None):
     except ImportError:
         app.logger.warning("Could not import paralegal blueprint")
     
+    @app.route('/api/health')
+    def health_check():
+        """Health check endpoint that matches the screenshot"""
+        return jsonify({
+            "message": "API is running",
+            "status": "ok",
+            "version": "1.0.0"
+        })
+    
+    @app.route('/api/beta/signup', methods=['POST'])
+    def signup():
+        """Handle signup requests with email"""
+        try:
+            data = request.get_json()
+            email = data.get('email', '')
+            
+            if not email or '@' not in email:
+                return jsonify({"status": "error", "message": "Invalid email address"}), 400
+            
+            # In a real application, you would save this to a database
+            print(f"Received signup for email: {email}")
+            
+            return jsonify({
+                "status": "success", 
+                "message": "Thank you for signing up! We'll be in touch soon."
+            })
+        except Exception as e:
+            print(f"Error processing signup: {str(e)}")
+            return jsonify({"status": "error", "message": str(e)}), 500
+    
     return app
 
 if __name__ == '__main__':

@@ -25,6 +25,10 @@ import Resources from './pages/Resources';
 import RightsPage from './pages/RightsPage';
 import Services from './pages/Services';
 import VirtualParalegalPage from './pages/VirtualParalegalPage';
+import DocumentsPage from './pages/DocumentsPage';
+import ExpertHelpPage from './pages/ExpertHelpPage';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
 // Core layout components
 import Header from './components/Header';
@@ -261,6 +265,12 @@ function AppContent() {
             <Route path="/legal-chat" element={<LegalAIChatPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/expert-help" element={<ExpertHelpPage />} />
+            
+            {/* Additional MVP routes */}
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/contact" element={<Contact />} />
             
             {/* Conditionally render premium features */}
             <Route 

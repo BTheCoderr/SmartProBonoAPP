@@ -1,0 +1,181 @@
+{
+  "common": {
+    "appName": "SmartProBono",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "loading": "Cargando...",
+    "changeLanguage": "Cambiar Idioma",
+    "search": "Buscar",
+    "view": "Ver",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "create": "Crear"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "forms": "Formularios",
+    "documents": "Documentos",
+    "resources": "Recursos",
+    "chat": "Chat Legal IA",
+    "profile": "Perfil",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "forgotPassword": "¿Olvidó su Contraseña?",
+    "resetPassword": "Restablecer Contraseña",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "username": "Nombre de Usuario",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "alreadyHaveAccount": "¿Ya tiene una cuenta?",
+    "dontHaveAccount": "¿No tiene una cuenta?",
+    "createAccount": "Crear cuenta",
+    "passwordRequirements": "La contraseña debe tener al menos 8 caracteres e incluir al menos una letra mayúscula, una letra minúscula, un número y un carácter especial."
+  },
+  "dashboard": {
+    "welcome": "Bienvenido de nuevo",
+    "recentDocuments": "Documentos Recientes",
+    "upcomingDeadlines": "Próximos Plazos",
+    "notifications": "Notificaciones",
+    "quickActions": "Acciones Rápidas",
+    "documents": "Documentos",
+    "completedDocuments": "Completados",
+    "inProgressDocuments": "En Progreso",
+    "pendingReview": "Pendiente de Revisión",
+    "noDocuments": "Aún no tiene documentos",
+    "noDeadlines": "No hay plazos próximos",
+    "noNotifications": "No tiene notificaciones",
+    "viewAll": "Ver Todo",
+    "createNew": "Crear Nuevo"
+  },
+  "documents": {
+    "title": "Documentos",
+    "createNew": "Crear Nuevo Documento",
+    "myDocuments": "Mis Documentos",
+    "documentTypes": "Tipos de Documentos",
+    "status": "Estado",
+    "lastUpdated": "Última Actualización",
+    "progress": "Progreso",
+    "actions": "Acciones",
+    "preview": "Vista Previa",
+    "download": "Descargar",
+    "share": "Compartir",
+    "delete": "Eliminar",
+    "submitDocument": "Enviar Documento",
+    "saveDraft": "Guardar Borrador",
+    "documentSaved": "¡Documento guardado con éxito!",
+    "documentSubmitted": "¡Documento enviado con éxito!",
+    "steps": {
+      "personalInfo": "Información Personal",
+      "details": "Detalles del Documento",
+      "review": "Revisar y Enviar"
+    },
+    "types": {
+      "expungement": "Solicitud de Eliminación de Antecedentes",
+      "housing": "Carta de Defensa de Vivienda",
+      "fee_waiver": "Solicitud de Exención de Tarifas"
+    },
+    "status": {
+      "completed": "Completado",
+      "in_progress": "En Progreso",
+      "pending_review": "Pendiente de Revisión",
+      "draft": "Borrador"
+    },
+    "ai": {
+      "help": "Asistencia IA",
+      "analyzing": "Analizando formulario...",
+      "generating": "Generando sugerencias...",
+      "applied": "¡Sugerencias aplicadas!",
+      "error": "Error al generar sugerencias"
+    }
+  },
+  "forms": {
+    "title": "Formularios",
+    "selectType": "Seleccionar Tipo de Formulario",
+    "expungement": {
+      "title": "Formulario de Solicitud de Eliminación de Antecedentes",
+      "description": "Solicitud para limpiar su registro criminal"
+    },
+    "housing": {
+      "title": "Carta de Defensa de Vivienda",
+      "description": "Carta para defenderse contra desalojo o problemas de vivienda"
+    },
+    "feeWaiver": {
+      "title": "Solicitud de Exención de Tarifas",
+      "description": "Solicite la exención de tasas judiciales"
+    }
+  },
+  "chat": {
+    "title": "Chat Legal IA",
+    "placeholder": "Haga una pregunta legal...",
+    "send": "Enviar",
+    "loadingResponse": "Asistente está escribiendo...",
+    "welcomeMessage": "¡Hola! Soy su asistente legal. ¿Cómo puedo ayudarle hoy?",
+    "generateDocument": "Generar Documento",
+    "saveConversation": "Guardar Conversación",
+    "startNewChat": "Iniciar Nuevo Chat",
+    "suggestedQuestions": "Preguntas Sugeridas",
+    "modelSelection": "Seleccionar Modelo de IA",
+    "feedback": "¿Fue útil esta respuesta?"
+  },
+  "resources": {
+    "title": "Recursos Legales",
+    "description": "Acceda a recursos legales gratuitos, documentos y materiales educativos",
+    "categories": {
+      "immigration": "Recursos de Inmigración",
+      "housing": "Derechos de Vivienda e Inquilinos",
+      "expungement": "Eliminación y Limpieza de Antecedentes",
+      "familyLaw": "Derecho Familiar",
+      "consumerRights": "Derechos del Consumidor"
+    },
+    "types": {
+      "pdf": "PDF",
+      "article": "Artículo",
+      "video": "Video",
+      "link": "Enlace Externo",
+      "template": "Plantilla"
+    },
+    "actions": {
+      "view": "Ver",
+      "download": "Descargar",
+      "visit": "Visitar"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "personalInfo": "Información Personal",
+    "security": "Seguridad",
+    "notifications": "Notificaciones",
+    "preferences": "Preferencias",
+    "updateProfile": "Actualizar Perfil",
+    "changePassword": "Cambiar Contraseña",
+    "notificationPreferences": "Preferencias de Notificación",
+    "emailNotifications": "Notificaciones por Correo Electrónico",
+    "pushNotifications": "Notificaciones en la Aplicación",
+    "notificationTypes": "Tipos de Notificaciones",
+    "language": "Idioma",
+    "darkMode": "Modo Oscuro",
+    "accessibility": "Accesibilidad"
+  },
+  "errors": {
+    "general": "Ocurrió un error. Por favor, inténtelo de nuevo.",
+    "login": "Correo electrónico o contraseña inválidos.",
+    "register": "El registro falló. Por favor, inténtelo de nuevo.",
+    "requiredField": "Este campo es obligatorio",
+    "invalidEmail": "Dirección de correo electrónico inválida",
+    "passwordMatch": "Las contraseñas no coinciden",
+    "networkError": "Error de red. Por favor, compruebe su conexión.",
+    "unauthorized": "No está autorizado para ver esta página.",
+    "notFound": "No se encontró el recurso solicitado."
+  }
+} 

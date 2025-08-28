@@ -1,0 +1,24 @@
+{
+  "name": "@smartprobono/doc-ai",
+  "version": "1.0.0",
+  "description": "Document AI processing package for SmartProBono",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "document-ai",
+    "ocr",
+    "embeddings",
+    "legal",
+    "smartprobono"
+  ],
+  "author": "SmartProBono Team",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}

@@ -8,8 +8,8 @@ import logging
 from flask import request
 from flask_socketio import emit
 
-from backend.websocket.services.connection_service import get_connection_user
-from backend.websocket.services.notification_service import (
+from websocket.services.connection_service import get_connection_user
+from websocket.services.notification_service import (
     mark_notification_read,
     get_user_notifications,
     delete_notification

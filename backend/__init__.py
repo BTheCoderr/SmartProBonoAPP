@@ -11,10 +11,17 @@ from flask_migrate import Migrate
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import redis
+import logging
+import os
+from dotenv import load_dotenv
+from flask_pymongo import PyMongo
 
 from .extensions import db, mongo, mail, socketio, jwt, migrate, limiter
 from .config import config
 from .utils.template_filters import register_filters
+
+# Load environment variables
+load_dotenv()
 
 # Initialize Redis client
 redis_client = None
@@ -31,7 +38,9 @@ def create_app(config_object=None):
     app = Flask(__name__)
     
     # Load configuration
-    if config_object:
+    if config_object is None:
+        app.config.from_object('config.Config')
+    else:
         app.config.from_object(config_object)
     
     # Initialize extensions
@@ -60,7 +69,7 @@ def create_app(config_object=None):
     init_middleware(app)
     
     # Initialize WebSocket notification service
-    from backend.websocket.services.notification_service import init_redis_subscription
+    from websocket.services.notification_service import init_redis_subscription
     init_redis_subscription()
     
     return app

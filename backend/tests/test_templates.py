@@ -1,8 +1,8 @@
 """Tests for template functionality"""
 import pytest
 from io import BytesIO
-from backend.models.template import Template
-from backend.extensions import db
+from models.template import Template
+from extensions import db
 
 @pytest.fixture
 def sample_template(app):

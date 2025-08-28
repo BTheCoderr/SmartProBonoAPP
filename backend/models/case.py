@@ -1,185 +1,89 @@
+"""
+Case model for the SmartProBono application.
+"""
 from datetime import datetime
-from bson import ObjectId
-from database.mongo import mongo
-from models.user import User
-import logging
-from typing import Optional, List, Dict, Any, cast
-from pymongo.database import Database
-from pymongo.collection import Collection
+from database import db
+import json
 
-logger = logging.getLogger(__name__)
+class Case(db.Model):
+    """Case model for storing legal cases."""
+    __tablename__ = 'cases'
 
-class Case:
-    def __init__(self, data: Dict[str, Any]):
-        self.data = data
-        self.data['created_at'] = datetime.utcnow()
-        self.data['updated_at'] = datetime.utcnow()
-
-    def save(self) -> Optional[str]:
-        """Save case to MongoDB if available"""
-        try:
-            db = mongo.db
-            if db is None:
-                logger.warning("MongoDB not available - case will not be persisted")
-                return None
-            
-            # After None check, we can safely assert the type
-            db = cast(Database, db)
-            result = db.cases.insert_one(self.data)
-            return str(result.inserted_id)
-        except Exception as e:
-            logger.error(f"Failed to save case to MongoDB: {str(e)}")
-            return None
-
-    @staticmethod
-    def find_by_id(case_id: str) -> Optional[Dict[str, Any]]:
-        """Find case by ID if MongoDB is available"""
-        try:
-            db = mongo.db
-            if db is None:
-                logger.warning("MongoDB not available - cannot retrieve case")
-                return None
-            
-            # After None check, we can safely assert the type
-            db = cast(Database, db)
-            return db.cases.find_one({'_id': ObjectId(case_id)})
-        except Exception as e:
-            logger.error(f"Failed to find case in MongoDB: {str(e)}")
-            return None
-
-    @staticmethod
-    def find_all() -> List[Dict[str, Any]]:
-        """Find all cases if MongoDB is available"""
-        try:
-            db = mongo.db
-            if db is None:
-                logger.warning("MongoDB not available - cannot retrieve cases")
-                return []
-            
-            # After None check, we can safely assert the type
-            db = cast(Database, db)
-            return list(db.cases.find())
-        except Exception as e:
-            logger.error(f"Failed to retrieve cases from MongoDB: {str(e)}")
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    client_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    attorney_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    status = db.Column(db.String(50), default='open')
+    case_type = db.Column(db.String(50), nullable=True)
+    priority = db.Column(db.String(20), default='medium')
+    practice_area = db.Column(db.String(100), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    due_date = db.Column(db.DateTime, nullable=True)
+    _notes = db.Column('notes', db.Text, nullable=True)
+    _tags = db.Column('tags', db.Text, nullable=True)
+    
+    # Relationships
+    documents = db.relationship('Document', backref='case', lazy=True)
+    
+    @property
+    def tags(self):
+        """Get case tags as a list."""
+        if not self._tags:
             return []
-
-    def update(self) -> bool:
-        """Update case if MongoDB is available"""
-        try:
-            db = mongo.db
-            if db is None:
-                logger.warning("MongoDB not available - case will not be updated")
-                return False
+        return json.loads(self._tags)
+        
+    @tags.setter
+    def tags(self, value):
+        """Set case tags from a list."""
+        if isinstance(value, list):
+            self._tags = json.dumps(value)
+        else:
+            self._tags = None
             
-            # After None check, we can safely assert the type
-            db = cast(Database, db)
-            result = db.cases.update_one(
-                {'_id': ObjectId(self.data.get('_id'))},
-                {'$set': {**self.data, 'updated_at': datetime.utcnow()}}
-            )
-            return result.modified_count > 0
-        except Exception as e:
-            logger.error(f"Failed to update case in MongoDB: {str(e)}")
-            return False
-
-    def delete(self) -> bool:
-        """Delete case if MongoDB is available"""
-        try:
-            db = mongo.db
-            if db is None:
-                logger.warning("MongoDB not available - case will not be deleted")
-                return False
-            
-            # After None check, we can safely assert the type
-            db = cast(Database, db)
-            result = db.cases.delete_one({'_id': ObjectId(self.data.get('_id'))})
-            return result.deleted_count > 0
-        except Exception as e:
-            logger.error(f"Failed to delete case from MongoDB: {str(e)}")
-            return False
-
-class CaseStore:
-    @staticmethod
-    def create(case_data):
-        """Create a new case in MongoDB"""
-        try:
-            db = mongo.db
-            if db is None:
-                logger.warning("MongoDB not available - case will not be created")
-                return None
-            
-            # After None check, we can safely assert the type
-            db = cast(Database, db)
-            case_data['created_at'] = datetime.utcnow()
-            case_data['updated_at'] = datetime.utcnow()
-            result = db.cases.insert_one(case_data)
-            return str(result.inserted_id)
-        except Exception as e:
-            logger.error(f"Failed to create case in MongoDB: {str(e)}")
-            return None
-    
-    @staticmethod
-    def find(query=None):
-        """Find cases matching the query"""
-        query = query or {}
-        db = mongo.db
-        if db is None:
-            logger.warning("MongoDB not available - cannot find cases")
+    @property
+    def notes(self):
+        """Get case notes as a list."""
+        if not self._notes:
             return []
-            
-        # After None check, we can safely assert the type
-        db = cast(Database, db)
-        cursor = db.cases.find(query)
-        return [{**case, '_id': str(case['_id'])} for case in cursor]
+        return json.loads(self._notes)
+        
+    @notes.setter
+    def notes(self, value):
+        """Set case notes from a list."""
+        if isinstance(value, list):
+            self._notes = json.dumps(value)
+        else:
+            self._notes = None
     
-    @staticmethod
-    def find_one(query):
-        """Find a single case matching the query"""
-        try:
-            db = mongo.db
-            if db is None:
-                logger.warning("MongoDB not available - cannot find case")
-                return None
-            
-            # After None check, we can safely assert the type
-            db = cast(Database, db)
-            
-            if '_id' in query and isinstance(query['_id'], str):
-                query['_id'] = ObjectId(query['_id'])
-            case = db.cases.find_one(query)
-            if case:
-                case['_id'] = str(case['_id'])
-            return case
-        except Exception as e:
-            logger.error(f"Failed to find case in MongoDB: {str(e)}")
-            return None
-    @staticmethod
-    def update_one(query, update_data):
-        """Update a case in MongoDB"""
-        if '_id' in query and isinstance(query['_id'], str):
-            query['_id'] = ObjectId(query['_id'])
-        db = mongo.db
-        if db is None:
-            logger.warning("MongoDB not available - cannot update case")
-            return 0
-            
-        # After None check, we can safely assert the type
-        db = cast(Database, db)
-        update_data['$set']['updated_at'] = datetime.utcnow()
-        result = db.cases.update_one(query, update_data)
-        return result.modified_count
-    
-    @staticmethod
-    def delete_one(query):
-        """Delete a case from MongoDB"""
-        if '_id' in query and isinstance(query['_id'], str):
-            query['_id'] = ObjectId(query['_id'])
-        db = mongo.db
-        if db is None:
-            logger.warning("MongoDB not available - cannot delete case")
-            return 0
-            
-        # After None check, we can safely assert the type
-        db = cast(Database, db)
-        result = db.cases.delete_one(query)
-        return result.deleted_count
+    def add_note(self, note_text, user_id):
+        """Add a note to the case."""
+        current_notes = self.notes
+        new_note = {
+            'text': note_text,
+            'user_id': user_id,
+            'timestamp': datetime.utcnow().isoformat()
+        }
+        current_notes.append(new_note)
+        self._notes = json.dumps(current_notes)
+        
+    def to_dict(self):
+        """Convert case to a dictionary."""
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'client_id': self.client_id,
+            'attorney_id': self.attorney_id,
+            'status': self.status,
+            'case_type': self.case_type,
+            'priority': self.priority,
+            'practice_area': self.practice_area,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'due_date': self.due_date.isoformat() if self.due_date else None,
+            'notes': self.notes,
+            'tags': self.tags,
+            'document_count': len(self.documents) if self.documents else 0
+        } 

@@ -26,6 +26,10 @@ import {
   DialogContent,
   DialogActions,
   Grid,
+  Card,
+  CardContent,
+  Divider,
+  Chip,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -39,13 +43,26 @@ import MicIcon from '@mui/icons-material/Mic';
 import VoiceInput from './VoiceInput';
 import { toast } from 'react-hot-toast';
 import documentsApi from '../services/documentsApi';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import DescriptionIcon from '@mui/icons-material/Description';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import CloseIcon from '@mui/icons-material/Close';
+import PreviewIcon from '@mui/icons-material/Preview';
+import DocumentPreview from './DocumentPreview';
+import { useAuth } from '../context/AuthContext';
 
-const DocumentGenerator = () => {
+const DocumentGenerator = ({ 
+  documentType,
+  initialValues = {},
+  onSubmit,
+  onSave 
+}) => {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { currentUser } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [selectedTemplate, setSelectedTemplate] = useState('');
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(initialValues);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [templates, setTemplates] = useState([]);
@@ -62,6 +79,89 @@ const DocumentGenerator = () => {
     return saved ? JSON.parse(saved) : {};
   });
   const [isListening, setIsListening] = useState(false);
+  const [isAIHelping, setIsAIHelping] = useState(false);
+  const [aiStatus, setAiStatus] = useState('');
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Document templates based on document type
+  const documentTemplates = {
+    expungement: {
+      title: 'Expungement Request Form',
+      steps: [
+        { label: 'Personal Information', fields: ['fullName', 'dateOfBirth', 'address', 'phoneNumber', 'email'] },
+        { label: 'Case Information', fields: ['caseNumber', 'courtName', 'convictionDate', 'offenseDescription'] },
+        { label: 'Eligibility Information', fields: ['completedSentence', 'timeSinceConviction', 'otherConvictions'] },
+        { label: 'Supporting Documents', fields: ['documentsAttached', 'additionalStatements'] },
+        { label: 'Review & Submit', fields: [] }
+      ],
+    },
+    housing: {
+      title: 'Housing Defense Letter',
+      steps: [
+        { label: 'Personal Information', fields: ['fullName', 'address', 'email', 'phoneNumber'] },
+        { label: 'Landlord Information', fields: ['landlordName', 'landlordAddress'] },
+        { label: 'Tenancy Details', fields: ['leaseStartDate', 'monthlyRent', 'unitDetails'] },
+        { label: 'Defense Details', fields: ['issueDescription', 'issueStartDate', 'attemptedResolution'] },
+        { label: 'Review & Submit', fields: [] }
+      ],
+    },
+    fee_waiver: {
+      title: 'Fee Waiver Application',
+      steps: [
+        { label: 'Personal Information', fields: ['fullName', 'address', 'phoneNumber', 'email'] },
+        { label: 'Financial Information', fields: ['monthlyIncome', 'householdSize', 'publicBenefits'] },
+        { label: 'Case Information', fields: ['caseNumber', 'courtName', 'caseType'] },
+        { label: 'Review & Submit', fields: [] }
+      ],
+    },
+  };
+
+  // Field definitions for each document type
+  const fieldDefinitions = {
+    expungement: {
+      fullName: { label: 'Full Legal Name', type: 'text', required: true },
+      dateOfBirth: { label: 'Date of Birth', type: 'date', required: true },
+      address: { label: 'Current Address', type: 'text', required: true },
+      phoneNumber: { label: 'Phone Number', type: 'tel', required: true },
+      email: { label: 'Email Address', type: 'email', required: true },
+      caseNumber: { label: 'Case Number', type: 'text', required: true },
+      courtName: { label: 'Court Name', type: 'text', required: true },
+      convictionDate: { label: 'Date of Conviction', type: 'date', required: true },
+      offenseDescription: { label: 'Description of Offense', type: 'textarea', required: true },
+      completedSentence: { label: 'Have you completed all terms of your sentence?', type: 'select', options: ['Yes', 'No'], required: true },
+      timeSinceConviction: { label: 'Time since conviction (years)', type: 'number', required: true },
+      otherConvictions: { label: 'Do you have other convictions?', type: 'select', options: ['Yes', 'No'], required: true },
+      documentsAttached: { label: 'List of documents attached', type: 'textarea', required: false },
+      additionalStatements: { label: 'Additional statements', type: 'textarea', required: false },
+    },
+    housing: {
+      fullName: { label: 'Full Legal Name', type: 'text', required: true },
+      address: { label: 'Current Address', type: 'text', required: true },
+      email: { label: 'Email Address', type: 'email', required: true },
+      phoneNumber: { label: 'Phone Number', type: 'tel', required: true },
+      landlordName: { label: 'Landlord Name', type: 'text', required: true },
+      landlordAddress: { label: 'Landlord Address', type: 'text', required: true },
+      leaseStartDate: { label: 'Lease Start Date', type: 'date', required: true },
+      monthlyRent: { label: 'Monthly Rent', type: 'number', required: true },
+      unitDetails: { label: 'Unit Details', type: 'textarea', required: false },
+      issueDescription: { label: 'Description of Issue', type: 'textarea', required: true },
+      issueStartDate: { label: 'Date Issue Began', type: 'date', required: true },
+      attemptedResolution: { label: 'Steps Taken to Resolve Issue', type: 'textarea', required: true },
+    },
+    fee_waiver: {
+      fullName: { label: 'Full Legal Name', type: 'text', required: true },
+      address: { label: 'Current Address', type: 'text', required: true },
+      phoneNumber: { label: 'Phone Number', type: 'tel', required: true },
+      email: { label: 'Email Address', type: 'email', required: true },
+      monthlyIncome: { label: 'Monthly Income', type: 'number', required: true },
+      householdSize: { label: 'Number of People in Household', type: 'number', required: true },
+      publicBenefits: { label: 'Do you receive public benefits?', type: 'select', options: ['Yes', 'No'], required: true },
+      caseNumber: { label: 'Case Number', type: 'text', required: false },
+      courtName: { label: 'Court Name', type: 'text', required: true },
+      caseType: { label: 'Type of Case', type: 'text', required: true },
+    }
+  };
 
   // Fetch available templates and their metadata
   useEffect(() => {
@@ -116,6 +216,19 @@ const DocumentGenerator = () => {
       }));
     }
   }, [formData, selectedTemplate, activeStep]);
+
+  useEffect(() => {
+    // Load any saved draft from localStorage
+    const savedDraft = localStorage.getItem(`${documentType}FormDraft`);
+    if (savedDraft && Object.keys(initialValues).length === 0) {
+      try {
+        const parsed = JSON.parse(savedDraft);
+        setFormData(parsed.values || {});
+      } catch (e) {
+        console.error('Error loading saved draft:', e);
+      }
+    }
+  }, [documentType, initialValues]);
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
@@ -172,289 +285,381 @@ const DocumentGenerator = () => {
     }
   };
 
-  const renderFieldHelp = (field) => {
-    const validationRule = templateMetadata[selectedTemplate]?.validation_rules?.[field];
-    if (!validationRule) return null;
-
-    let helpText = '';
-    if (typeof validationRule === 'string') {
-      helpText = 'Please enter a valid value';
-    } else if (validationRule.min_length) {
-      helpText = `At least ${validationRule.min_length} item(s) required`;
-    }
-
-    return (
-      <Tooltip title={helpText}>
-        <IconButton size="small" aria-label="help">
-          <HelpOutlineIcon />
-        </IconButton>
-      </Tooltip>
-    );
+  const handleChange = (field, value) => {
+    setFormData(prev => {
+      const newData = { ...prev, [field]: value };
+      
+      // Save to localStorage as draft
+      localStorage.setItem(`${documentType}FormDraft`, JSON.stringify({ 
+        values: newData, 
+        timestamp: new Date().toISOString(),
+        userId: currentUser?.id
+      }));
+      
+      return newData;
+    });
   };
 
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-    const items = Array.from(sections);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setSections(items);
-  };
-
-  const toggleVoiceInput = () => {
-    if (isRecording) {
-      recognition?.stop();
+  const handleNext = () => {
+    const template = documentTemplates[documentType];
+    if (activeStep < template.steps.length - 1) {
+      setActiveStep(prev => prev + 1);
     } else {
-      recognition?.start();
+      handleSubmitDocument();
     }
-    setIsRecording(!isRecording);
   };
 
-  const handleVoiceTranscript = (transcript) => {
-    if (isEditing) {
-      setEditingContent(prev => prev + ' ' + transcript);
-    } else {
-      // Add transcript to the currently selected field
-      const currentField = Object.keys(formData)[0]; // You might want to track the current field
-      if (currentField) {
-        setFormData(prev => ({
-          ...prev,
-          [currentField]: prev[currentField] + ' ' + transcript
+  const handleBack = () => {
+    setActiveStep(prev => Math.max(0, prev - 1));
+  };
+
+  const handleSubmitDocument = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const result = await onSubmit(formData, documentType);
+      
+      // Clear draft from localStorage on successful submission
+      localStorage.removeItem(`${documentType}FormDraft`);
+      
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (err) {
+      setError('Error submitting document. Please try again.');
+      console.error('Error submitting document:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    setLoading(true);
+    
+    try {
+      if (onSave) {
+        await onSave(formData, documentType);
+      }
+      
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (err) {
+      console.error('Error saving draft:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRequestAIHelp = async () => {
+    setIsAIHelping(true);
+    setAiStatus('Analyzing form...');
+    
+    try {
+      // Simulate AI processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setAiStatus('Generating suggestions...');
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Get current step fields
+      const currentTemplate = documentTemplates[documentType];
+      const currentStepFields = currentTemplate.steps[activeStep].fields;
+      
+      // Simulate AI suggestions for empty fields
+      const updatedFormData = { ...formData };
+      let changesMade = false;
+      
+      currentStepFields.forEach(field => {
+        if (!formData[field] && fieldDefinitions[documentType][field]) {
+          // Generate mock data based on field type
+          const fieldDef = fieldDefinitions[documentType][field];
+          
+          if (fieldDef.type === 'text' && field.includes('Name')) {
+            updatedFormData[field] = currentUser?.name || 'John Doe';
+            changesMade = true;
+          } else if (field === 'address') {
+            updatedFormData[field] = '123 Legal Street, Anytown, ST 12345';
+            changesMade = true;
+          } else if (field === 'email') {
+            updatedFormData[field] = currentUser?.email || 'user@example.com';
+            changesMade = true;
+          } else if (field === 'phoneNumber') {
+            updatedFormData[field] = '(555) 123-4567';
+            changesMade = true;
+          } else if (fieldDef.type === 'textarea') {
+            if (field === 'offenseDescription') {
+              updatedFormData[field] = 'Minor misdemeanor offense from 2018.';
+              changesMade = true;
+            } else if (field === 'issueDescription') {
+              updatedFormData[field] = 'Ongoing maintenance issues with plumbing that have not been addressed despite multiple requests.';
+              changesMade = true;
+            }
+          }
+        }
+      });
+      
+      if (changesMade) {
+        setFormData(updatedFormData);
+        localStorage.setItem(`${documentType}FormDraft`, JSON.stringify({ 
+          values: updatedFormData, 
+          timestamp: new Date().toISOString(),
+          userId: currentUser?.id
         }));
       }
+      
+      setAiStatus('Suggestions applied!');
+      setTimeout(() => {
+        setIsAIHelping(false);
+        setAiStatus('');
+      }, 2000);
+      
+    } catch (err) {
+      setAiStatus('Error generating suggestions');
+      console.error('Error with AI assistance:', err);
+      setTimeout(() => {
+        setIsAIHelping(false);
+        setAiStatus('');
+      }, 2000);
     }
   };
 
-  const renderDraggableSections = () => (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="sections">
-        {(provided) => (
-          <div {...provided.droppableProps} ref={provided.innerRef}>
-            {sections.map((section, index) => (
-              <Draggable key={section.id} draggableId={section.id} index={index}>
-                {(provided) => (
-                  <Paper
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    sx={{ mb: 2, p: 2 }}
-                  >
-                    <Grid container alignItems="center" spacing={2}>
-                      <Grid item {...provided.dragHandleProps}>
-                        <DragIndicatorIcon />
-                      </Grid>
-                      <Grid item xs>
-                        <Typography variant="h6">{section.title}</Typography>
-                        <Typography>{section.content}</Typography>
-                      </Grid>
-                      <Grid item>
-                        <IconButton onClick={() => {
-                          setIsEditing(true);
-                          setEditingContent(section.content);
-                        }}>
-                          <EditIcon />
-                        </IconButton>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
-  );
+  const validateStep = () => {
+    const template = documentTemplates[documentType];
+    const currentStepFields = template.steps[activeStep].fields;
+    
+    // Skip validation for review step
+    if (activeStep === template.steps.length - 1) {
+      return true;
+    }
+    
+    for (const field of currentStepFields) {
+      const fieldDef = fieldDefinitions[documentType][field];
+      if (fieldDef && fieldDef.required && !formData[field]) {
+        return false;
+      }
+    }
+    
+    return true;
+  };
+
+  const handleOpenPreview = () => {
+    setPreviewOpen(true);
+  };
+
+  const handleClosePreview = () => {
+    setPreviewOpen(false);
+  };
+
+  // If document type is not valid
+  if (!documentTemplates[documentType]) {
+    return (
+      <Alert severity="error">Invalid document type specified.</Alert>
+    );
+  }
+
+  const template = documentTemplates[documentType];
+  const currentStep = template.steps[activeStep];
+  const currentFields = currentStep.fields;
+  const isLastStep = activeStep === template.steps.length - 1;
+  const canProceed = validateStep();
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
-      <Paper 
-        elevation={3} 
-        sx={{ 
-          p: 4,
-          fontSize: accessibilityMode ? theme.typography[fontSize].fontSize : 'inherit'
-        }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            {t('documents.title')}
-          </Typography>
-          <Box>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={accessibilityMode}
-                  onChange={handleAccessibilityToggle}
-                  icon={<AccessibilityNewIcon />}
-                />
-              }
-              label={t('accessibility.mode')}
-            />
-            {accessibilityMode && (
-              <FormControl size="small" sx={{ ml: 2 }}>
-                <Select
-                  value={fontSize}
-                  onChange={handleFontSizeChange}
-                  aria-label="Font size"
-                >
-                  <MenuItem value="small">Small</MenuItem>
-                  <MenuItem value="medium">Medium</MenuItem>
-                  <MenuItem value="large">Large</MenuItem>
-                </Select>
-              </FormControl>
-            )}
+    <Box sx={{ mb: 4 }}>
+      <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
+        <Box display="flex" alignItems="center" mb={3}>
+          <AssignmentIcon fontSize="large" color="primary" sx={{ mr: 2 }} />
+          <Typography variant="h5">{template.title}</Typography>
+          
+          <Box ml="auto" display="flex" alignItems="center">
+            <Button 
+              startIcon={<PreviewIcon />} 
+              onClick={handleOpenPreview}
+              sx={{ mr: 1 }}
+            >
+              Preview
+            </Button>
+            
+            <Button
+              variant="outlined"
+              onClick={handleSaveDraft}
+              disabled={loading}
+            >
+              Save Draft
+            </Button>
           </Box>
         </Box>
-
+        
+        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+          {template.steps.map((step, index) => (
+            <Step key={index}>
+              <StepLabel>{step.label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        
+        {saveSuccess && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            Document saved successfully!
+          </Alert>
+        )}
+        
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
+          <Alert severity="error" sx={{ mb: 2 }}>
             {error}
           </Alert>
         )}
-
-        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-          <Step>
-            <StepLabel>{t('documents.steps.selectTemplate')}</StepLabel>
-          </Step>
-          <Step>
-            <StepLabel>{t('documents.steps.fillDetails')}</StepLabel>
-          </Step>
-          <Step>
-            <StepLabel>{t('documents.steps.review')}</StepLabel>
-          </Step>
-        </Stepper>
-
-        {activeStep === 0 && (
-          <Box>
-            <FormControl fullWidth>
-              <InputLabel>{t('documents.selectTemplate')}</InputLabel>
-              <Select
-                value={selectedTemplate}
-                onChange={(e) => handleTemplateSelect(e.target.value)}
-                label={t('documents.selectTemplate')}
-              >
-                {templates.map((template) => (
-                  <MenuItem key={template} value={template}>
-                    {templateMetadata[template]?.name || template}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-        )}
-
-        {activeStep === 1 && selectedTemplate && (
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              {templateMetadata[selectedTemplate]?.name || selectedTemplate}
-            </Typography>
-            <Typography variant="body2" gutterBottom sx={{ mb: 3 }}>
-              {templateMetadata[selectedTemplate]?.description || ''}
-            </Typography>
-            
-            {templateMetadata[selectedTemplate]?.required_fields && (
-              <Grid container spacing={2}>
-                {Object.entries(templateMetadata[selectedTemplate].required_fields).map(([field, required]) => (
-                  <Grid item xs={12} md={6} key={field}>
-                    <TextField
-                      fullWidth
-                      label={field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                      value={formData[field] || ''}
-                      onChange={handleInputChange(field)}
-                      required={required}
-                      margin="normal"
-                      error={required && (!formData[field] || formData[field].trim() === '')}
-                      helperText={required && (!formData[field] || formData[field].trim() === '') ? 'This field is required' : ''}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            )}
-            
-            <Box sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
-              <VoiceInput
-                onTranscript={handleVoiceTranscript}
-                isListening={isListening}
-                setIsListening={setIsListening}
-              />
-            </Box>
-          </Box>
-        )}
-
-        {activeStep === 2 && (
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              {t('documents.review.title')}
-            </Typography>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>{t('documents.review.details')}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {Object.entries(formData).map(([key, value]) => (
-                  <Box key={key} sx={{ mb: 1 }}>
-                    <Typography variant="subtitle2">{key}:</Typography>
-                    <Typography>{value}</Typography>
-                  </Box>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-        )}
-
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
-          <Button
-            onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
-            disabled={activeStep === 0 || loading}
+        
+        {isAIHelping && (
+          <Alert 
+            severity="info" 
+            sx={{ mb: 2, display: 'flex', alignItems: 'center' }}
+            icon={<SmartToyIcon />}
           >
-            {t('common.back')}
-          </Button>
-          {activeStep === 2 ? (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography sx={{ mr: 2 }}>{aiStatus}</Typography>
+              {aiStatus !== 'Suggestions applied!' && <CircularProgress size={20} />}
+            </Box>
+          </Alert>
+        )}
+        
+        {isLastStep ? (
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              Review Your Information
+            </Typography>
+            
+            {template.steps.slice(0, -1).map((step, stepIndex) => (
+              <Card key={stepIndex} sx={{ mb: 2 }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {step.label}
+                  </Typography>
+                  
+                  <Grid container spacing={2}>
+                    {step.fields.map(field => (
+                      <Grid item xs={12} sm={6} key={field}>
+                        <Box>
+                          <Typography variant="subtitle2" color="text.secondary">
+                            {fieldDefinitions[documentType][field]?.label}:
+                          </Typography>
+                          <Typography variant="body1">
+                            {formData[field] || 'Not provided'}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                  
+                  <Box display="flex" justifyContent="flex-end" mt={1}>
+                    <Button 
+                      size="small"
+                      onClick={() => setActiveStep(stepIndex)}
+                    >
+                      Edit
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {currentFields.map(field => {
+              const fieldDef = fieldDefinitions[documentType][field];
+              
+              if (!fieldDef) return null;
+              
+              return (
+                <Grid item xs={12} sm={fieldDef.type === 'textarea' ? 12 : 6} key={field}>
+                  {fieldDef.type === 'select' ? (
+                    <FormControl fullWidth required={fieldDef.required}>
+                      <InputLabel id={`label-${field}`}>{fieldDef.label}</InputLabel>
+                      <Select
+                        labelId={`label-${field}`}
+                        id={field}
+                        value={formData[field] || ''}
+                        label={fieldDef.label}
+                        onChange={(e) => handleChange(field, e.target.value)}
+                      >
+                        {fieldDef.options.map(option => (
+                          <MenuItem key={option} value={option}>{option}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    <TextField
+                      id={field}
+                      label={fieldDef.label}
+                      type={fieldDef.type}
+                      value={formData[field] || ''}
+                      onChange={(e) => handleChange(field, e.target.value)}
+                      required={fieldDef.required}
+                      fullWidth
+                      multiline={fieldDef.type === 'textarea'}
+                      rows={fieldDef.type === 'textarea' ? 4 : 1}
+                    />
+                  )}
+                </Grid>
+              );
+            })}
+          </Grid>
+        )}
+        
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
+          <Box>
+            <Button
+              color="primary"
+              variant="outlined"
+              startIcon={<SmartToyIcon />}
+              onClick={handleRequestAIHelp}
+              disabled={isAIHelping || isLastStep}
+            >
+              AI Assist
+            </Button>
+          </Box>
+          
+          <Box>
+            <Button
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              sx={{ mr: 1 }}
+            >
+              Back
+            </Button>
             <Button
               variant="contained"
-              onClick={handleSubmit}
-              disabled={!validateForm() || loading}
-              endIcon={loading ? <CircularProgress size={20} /> : null}
+              color="primary"
+              onClick={handleNext}
+              disabled={loading || !canProceed}
             >
-              {t('documents.generate')}
+              {isLastStep ? 'Submit' : 'Next'}
             </Button>
-          ) : (
-            <Button
-              variant="contained"
-              onClick={() => setActiveStep((prev) => prev + 1)}
-              disabled={
-                (activeStep === 0 && !selectedTemplate) ||
-                (activeStep === 1 && !validateForm())
-              }
-            >
-              {t('common.next')}
-            </Button>
-          )}
+          </Box>
         </Box>
       </Paper>
-
-      <Dialog open={isEditing} onClose={() => setIsEditing(false)}>
-        <DialogTitle>Edit Section Content</DialogTitle>
+      
+      <Dialog 
+        open={previewOpen} 
+        onClose={handleClosePreview}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            Document Preview
+            <IconButton onClick={handleClosePreview}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
         <DialogContent>
-          <TextField
-            fullWidth
-            multiline
-            rows={4}
-            value={editingContent}
-            onChange={(e) => setEditingContent(e.target.value)}
-            sx={{ mt: 2 }}
+          <DocumentPreview 
+            formData={formData}
+            formType={documentType}
+            autoUpdate={true}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setIsEditing(false)}>Cancel</Button>
-          <Button onClick={() => {
-            // Update section content
-            setSections(prev => prev.map(section => 
-              section.content === editingContent ? { ...section, content: editingContent } : section
-            ));
-            setIsEditing(false);
-          }} variant="contained">
-            Save
-          </Button>
+          <Button onClick={handleClosePreview}>Close</Button>
         </DialogActions>
       </Dialog>
     </Box>

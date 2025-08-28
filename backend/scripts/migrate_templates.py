@@ -1,6 +1,6 @@
 """Script to migrate existing templates to the database"""
-from backend.extensions import db
-from backend.models.template import Template
+from extensions import db
+from models.template import Template
 
 # Initial templates data
 INITIAL_TEMPLATES = {

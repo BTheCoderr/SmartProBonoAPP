@@ -1,6 +1,8 @@
 auth
+backend
 config
 database
+middleware
 models
 notifications
 routes

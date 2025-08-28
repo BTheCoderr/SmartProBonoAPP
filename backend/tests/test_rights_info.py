@@ -2,8 +2,8 @@
 Tests for rights and legal information functionality
 """
 import pytest
-from backend.models.rights import Rights
-from backend.database import db
+from models.rights import Rights
+from database import db
 from backend.app import create_app
 
 def test_create_rights_info(client, auth_headers):

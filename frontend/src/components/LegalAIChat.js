@@ -1,3 +1,5 @@
+// WARNING: Imports have been commented out to fix linting errors.
+// Uncomment specific imports as needed when using them.
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -104,16 +106,24 @@ const LegalAIChat = ({ premium = false }) => {
     setIsLoading(true);
 
     try {
-      const response = await sendMessage(input, currentModel);
+      // Pass the currently selected model to the API
+      const response = await sendMessage({
+        message: input, 
+        task_type: currentModel // Use the currentModel as the task_type parameter
+      });
+      
+      // Extract the response data
       const aiMessage = {
         text: response.response,
         sender: 'ai',
         timestamp: new Date().toISOString(),
-        model: response.model,
+        model: response.model_info.name,
         category: selectedCategory?.name
       };
+      
       setMessages(prev => [...prev, aiMessage]);
-      setCurrentModel(response.model);
+      // Do NOT update the currentModel here - keep the user's selection
+      // This was causing the model to switch unexpectedly
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage = {
@@ -514,14 +524,45 @@ const LegalAIChat = ({ premium = false }) => {
   };
 
   const handleModelChange = (model) => {
+    console.log('Model changed to:', model);
     setCurrentModel(model);
-    // Add a system message to indicate model change
-    setMessages(prev => [...prev, {
-      text: `Switched to ${model} model`,
+    
+    // Notify user of model change
+    const systemMessage = {
+      text: `Switched to ${getModelDisplayName(model)} model. This model ${getModelDescription(model)}`,
       sender: 'system',
       timestamp: new Date().toISOString(),
-      isSystemMessage: true
-    }]);
+    };
+    
+    setMessages(prev => [...prev, systemMessage]);
+  };
+
+  // Helper function to get a user-friendly model name
+  const getModelDisplayName = (modelId) => {
+    const modelMap = {
+      'mistral': 'Mistral AI',
+      'llama': 'LlaMA Legal Advisor',
+      'deepseek': 'DeepSeek Legal',
+      'falcon': 'Falcon Legal Assistant',
+      'document': 'Document Expert',
+      'custom': 'SmartProBono Assistant'
+    };
+    
+    return modelMap[modelId] || modelId;
+  };
+
+  // Helper function to get model description
+  const getModelDescription = (modelId) => {
+    const descriptionMap = {
+      'mistral': 'specializes in general legal information.',
+      'llama': 'is optimized for detailed legal analysis and references.',
+      'deepseek': 'provides comprehensive legal research and citations.',
+      'falcon': 'focuses on explaining legal concepts clearly.',
+      'document': 'excels at document analysis and drafting.',
+      'custom': 'is our custom-tuned legal assistant with broad capabilities.'
+    };
+    
+    return descriptionMap[modelId] || 'provides legal assistance.';
   };
 
   const handleGenerateContract = async (templateName, formData) => {

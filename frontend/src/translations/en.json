@@ -1,0 +1,181 @@
+{
+  "common": {
+    "appName": "SmartProBono",
+    "next": "Next",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "changeLanguage": "Change Language",
+    "search": "Search",
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "forms": "Forms",
+    "documents": "Documents",
+    "resources": "Resources",
+    "chat": "Legal AI Chat",
+    "profile": "Profile",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "username": "Username",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "createAccount": "Create account",
+    "passwordRequirements": "Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, one number, and one special character."
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "recentDocuments": "Recent Documents",
+    "upcomingDeadlines": "Upcoming Deadlines",
+    "notifications": "Notifications",
+    "quickActions": "Quick Actions",
+    "documents": "Documents",
+    "completedDocuments": "Completed",
+    "inProgressDocuments": "In Progress",
+    "pendingReview": "Pending Review",
+    "noDocuments": "You don't have any documents yet",
+    "noDeadlines": "No upcoming deadlines",
+    "noNotifications": "You don't have any notifications",
+    "viewAll": "View All",
+    "createNew": "Create New"
+  },
+  "documents": {
+    "title": "Documents",
+    "createNew": "Create New Document",
+    "myDocuments": "My Documents",
+    "documentTypes": "Document Types",
+    "status": "Status",
+    "lastUpdated": "Last Updated",
+    "progress": "Progress",
+    "actions": "Actions",
+    "preview": "Preview",
+    "download": "Download",
+    "share": "Share",
+    "delete": "Delete",
+    "submitDocument": "Submit Document",
+    "saveDraft": "Save Draft",
+    "documentSaved": "Document saved successfully!",
+    "documentSubmitted": "Document submitted successfully!",
+    "steps": {
+      "personalInfo": "Personal Information",
+      "details": "Document Details",
+      "review": "Review & Submit"
+    },
+    "types": {
+      "expungement": "Expungement Request",
+      "housing": "Housing Defense Letter",
+      "fee_waiver": "Fee Waiver Application"
+    },
+    "status": {
+      "completed": "Completed",
+      "in_progress": "In Progress",
+      "pending_review": "Pending Review",
+      "draft": "Draft"
+    },
+    "ai": {
+      "help": "AI Assist",
+      "analyzing": "Analyzing form...",
+      "generating": "Generating suggestions...",
+      "applied": "Suggestions applied!",
+      "error": "Error generating suggestions"
+    }
+  },
+  "forms": {
+    "title": "Forms",
+    "selectType": "Select Form Type",
+    "expungement": {
+      "title": "Expungement Request Form",
+      "description": "Request to clear your criminal record"
+    },
+    "housing": {
+      "title": "Housing Defense Letter",
+      "description": "Letter to defend against eviction or housing issues"
+    },
+    "feeWaiver": {
+      "title": "Fee Waiver Application",
+      "description": "Apply to have court fees waived"
+    }
+  },
+  "chat": {
+    "title": "Legal AI Chat",
+    "placeholder": "Ask a legal question...",
+    "send": "Send",
+    "loadingResponse": "Assistant is typing...",
+    "welcomeMessage": "Hello! I'm your legal assistant. How can I help you today?",
+    "generateDocument": "Generate Document",
+    "saveConversation": "Save Conversation",
+    "startNewChat": "Start New Chat",
+    "suggestedQuestions": "Suggested Questions",
+    "modelSelection": "Select AI Model",
+    "feedback": "Was this response helpful?"
+  },
+  "resources": {
+    "title": "Legal Resources",
+    "description": "Access free legal resources, documents, and educational materials",
+    "categories": {
+      "immigration": "Immigration Resources",
+      "housing": "Housing & Tenants Rights",
+      "expungement": "Expungement & Record Clearing",
+      "familyLaw": "Family Law",
+      "consumerRights": "Consumer Rights"
+    },
+    "types": {
+      "pdf": "PDF",
+      "article": "Article",
+      "video": "Video",
+      "link": "External Link",
+      "template": "Template"
+    },
+    "actions": {
+      "view": "View",
+      "download": "Download",
+      "visit": "Visit"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "personalInfo": "Personal Information",
+    "security": "Security",
+    "notifications": "Notifications",
+    "preferences": "Preferences",
+    "updateProfile": "Update Profile",
+    "changePassword": "Change Password",
+    "notificationPreferences": "Notification Preferences",
+    "emailNotifications": "Email Notifications",
+    "pushNotifications": "In-App Notifications",
+    "notificationTypes": "Notification Types",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "accessibility": "Accessibility"
+  },
+  "errors": {
+    "general": "An error occurred. Please try again.",
+    "login": "Invalid email or password.",
+    "register": "Registration failed. Please try again.",
+    "requiredField": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "passwordMatch": "Passwords do not match",
+    "networkError": "Network error. Please check your connection.",
+    "unauthorized": "You are not authorized to view this page.",
+    "notFound": "The requested resource was not found."
+  }
+} 

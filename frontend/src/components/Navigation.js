@@ -52,16 +52,17 @@ function Navigation() {
   const { currentUser, isAuthenticated, logout } = useAuth();
 
   const navItems = [
-    { name: 'Home', path: '/', icon: <HomeIcon /> },
-    { name: 'Contracts', path: '/contracts', icon: <DescriptionIcon /> },
-    { name: 'Immigration', path: '/immigration', icon: <FlightIcon /> },
-    { name: 'Expungement', path: '/expungement', icon: <HistoryEduIcon /> },
-    { name: 'Documents', path: '/documents', icon: <FolderIcon /> },
-    { name: 'Rights', path: '/rights', icon: <GavelIcon /> },
-    { name: 'Services', path: '/services', icon: <BuildIcon /> },
-    { name: 'Resources', path: '/resources', icon: <LibraryBooksIcon /> },
-    { name: 'Business Model', path: '/business-model', icon: <BusinessIcon /> },
-    { name: 'Contact', path: '/contact', icon: <ContactSupportIcon /> }
+    { name: 'Home', path: '/', icon: <HomeIcon />, isPrimary: false },
+    { name: 'Legal AI Chat', path: '/legal-chat', icon: <ChatIcon />, isPrimary: true },
+    { name: 'Documents', path: '/documents', icon: <FolderIcon />, isPrimary: true },
+    { name: 'Forms Dashboard', path: '/forms-dashboard', icon: <DescriptionIcon />, isPrimary: true },
+    { name: 'Virtual Paralegal', path: '/virtual-paralegal', icon: <GavelIcon />, isPrimary: true },
+    { name: 'Resources', path: '/resources', icon: <LibraryBooksIcon />, isPrimary: true },
+    { name: 'Immigration', path: '/immigration', icon: <FlightIcon />, isPrimary: false },
+    { name: 'Expungement', path: '/expungement', icon: <HistoryEduIcon />, isPrimary: false },
+    { name: 'Rights', path: '/rights', icon: <GavelIcon />, isPrimary: false },
+    { name: 'Services', path: '/services', icon: <BuildIcon />, isPrimary: false },
+    { name: 'Contact', path: '/contact', icon: <ContactSupportIcon />, isPrimary: false }
   ];
 
   const handleDrawerToggle = () => {
@@ -287,117 +288,114 @@ function Navigation() {
 
   return (
     <>
-      <AppBar position="fixed" sx={{ bgcolor: 'white', boxShadow: 1 }}>
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-              {isMobile && (
-                <IconButton
-                  color="primary"
-                  aria-label="open drawer"
-                  edge="start"
-                  onClick={handleDrawerToggle}
-                  sx={{ mr: 2 }}
-                >
-                  <MenuIcon />
-                </IconButton>
-              )}
-              
-              <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-                  <Logo variant={isMobile ? "small" : "default"} />
-                </Link>
-              </Box>
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+              <Logo variant="small" />
+            </Box>
 
-              {!isMobile && (
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {navItems.map((item) => (
-                    <Button
-                      key={item.name}
-                      component={Link}
-                      to={item.path}
-                      sx={{
-                        color: location.pathname === item.path ? 'primary.main' : 'text.primary',
-                        '&:hover': {
-                          bgcolor: 'rgba(0, 0, 0, 0.04)',
-                        },
-                      }}
-                      startIcon={item.icon}
-                    >
-                      {item.name}
-                    </Button>
-                  ))}
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
+
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, gap: 2 }}>
+              {navItems.filter(item => item.isPrimary).map((item) => (
+                <Button
+                  key={item.name}
+                  component={Link}
+                  to={item.path}
+                  sx={{
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.5,
+                    '&:hover': {
+                      bgcolor: 'primary.dark',
+                    },
+                  }}
+                  startIcon={item.icon}
+                >
+                  {item.name}
+                </Button>
+              ))}
+            </Box>
+
+            {!isAuthenticated && (
+              <Button
+                variant="contained"
+                color="secondary"
+                component={Link}
+                to="/legal-chat"
+                sx={{
+                  mr: 2,
+                  fontWeight: 600,
+                  boxShadow: 2,
+                  '&:hover': {
+                    boxShadow: 4,
+                  },
+                }}
+              >
+                Get Started
+              </Button>
+            )}
+
+            <Box sx={{ flexGrow: 0 }}>
+              {isAuthenticated ? (
+                <>
+                  <Notifications />
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleMenuOpen} sx={{ p: 0, ml: 2 }}>
+                      <Avatar sx={{ bgcolor: 'secondary.main' }}>
+                        {getInitials()}
+                      </Avatar>
+                    </IconButton>
+                  </Tooltip>
+                </>
+              ) : (
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    component={Link}
+                    to="/login"
+                    color="inherit"
+                    startIcon={<LockOpenIcon />}
+                  >
+                    Login
+                  </Button>
                 </Box>
               )}
-
-              <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
-                {isAuthenticated && <Notifications />}
-                
-                {isAuthenticated ? (
-                  <>
-                    <Tooltip title="Account settings">
-                      <IconButton
-                        onClick={handleMenuOpen}
-                        size="small"
-                        sx={{ ml: 2 }}
-                        aria-controls={open ? 'account-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                      >
-                        <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
-                          {getInitials()}
-                        </Avatar>
-                      </IconButton>
-                    </Tooltip>
-                    <Menu
-                      anchorEl={anchorEl}
-                      id="account-menu"
-                      open={open}
-                      onClose={handleMenuClose}
-                      onClick={handleMenuClose}
-                      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                    >
-                      <MenuItem onClick={handleProfile}>
-                        <ListItemIcon>
-                          <PersonIcon fontSize="small" />
-                        </ListItemIcon>
-                        Profile
-                      </MenuItem>
-                      <MenuItem onClick={handleLogout}>
-                        <ListItemIcon>
-                          <LogoutIcon fontSize="small" />
-                        </ListItemIcon>
-                        Logout
-                      </MenuItem>
-                    </Menu>
-                  </>
-                ) : (
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                      component={Link}
-                      to="/login"
-                      variant="outlined"
-                      startIcon={<LockOpenIcon />}
-                    >
-                      Login
-                    </Button>
-                    <Button
-                      component={Link}
-                      to="/register"
-                      variant="contained"
-                      startIcon={<SecurityIcon />}
-                    >
-                      Register
-                    </Button>
-                  </Box>
-                )}
-              </Box>
             </Box>
           </Toolbar>
         </Container>
       </AppBar>
-      
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        sx={{ mt: '45px' }}
+      >
+        <MenuItem onClick={handleProfile}>
+          <ListItemIcon>
+            <AccountCircleIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography textAlign="center">Profile</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" color="error" />
+          </ListItemIcon>
+          <Typography textAlign="center" color="error">Logout</Typography>
+        </MenuItem>
+      </Menu>
+
       <Drawer
         variant="temporary"
         anchor="left"
@@ -408,17 +406,11 @@ function Navigation() {
         }}
         sx={{
           display: { xs: 'block', md: 'none' },
-          '& .MuiDrawer-paper': { 
-            boxSizing: 'border-box', 
-            width: 280,
-            bgcolor: 'background.default'
-          },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 280 },
         }}
       >
         {drawer}
       </Drawer>
-      
-      <Box component="nav" sx={{ width: { sm: 280 }, flexShrink: { sm: 0 } }} />
     </>
   );
 }

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+// WARNING: Imports have been commented out to fix linting errors.
+// Uncomment specific imports as needed when using them.
+// Unused: import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Container,
@@ -49,13 +51,13 @@ import {
   Cancel as CancelIcon,
   Send as SendIcon
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import PageLayout from '../components/PageLayout';
-import { immigrationApi } from '../services/api';
-import { useTheme } from '@mui/material/styles';
-import { useMediaQuery } from '@mui/material';
-import apiService from '../services/ApiService';
+// Unused: import { useNavigate } from 'react-router-dom';
+// Unused: import { useAuth } from '../context/AuthContext';
+// Unused: import PageLayout from '../components/PageLayout';
+// Unused: import { immigrationApi } from '../services/api';
+// Unused: import { useTheme } from '@mui/material/styles';
+// Unused: import { useMediaQuery } from '@mui/material';
+// Unused: import apiService from '../services/ApiService';
 
 // Case status components
 const CaseStatus = ({ status }) => {
