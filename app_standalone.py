@@ -150,6 +150,78 @@ GDPR applies if you process personal data of EU residents. Key requirements:
 **Risk**: Fines up to €20M or 4% of annual revenue
 
 Would you like me to help you create a compliance checklist for your specific situation?"""
+        elif 'copyright' in lower_message or 'infringement' in lower_message:
+            return """**Copyright Infringement Defense:**
+
+If you're facing copyright infringement claims, consider these defenses:
+
+1. **Fair Use**: Educational, commentary, parody, or transformative use
+2. **Originality**: Prove your work is independently created
+3. **Public Domain**: Work may be in public domain
+4. **License**: You may have proper licensing
+5. **Statute of Limitations**: Claims may be time-barred
+
+**Immediate Actions:**
+- Document all communications
+- Preserve evidence of your work's creation
+- Consider DMCA counter-notice if applicable
+- Consult with an IP attorney
+
+What specific type of copyright claim are you facing?"""
+        elif 'employment' in lower_message or 'workplace' in lower_message:
+            return """**Employment Law Overview:**
+
+Employment law covers various workplace issues:
+
+1. **Hiring**: Anti-discrimination laws, background checks
+2. **Workplace Rights**: Safety, harassment, discrimination protection
+3. **Termination**: Wrongful termination, severance, unemployment
+4. **Wages**: Minimum wage, overtime, pay equity
+5. **Benefits**: Health insurance, retirement, leave policies
+
+**Common Issues:**
+- Workplace discrimination (race, gender, age, disability)
+- Sexual harassment
+- Wage and hour violations
+- Wrongful termination
+
+What specific employment issue are you dealing with?"""
+        elif 'immigration' in lower_message:
+            return """**Immigration Law Overview:**
+
+Immigration law is complex and constantly changing:
+
+1. **Visa Types**: Work, student, tourist, family-based
+2. **Green Cards**: Employment, family, diversity lottery
+3. **Citizenship**: Naturalization process and requirements
+4. **Deportation Defense**: Removal proceedings, appeals
+5. **Asylum**: Refugee status and protection
+
+**Important Notes:**
+- Immigration law changes frequently
+- Deadlines are critical
+- Documentation is essential
+- Legal representation is highly recommended
+
+What specific immigration matter do you need help with?"""
+        elif 'criminal' in lower_message:
+            return """**Criminal Defense Overview:**
+
+If you're facing criminal charges, you have important rights:
+
+1. **Right to Attorney**: You have the right to legal representation
+2. **Right to Remain Silent**: You don't have to incriminate yourself
+3. **Right to Trial**: You can contest charges in court
+4. **Presumption of Innocence**: You're innocent until proven guilty
+5. **Due Process**: Fair treatment under the law
+
+**Immediate Actions:**
+- Don't speak to police without an attorney
+- Document everything related to your case
+- Gather evidence and witnesses
+- Consult with a criminal defense attorney immediately
+
+What type of criminal charges are you facing?"""
         else:
             return f"Thank you for your legal question about '{message}'. While I can provide general legal information, remember that this isn't legal advice. Your situation may have unique factors that require personalized guidance from a licensed attorney familiar with your jurisdiction's laws. Would you like me to explain some general principles related to this issue?"
 
@@ -159,6 +231,30 @@ ai_service = StandaloneAIService()
 def route_to_agent(message):
     """Route message to appropriate AI agent"""
     lower_message = message.lower().strip()
+    
+    # Intellectual Property keywords
+    if any(keyword in lower_message for keyword in ['copyright', 'trademark', 'patent', 'intellectual property', 'ip', 'infringement', 'plagiarism']):
+        return 'intellectual_property'
+    
+    # Employment keywords
+    if any(keyword in lower_message for keyword in ['employment', 'employee', 'hiring', 'firing', 'workplace', 'discrimination', 'harassment']):
+        return 'employment'
+    
+    # Real Estate keywords
+    if any(keyword in lower_message for keyword in ['real estate', 'property', 'landlord', 'tenant', 'lease', 'rent', 'eviction', 'housing']):
+        return 'real_estate'
+    
+    # Criminal keywords
+    if any(keyword in lower_message for keyword in ['criminal', 'arrest', 'charges', 'court', 'trial', 'sentencing', 'probation']):
+        return 'criminal'
+    
+    # Immigration keywords
+    if any(keyword in lower_message for keyword in ['immigration', 'visa', 'green card', 'citizenship', 'deportation', 'asylum']):
+        return 'immigration'
+    
+    # Family keywords
+    if any(keyword in lower_message for keyword in ['divorce', 'custody', 'child support', 'alimony', 'adoption', 'family law']):
+        return 'family'
     
     # Compliance keywords
     if any(keyword in lower_message for keyword in ['gdpr', 'compliance', 'privacy', 'data protection', 'regulation']):
