@@ -8,6 +8,7 @@ from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from middleware.audit_middleware import AuditMiddleware
 
 # Initialize extensions
 mail = Mail()
@@ -21,6 +22,7 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per day", "50 per hour"]
 )
+audit_middleware = AuditMiddleware()
 
 def init_extensions(app):
     """Initialize Flask extensions"""
@@ -31,4 +33,5 @@ def init_extensions(app):
     socketio.init_app(app, cors_allowed_origins="*")
     jwt.init_app(app)
     mongo.init_app(app)
-    limiter.init_app(app) 
+    limiter.init_app(app)
+    audit_middleware.init_app(app) 

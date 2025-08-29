@@ -17,6 +17,7 @@ echo "1. 🔄 Stopping any existing services..."
 # Stop existing services
 lsof -ti:8081 | xargs kill -9 2>/dev/null || true
 lsof -ti:3002 | xargs kill -9 2>/dev/null || true
+lsof -ti:8010 | xargs kill -9 2>/dev/null || true
 
 # Wait for cleanup
 sleep 2
@@ -28,7 +29,7 @@ echo "2. 🐍 Starting Backend..."
 source venv/bin/activate
 source load_email_config.sh
 export PORT=8081
-python working_supabase_api.py > backend.log 2>&1 &
+python advanced_multi_agent_api.py > backend.log 2>&1 &
 BACKEND_PID=$!
 
 # Wait for backend to start
@@ -45,7 +46,33 @@ else
 fi
 
 echo ""
-echo "3. ⚛️  Starting React Frontend..."
+echo "3. 🧠 Starting LangGraph Service..."
+
+# Start LangGraph service
+cd agent_service
+pip install -r requirements.txt > ../langgraph_install.log 2>&1
+export SUPABASE_URL="https://ewtcvsohdgkthuyajyyk.supabase.co"
+export SUPABASE_SERVICE_ROLE_KEY="***REMOVED***"
+export OPENAI_API_KEY="${OPENAI_API_KEY:-your-openai-key-here}"
+uvicorn agent_service.main:app --reload --port 8010 > ../langgraph.log 2>&1 &
+LANGGRAPH_PID=$!
+cd ..
+
+# Wait for LangGraph to start
+sleep 5
+
+# Test LangGraph health
+echo "   Testing LangGraph health..."
+if curl -s http://localhost:8010/health | grep -q "ok"; then
+    echo -e "   LangGraph: ${GREEN}✅ Running${NC}"
+else
+    echo -e "   LangGraph: ${RED}❌ Failed to start${NC}"
+    echo "   Check langgraph.log for details"
+    echo "   Make sure OPENAI_API_KEY is set in your environment"
+fi
+
+echo ""
+echo "4. ⚛️  Starting React Frontend..."
 
 # Start frontend
 cd frontend
@@ -71,6 +98,7 @@ echo ""
 echo -e "${GREEN}✅ WORKING FEATURES:${NC}"
 echo "  • Backend API with Supabase integration"
 echo "  • Multi-agent AI system with contextual responses"
+echo "  • LangGraph orchestration service for case intake"
 echo "  • Row Level Security (RLS) for data protection"
 echo "  • JWT authentication system"
 echo "  • Email system with Zoho SMTP"
@@ -80,12 +108,18 @@ echo ""
 echo -e "${BLUE}🌐 Access Your MVP:${NC}"
 echo "  • Frontend: http://localhost:3002"
 echo "  • Backend: http://localhost:8081"
+echo "  • LangGraph: http://localhost:8010"
 echo "  • Health Check: http://localhost:8081/api/health"
+echo "  • LangGraph Health: http://localhost:8010/health"
 
 echo ""
 echo -e "${YELLOW}🎯 Test the Improvements:${NC}"
 echo "  1. Go to http://localhost:3002"
-echo "  2. Or test API directly:"
+echo "  2. Test LangGraph intake:"
+echo "     curl -X POST http://localhost:8010/intake/run \\"
+echo "       -H 'Content-Type: application/json' \\"
+echo "       -d '{\"user_id\": null, \"full_text\": \"I need help with a landlord dispute\", \"meta\": {}}'"
+echo "  3. Or test existing API:"
 echo "     curl -X POST http://localhost:8081/api/legal/chat \\"
 echo "       -H 'Content-Type: application/json' \\"
 echo "       -d '{\"message\": \"hello\", \"task_type\": \"chat\"}'"
@@ -93,10 +127,13 @@ echo "       -d '{\"message\": \"hello\", \"task_type\": \"chat\"}'"
 echo ""
 echo "📊 System Status:"
 echo "Backend PID: $BACKEND_PID"
+echo "LangGraph PID: $LANGGRAPH_PID"
 echo "Frontend PID: $FRONTEND_PID"
 echo ""
 echo "📝 Logs:"
 echo "  • Backend: backend.log"
+echo "  • LangGraph: langgraph.log"
+echo "  • LangGraph Install: langgraph_install.log"
 echo "  • Frontend: frontend.log"
 echo ""
 echo "Press Ctrl+C to stop all services..."

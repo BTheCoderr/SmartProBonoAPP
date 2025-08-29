@@ -1,0 +1,21 @@
+# SmartProBono Standalone App - Minimal Dependencies
+# Only the essential packages needed for the standalone app
+
+# Core Flask dependencies
+flask==3.0.0
+flask-cors==4.0.0
+python-dotenv==1.0.0
+gunicorn==21.2.0
+
+# HTTP requests for Supabase
+requests==2.31.0
+
+# Email functionality
+smtplib  # Built-in Python module
+
+# Basic utilities
+datetime  # Built-in Python module
+json      # Built-in Python module
+re        # Built-in Python module
+os        # Built-in Python module
+logging   # Built-in Python module

@@ -1,0 +1,26 @@
+# SmartProBono Multi-Agent System Requirements
+# Core orchestration
+langgraph>=0.2.0
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# Haystack 2.x + integrations
+haystack-ai>=2.0.0
+pgvector-haystack>=0.1.0
+ollama-haystack>=0.1.0
+
+# Embeddings and models
+sentence-transformers>=2.2.0
+ollama>=0.1.0
+
+# Document processing
+pypdf>=3.0.0
+python-dotenv>=1.0.0
+
+# Database
+psycopg2-binary>=2.9.0
+supabase>=2.3.0
+
+# Utilities
+pydantic>=2.0.0
+python-multipart>=0.0.6

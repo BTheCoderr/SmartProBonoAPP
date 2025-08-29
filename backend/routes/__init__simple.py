@@ -43,3 +43,10 @@ def register_blueprints(app):
         print("✅ Document scanner routes registered")
     except ImportError as e:
         print(f"⚠️ Document scanner routes not available: {e}")
+    
+    try:
+        from .audit import audit_bp
+        app.register_blueprint(audit_bp)
+        print("✅ Audit routes registered")
+    except ImportError as e:
+        print(f"⚠️ Audit routes not available: {e}")

@@ -1,0 +1,28 @@
+# Production requirements for SmartProBono Multi-Agent System
+# Optimized for Render deployment
+
+# Core Flask dependencies
+flask==3.0.0
+flask-cors==4.0.0
+gunicorn==21.2.0
+python-dotenv==1.0.0
+
+# Database
+psycopg2-binary==2.9.9
+
+# Email
+requests==2.31.0
+
+# Supabase
+supabase==2.3.4
+
+# Utilities
+bcrypt==4.0.1
+python-dateutil==2.8.2
+cryptography>=41.0.0
+
+# Monitoring
+structlog==23.2.0
+
+# Error tracking
+sentry-sdk==1.32.0
