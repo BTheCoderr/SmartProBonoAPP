@@ -5,6 +5,11 @@ from .notification import Notification
 from .case import Case
 from .form import Form
 from .template import Template
+from .audit import (
+    AuditLog, UserActivity, SecurityEvent, PerformanceMetric,
+    ComplianceRecord, APIAudit, DocumentAudit,
+    AuditEventType, AuditSeverity
+)
 
 __all__ = [
     'User',
@@ -12,5 +17,14 @@ __all__ = [
     'Notification',
     'Case',
     'Form',
-    'Template'
+    'Template',
+    'AuditLog',
+    'UserActivity',
+    'SecurityEvent',
+    'PerformanceMetric',
+    'ComplianceRecord',
+    'APIAudit',
+    'DocumentAudit',
+    'AuditEventType',
+    'AuditSeverity'
 ] 

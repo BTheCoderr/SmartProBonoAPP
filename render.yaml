@@ -1,27 +1,16 @@
 services:
   - type: web
-    name: smartProBonoAPI
+    name: smartprobono-standalone
     env: python
-    buildCommand: cd backend && pip install -r requirements.txt && pip install pdfkit
-    startCommand: cd backend && gunicorn app:app
+    plan: free
+    buildCommand: pip install -r requirements_standalone.txt
+    startCommand: python3 app_standalone.py
     envVars:
-      - key: PDF_ENABLED
-        value: false
-    buildpacks:
-      - url: heroku/python
-      - url: https://github.com/heroku-buildpacks/apt
-    aptBuildpackConfig:
-      packages:
-        - wkhtmltopdf
-        
-  - type: web
-    name: smartProBonoFrontend
-    env: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/build
-    envVars:
-      - key: REACT_APP_API_URL
-        fromService:
-          name: smartProBonoAPI
-          type: web
-          property: url 
+      - key: PORT
+        value: 8081
+      - key: FLASK_ENV
+        value: production
+      - key: SUPABASE_URL
+        value: https://ewtcvsohdgkthuyajyyk.supabase.co
+      - key: SUPABASE_SERVICE_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3dGN2c29oZGdrdGh1eWFqeXlrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjQxMDQ2NCwiZXhwIjoyMDcxOTg2NDY0fQ._9KbvHJ6JohciGAqwHlQGerGr2xkHEr36OmSB5oQjng
