@@ -1,4 +1,4 @@
--- LangGraph Service Tables for SmartProBono
+-- LangGraph Service Tables for SmartProBono - FIXED VERSION
 -- Run this SQL in your Supabase SQL editor
 
 -- Case intakes table
@@ -44,11 +44,11 @@ CREATE TABLE IF NOT EXISTS langgraph_checkpoints (
     metadata jsonb DEFAULT '{}'::jsonb
 );
 
--- Lawyer profiles table
+-- Lawyer profiles table with unique email constraint
 CREATE TABLE IF NOT EXISTS lawyer_profiles (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     full_name text NOT NULL,
-    email text,
+    email text UNIQUE,
     specialization text,
     is_active boolean DEFAULT true,
     created_at timestamptz DEFAULT now()
@@ -93,10 +93,11 @@ CREATE POLICY "Anyone can view lawyer profiles" ON lawyer_profiles
 CREATE POLICY "Service role can manage lawyer profiles" ON lawyer_profiles
     FOR ALL USING (auth.role() = 'service_role');
 
--- Insert sample lawyer data
+-- Insert sample lawyer data (now with proper conflict handling)
 INSERT INTO lawyer_profiles (full_name, email, specialization, is_active) VALUES
 ('John Smith', 'john.smith@law.com', 'Criminal Law', true),
 ('Sarah Johnson', 'sarah.johnson@law.com', 'Housing Law', true),
 ('Michael Brown', 'michael.brown@law.com', 'Family Law', true),
 ('Emily Davis', 'emily.davis@law.com', 'Employment Law', true),
-('David Wilson', 'david.wilson@law.com', 'Immigration Law', true);
+('David Wilson', 'david.wilson@law.com', 'Immigration Law', true)
+ON CONFLICT (email) DO NOTHING;

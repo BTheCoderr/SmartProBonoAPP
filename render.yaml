@@ -1,13 +1,13 @@
 services:
   - type: web
-    name: smartprobono-multi-agent
+    name: smartprobono-standalone
     env: python
     pythonVersion: "3.11"
-    plan: starter
+    plan: free
     buildCommand: |
       pip install --upgrade pip
-      pip install -r requirements-production.txt
-    startCommand: python production_multi_agent_api.py
+      pip install -r requirements_standalone.txt
+    startCommand: python3 app_standalone.py
     envVars:
       - key: PORT
         value: 10000
@@ -28,4 +28,4 @@ services:
       - key: OPENAI_API_KEY
         value: your_openai_key_here
       - key: ANTHROPIC_API_KEY
-        value: your_anthropic_key_here
+        value: sk-ant-api03-ceS1CHfarlcsD_6qtrn8_HeB0G0268TWZN0JgutkdvE-zuJ2Fkptkhr0QIyrVi53ZpjYxV_nRENWdm5A3wX1Q-91CATQAA

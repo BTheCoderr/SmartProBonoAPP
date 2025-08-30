@@ -5,6 +5,7 @@ load_dotenv()
 
 # AI Model API Keys
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
 LLAMA_API_KEY = os.getenv('LLAMA_API_KEY')
 FALCON_API_KEY = os.getenv('FALCON_API_KEY')
@@ -28,6 +29,7 @@ def validate_api_keys():
     """Validate that required API keys are present"""
     required_keys = {
         'OPENAI_API_KEY': OPENAI_API_KEY,
+        'ANTHROPIC_API_KEY': ANTHROPIC_API_KEY,
         'MISTRAL_API_KEY': MISTRAL_API_KEY,
         'LLAMA_API_KEY': LLAMA_API_KEY,
         'FALCON_API_KEY': FALCON_API_KEY,
