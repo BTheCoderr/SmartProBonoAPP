@@ -1,6 +1,8 @@
 """AI service for legal analysis and document processing"""
 import logging
 import random
+import requests
+import json
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -11,7 +13,7 @@ class AIService:
     @staticmethod
     def generate_legal_response(message, task_type="chat", conversation_id=None, history=None, model="default", user_id=None):
         """
-        Generate a response to a legal question
+        Generate a response to a legal question using Ollama
         
         Args:
             message (str): The user message
@@ -25,9 +27,6 @@ class AIService:
             dict: The generated response
         """
         try:
-            # In a real app, this would call an AI model API
-            # For demo purposes, we'll return mock responses
-            
             # Generate a response ID
             response_id = f"resp_{random.randint(1000, 9999)}_{int(datetime.now().timestamp())}"
             
@@ -39,26 +38,37 @@ class AIService:
                 "task_type": task_type
             }
             
-            # Generate different responses based on the task type
-            if task_type == "research":
-                response["content"] = f"Based on my research of legal precedent, {message} involves several key considerations. First, court cases like Smith v. Jones (2018) established that... [research continues]"
-                response["sources"] = [
-                    {"title": "Smith v. Jones", "year": 2018, "citation": "123 F.3d 456"},
-                    {"title": "Legal Rights Handbook", "author": "Jane Davis", "year": 2020}
-                ]
-            elif task_type == "draft":
-                response["content"] = f"DRAFT DOCUMENT\n\nRe: {message}\n\nDear Sir/Madam,\n\nI am writing in reference to the matter of... [document continues]"
-                response["document_type"] = "legal_letter"
-            else:  # Default to chat
-                # Simple keyword matching for demo
-                if "eviction" in message.lower():
-                    response["content"] = "If you're facing eviction, you generally have several rights including proper notice (usually 30-60 days depending on your jurisdiction) and the right to contest the eviction in court. Would you like more specific information about the eviction process in your area?"
-                elif "custody" in message.lower():
-                    response["content"] = "Child custody matters are decided based on the 'best interests of the child' standard. Courts consider factors like the child's relationship with each parent, stability, and sometimes the child's preferences depending on their age. Have you already started the custody process?"
-                elif "divorce" in message.lower():
-                    response["content"] = "Divorce procedures vary by state, but generally involve filing a petition, property division, and potentially child custody and support arrangements. Most states now offer no-fault divorce options. What specific aspect of divorce are you concerned about?"
-                else:
-                    response["content"] = f"Thank you for your legal question about '{message}'. While I can provide general legal information, remember that this isn't legal advice. Your situation may have unique factors that require personalized guidance from a licensed attorney familiar with your jurisdiction's laws. Would you like me to explain some general principles related to this issue?"
+            # Map model names to Ollama models
+            ollama_model_map = {
+                "default": "llama3.2:3b",
+                "chat": "llama3.2:3b", 
+                "mistral": "mistral:7b",
+                "llama": "llama3.2:3b",
+                "qwen": "qwen2.5:0.5b",
+                "gemma": "gemma2:2b",
+                "phi": "phi3:mini"
+            }
+            
+            ollama_model = ollama_model_map.get(model, "llama3.2:3b")
+            
+            # Use Ollama for AI responses
+            ai_response = AIService._call_ollama(message, task_type, ollama_model, history)
+            
+            if ai_response:
+                response["response"] = ai_response
+                response["model_info"] = {
+                    "name": f"Ollama-{model}",
+                    "type": "local_llm",
+                    "provider": "ollama"
+                }
+            else:
+                # Fallback to simple responses if Ollama fails
+                response["response"] = AIService._get_fallback_response(message, task_type)
+                response["model_info"] = {
+                    "name": "fallback",
+                    "type": "static",
+                    "provider": "fallback"
+                }
             
             # Add conversation tracking if provided
             if conversation_id:
@@ -72,6 +82,110 @@ class AIService:
                 "error": "An error occurred while generating a response",
                 "created_at": datetime.now().isoformat()
             }
+    
+    @staticmethod
+    def _call_ollama(message, task_type="chat", model="llama3.2:3b", history=None):
+        """Call Ollama API to generate response"""
+        try:
+            # Build context from conversation history
+            context = ""
+            if history and len(history) > 0:
+                # Include last few messages for context
+                recent_history = history[-4:] if len(history) > 4 else history
+                for msg in recent_history:
+                    role = "User" if msg.get('sender') == 'user' else "Assistant"
+                    context += f"{role}: {msg.get('text', '')}\n"
+            
+            # Create system prompt based on task type
+            system_prompts = {
+                "chat": """You are SmartProBono's AI Legal Assistant. Provide helpful, conversational legal guidance.
+
+COMMUNICATION STYLE:
+- Be friendly and approachable
+- Use simple, clear language
+- Ask follow-up questions to understand the user's situation better
+- Provide specific, actionable advice when possible
+- Always remind users this is general information, not legal advice
+
+RESPONSE FORMAT:
+- Start with a direct answer to their question
+- Provide relevant details and context
+- Ask clarifying questions if needed
+- Suggest next steps or resources
+- End with a disclaimer about consulting an attorney
+
+Keep responses conversational and helpful. Avoid repetitive responses.""",
+
+                "research": """You are a legal research assistant. Provide comprehensive, well-structured legal information.
+
+RESEARCH FRAMEWORK:
+1. Direct Answer: Clear response to the question
+2. Legal Principles: Key legal concepts involved
+3. Practical Application: How this applies in real situations
+4. Jurisdiction Notes: State/federal law differences
+5. Resources: Relevant forms, websites, or organizations
+6. Next Steps: Recommended actions
+
+Be thorough but accessible.""",
+
+                "draft": """You are a legal document drafting assistant. Help create clear, professional legal documents.
+
+DRAFTING GUIDELINES:
+- Use clear, professional language
+- Include all necessary legal elements
+- Structure documents logically
+- Provide placeholders for specific information
+- Include standard legal disclaimers
+
+Focus on creating practical, usable documents."""
+            }
+            
+            system_prompt = system_prompts.get(task_type, system_prompts["chat"])
+            
+            # Build the full prompt
+            full_prompt = f"{system_prompt}\n\n{context}User: {message}\n\nAssistant:"
+            
+            # Call Ollama API
+            ollama_url = "http://localhost:11434/api/generate"
+            payload = {
+                "model": model,
+                "prompt": full_prompt,
+                "stream": False,
+                "options": {
+                    "temperature": 0.7,
+                    "top_p": 0.9,
+                    "max_tokens": 1000
+                }
+            }
+            
+            response = requests.post(ollama_url, json=payload, timeout=30)
+            
+            if response.status_code == 200:
+                result = response.json()
+                return result.get("response", "").strip()
+            else:
+                logger.error(f"Ollama API error: {response.status_code} - {response.text}")
+                return None
+                
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Ollama connection error: {str(e)}")
+            return None
+        except Exception as e:
+            logger.error(f"Error calling Ollama: {str(e)}")
+            return None
+    
+    @staticmethod
+    def _get_fallback_response(message, task_type):
+        """Fallback responses when Ollama is unavailable"""
+        fallback_responses = {
+            "chat": f"I understand you're asking about '{message}'. While I'd normally provide detailed guidance using our AI system, I'm currently experiencing technical difficulties. For immediate help, I recommend:\n\n1. Contacting your local legal aid organization\n2. Checking your state's legal resources website\n3. Consulting with a qualified attorney\n\nI apologize for the inconvenience and encourage you to try again in a few moments.",
+            
+            "research": f"For research on '{message}', I'd typically provide comprehensive legal analysis. Since our AI system is temporarily unavailable, I suggest:\n\n1. Checking your state's legal code online\n2. Reviewing recent court decisions in your jurisdiction\n3. Consulting legal databases like Justia or FindLaw\n4. Speaking with a legal professional\n\nPlease try again shortly for AI-powered research assistance.",
+            
+            "draft": f"I'd normally help draft documents related to '{message}', but our system is temporarily offline. For immediate document needs:\n\n1. Use standard legal templates from your state's court website\n2. Consult with a legal professional for complex documents\n3. Check legal aid organizations for free document assistance\n\nOur AI drafting service should be available again soon."
+        }
+        
+        return fallback_responses.get(task_type, fallback_responses["chat"])
 
     @staticmethod
     def analyze_document(document, document_type="generic", questions=None):

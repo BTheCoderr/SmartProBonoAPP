@@ -47,7 +47,7 @@ class AuditLog(db.Model):
     resource_type = db.Column(db.String(100), nullable=True)  # Type of affected resource
     action = db.Column(db.String(100), nullable=False)  # CREATE, READ, UPDATE, DELETE, etc.
     description = db.Column(db.Text, nullable=True)
-    metadata = db.Column(db.Text, nullable=True)  # Additional JSON data
+    audit_metadata = db.Column(db.Text, nullable=True)  # Additional JSON data
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
@@ -103,7 +103,7 @@ class UserActivity(db.Model):
     device_type = db.Column(db.String(50), nullable=True)  # desktop, mobile, tablet
     browser = db.Column(db.String(100), nullable=True)
     os = db.Column(db.String(100), nullable=True)
-    metadata = db.Column(db.Text, nullable=True)  # Additional JSON data
+    audit_metadata = db.Column(db.Text, nullable=True)  # Additional JSON data
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
@@ -124,7 +124,7 @@ class SecurityEvent(db.Model):
     blocked = db.Column(db.Boolean, default=False)
     reason = db.Column(db.Text, nullable=True)
     response_action = db.Column(db.String(100), nullable=True)  # block_ip, lock_account, etc.
-    metadata = db.Column(db.Text, nullable=True)
+    audit_metadata = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
@@ -143,7 +143,7 @@ class PerformanceMetric(db.Model):
     exceeded_threshold = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     session_id = db.Column(db.String(255), nullable=True)
-    metadata = db.Column(db.Text, nullable=True)
+    audit_metadata = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
@@ -165,7 +165,7 @@ class ComplianceRecord(db.Model):
     retention_period = db.Column(db.Integer, nullable=True)  # Days
     processed_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     processed_at = db.Column(db.DateTime, nullable=True)
-    metadata = db.Column(db.Text, nullable=True)
+    audit_metadata = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -190,7 +190,7 @@ class APIAudit(db.Model):
     rate_limit_hit = db.Column(db.Boolean, default=False)
     rate_limit_remaining = db.Column(db.Integer, nullable=True)
     error_message = db.Column(db.Text, nullable=True)
-    metadata = db.Column(db.Text, nullable=True)
+    audit_metadata = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
@@ -211,7 +211,7 @@ class DocumentAudit(db.Model):
     version = db.Column(db.String(50), nullable=True)
     changes_made = db.Column(db.Text, nullable=True)  # JSON of changes
     shared_with = db.Column(db.Text, nullable=True)  # JSON of shared users
-    metadata = db.Column(db.Text, nullable=True)
+    audit_metadata = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):

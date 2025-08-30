@@ -1,16 +1,22 @@
 """Services package initialization."""
-from .document_service import DocumentService
-from .notification_service import NotificationService
-from .email_service import EmailService
-from .ocr_service import OCRService
-from .template_service import TemplateService
-from .form_service import FormService
+
+# Audit services
+from .audit_service import audit_service
+from .user_activity_service import user_activity_service
+from .data_access_service import data_access_service
+from .performance_service import performance_service
+from .compliance_service import compliance_service
+from .api_audit_service import api_audit_service
+from .document_audit_service import document_audit_service
+from .alert_service import alert_service
 
 __all__ = [
-    'DocumentService',
-    'NotificationService',
-    'EmailService',
-    'OCRService',
-    'TemplateService',
-    'FormService'
+    'audit_service',
+    'user_activity_service',
+    'data_access_service',
+    'performance_service',
+    'compliance_service',
+    'api_audit_service',
+    'document_audit_service',
+    'alert_service'
 ] 

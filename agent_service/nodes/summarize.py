@@ -1,14 +1,18 @@
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from .types import Ctx
 
 SYS = ("You are a legal intake summarizer. Extract parties, issue, "
        "jurisdiction if present, key facts, and requested help. Be concise.")
 
 def run(ctx: Ctx):
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    # Use Ollama with a local model - llama3.2:3b is good for summarization
+    llm = ChatOllama(model="llama3.2:3b", temperature=0)
     user = ctx.state["raw_text"]
-    msg = llm.invoke([{"role":"system","content":SYS},
-                      {"role":"user","content":user}])
+    
+    # Create a prompt with system and user messages
+    prompt = f"System: {SYS}\n\nUser: {user}\n\nAssistant:"
+    msg = llm.invoke(prompt)
+    
     ctx.state["summary"] = msg.content
     ctx.state["status"] = "summarized"
     return ctx.state

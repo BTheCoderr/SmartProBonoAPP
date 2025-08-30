@@ -53,24 +53,40 @@ const ImprovedLegalAIChat = () => {
     setIsLoading(true);
 
     try {
-      // Route to appropriate agent
-      const agentType = routeToAgent(input, { conversationLength: messages.length });
-      const agent = aiAgents[agentType];
-      setCurrentAgent(agent);
+      // Call the real multi-agent API
+      const response = await fetch('http://localhost:8081/api/legal/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: input,
+          task_type: 'chat'
+        }),
+      });
 
-      // Simulate API call (replace with actual Supabase call)
-      const response = await simulateAIResponse(input, agent);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
       
       const aiMessage = {
         id: Date.now() + 1,
-        text: response,
+        text: data.response,
         sender: 'assistant',
         timestamp: new Date().toISOString(),
-        agent: agent.name,
-        agentType: agentType
+        agent: data.model_info?.name || 'Legal AI',
+        agentType: data.model_info?.type || 'general',
+        confidence: 0.9,
+        escalate: data.escalate || false
       };
 
       setMessages(prev => [...prev, aiMessage]);
+      setCurrentAgent({
+        name: data.model_info?.name || 'Legal AI',
+        type: data.model_info?.type || 'general'
+      });
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage = {

@@ -12,6 +12,7 @@ const FormsDashboard = React.lazy(() => import('./pages/FormsDashboard'));
 const AnalyticsDashboard = React.lazy(() => import('./pages/AnalyticsDashboard'));
 const ImmigrationDashboard = React.lazy(() => import('./pages/ImmigrationDashboard'));
 const AdminNotificationDashboard = React.lazy(() => import('./pages/AdminNotificationDashboard'));
+const AuditDashboard = React.lazy(() => import('./components/AuditDashboard'));
 const DocumentsPage = React.lazy(() => import('./pages/DocumentsPage'));
 const ContractsPage = React.lazy(() => import('./pages/ContractsPage'));
 const VirtualParalegalPage = React.lazy(() => import('./pages/VirtualParalegalPage'));
@@ -48,6 +49,7 @@ const routes = [
   { path: '/analytics-dashboard', element: <AnalyticsDashboard /> },
   { path: '/immigration-dashboard', element: <ImmigrationDashboard /> },
   { path: '/admin-notifications', element: <AdminNotificationDashboard /> },
+  { path: '/audit-dashboard', element: <AuditDashboard /> },
   { path: '/documents', element: <DocumentsPage /> },
   { path: '/contracts', element: <ContractsPage /> },
   { path: '/virtual-paralegal', element: <VirtualParalegalPage /> },

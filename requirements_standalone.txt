@@ -10,12 +10,4 @@ gunicorn==21.2.0
 # HTTP requests for Supabase
 requests==2.31.0
 
-# Email functionality
-smtplib  # Built-in Python module
-
-# Basic utilities
-datetime  # Built-in Python module
-json      # Built-in Python module
-re        # Built-in Python module
-os        # Built-in Python module
-logging   # Built-in Python module
+# Note: smtplib, datetime, json, re, os, logging are built-in Python modules
