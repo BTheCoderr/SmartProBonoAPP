@@ -1,31 +1,21 @@
 services:
   - type: web
-    name: smartprobono-standalone
+    name: smartProBonoAPP
     env: python
-    pythonVersion: "3.11"
     plan: free
+    branch: main
+    autoDeploy: true
+    rootDir: .
     buildCommand: |
-      pip install --upgrade pip
-      pip install -r requirements_standalone.txt
-    startCommand: python3 app_standalone.py
+      pip install --upgrade pip && pip install -r requirements_standalone.txt
+    startCommand: |
+      gunicorn app:app --bind 0.0.0.0:$PORT --workers 2
     envVars:
-      - key: PORT
-        value: 8081
       - key: FLASK_ENV
         value: production
+      - key: PORT
+        value: "10000"
       - key: SUPABASE_URL
         value: https://ewtcvsohdgkthuyajyyk.supabase.co
       - key: SUPABASE_SERVICE_KEY
         value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3dGN2c29oZGdrdGh1eWFqeXlrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjQxMDQ2NCwiZXhwIjoyMDcxOTg2NDY0fQ._9KbvHJ6JohciGAqwHlQGerGr2xkHEr36OmSB5oQjng
-      - key: SMTP_SERVER
-        value: smtp.zoho.com
-      - key: SMTP_PORT
-        value: "587"
-      - key: SMTP_USERNAME
-        value: your_email@domain.com
-      - key: SMTP_PASSWORD
-        value: your_password
-      - key: OPENAI_API_KEY
-        value: your_openai_key_here
-      - key: ANTHROPIC_API_KEY
-        value: sk-ant-api03-ceS1CHfarlcsD_6qtrn8_HeB0G0268TWZN0JgutkdvE-zuJ2Fkptkhr0QIyrVi53ZpjYxV_nRENWdm5A3wX1Q-91CATQAA
