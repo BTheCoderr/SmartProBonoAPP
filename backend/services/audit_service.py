@@ -69,7 +69,7 @@ class AuditService:
                 resource_type=resource_type,
                 action=action,
                 description=description,
-                metadata=json.dumps(metadata) if metadata else None
+                audit_metadata=json.dumps(metadata) if metadata else None
             )
             
             db.session.add(audit_log)
@@ -122,7 +122,7 @@ class AuditService:
                 device_type=device_info.get('device_type'),
                 browser=device_info.get('browser'),
                 os=device_info.get('os'),
-                metadata=json.dumps(metadata) if metadata else None
+                audit_metadata=json.dumps(metadata) if metadata else None
             )
             
             db.session.add(activity)
@@ -164,7 +164,7 @@ class AuditService:
                 blocked=blocked,
                 reason=reason,
                 response_action=response_action,
-                metadata=json.dumps(metadata) if metadata else None
+                audit_metadata=json.dumps(metadata) if metadata else None
             )
             
             db.session.add(security_event)
@@ -206,7 +206,7 @@ class AuditService:
                 exceeded_threshold=exceeded_threshold,
                 user_id=user_id,
                 session_id=session_id,
-                metadata=json.dumps(metadata) if metadata else None
+                audit_metadata=json.dumps(metadata) if metadata else None
             )
             
             db.session.add(metric)
@@ -259,7 +259,7 @@ class AuditService:
                 rate_limit_hit=rate_limit_hit,
                 rate_limit_remaining=rate_limit_remaining,
                 error_message=error_message,
-                metadata=json.dumps(metadata) if metadata else None
+                audit_metadata=json.dumps(metadata) if metadata else None
             )
             
             db.session.add(api_audit)
@@ -301,7 +301,7 @@ class AuditService:
                 version=version,
                 changes_made=json.dumps(changes_made) if changes_made else None,
                 shared_with=json.dumps(shared_with) if shared_with else None,
-                metadata=json.dumps(metadata) if metadata else None
+                audit_metadata=json.dumps(metadata) if metadata else None
             )
             
             db.session.add(document_audit)
@@ -342,7 +342,7 @@ class AuditService:
                 retention_period=retention_period,
                 processed_by=processed_by,
                 processed_at=datetime.utcnow() if processed_by else None,
-                metadata=json.dumps(metadata) if metadata else None
+                audit_metadata=json.dumps(metadata) if metadata else None
             )
             
             db.session.add(record)

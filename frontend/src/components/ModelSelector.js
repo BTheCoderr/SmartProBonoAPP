@@ -22,36 +22,44 @@ const ModelSelector = ({ currentModel, onChange, premium = false }) => {
   // Model data with capabilities and characteristics
   const models = [
     {
-      id: 'custom',
-      name: 'SmartProBono Assistant',
-      icon: <AutoAwesomeIcon />,
-      description: 'Our custom-tuned legal assistant with improved capabilities',
-      capabilities: ['General Legal Advice', 'Document Analysis', 'Citation'],
+      id: 'llama',
+      name: 'Llama 3.2 (3B)',
+      icon: <SmartToyIcon />,
+      description: 'Fast and efficient model for general legal advice',
+      capabilities: ['General Legal Advice', 'Fast Responses', 'Conversational'],
       premium: false
     },
     {
       id: 'mistral',
-      name: 'Mistral AI',
+      name: 'Mistral 7B',
       icon: <MemoryIcon />,
-      description: 'Good general-purpose model for legal advice',
-      capabilities: ['Clear Explanations', 'Fast Responses', 'Conversational'],
+      description: 'Balanced model with good legal reasoning capabilities',
+      capabilities: ['Clear Explanations', 'Legal Analysis', 'Detailed Responses'],
       premium: false
     },
     {
-      id: 'llama',
-      name: 'LlaMA Legal Advisor',
-      icon: <SmartToyIcon />,
-      description: 'Specialized in detailed legal analysis with references',
-      capabilities: ['Legal References', 'Statute Citations', 'Thorough Explanations'],
-      premium: true
+      id: 'qwen',
+      name: 'Qwen 2.5 (0.5B)',
+      icon: <PsychologyIcon />,
+      description: 'Lightweight model optimized for quick responses',
+      capabilities: ['Quick Responses', 'Efficient', 'Lightweight'],
+      premium: false
     },
     {
-      id: 'deepseek',
-      name: 'DeepSeek Legal',
+      id: 'gemma',
+      name: 'Gemma 2B',
       icon: <SchoolIcon />,
-      description: 'Research-oriented model with comprehensive legal knowledge',
-      capabilities: ['Research', 'Case Law', 'Legal Procedures'],
-      premium: true
+      description: 'Google\'s efficient model for legal guidance',
+      capabilities: ['Efficient', 'Clear Language', 'Good Reasoning'],
+      premium: false
+    },
+    {
+      id: 'phi',
+      name: 'Phi-3 Mini',
+      icon: <DescriptionIcon />,
+      description: 'Microsoft\'s compact model for legal assistance',
+      capabilities: ['Compact', 'Fast', 'Accurate'],
+      premium: false
     },
     {
       id: 'falcon',

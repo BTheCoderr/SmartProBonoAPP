@@ -1,28 +1,27 @@
-# Production requirements for SmartProBono Multi-Agent System
-# Optimized for Render deployment
-
-# Core Flask dependencies
-flask==3.0.0
+# SmartProBono Multi-Agent System - Production Requirements
+# Core Flask and API
+Flask==3.0.0
 flask-cors==4.0.0
-gunicorn==21.2.0
+flask-jwt-extended==4.5.3
 python-dotenv==1.0.0
+gunicorn==21.2.0
 
-# Database
+# Database and Storage
 psycopg2-binary==2.9.9
+supabase==2.3.0
 
-# Email
-requests==2.31.0
+# AI and ML Libraries
+openai>=1.56.1
+anthropic>=0.34.0
+sentence-transformers>=2.2.0
+transformers>=4.41.0
+torch>=1.11.0
 
-# Supabase
-supabase==2.3.4
+# Document Processing
+pypdf>=3.0.0
+python-multipart>=0.0.6
 
 # Utilities
-bcrypt==4.0.1
-python-dateutil==2.8.2
-cryptography>=41.0.0
-
-# Monitoring
-structlog==23.2.0
-
-# Error tracking
-sentry-sdk==1.32.0
+requests>=2.32.0
+pydantic>=2.0.0
+tenacity>=9.1.0

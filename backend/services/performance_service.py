@@ -2,7 +2,12 @@
 Performance monitoring service for system performance tracking and optimization.
 """
 import time
-import psutil
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
+    print("Warning: psutil not available. Performance monitoring will be limited.")
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, Any, Optional, List, Callable
@@ -42,7 +47,7 @@ class PerformanceService:
                 threshold=self.alert_thresholds.get("response_time", {}).get("critical_ms", 1000),
                 endpoint=endpoint,
                 user_id=user_id,
-                metadata={
+                audit_metadata={
                     "method": method,
                     "status_code": status_code,
                     **(metadata or {})
@@ -80,7 +85,7 @@ class PerformanceService:
                 unit="ms",
                 threshold=self.alert_thresholds.get("database_queries", {}).get("critical_ms", 500),
                 user_id=user_id,
-                metadata={
+                audit_metadata={
                     "query_type": query_type,
                     "query_text": query_text[:500] if query_text else None,  # Truncate long queries
                     "affected_rows": affected_rows,
@@ -108,6 +113,10 @@ class PerformanceService:
         try:
             metrics = {}
             
+            if not PSUTIL_AVAILABLE:
+                logger.warning("psutil not available. System resource monitoring disabled.")
+                return metrics
+            
             # CPU usage
             cpu_percent = psutil.cpu_percent(interval=1)
             metrics["cpu_usage"] = audit_service.log_performance_metric(
@@ -116,7 +125,7 @@ class PerformanceService:
                 unit="%",
                 threshold=self.alert_thresholds.get("cpu_usage", {}).get("critical_percent", 70),
                 user_id=user_id,
-                metadata={"timestamp": datetime.utcnow().isoformat()}
+                audit_metadata={"timestamp": datetime.utcnow().isoformat()}
             )
             
             # Memory usage
@@ -128,7 +137,7 @@ class PerformanceService:
                 unit="%",
                 threshold=self.alert_thresholds.get("memory_usage", {}).get("critical_percent", 80),
                 user_id=user_id,
-                metadata={
+                audit_metadata={
                     "total_memory_gb": round(memory.total / (1024**3), 2),
                     "available_memory_gb": round(memory.available / (1024**3), 2),
                     "used_memory_gb": round(memory.used / (1024**3), 2)
@@ -144,7 +153,7 @@ class PerformanceService:
                 unit="%",
                 threshold=90,  # Alert if disk usage > 90%
                 user_id=user_id,
-                metadata={
+                audit_metadata={
                     "total_disk_gb": round(disk.total / (1024**3), 2),
                     "used_disk_gb": round(disk.used / (1024**3), 2),
                     "free_disk_gb": round(disk.free / (1024**3), 2)
@@ -178,7 +187,7 @@ class PerformanceService:
                 unit="ms",
                 threshold=self.alert_thresholds.get("file_operations", {}).get("critical_ms", 5000),
                 user_id=user_id,
-                metadata={
+                audit_metadata={
                     "operation_type": operation_type,
                     "file_path": file_path,
                     "file_size": file_size,
@@ -216,7 +225,7 @@ class PerformanceService:
                 unit="%",
                 threshold=90,  # Alert if usage > 90%
                 user_id=user_id,
-                metadata={
+                audit_metadata={
                     "endpoint": endpoint,
                     "current_usage": current_usage,
                     "limit": limit,
@@ -423,7 +432,7 @@ class PerformanceService:
                         endpoint=func.__name__,
                         method="FUNCTION",
                         response_time_ms=int(execution_time),
-                        metadata={
+                        audit_metadata={
                             "function_name": func.__name__,
                             "module": func.__module__
                         }
@@ -440,7 +449,7 @@ class PerformanceService:
                         method="FUNCTION_ERROR",
                         response_time_ms=int(execution_time),
                         status_code=500,
-                        metadata={
+                        audit_metadata={
                             "function_name": func.__name__,
                             "module": func.__module__,
                             "error": str(e)

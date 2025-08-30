@@ -58,7 +58,7 @@ const LegalAIChat = ({ premium = false }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [currentModel, setCurrentModel] = useState('mistral');
+  const [currentModel, setCurrentModel] = useState('llama');
   const [interfaceMode, setInterfaceMode] = useState('categories'); // 'categories' or 'chat'
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
@@ -83,11 +83,19 @@ const LegalAIChat = ({ premium = false }) => {
   };
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Only scroll if user is near the bottom to avoid interrupting reading
+    const chatContainer = messagesEndRef.current?.parentElement?.parentElement;
+    if (chatContainer) {
+      const isNearBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 100;
+      if (isNearBottom) {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   };
 
   useEffect(() => {
-    scrollToBottom();
+    // Add a small delay to ensure DOM is updated
+    setTimeout(scrollToBottom, 100);
   }, [messages]);
 
   const handleSubmit = async (e) => {

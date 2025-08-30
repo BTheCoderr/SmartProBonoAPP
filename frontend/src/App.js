@@ -283,6 +283,14 @@ function AppContent() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/unauthorized" element={<UnauthorizedPage />} />
             <Route 
+              path="/scan-document" 
+              element={
+                <ProtectedRoute>
+                  <DocumentScanPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
               path="/document-scan" 
               element={
                 <ProtectedRoute>

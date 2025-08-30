@@ -25,4 +25,5 @@ echo "🐍 Starting Multi-Agent API Server..."
 
 # Start the FastAPI server
 cd smartprobono_backend
+source ../venv/bin/activate
 python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload

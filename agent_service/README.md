@@ -26,7 +26,7 @@ pip install -r requirements.txt
 ```bash
 export SUPABASE_URL="https://ewtcvsohdgkthuyajyyk.supabase.co"
 export SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
-export OPENAI_API_KEY="your-openai-api-key"
+# No API key needed - using Ollama local LLM!
 ```
 
 ### 3. Run the Service
@@ -60,7 +60,7 @@ Run the SQL in `../sql/langgraph_tables.sql` in your Supabase SQL editor:
 
 ### ✅ Implemented
 - **Case Intake**: Accept raw legal case descriptions
-- **AI Summarization**: Extract key legal details using GPT-4o-mini
+- **AI Summarization**: Extract key legal details using Ollama local LLM (llama3.2:3b)
 - **Supabase Integration**: Store intake records and summaries
 - **Health Monitoring**: Service health check endpoint
 
@@ -144,14 +144,17 @@ agent_service/
 Required:
 - `SUPABASE_URL`: Your Supabase project URL
 - `SUPABASE_SERVICE_ROLE_KEY`: Service role key for database access
-- `OPENAI_API_KEY`: OpenAI API key for LLM calls
+
+Optional:
+- `OLLAMA_MODEL`: Local LLM model to use (default: llama3.2:3b)
 
 ## 🐛 Troubleshooting
 
 ### Service Won't Start
 - Check environment variables are set
 - Verify Supabase credentials
-- Check OpenAI API key is valid
+- Make sure Ollama is running: `ollama serve`
+- Check that the model is available: `ollama list`
 
 ### Database Errors
 - Ensure Supabase tables are created
@@ -159,9 +162,9 @@ Required:
 - Verify network connectivity
 
 ### AI Errors
-- Check OpenAI API key and credits
-- Verify model availability
-- Check rate limits
+- Make sure Ollama is running: `ollama serve`
+- Check that the model is available: `ollama list`
+- Try a different model if current one fails
 
 ## 📝 Logs
 

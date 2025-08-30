@@ -1,16 +1,31 @@
 services:
   - type: web
-    name: smartprobono-standalone
+    name: smartprobono-multi-agent
     env: python
-    plan: free
-    buildCommand: pip install -r requirements_standalone.txt
-    startCommand: python3 app_standalone.py
+    pythonVersion: "3.11"
+    plan: starter
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements-production.txt
+    startCommand: python production_multi_agent_api.py
     envVars:
       - key: PORT
-        value: 8081
+        value: 10000
       - key: FLASK_ENV
         value: production
       - key: SUPABASE_URL
         value: https://ewtcvsohdgkthuyajyyk.supabase.co
       - key: SUPABASE_SERVICE_KEY
         value: ***REMOVED***
+      - key: SMTP_SERVER
+        value: smtp.zoho.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USERNAME
+        value: your_email@domain.com
+      - key: SMTP_PASSWORD
+        value: your_password
+      - key: OPENAI_API_KEY
+        value: your_openai_key_here
+      - key: ANTHROPIC_API_KEY
+        value: your_anthropic_key_here
