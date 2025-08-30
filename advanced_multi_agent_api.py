@@ -20,6 +20,109 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+def call_ollama(message, task_type="chat", history=None):
+    """Call Ollama API to generate response"""
+    try:
+        # Map model names to Ollama models
+        ollama_model_map = {
+            "default": "llama3.2:3b",
+            "chat": "llama3.2:3b", 
+            "mistral": "mistral:7b",
+            "llama": "llama3.2:3b",
+            "qwen": "qwen2.5:0.5b",
+            "gemma": "gemma2:2b",
+            "phi": "phi3:mini"
+        }
+        
+        ollama_model = ollama_model_map.get(task_type, "llama3.2:3b")
+        
+        # Build context from conversation history
+        context = ""
+        if history and len(history) > 0:
+            # Include last few messages for context
+            recent_history = history[-4:] if len(history) > 4 else history
+            for msg in recent_history:
+                role = "User" if msg.get('sender') == 'user' else "Assistant"
+                context += f"{role}: {msg.get('text', '')}\n"
+        
+        # Create system prompt based on task type
+        system_prompts = {
+            "chat": """You are SmartProBono's AI Legal Assistant. Provide helpful, conversational legal guidance.
+
+COMMUNICATION STYLE:
+- Be friendly and approachable
+- Use simple, clear language
+- Ask follow-up questions to understand the user's situation better
+- Provide specific, actionable advice when possible
+- Always remind users this is general information, not legal advice
+
+RESPONSE FORMAT:
+- Start with a direct answer to their question
+- Provide relevant details and context
+- Ask clarifying questions if needed
+- Suggest next steps or resources
+- End with a disclaimer about consulting an attorney
+
+Keep responses conversational and helpful. Avoid repetitive responses.""",
+
+            "research": """You are a legal research assistant. Provide comprehensive, well-structured legal information.
+
+RESEARCH FRAMEWORK:
+1. Direct Answer: Clear response to the question
+2. Legal Principles: Key legal concepts involved
+3. Practical Application: How this applies in real situations
+4. Jurisdiction Notes: State/federal law differences
+5. Resources: Relevant forms, websites, or organizations
+6. Next Steps: Recommended actions
+
+Be thorough but accessible.""",
+
+            "draft": """You are a legal document drafting assistant. Help create clear, professional legal documents.
+
+DRAFTING GUIDELINES:
+- Use clear, professional language
+- Include all necessary legal elements
+- Structure documents logically
+- Provide placeholders for specific information
+- Include standard legal disclaimers
+
+Focus on creating practical, usable documents."""
+        }
+        
+        system_prompt = system_prompts.get(task_type, system_prompts["chat"])
+        
+        # Build the full prompt
+        full_prompt = f"{system_prompt}\n\n{context}User: {message}\n\nAssistant:"
+        
+        # Call Ollama API
+        ollama_url = "http://localhost:11434/api/generate"
+        payload = {
+            "model": ollama_model,
+            "prompt": full_prompt,
+            "stream": False,
+            "options": {
+                "temperature": 0.7,
+                "top_p": 0.9,
+                "max_tokens": 1000
+            }
+        }
+        
+        response = requests.post(ollama_url, json=payload, timeout=30)
+        
+        if response.status_code == 200:
+            result = response.json()
+            return result.get("response", "").strip()
+        else:
+            logger.error(f"Ollama API error: {response.status_code} - {response.text}")
+            return None
+            
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Ollama connection error: {str(e)}")
+        return None
+    except Exception as e:
+        logger.error(f"Error calling Ollama: {str(e)}")
+        return None
+
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -832,21 +935,39 @@ def health_check():
 
 @app.route('/api/legal/chat', methods=['POST'])
 def legal_chat():
-    """Advanced legal chat with multi-layer agent system"""
+    """Advanced legal chat with Ollama integration"""
     try:
         data = request.json
         if not data or not data.get('message'):
             return jsonify({'error': 'Message is required'}), 400
         
         message = data['message']
+        task_type = data.get('task_type', 'chat')
         context = data.get('context', {})
         
-        logger.info(f"💬 Received: {message}")
+        logger.info(f"💬 Received: {message} (model: {task_type})")
         
-        # Process through multi-layer agent system
-        result = agent_system.process_message(message, context)
+        # Use Ollama for AI responses
+        ai_response = call_ollama(message, task_type, context.get('history', []))
         
-        logger.info(f"🤖 Agent: {result['agent_type']}, Response length: {len(result['response'])}")
+        if ai_response:
+            result = {
+                'response': ai_response,
+                'agent_type': task_type,
+                'agent_name': f'Ollama-{task_type}',
+                'model_info': {
+                    'name': f'Ollama-{task_type}',
+                    'type': 'local_llm',
+                    'provider': 'ollama'
+                },
+                'timestamp': datetime.now().isoformat()
+            }
+        else:
+            # Fallback to old system if Ollama fails
+            result = agent_system.process_message(message, context)
+            result['fallback'] = True
+        
+        logger.info(f"🤖 Response length: {len(result['response'])}")
         
         return jsonify(result)
         

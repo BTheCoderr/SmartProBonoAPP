@@ -99,5 +99,4 @@ INSERT INTO lawyer_profiles (full_name, email, specialization, is_active) VALUES
 ('Sarah Johnson', 'sarah.johnson@law.com', 'Housing Law', true),
 ('Michael Brown', 'michael.brown@law.com', 'Family Law', true),
 ('Emily Davis', 'emily.davis@law.com', 'Employment Law', true),
-('David Wilson', 'david.wilson@law.com', 'Immigration Law', true)
-ON CONFLICT (email) DO NOTHING;
+('David Wilson', 'david.wilson@law.com', 'Immigration Law', true);
