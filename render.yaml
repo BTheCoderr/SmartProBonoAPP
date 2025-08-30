@@ -10,7 +10,7 @@ services:
     startCommand: python3 app_standalone.py
     envVars:
       - key: PORT
-        value: 10000
+        value: 8081
       - key: FLASK_ENV
         value: production
       - key: SUPABASE_URL
