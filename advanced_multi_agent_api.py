@@ -155,7 +155,7 @@ Focus on creating practical, usable documents."""
         }
         
         # Shorter timeout for faster fallback
-        response = requests.post(ollama_url, json=payload, timeout=15)
+        response = requests.post(ollama_url, json=payload, timeout=5)
         
         if response.status_code == 200:
             result = response.json()
@@ -1098,23 +1098,33 @@ def legal_chat():
         
         logger.info(f"💬 Received: {message} (model: {task_type})")
         
-        # Try Ollama first (ultra-lightweight models)
-        ai_response = call_ollama(message, task_type, context.get('history', []))
-        if ai_response:
-            result = {
-                'response': ai_response,
-                'agent_type': task_type,
-                'agent_name': f'Ollama-{task_type}',
-                'model_info': {
-                    'name': f'Ollama-{task_type}',
-                    'type': 'local_llm',
-                    'provider': 'ollama'
-                },
-                'timestamp': datetime.now().isoformat()
-            }
-        else:
-            # Fallback to multi-layer agent system if Ollama fails
+        # Use TRUE multi-layer agent system FIRST
+        try:
             result = agent_system.process_message(message, context)
+        except Exception as e:
+            logger.error(f"Multi-layer system error: {e}")
+            # Fallback to Ollama only if multi-layer system fails
+            ai_response = call_ollama(message, task_type, context.get('history', []))
+            if ai_response:
+                result = {
+                    'response': ai_response,
+                    'agent_type': task_type,
+                    'agent_name': f'Ollama-{task_type}',
+                    'model_info': {
+                        'name': f'Ollama-{task_type}',
+                        'type': 'local_llm',
+                        'provider': 'ollama'
+                    },
+                    'timestamp': datetime.now().isoformat()
+                }
+            else:
+                # Final fallback to simple response
+                result = {
+                    'response': "I'm experiencing technical difficulties. Please try again or contact support.",
+                    'agent_type': 'fallback',
+                    'agent_name': 'System Fallback',
+                    'timestamp': datetime.now().isoformat()
+                }
         
         logger.info(f"🤖 Response length: {len(result['response'])}")
         

@@ -6,10 +6,10 @@ services:
     branch: main
     autoDeploy: true
     rootDir: .
-    buildCommand: |
-      pip install --upgrade pip && pip install -r requirements.txt
+               buildCommand: |
+             pip install --upgrade pip && pip install -r requirements_ultra_minimal.txt
     startCommand: |
-      uvicorn advanced_multi_agent_api:app --host 0.0.0.0 --port $PORT --workers 1
+      uvicorn simple_fastapi_app:app --host 0.0.0.0 --port $PORT --workers 1
     envVars:
       - key: PYTHON_ENV
         value: production
