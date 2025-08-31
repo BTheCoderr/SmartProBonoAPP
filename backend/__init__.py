@@ -39,7 +39,8 @@ def create_app(config_object=None):
     
     # Load configuration
     if config_object is None:
-        app.config.from_object('config.Config')
+        from .config import Config
+        app.config.from_object(Config)
     else:
         app.config.from_object(config_object)
     

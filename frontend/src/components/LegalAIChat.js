@@ -58,7 +58,7 @@ const LegalAIChat = ({ premium = false }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [currentModel, setCurrentModel] = useState('llama');
+  const [currentModel, setCurrentModel] = useState('qwen'); // Default to ultra-lightweight model
   const [interfaceMode, setInterfaceMode] = useState('categories'); // 'categories' or 'chat'
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
@@ -93,10 +93,23 @@ const LegalAIChat = ({ premium = false }) => {
     }
   };
 
+  const cleanMarkdown = (text) => {
+    // Remove markdown formatting for cleaner display
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold **text**
+      .replace(/\*(.*?)\*/g, '$1')     // Remove italic *text*
+      .replace(/`(.*?)`/g, '$1')       // Remove code `text`
+      .replace(/#{1,6}\s/g, '')        // Remove headers # ## ###
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1'); // Remove links [text](url) -> text
+  };
+
   useEffect(() => {
-    // Add a small delay to ensure DOM is updated
-    setTimeout(scrollToBottom, 100);
-  }, [messages]);
+    // Only scroll to bottom when new messages are added, not on every render
+    if (messages.length > 0) {
+      // Add a small delay to ensure DOM is updated
+      setTimeout(scrollToBottom, 100);
+    }
+  }, [messages.length]); // Changed from [messages] to [messages.length]
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -740,7 +753,7 @@ const LegalAIChat = ({ premium = false }) => {
                     }}
                   >
                     <ListItemText 
-                      primary={msg.text}
+                      primary={cleanMarkdown(msg.text)}
                       sx={{ 
                         wordBreak: 'break-word',
                         '& .MuiListItemText-primary': {

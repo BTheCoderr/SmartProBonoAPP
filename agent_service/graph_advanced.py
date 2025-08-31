@@ -6,7 +6,7 @@ Based on official LangGraph documentation patterns
 from typing import Dict, Any, Callable, Literal
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import create_react_agent
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from .supabase_client import insert_intake, patch_intake
 from .nodes.types import Ctx
 from .human_in_loop import require_human_review
@@ -44,7 +44,7 @@ def _wrap(fn: Callable[[Ctx], SmartProBonoState]):
 # Node Functions (following official patterns)
 def classify_case_type(ctx: Ctx) -> SmartProBonoState:
     """Classifier node - determines case type"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = ChatOllama(model="llama3.2:3b", temperature=0)
     
     system_prompt = """
     You are a legal case classifier. Analyze the user's legal question and classify it into one of these categories:
@@ -70,7 +70,7 @@ def classify_case_type(ctx: Ctx) -> SmartProBonoState:
 @parallel_specialists(["criminal_lawyer", "criminal_procedure_expert"])
 def criminal_specialist(ctx: Ctx) -> SmartProBonoState:
     """Criminal law specialist node with parallel execution"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = ChatOllama(model="llama3.2:3b", temperature=0)
     
     system_prompt = """
     You are a criminal law specialist. Provide detailed legal analysis for criminal law questions.
@@ -90,7 +90,7 @@ def criminal_specialist(ctx: Ctx) -> SmartProBonoState:
 @parallel_specialists(["housing_lawyer", "tenant_rights_expert"])
 def housing_specialist(ctx: Ctx) -> SmartProBonoState:
     """Housing law specialist node with parallel execution"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = ChatOllama(model="llama3.2:3b", temperature=0)
     
     system_prompt = """
     You are a housing law specialist. Provide detailed legal analysis for landlord-tenant and housing questions.
@@ -110,7 +110,7 @@ def housing_specialist(ctx: Ctx) -> SmartProBonoState:
 @parallel_specialists(["family_lawyer", "divorce_specialist"])
 def family_specialist(ctx: Ctx) -> SmartProBonoState:
     """Family law specialist node with parallel execution"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = ChatOllama(model="llama3.2:3b", temperature=0)
     
     system_prompt = """
     You are a family law specialist. Provide detailed legal analysis for family law questions.
@@ -129,7 +129,7 @@ def family_specialist(ctx: Ctx) -> SmartProBonoState:
 
 def other_specialist(ctx: Ctx) -> SmartProBonoState:
     """General legal specialist node"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = ChatOllama(model="llama3.2:3b", temperature=0)
     
     system_prompt = """
     You are a general legal specialist. Provide detailed legal analysis for general legal questions.
@@ -149,7 +149,7 @@ def other_specialist(ctx: Ctx) -> SmartProBonoState:
 @require_human_review("critic_review", "quality_check", timeout_minutes=30)
 def critic_review(ctx: Ctx) -> SmartProBonoState:
     """Critic node - reviews specialist analysis with human oversight"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = ChatOllama(model="llama3.2:3b", temperature=0)
     
     system_prompt = """
     You are a legal quality reviewer. Review the specialist analysis and determine if it needs revision.
@@ -179,7 +179,7 @@ def critic_review(ctx: Ctx) -> SmartProBonoState:
 
 def rewriter(ctx: Ctx) -> SmartProBonoState:
     """Rewriter node - improves specialist analysis"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = ChatOllama(model="llama3.2:3b", temperature=0)
     
     system_prompt = """
     You are a legal writing specialist. Improve the specialist analysis based on the critic's feedback.
@@ -198,7 +198,7 @@ def rewriter(ctx: Ctx) -> SmartProBonoState:
 
 def plain_english_explainer(ctx: Ctx) -> SmartProBonoState:
     """Plain English explainer node"""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = ChatOllama(model="llama3.2:3b", temperature=0)
     
     system_prompt = """
     You are a legal communication specialist. Convert the specialist analysis into plain English that any person can understand.

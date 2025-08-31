@@ -13,7 +13,7 @@ def _wrap(fn: Callable[[Ctx], State]):
 
 def build_graph():
     g = StateGraph(State)
-    g.add_node("summarize", _wrap(n_sum))
+    g.add_node("summarize", _wrap(n_sum.run))
     g.set_entry_point("summarize")
     g.add_edge("summarize", END)
     return g.compile()

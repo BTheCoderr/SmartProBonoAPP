@@ -64,7 +64,7 @@ function Contact() {
                     <Box>
                       <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Email</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        support@smartprobono.com
+                        bferrell@smartprobono.org
                       </Typography>
                     </Box>
                   </Box>
@@ -78,7 +78,7 @@ function Contact() {
                     <Box>
                       <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Phone</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        (555) 123-4567
+                        (401) 217-9799
                       </Typography>
                     </Box>
                   </Box>
@@ -92,7 +92,7 @@ function Contact() {
                     <Box>
                       <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Location</Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.4 }}>
-                        123 Legal Street, San Francisco, CA 94105
+                        225 Dyer St, Providence, RI 02903
                       </Typography>
                     </Box>
                   </Box>

@@ -3,6 +3,7 @@ Parallel execution system for LangGraph
 Allows multiple specialists to work simultaneously
 """
 
+import os
 import asyncio
 import concurrent.futures
 from typing import Dict, Any, List, Callable, Tuple

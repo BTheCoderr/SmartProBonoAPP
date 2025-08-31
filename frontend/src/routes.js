@@ -36,6 +36,17 @@ const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 const ExpertHelpPage = React.lazy(() => import('./pages/ExpertHelpPage'));
 const AuthTestPage = React.lazy(() => import('./pages/AuthTestPage'));
 const DesignSystemTest = React.lazy(() => import('./components/DesignSystemTest'));
+const FeatureRequestPage = React.lazy(() => import('./pages/FeatureRequestPage'));
+const BugReportPage = React.lazy(() => import('./pages/BugReportPage'));
+const HelpPage = React.lazy(() => import('./pages/HelpPage'));
+const StatusPage = React.lazy(() => import('./pages/StatusPage'));
+const GlossaryPage = React.lazy(() => import('./pages/GlossaryPage'));
+const ImmigrationResourcesPage = React.lazy(() => import('./pages/ImmigrationResourcesPage'));
+const LegalGuidesPage = React.lazy(() => import('./pages/LegalGuidesPage'));
+const ExternalResourcesPage = React.lazy(() => import('./pages/ExternalResourcesPage'));
+const ComplianceScannerPage = React.lazy(() => import('./pages/ComplianceScannerPage'));
+const PolicyGeneratorPage = React.lazy(() => import('./pages/PolicyGeneratorPage'));
+const RiskAssessmentPage = React.lazy(() => import('./pages/RiskAssessmentPage'));
 
 const routes = [
   { path: '/', element: <BetaLandingPage /> },
@@ -72,6 +83,17 @@ const routes = [
   { path: '/expert-help', element: <ExpertHelpPage /> },
   { path: '/auth-test', element: <AuthTestPage /> },
   { path: '/design-test', element: <DesignSystemTest /> },
+  { path: '/feature-request', element: <FeatureRequestPage /> },
+  { path: '/bug-report', element: <BugReportPage /> },
+  { path: '/help', element: <HelpPage /> },
+  { path: '/status', element: <StatusPage /> },
+  { path: '/glossary', element: <GlossaryPage /> },
+  { path: '/resources/immigration', element: <ImmigrationResourcesPage /> },
+  { path: '/resources/guides', element: <LegalGuidesPage /> },
+  { path: '/resources/external', element: <ExternalResourcesPage /> },
+  { path: '/compliance-scanner', element: <ComplianceScannerPage /> },
+  { path: '/policy-generator', element: <PolicyGeneratorPage /> },
+  { path: '/risk-assessment', element: <RiskAssessmentPage /> },
   { path: '*', element: <Navigate to="/not-found" replace /> },
 ];
 

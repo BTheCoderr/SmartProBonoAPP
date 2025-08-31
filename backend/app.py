@@ -1,6 +1,6 @@
 """Main Flask application."""
-from backend import create_app
-from database import init_db
+from . import create_app
+from .database import init_db
 import logging
 
 # Configure logging
