@@ -1,0 +1,19 @@
+# SmartProBono FastAPI App - Ultra Minimal Python 3.13 Compatible
+# Only the absolute essentials that work with Python 3.13
+
+# Core FastAPI dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+python-dotenv==1.0.1
+requests==2.31.0
+
+# Production server
+gunicorn==21.2.0
+
+# Note: Removed all problematic packages:
+# - pydantic (using built-in Python types instead)
+# - psycopg2-binary (using requests to Supabase REST API instead)
+# - python-jose (not needed for basic functionality)
+# - passlib (not needed for basic functionality)
+# - All other dependencies that cause Python 3.13 issues

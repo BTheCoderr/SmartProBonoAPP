@@ -1,6 +1,10 @@
 """Main Flask application."""
-from . import create_app
-from .database import init_db
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from backend import create_app
+from backend.database import init_db
 import logging
 
 # Configure logging

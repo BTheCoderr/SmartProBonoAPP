@@ -70,7 +70,8 @@ def create_app(config_object=None):
     init_middleware(app)
     
     # Initialize WebSocket notification service
-    from websocket.services.notification_service import init_redis_subscription
-    init_redis_subscription()
+    # TODO: Implement websocket service
+    # from websocket.services.notification_service import init_redis_subscription
+    # init_redis_subscription()
     
     return app
