@@ -7,11 +7,11 @@ services:
     autoDeploy: true
     rootDir: .
     buildCommand: |
-      pip install --upgrade pip && pip install -r requirements_standalone.txt
+      pip install --upgrade pip && pip install -r requirements.txt
     startCommand: |
-      gunicorn app:app --bind 0.0.0.0:$PORT --workers 2
+      uvicorn advanced_multi_agent_api:app --host 0.0.0.0 --port $PORT --workers 1
     envVars:
-      - key: FLASK_ENV
+      - key: PYTHON_ENV
         value: production
       - key: PORT
         value: "10000"

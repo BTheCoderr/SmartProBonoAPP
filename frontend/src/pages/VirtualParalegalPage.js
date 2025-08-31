@@ -1,1022 +1,564 @@
-// WARNING: Imports have been commented out to fix linting errors.
-// Uncomment specific imports as needed when using them.
-// Unused: import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  Grid, 
-  Button, 
+import React, { useState, useEffect } from 'react';
+import {
   Container,
+  Typography,
+  Box,
+  Grid,
   Card,
   CardContent,
   CardHeader,
-  Divider,
-  Stepper,
-  Step,
-  StepLabel,
+  Button,
   TextField,
-  MenuItem,
-  FormControl,
-  RadioGroup,
-  Radio,
-  FormControlLabel,
-  Tabs,
-  Tab,
-  Alert,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
   Chip,
-  CircularProgress,
-  Tooltip
+  Avatar,
+  Tabs,
+  Tab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Alert,
+  LinearProgress,
+  Paper,
+  Divider
 } from '@mui/material';
-// Unused: import PersonIcon from '@mui/icons-material/Person';
-// Unused: import DescriptionIcon from '@mui/icons-material/Description';
-// Unused: import EventNoteIcon from '@mui/icons-material/EventNote';
-// Unused: import AssignmentIcon from '@mui/icons-material/Assignment';
-// Unused: import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-// Unused: import AutorenewIcon from '@mui/icons-material/Autorenew';
-// Unused: import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-// Unused: import WifiIcon from '@mui/icons-material/Wifi';
-// Unused: import WifiOffIcon from '@mui/icons-material/WifiOff';
-// Unused: import PageLayout from '../components/PageLayout';
-// Unused: import { useAuth } from '../context/AuthContext';
-// Unused: import paralegalService from '../services/paralegalService';
-// Unused: import { useSnackbar } from 'notistack';
-// Unused: import { API_BASE_URL } from '../config';
-// Unused: import ApiService from '../services/api';
-// Unused: import FeatureErrorBoundary from '../components/ErrorBoundaries/FeatureErrorBoundary';
+import {
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Person as PersonIcon,
+  Description as DescriptionIcon,
+  Event as EventIcon,
+  Phone as PhoneIcon,
+  Email as EmailIcon,
+  LocationOn as LocationIcon,
+  Business as BusinessIcon,
+  Assignment as AssignmentIcon,
+  CheckCircle as CheckCircleIcon,
+  Schedule as ScheduleIcon,
+  Priority as PriorityIcon,
+  Category as CategoryIcon
+} from '@mui/icons-material';
+import PageLayout from '../components/PageLayout';
 
-// Case types for the intake form
-const caseTypes = [
-  'Tenant Rights',
-  'Immigration',
-  'Employment',
-  'Family Law',
-  'Criminal Defense',
-  'Consumer Protection',
-  'Expungement',
-  'Other'
-];
-
-// Mock data for demonstration
-const mockDocumentTemplates = [
-  { id: 1, name: 'Client Intake Form', category: 'General', format: 'PDF' },
-  { id: 2, name: 'Fee Waiver Request', category: 'Court', format: 'DOCX' },
-  { id: 3, name: 'Client Representation Agreement', category: 'Contracts', format: 'PDF' },
-  { id: 4, name: 'Tenant Complaint Letter', category: 'Housing', format: 'DOCX' },
-  { id: 5, name: 'Employment Discrimination Complaint', category: 'Employment', format: 'PDF' },
-];
-
-const mockScreeningQuestions = [
-  { id: 1, question: 'Have you sought legal help for this issue before?', type: 'boolean' },
-  { id: 2, question: 'When did this issue first occur?', type: 'date' },
-  { id: 3, question: 'Please describe your current financial situation', type: 'text' },
-  { id: 4, question: 'Do you have any deadlines or court dates approaching?', type: 'boolean' },
-  { id: 5, question: 'What is your preferred language for communication?', type: 'select', options: ['English', 'Spanish', 'Mandarin', 'Vietnamese', 'Other'] }
-];
-
-function VirtualParalegalPage() {
-  const { isAuthenticated } = useAuth();
-  const { enqueueSnackbar } = useSnackbar();
+const VirtualParalegalPage = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const [activeStep, setActiveStep] = useState(0);
-  const [caseInfo, setCaseInfo] = useState({
-    caseType: '',
-    clientName: '',
-    clientEmail: '',
-    clientPhone: '',
-    description: '',
-    urgency: 'medium',
-    initialConsultDate: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [documentTemplates, setDocumentTemplates] = useState([]);
-  const [screeningQuestions, setScreeningQuestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState('unknown'); // 'connected', 'disconnected', 'unknown'
-  const [serviceStatus, setServiceStatus] = useState(true);
-  const [query, setQuery] = useState('');
-  const [response, setResponse] = useState('');
+  const [clients, setClients] = useState([]);
+  const [cases, setCases] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogType, setDialogType] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  // Steps for the case intake process
-  const steps = ['Basic Information', 'Case Details', 'Review & Submit'];
-
-  // Check backend connection status
+  // Sample data - in real app, this would come from API
   useEffect(() => {
-    const MAX_RETRIES = 3;
-    const RETRY_DELAY = 2000; // 2 seconds
-    let retryCount = 0;
-    let retryTimeout;
-
-    const checkConnection = async () => {
-      try {
-        const response = await ApiService.get('/ping');
-        setConnectionStatus(response.status === 'ok' ? 'connected' : 'disconnected');
-        retryCount = 0; // Reset retry count on success
-      } catch (error) {
-        console.error('Error checking service status:', error);
-        setConnectionStatus('disconnected');
-        
-        // Implement retry logic
-        if (retryCount < MAX_RETRIES) {
-          retryCount++;
-          console.log(`Retrying connection (${retryCount}/${MAX_RETRIES})...`);
-          retryTimeout = setTimeout(checkConnection, RETRY_DELAY);
-          enqueueSnackbar(`Connection attempt ${retryCount}/${MAX_RETRIES}...`, {
-            variant: 'info',
-            autoHideDuration: 2000
-          });
-        } else {
-          enqueueSnackbar('Could not connect to backend server. Using demo mode.', {
-            variant: 'warning',
-            autoHideDuration: 5000
-          });
-        }
+    setClients([
+      {
+        id: 1,
+        name: 'John Smith',
+        email: 'john.smith@email.com',
+        phone: '(555) 123-4567',
+        address: '123 Main St, Providence, RI',
+        caseType: 'Immigration',
+        status: 'Active',
+        lastContact: '2024-01-15'
+      },
+      {
+        id: 2,
+        name: 'Maria Garcia',
+        email: 'maria.garcia@email.com',
+        phone: '(555) 987-6543',
+        address: '456 Oak Ave, Providence, RI',
+        caseType: 'Family Law',
+        status: 'Pending',
+        lastContact: '2024-01-10'
       }
-    };
-    
-    // Initial check
-    checkConnection();
+    ]);
 
-    // Implement periodic connection check
-    const connectionCheckInterval = setInterval(checkConnection, 30000); // Check every 30 seconds
-
-    // Cleanup
-    return () => {
-      clearInterval(connectionCheckInterval);
-      clearTimeout(retryTimeout);
-    };
-  }, [enqueueSnackbar]);
-
-  // Load data from API on component mount
-  useEffect(() => {
-    const fetchTemplatesAndQuestions = async () => {
-      if (isAuthenticated) {
-        setIsLoading(true);
-        try {
-          // Fetch document templates with timeout
-          const templatesPromise = Promise.race([
-            paralegalService.getDocumentTemplates(),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Request timeout')), 10000)
-            )
-          ]);
-          
-          const templatesResponse = await templatesPromise;
-          if (templatesResponse.success) {
-            setDocumentTemplates(templatesResponse.templates);
-          }
-          
-          // Fetch screening questions with timeout
-          const questionsPromise = Promise.race([
-            paralegalService.getScreeningQuestions(),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Request timeout')), 10000)
-            )
-          ]);
-          
-          const questionsResponse = await questionsPromise;
-          if (questionsResponse.success) {
-            setScreeningQuestions(questionsResponse.questions);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-          enqueueSnackbar(
-            error.message === 'Request timeout' 
-              ? 'Request timed out. Using demo data.'
-              : 'Failed to load data. Using demo data instead.',
-            { 
-              variant: 'warning',
-              autoHideDuration: 4000
-            }
-          );
-          // Use mock data if API fails
-          setDocumentTemplates(mockDocumentTemplates);
-          setScreeningQuestions(mockScreeningQuestions);
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        // Use mock data if user is not authenticated
-        setDocumentTemplates(mockDocumentTemplates);
-        setScreeningQuestions(mockScreeningQuestions);
+    setCases([
+      {
+        id: 1,
+        clientId: 1,
+        title: 'Green Card Application',
+        type: 'Immigration',
+        status: 'In Progress',
+        priority: 'High',
+        dueDate: '2024-02-15',
+        progress: 65
+      },
+      {
+        id: 2,
+        clientId: 2,
+        title: 'Divorce Proceedings',
+        type: 'Family Law',
+        status: 'Review',
+        priority: 'Medium',
+        dueDate: '2024-02-28',
+        progress: 30
       }
-    };
-    
-    fetchTemplatesAndQuestions();
-  }, [isAuthenticated, enqueueSnackbar]);
+    ]);
+
+    setTasks([
+      {
+        id: 1,
+        title: 'Review immigration documents',
+        caseId: 1,
+        dueDate: '2024-01-20',
+        status: 'Pending',
+        priority: 'High'
+      },
+      {
+        id: 2,
+        title: 'Schedule client meeting',
+        caseId: 2,
+        dueDate: '2024-01-18',
+        status: 'Completed',
+        priority: 'Medium'
+      }
+    ]);
+
+    setDocuments([
+      {
+        id: 1,
+        name: 'I-485 Application',
+        type: 'Form',
+        caseId: 1,
+        status: 'Draft',
+        lastModified: '2024-01-15'
+      },
+      {
+        id: 2,
+        name: 'Divorce Petition',
+        type: 'Legal Document',
+        caseId: 2,
+        status: 'Review',
+        lastModified: '2024-01-12'
+      }
+    ]);
+  }, []);
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
-  const handleNextStep = () => {
-    setActiveStep((prevStep) => prevStep + 1);
+  const handleOpenDialog = (type, item = null) => {
+    setDialogType(type);
+    setSelectedItem(item);
+    setOpenDialog(true);
   };
 
-  const handleBackStep = () => {
-    setActiveStep((prevStep) => prevStep - 1);
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedItem(null);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCaseInfo({
-      ...caseInfo,
-      [name]: value
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const result = await paralegalService.getParalegalAssistance(query);
-      setResponse(result.response);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUseTemplate = async (templateId) => {
-    if (!isAuthenticated && connectionStatus === 'connected') {
-      enqueueSnackbar('Please login to use templates', { 
-        variant: 'warning',
-        autoHideDuration: 4000
-      });
-      return;
-    }
-    
-    try {
-      const response = await paralegalService.generateDocument(templateId, {
-        // Add any data needed for the template
-        clientName: caseInfo.clientName || 'Client Name',
-        date: new Date().toISOString()
-      });
-      
-      if (response.success) {
-        enqueueSnackbar('Document generated successfully!', { 
-          variant: 'success',
-          autoHideDuration: 4000
-        });
-        // Handle successful document generation
-        // e.g., redirect to document viewer or download
-      } else {
-        throw new Error(response.message || 'Failed to generate document');
-      }
-    } catch (error) {
-      console.error('Error generating document:', error);
-      enqueueSnackbar(error.message || 'Failed to generate document', { 
-        variant: 'error',
-        autoHideDuration: 4000
-      });
-    }
-  };
-
-  const renderStepContent = (step) => {
-    switch (step) {
-      case 0:
-        return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                label="Client Name"
-                name="clientName"
-                value={caseInfo.clientName}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                label="Client Email"
-                name="clientEmail"
-                type="email"
-                value={caseInfo.clientEmail}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                label="Client Phone"
-                name="clientPhone"
-                value={caseInfo.clientPhone}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                select
-                required
-                fullWidth
-                label="Case Type"
-                name="caseType"
-                value={caseInfo.caseType}
-                onChange={handleInputChange}
-              >
-                {caseTypes.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
-          </Grid>
-        );
-      case 1:
-        return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                multiline
-                rows={4}
-                label="Case Description"
-                name="description"
-                value={caseInfo.description}
-                onChange={handleInputChange}
-                placeholder="Please provide a brief description of the legal issue..."
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>Urgency Level</Typography>
-              <FormControl component="fieldset">
-                <RadioGroup
-                  row
-                  name="urgency"
-                  value={caseInfo.urgency}
-                  onChange={handleInputChange}
-                >
-                  <FormControlLabel value="low" control={<Radio />} label="Low" />
-                  <FormControlLabel value="medium" control={<Radio />} label="Medium" />
-                  <FormControlLabel value="high" control={<Radio />} label="High" />
-                  <FormControlLabel value="urgent" control={<Radio />} label="Urgent" />
-                </RadioGroup>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Initial Consultation Date"
-                name="initialConsultDate"
-                type="date"
-                value={caseInfo.initialConsultDate}
-                onChange={handleInputChange}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-          </Grid>
-        );
-      case 2:
-        return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Paper variant="outlined" sx={{ p: 3 }}>
-                <Typography variant="h6" gutterBottom>Case Summary</Typography>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2">Client Name</Typography>
-                    <Typography variant="body1" gutterBottom>{caseInfo.clientName || 'Not provided'}</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2">Case Type</Typography>
-                    <Typography variant="body1" gutterBottom>{caseInfo.caseType || 'Not selected'}</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2">Email</Typography>
-                    <Typography variant="body1" gutterBottom>{caseInfo.clientEmail || 'Not provided'}</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2">Phone</Typography>
-                    <Typography variant="body1" gutterBottom>{caseInfo.clientPhone || 'Not provided'}</Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle2">Case Description</Typography>
-                    <Typography variant="body1" gutterBottom>{caseInfo.description || 'Not provided'}</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2">Urgency</Typography>
-                    <Chip 
-                      label={caseInfo.urgency.charAt(0).toUpperCase() + caseInfo.urgency.slice(1)} 
-                      color={caseInfo.urgency === 'urgent' || caseInfo.urgency === 'high' ? 'error' : 'default'}
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2">Initial Consultation</Typography>
-                    <Typography variant="body1">{caseInfo.initialConsultDate || 'Not scheduled'}</Typography>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Alert severity="info">
-                Please review the information above before submitting. Once submitted, you'll be able to track this case and receive automated document suggestions.
-              </Alert>
-            </Grid>
-          </Grid>
-        );
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Active':
+      case 'Completed':
+      case 'In Progress':
+        return 'success';
+      case 'Pending':
+      case 'Review':
+        return 'warning';
+      case 'Overdue':
+        return 'error';
       default:
-        return null;
+        return 'default';
     }
   };
 
-  // Tab panel for Document Automation
-  const DocumentAutomationPanel = () => (
-    <Box sx={{ py: 3 }}>
-      <Typography variant="h6" gutterBottom>Document Templates</Typography>
-      <Typography variant="body2" paragraph>
-        Generate professional legal documents quickly using our automated templates. Select a template to get started.
-      </Typography>
-      
-      {isLoading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Grid container spacing={3}>
-          {(documentTemplates.length > 0 ? documentTemplates : mockDocumentTemplates).map((template) => (
-            <Grid item xs={12} sm={6} md={4} key={template.id}>
-              <Card sx={{ 
-                transition: 'all 0.3s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 4
-                }
-              }}>
-                <CardHeader
-                  avatar={<InsertDriveFileIcon color="primary" />}
-                  title={template.name}
-                  subheader={`Category: ${template.category} • Format: ${template.format}`}
-                />
-                <CardContent sx={{ pt: 0 }}>
-                  <Button 
-                    variant="contained" 
-                    color="primary" 
-                    fullWidth
-                    startIcon={<DescriptionIcon />}
-                    onClick={() => handleUseTemplate(template.id)}
-                    sx={{ 
-                      py: 1.2,
-                      fontSize: '1rem',
-                      boxShadow: 2,
-                      '&:hover': {
-                        boxShadow: 4,
-                        bgcolor: 'primary.dark'
-                      }
-                    }}
-                  >
-                    Use Template
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'High':
+        return 'error';
+      case 'Medium':
+        return 'warning';
+      case 'Low':
+        return 'success';
+      default:
+        return 'default';
+    }
+  };
+
+  const renderClientsTab = () => (
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h6">Client Management</Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenDialog('client')}
+        >
+          Add Client
+        </Button>
+      </Box>
+
+      <Grid container spacing={3}>
+        {clients.map((client) => (
+          <Grid item xs={12} md={6} lg={4} key={client.id}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
+                    <PersonIcon />
+                  </Avatar>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="h6">{client.name}</Typography>
+                    <Chip
+                      label={client.status}
+                      size="small"
+                      color={getStatusColor(client.status)}
+                    />
+                  </Box>
+                  <IconButton onClick={() => handleOpenDialog('client', client)}>
+                    <EditIcon />
+                  </IconButton>
+                </Box>
+
+                <List dense>
+                  <ListItem>
+                    <ListItemIcon>
+                      <EmailIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary={client.email} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <PhoneIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary={client.phone} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <LocationIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary={client.address} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <BusinessIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary={client.caseType} />
+                  </ListItem>
+                </List>
+
+                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #eee' }}>
+                  <Typography variant="caption" color="text.secondary">
+                    Last Contact: {client.lastContact}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </Box>
   );
 
-  // Tab panel for Screening Questions
-  const ScreeningQuestionsPanel = () => (
-    <Box sx={{ py: 3 }}>
-      <Typography variant="h6" gutterBottom>Client Screening Questions</Typography>
-      <Typography variant="body2" paragraph>
-        Use these standard questions to screen potential clients and determine eligibility for services.
-      </Typography>
-      
-      {isLoading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <List>
-          {(screeningQuestions.length > 0 ? screeningQuestions : mockScreeningQuestions).map((q) => (
-            <ListItem key={q.id} divider>
-              <ListItemIcon>
-                <AssignmentIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText
-                primary={q.question}
-                secondary={`Question type: ${q.type}`}
-              />
-              <Button size="small" variant="outlined">
-                Add to Form
-              </Button>
-            </ListItem>
-          ))}
-        </List>
-      )}
-      
-      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          startIcon={<EventNoteIcon />}
+  const renderCasesTab = () => (
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h6">Case Management</Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenDialog('case')}
         >
-          Create Custom Screening Form
+          Add Case
         </Button>
       </Box>
+
+      <Grid container spacing={3}>
+        {cases.map((caseItem) => (
+          <Grid item xs={12} md={6} key={caseItem.id}>
+            <Card>
+              <CardHeader
+                title={caseItem.title}
+                subheader={`Client: ${clients.find(c => c.id === caseItem.clientId)?.name || 'Unknown'}`}
+                action={
+                  <Box>
+                    <Chip
+                      label={caseItem.status}
+                      size="small"
+                      color={getStatusColor(caseItem.status)}
+                      sx={{ mr: 1 }}
+                    />
+                    <Chip
+                      label={caseItem.priority}
+                      size="small"
+                      color={getPriorityColor(caseItem.priority)}
+                    />
+                  </Box>
+                }
+              />
+              <CardContent>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Progress
+                  </Typography>
+                  <LinearProgress
+                    variant="determinate"
+                    value={caseItem.progress}
+                    sx={{ mb: 1 }}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    {caseItem.progress}% Complete
+                  </Typography>
+                </Box>
+
+                <List dense>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CategoryIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary={caseItem.type} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <EventIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary={`Due: ${caseItem.dueDate}`} />
+                  </ListItem>
+                </List>
+
+                <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                  <Button
+                    size="small"
+                    startIcon={<EditIcon />}
+                    onClick={() => handleOpenDialog('case', caseItem)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="small"
+                    startIcon={<DescriptionIcon />}
+                    onClick={() => handleOpenDialog('documents', caseItem)}
+                  >
+                    Documents
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </Box>
+  );
+
+  const renderTasksTab = () => (
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h6">Task Management</Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenDialog('task')}
+        >
+          Add Task
+        </Button>
+      </Box>
+
+      <List>
+        {tasks.map((task) => (
+          <ListItem key={task.id} divider>
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={task.title}
+              secondary={`Case: ${cases.find(c => c.id === task.caseId)?.title || 'Unknown'} • Due: ${task.dueDate}`}
+            />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                label={task.priority}
+                size="small"
+                color={getPriorityColor(task.priority)}
+              />
+              <Chip
+                label={task.status}
+                size="small"
+                color={getStatusColor(task.status)}
+              />
+              <IconButton onClick={() => handleOpenDialog('task', task)}>
+                <EditIcon />
+              </IconButton>
+            </Box>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
+  const renderDocumentsTab = () => (
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h6">Document Management</Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenDialog('document')}
+        >
+          Add Document
+        </Button>
+      </Box>
+
+      <List>
+        {documents.map((doc) => (
+          <ListItem key={doc.id} divider>
+            <ListItemIcon>
+              <DescriptionIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={doc.name}
+              secondary={`Case: ${cases.find(c => c.id === doc.caseId)?.title || 'Unknown'} • Modified: ${doc.lastModified}`}
+            />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                label={doc.type}
+                size="small"
+                variant="outlined"
+              />
+              <Chip
+                label={doc.status}
+                size="small"
+                color={getStatusColor(doc.status)}
+              />
+              <IconButton onClick={() => handleOpenDialog('document', doc)}>
+                <EditIcon />
+              </IconButton>
+            </Box>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
+  const renderDialog = () => (
+    <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <DialogTitle>
+        {selectedItem ? 'Edit' : 'Add'} {dialogType.charAt(0).toUpperCase() + dialogType.slice(1)}
+      </DialogTitle>
+      <DialogContent>
+        <Box sx={{ pt: 2 }}>
+          <TextField
+            fullWidth
+            label="Name"
+            margin="normal"
+            defaultValue={selectedItem?.name || ''}
+          />
+          {dialogType === 'client' && (
+            <>
+              <TextField
+                fullWidth
+                label="Email"
+                type="email"
+                margin="normal"
+                defaultValue={selectedItem?.email || ''}
+              />
+              <TextField
+                fullWidth
+                label="Phone"
+                margin="normal"
+                defaultValue={selectedItem?.phone || ''}
+              />
+              <TextField
+                fullWidth
+                label="Address"
+                margin="normal"
+                defaultValue={selectedItem?.address || ''}
+              />
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Case Type</InputLabel>
+                <Select defaultValue={selectedItem?.caseType || ''}>
+                  <MenuItem value="Immigration">Immigration</MenuItem>
+                  <MenuItem value="Family Law">Family Law</MenuItem>
+                  <MenuItem value="Criminal Law">Criminal Law</MenuItem>
+                  <MenuItem value="Business Law">Business Law</MenuItem>
+                </Select>
+              </FormControl>
+            </>
+          )}
+          {dialogType === 'case' && (
+            <>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Client</InputLabel>
+                <Select defaultValue={selectedItem?.clientId || ''}>
+                  {clients.map((client) => (
+                    <MenuItem key={client.id} value={client.id}>
+                      {client.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Priority</InputLabel>
+                <Select defaultValue={selectedItem?.priority || ''}>
+                  <MenuItem value="High">High</MenuItem>
+                  <MenuItem value="Medium">Medium</MenuItem>
+                  <MenuItem value="Low">Low</MenuItem>
+                </Select>
+              </FormControl>
+            </>
+          )}
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialog}>Cancel</Button>
+        <Button variant="contained" onClick={handleCloseDialog}>
+          {selectedItem ? 'Update' : 'Create'}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 
   return (
-    <FeatureErrorBoundary
-      featureName="Virtual Paralegal"
-      errorMessage="The virtual paralegal service is temporarily unavailable. Please try again later."
+    <PageLayout
+      title="Virtual Paralegal"
+      description="Manage clients, cases, tasks, and documents efficiently"
     >
-      <PageLayout
-        title="Virtual Paralegal Assistant"
-        description="Streamline client intake, document preparation, and case management"
-        sx={{
-          background: 'linear-gradient(45deg, #004D40 30%, #00796B 90%)',
-        }}
-      >
-        <Container maxWidth="lg">
-          {/* Connection Status Indicator */}
-          <Box sx={{ position: 'absolute', top: 16, right: 16, display: 'flex', alignItems: 'center' }}>
-            <Tooltip title={connectionStatus === 'connected' 
-              ? 'Connected to backend server' 
-              : connectionStatus === 'disconnected' 
-                ? 'Not connected to backend server. Using demo mode.' 
-                : 'Checking...'
-            }>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                {connectionStatus === 'unknown' && <CircularProgress size={16} sx={{ mr: 1 }} />}
-                {connectionStatus === 'connected' && <WifiIcon color="success" />}
-                {connectionStatus === 'disconnected' && <WifiOffIcon color="error" />}
-                <Typography variant="caption" sx={{ ml: 0.5 }}>
-                  {connectionStatus === 'connected' ? 'Online' : connectionStatus === 'disconnected' ? 'Offline' : 'Checking...'}
-                </Typography>
-              </Box>
-            </Tooltip>
-          </Box>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Virtual Paralegal Dashboard
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary">
+            Streamline your legal practice with our comprehensive case management system
+          </Typography>
+        </Box>
 
-          {/* Show explicit demo mode warning if disconnected */}
-          {connectionStatus === 'disconnected' && (
-            <Paper sx={{ p: 2, mb: 4, bgcolor: 'warning.light', color: 'warning.contrastText' }}>
-              <Typography variant="body2">
-                <strong>Demo Mode:</strong> You're currently viewing this page in demo mode. 
-                The form submissions and document generation will simulate API calls without actually connecting to the backend.
-              </Typography>
-            </Paper>
-          )}
+        <Paper sx={{ mb: 3 }}>
+          <Tabs value={activeTab} onChange={handleTabChange} variant="fullWidth">
+            <Tab label="Clients" icon={<PersonIcon />} />
+            <Tab label="Cases" icon={<AssignmentIcon />} />
+            <Tab label="Tasks" icon={<CheckCircleIcon />} />
+            <Tab label="Documents" icon={<DescriptionIcon />} />
+          </Tabs>
+        </Paper>
 
-          {/* Main action buttons */}
-          <Box sx={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            gap: 2, 
-            justifyContent: 'center',
-            mb: 4
-          }}>
-            <Button 
-              variant="contained" 
-              color="primary"
-              size="large"
-              onClick={() => setActiveTab(0)}
-              startIcon={<PersonIcon />}
-              sx={{ 
-                px: 4, 
-                py: 1.5, 
-                fontSize: '1.1rem',
-                fontWeight: 'bold',
-                boxShadow: 3,
-                '&:hover': {
-                  boxShadow: 5,
-                  transform: 'translateY(-3px)'
-                },
-                transition: 'all 0.2s'
-              }}
-            >
-              Client Intake
-            </Button>
-            
-            <Button 
-              variant="contained" 
-              color="secondary"
-              size="large"
-              onClick={() => setActiveTab(1)}
-              startIcon={<DescriptionIcon />}
-              sx={{ 
-                px: 4, 
-                py: 1.5, 
-                fontSize: '1.1rem',
-                fontWeight: 'bold',
-                boxShadow: 3,
-                '&:hover': {
-                  boxShadow: 5,
-                  transform: 'translateY(-3px)'
-                },
-                transition: 'all 0.2s'
-              }}
-            >
-              Document Automation
-            </Button>
-            
-            <Button 
-              variant="contained" 
-              color="info"
-              size="large"
-              onClick={() => setActiveTab(2)}
-              startIcon={<AssignmentIcon />}
-              sx={{ 
-                px: 4, 
-                py: 1.5, 
-                fontSize: '1.1rem',
-                fontWeight: 'bold',
-                boxShadow: 3,
-                '&:hover': {
-                  boxShadow: 5,
-                  transform: 'translateY(-3px)'
-                },
-                transition: 'all 0.2s'
-              }}
-            >
-              Case Screening
-            </Button>
-            
-            <Button 
-              variant="outlined" 
-              color="primary"
-              size="large"
-              startIcon={<AutorenewIcon />}
-              sx={{ 
-                px: 4, 
-                py: 1.5, 
-                fontSize: '1.1rem',
-                fontWeight: 'bold',
-                bgcolor: 'rgba(255, 255, 255, 0.9)',
-                borderWidth: 2,
-                '&:hover': {
-                  borderWidth: 2,
-                  bgcolor: 'white'
-                },
-                transition: 'all 0.2s'
-              }}
-            >
-              Self-Service Legal Help
-            </Button>
-          </Box>
+        <Box sx={{ mt: 3 }}>
+          {activeTab === 0 && renderClientsTab()}
+          {activeTab === 1 && renderCasesTab()}
+          {activeTab === 2 && renderTasksTab()}
+          {activeTab === 3 && renderDocumentsTab()}
+        </Box>
 
-          {/* Overview Section */}
-          <Paper sx={{ p: 4, mb: 4 }}>
-            <Grid container spacing={4} alignItems="center">
-              <Grid item xs={12} md={7}>
-                <Typography variant="h5" component="h2" gutterBottom>
-                  Your AI-Powered Legal Assistant
-                </Typography>
-                <Typography variant="body1" paragraph>
-                  Smart Pro Bono's Virtual Paralegal Assistant helps law firms and solo practitioners streamline client intake, 
-                  automate document preparation, and manage cases more efficiently.
-                </Typography>
-                <List>
-                  <ListItem>
-                    <ListItemIcon>
-                      <CheckCircleIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary="Reduce administrative workload with automated client intake" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <CheckCircleIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary="Generate legal documents from templates in seconds" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <CheckCircleIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary="Screen potential clients with customizable questionnaires" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <CheckCircleIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary="Provide self-service resources for clients you can't take on" />
-                  </ListItem>
-                </List>
-              </Grid>
-              <Grid item xs={12} md={5}>
-                <Box sx={{ 
-                  bgcolor: 'primary.main', 
-                  color: 'white', 
-                  p: 3, 
-                  borderRadius: 2,
-                  boxShadow: 3
-                }}>
-                  <Typography variant="h6" gutterBottom>
-                    Virtual Paralegal Assistant Benefits:
-                  </Typography>
-                  <Box component="ul" sx={{ pl: 2 }}>
-                    <Typography component="li" sx={{ mb: 1 }}>Save 15+ hours weekly on administrative tasks</Typography>
-                    <Typography component="li" sx={{ mb: 1 }}>Reduce client intake time by up to 70%</Typography>
-                    <Typography component="li" sx={{ mb: 1 }}>Decrease document preparation errors</Typography>
-                    <Typography component="li">Serve more clients without increasing staff</Typography>
-                  </Box>
-                  <Box sx={{ mt: 3 }}>
-                    <Button 
-                      variant="contained" 
-                      color="secondary"
-                      fullWidth
-                      size="large"
-                    >
-                      Schedule a Demo
-                    </Button>
-                  </Box>
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
-
-          {/* Main Functionality Tabs */}
-          <Paper sx={{ mb: 4 }}>
-            <Tabs
-              value={activeTab}
-              onChange={handleTabChange}
-              variant="fullWidth"
-              indicatorColor="primary"
-              textColor="primary"
-            >
-              <Tab icon={<PersonIcon />} label="Case Intake" />
-              <Tab icon={<DescriptionIcon />} label="Document Automation" />
-              <Tab icon={<AssignmentIcon />} label="Screening Questions" />
-            </Tabs>
-            
-            <Box sx={{ p: 3 }}>
-              {activeTab === 0 && (
-                <Box>
-                  <Typography variant="h6" gutterBottom>New Client Intake</Typography>
-                  <Typography variant="body2" paragraph>
-                    Streamline your client onboarding process with our digital intake form. 
-                    Complete the steps below to create a new case.
-                  </Typography>
-                  
-                  <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
-                    {steps.map((label) => (
-                      <Step key={label}>
-                        <StepLabel>{label}</StepLabel>
-                      </Step>
-                    ))}
-                  </Stepper>
-                  
-                  <Box sx={{ mt: 3 }}>
-                    {renderStepContent(activeStep)}
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-                      {activeStep > 0 && (
-                        <Button 
-                          onClick={handleBackStep} 
-                          sx={{ 
-                            mr: 1,
-                            px: 3,
-                            py: 1,
-                            fontSize: '1rem'
-                          }}
-                        >
-                          Back
-                        </Button>
-                      )}
-                      {activeStep < steps.length - 1 ? (
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleNextStep}
-                          sx={{ 
-                            px: 3,
-                            py: 1,
-                            fontSize: '1rem',
-                            boxShadow: 3,
-                            '&:hover': {
-                              boxShadow: 5,
-                              transform: 'translateY(-2px)'
-                            },
-                            transition: 'all 0.2s'
-                          }}
-                        >
-                          Next
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleSubmit}
-                          disabled={isSubmitting}
-                          sx={{ 
-                            px: 3,
-                            py: 1,
-                            fontSize: '1rem',
-                            boxShadow: 3,
-                            '&:hover': {
-                              boxShadow: 5,
-                              transform: 'translateY(-2px)'
-                            },
-                            transition: 'all 0.2s'
-                          }}
-                        >
-                          {isSubmitting ? 'Submitting...' : 'Submit'}
-                        </Button>
-                      )}
-                    </Box>
-                  </Box>
-                </Box>
-              )}
-              
-              {activeTab === 1 && <DocumentAutomationPanel />}
-              
-              {activeTab === 2 && <ScreeningQuestionsPanel />}
-            </Box>
-          </Paper>
-          
-          {/* Law Firm Use Cases */}
-          <Paper sx={{ p: 4, mb: 4 }}>
-            <Typography variant="h5" gutterBottom>
-              Use Cases for Law Firms
-            </Typography>
-            <Typography variant="body2" paragraph>
-              See how different legal practices benefit from our Virtual Paralegal Assistant.
-            </Typography>
-            
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <Card sx={{ height: '100%' }}>
-                  <CardHeader
-                    title="Solo Practitioners"
-                    titleTypographyProps={{ variant: 'h6' }}
-                  />
-                  <CardContent>
-                    <Typography variant="body2" color="text.secondary" paragraph>
-                      Work more efficiently without the cost of full-time support staff.
-                    </Typography>
-                    <List dense disablePadding>
-                      <ListItem>
-                        <ListItemIcon sx={{ minWidth: '30px' }}>
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText primary="Handle more client inquiries" />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon sx={{ minWidth: '30px' }}>
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText primary="Automated document generation" />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon sx={{ minWidth: '30px' }}>
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText primary="Client screening tools" />
-                      </ListItem>
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
-              
-              <Grid item xs={12} md={4}>
-                <Card sx={{ height: '100%' }}>
-                  <CardHeader
-                    title="Small Law Firms"
-                    titleTypographyProps={{ variant: 'h6' }}
-                  />
-                  <CardContent>
-                    <Typography variant="body2" color="text.secondary" paragraph>
-                      Scale your practice without proportionally increasing staff costs.
-                    </Typography>
-                    <List dense disablePadding>
-                      <ListItem>
-                        <ListItemIcon sx={{ minWidth: '30px' }}>
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText primary="Standardized client intake" />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon sx={{ minWidth: '30px' }}>
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText primary="Consistent document preparation" />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon sx={{ minWidth: '30px' }}>
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText primary="Efficient case management" />
-                      </ListItem>
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
-              
-              <Grid item xs={12} md={4}>
-                <Card sx={{ height: '100%' }}>
-                  <CardHeader
-                    title="Legal Aid Organizations"
-                    titleTypographyProps={{ variant: 'h6' }}
-                  />
-                  <CardContent>
-                    <Typography variant="body2" color="text.secondary" paragraph>
-                      Serve more clients with limited resources and staff.
-                    </Typography>
-                    <List dense disablePadding>
-                      <ListItem>
-                        <ListItemIcon sx={{ minWidth: '30px' }}>
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText primary="Automated eligibility screening" />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon sx={{ minWidth: '30px' }}>
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText primary="Self-service resources for clients" />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon sx={{ minWidth: '30px' }}>
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText primary="Case prioritization tools" />
-                      </ListItem>
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
-          </Paper>
-          
-          {/* Call to Action */}
-          <Paper sx={{ p: 4, textAlign: 'center', bgcolor: 'secondary.light' }}>
-            <Typography variant="h5" gutterBottom>
-              Ready to Transform Your Legal Practice?
-            </Typography>
-            <Typography variant="body1" paragraph sx={{ maxWidth: '700px', mx: 'auto' }}>
-              Join the growing number of legal professionals using Smart Pro Bono's Virtual Paralegal Assistant to streamline their practice.
-            </Typography>
-            <Box sx={{ mt: 2 }}>
-              <Button 
-                variant="contained" 
-                color="primary" 
-                size="large"
-                sx={{ 
-                  mx: 1, 
-                  mb: { xs: 2, sm: 0 },
-                  px: 4,
-                  py: 1.5,
-                  fontSize: '1.1rem',
-                  fontWeight: 'bold',
-                  boxShadow: 3,
-                  '&:hover': {
-                    boxShadow: 5,
-                    transform: 'translateY(-3px)'
-                  },
-                  transition: 'all 0.2s'
-                }}
-              >
-                Get Started
-              </Button>
-              <Button 
-                variant="outlined" 
-                color="primary" 
-                size="large"
-                sx={{ 
-                  mx: 1,
-                  px: 4,
-                  py: 1.5,
-                  fontSize: '1.1rem',
-                  fontWeight: 'bold',
-                  bgcolor: 'rgba(255, 255, 255, 0.9)',
-                  borderWidth: 2,
-                  '&:hover': {
-                    borderWidth: 2,
-                    bgcolor: 'white',
-                    transform: 'translateY(-2px)'
-                  },
-                  transition: 'all 0.2s'
-                }}
-                startIcon={<AutorenewIcon />}
-              >
-                Request Demo
-              </Button>
-            </Box>
-          </Paper>
-        </Container>
-      </PageLayout>
-    </FeatureErrorBoundary>
+        {renderDialog()}
+      </Container>
+    </PageLayout>
   );
-}
+};
 
-export default VirtualParalegalPage; 
+export default VirtualParalegalPage;

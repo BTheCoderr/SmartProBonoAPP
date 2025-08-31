@@ -25,7 +25,7 @@ def test_ollama_direct():
                 "stream": False
             }
             
-            response = requests.post("http://localhost:11434/api/generate", json=payload, timeout=30)
+            response = requests.post("http://localhost:11434/api/generate", json=payload, timeout=15)
             if response.status_code == 200:
                 result = response.json()
                 print(f"✅ Ollama generation successful: {result.get('response', '')[:100]}...")
@@ -58,7 +58,7 @@ def test_backend_api():
             }
             
             response = requests.post("http://localhost:8081/api/legal/chat", 
-                                   json=payload, timeout=30)
+                                   json=payload, timeout=20)
             if response.status_code == 200:
                 result = response.json()
                 print(f"✅ Backend chat successful: {result.get('response', '')[:100]}...")

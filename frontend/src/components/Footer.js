@@ -174,19 +174,19 @@ const Footer = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <EmailIcon sx={{ opacity: 0.7, fontSize: 20 }} />
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    support@smartprobono.org
+                    bferrell@smartprobono.org
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <PhoneIcon sx={{ opacity: 0.7, fontSize: 20 }} />
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    1-800-LEGAL-AID
+                    (401) 217-9799
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <LocationOnIcon sx={{ opacity: 0.7, fontSize: 20 }} />
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    New York, NY
+                    Providence, RI
                   </Typography>
                 </Box>
               </Stack>

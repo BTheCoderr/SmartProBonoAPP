@@ -191,7 +191,19 @@ const Resources = ({ type = 'standard' }) => {
                   </List>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" color="primary">
+                  <Button 
+                    size="small" 
+                    color="primary"
+                    onClick={() => {
+                      if (category.title === 'Immigration Resources') {
+                        navigate('/resources/immigration');
+                      } else if (category.title === 'Legal Guides') {
+                        navigate('/resources/guides');
+                      } else if (category.title === 'External Resources') {
+                        navigate('/resources/external');
+                      }
+                    }}
+                  >
                     View All {category.title}
                   </Button>
                 </CardActions>

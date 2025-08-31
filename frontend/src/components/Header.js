@@ -256,22 +256,6 @@ const Header = () => {
             {/* Logo */}
             <Box sx={{ display: 'flex', alignItems: 'center', mr: { xs: 1, sm: 3 } }}>
               <Logo />
-              {!isSmallMobile && (
-                <Typography
-                  variant="h6"
-                  sx={{
-                    ml: 1,
-                    fontWeight: 700,
-                    background: 'linear-gradient(45deg, #1e40af 30%, #3b82f6 90%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    display: { xs: 'none', sm: 'block' },
-                  }}
-                >
-                  SmartProBono
-                </Typography>
-              )}
             </Box>
 
             {/* Desktop Navigation */}

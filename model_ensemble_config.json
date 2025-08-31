@@ -1,0 +1,49 @@
+{
+  "ensemble_name": "smartprobono-lightweight",
+  "models": [
+    {
+      "name": "qwen2.5:0.5b",
+      "role": "primary",
+      "weight": 0.6,
+      "use_for": [
+        "general_legal",
+        "quick_responses"
+      ]
+    },
+    {
+      "name": "tinyllama:1.1b",
+      "role": "fallback",
+      "weight": 0.3,
+      "use_for": [
+        "simple_questions",
+        "fast_responses"
+      ]
+    },
+    {
+      "name": "gemma2:2b",
+      "role": "specialized",
+      "weight": 0.1,
+      "use_for": [
+        "complex_analysis",
+        "detailed_responses"
+      ]
+    }
+  ],
+  "routing_rules": {
+    "simple_questions": [
+      "tinyllama:1.1b",
+      "qwen2.5:0.5b"
+    ],
+    "legal_analysis": [
+      "qwen2.5:0.5b",
+      "gemma2:2b"
+    ],
+    "quick_responses": [
+      "tinyllama:1.1b"
+    ],
+    "detailed_advice": [
+      "gemma2:2b",
+      "qwen2.5:0.5b"
+    ]
+  }
+}

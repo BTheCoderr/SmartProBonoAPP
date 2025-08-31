@@ -33,9 +33,22 @@ const ImprovedLegalAIChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const cleanMarkdown = (text) => {
+    // Remove markdown formatting for cleaner display
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold **text**
+      .replace(/\*(.*?)\*/g, '$1')     // Remove italic *text*
+      .replace(/`(.*?)`/g, '$1')       // Remove code `text`
+      .replace(/#{1,6}\s/g, '')        // Remove headers # ## ###
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1'); // Remove links [text](url) -> text
+  };
+
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    // Only scroll when new messages are added and it's an AI response
+    if (messages.length > 0 && messages[messages.length - 1]?.sender === 'ai') {
+      setTimeout(scrollToBottom, 100);
+    }
+  }, [messages.length]); // Changed from [messages] to [messages.length]
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -257,7 +270,7 @@ const ImprovedLegalAIChat = () => {
                     }}
                   >
                     <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                      {message.text}
+                      {cleanMarkdown(message.text)}
                     </Typography>
                     {message.isError && (
                       <Alert severity="error" sx={{ mt: 1 }}>

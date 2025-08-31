@@ -1,0 +1,56 @@
+[
+  {
+    "test": "Backend Health",
+    "status": "PASS",
+    "details": "Status: 200",
+    "timestamp": "2025-08-30T17:18:51.007253"
+  },
+  {
+    "test": "LangGraph Health",
+    "status": "PASS",
+    "details": "Status: 200",
+    "timestamp": "2025-08-30T17:18:51.027806"
+  },
+  {
+    "test": "Frontend Health",
+    "status": "PASS",
+    "details": "Status: 200",
+    "timestamp": "2025-08-30T17:18:51.118854"
+  },
+  {
+    "test": "LangGraph Info",
+    "status": "PASS",
+    "details": "Graphs: 2",
+    "timestamp": "2025-08-30T17:18:51.123748"
+  },
+  {
+    "test": "Database Connection",
+    "status": "FAIL",
+    "details": "Could not create or retrieve intake",
+    "timestamp": "2025-08-30T17:18:52.424384"
+  },
+  {
+    "test": "Simple Intake",
+    "status": "FAIL",
+    "details": "Status: 500",
+    "timestamp": "2025-08-30T17:18:57.322471"
+  },
+  {
+    "test": "Advanced Intake",
+    "status": "PASS",
+    "details": "Case Type: criminal, Status: completed, Intake ID: 3b17e3d7-8249-4806-bf5c-7374f088d8ec",
+    "timestamp": "2025-08-30T17:19:54.773952"
+  },
+  {
+    "test": "Intake Listing",
+    "status": "PASS",
+    "details": "Found 5 intakes",
+    "timestamp": "2025-08-30T17:19:57.667135"
+  },
+  {
+    "test": "Performance Test",
+    "status": "FAIL",
+    "details": "3 requests in 4.62s, 0/3 successful",
+    "timestamp": "2025-08-30T17:20:02.293509"
+  }
+]

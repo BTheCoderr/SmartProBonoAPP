@@ -21,20 +21,61 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def call_ollama(message, task_type="chat", history=None):
-    """Call Ollama API to generate response"""
+    """Call Ollama API to generate response with smart model selection"""
     try:
-        # Map model names to Ollama models
-        ollama_model_map = {
-            "default": "llama3.2:3b",
-            "chat": "llama3.2:3b", 
-            "mistral": "mistral:7b",
-            "llama": "llama3.2:3b",
-            "qwen": "qwen2.5:0.5b",
+        # Smart model selection based on question complexity
+        def analyze_question_complexity(question):
+            question_lower = question.lower()
+            
+            # Simple patterns
+            simple_patterns = [
+                r"\b(hello|hi|hey|thanks|thank you)\b",
+                r"^.{1,50}\?$"  # Short questions
+            ]
+            
+            # Complex patterns
+            complex_patterns = [
+                r"\b(analyze|compare|evaluate|assess)\b",
+                r"\b(dispute|litigation|court|lawsuit|settlement)\b",
+                r".{200,}\?$"  # Long questions
+            ]
+            
+            for pattern in complex_patterns:
+                if re.search(pattern, question_lower):
+                    return "complex"
+            
+            for pattern in simple_patterns:
+                if re.search(pattern, question_lower):
+                    return "simple"
+            
+            # Default based on length
+            if len(question) < 50:
+                return "simple"
+            elif len(question) < 200:
+                return "moderate"
+            else:
+                return "complex"
+        
+        # Smart model selection
+        complexity = analyze_question_complexity(message)
+        
+        if complexity == "simple":
+            ollama_model = "tinyllama:1.1b"  # Ultra-fast for simple questions
+        elif complexity == "moderate":
+            ollama_model = "qwen2.5:0.5b"    # Balanced for moderate questions
+        else:  # complex
+            ollama_model = "qwen2.5:0.5b"    # Use lightweight for complex too (to prevent freezing)
+        
+        # Override with user preference if specified and it's a lightweight model
+        lightweight_models = {
+            "tiny": "tinyllama:1.1b",
+            "qwen": "qwen2.5:0.5b", 
             "gemma": "gemma2:2b",
-            "phi": "phi3:mini"
+            "llama": "llama3.2:3b"
         }
         
-        ollama_model = ollama_model_map.get(task_type, "llama3.2:3b")
+        if task_type in lightweight_models:
+            ollama_model = lightweight_models[task_type]
         
         # Build context from conversation history
         context = ""
@@ -94,8 +135,9 @@ Focus on creating practical, usable documents."""
         # Build the full prompt
         full_prompt = f"{system_prompt}\n\n{context}User: {message}\n\nAssistant:"
         
-        # Call Ollama API
+        # Call Ollama API with optimized settings
         ollama_url = "http://localhost:11434/api/generate"
+        # Ultra-optimized settings for lightweight models
         payload = {
             "model": ollama_model,
             "prompt": full_prompt,
@@ -103,11 +145,17 @@ Focus on creating practical, usable documents."""
             "options": {
                 "temperature": 0.7,
                 "top_p": 0.9,
-                "max_tokens": 1000
+                "num_predict": 300,  # Shorter responses for speed
+                "num_ctx": 1024,     # Smaller context window
+                "num_batch": 1,      # Process one at a time
+                "num_thread": 1,     # Single thread for stability
+                "num_gpu": 0,        # Force CPU usage (more stable)
+                "low_vram": True     # Optimize for low memory
             }
         }
         
-        response = requests.post(ollama_url, json=payload, timeout=30)
+        # Shorter timeout for faster fallback
+        response = requests.post(ollama_url, json=payload, timeout=15)
         
         if response.status_code == 200:
             result = response.json()
@@ -138,7 +186,7 @@ SUPABASE_HEADERS = {
 }
 
 class MultiLayerAgentSystem:
-    """Advanced multi-layer AI agent system"""
+    """TRUE multi-layer AI agent system where agents call other agents"""
     
     def __init__(self):
         self.agents = {
@@ -152,81 +200,184 @@ class MultiLayerAgentSystem:
             'criminal': CriminalLawAgent()
         }
     
-    def route_message(self, message, context=None):
-        """Route message to appropriate agent based on content and context"""
-        lower_message = message.lower().strip()
+    def analyze_complexity(self, message):
+        """Analyze message complexity to determine workflow"""
+        lower_message = message.lower()
+        complexity_indicators = [
+            'complex', 'detailed', 'multiple', 'and', 'compliance', 'document',
+            'lawsuit', 'defense', 'strategy', 'analysis', 'help with', 'requirements'
+        ]
         
-        # Context-aware routing
-        if context and context.get('conversation_history'):
-            # Analyze conversation history for better routing
-            history = context['conversation_history']
-            if any('immigration' in h.lower() for h in history[-3:]):
-                return 'immigration'
-            elif any('family' in h.lower() or 'divorce' in h.lower() for h in history[-3:]):
-                return 'family'
-            elif any('criminal' in h.lower() or 'arrest' in h.lower() for h in history[-3:]):
-                return 'criminal'
+        complexity_score = sum(1 for indicator in complexity_indicators if indicator in lower_message) / len(complexity_indicators)
         
-        # Content-based routing
-        if re.match(r'^(hello|hi|hey|good morning|good afternoon|good evening)$', lower_message):
-            return 'greeting'
+        if complexity_score > 0.7:
+            return 'complex', True  # complex workflow, needs human review
+        elif complexity_score > 0.4:
+            return 'multi-agent', False  # multi-agent workflow
+        else:
+            return 'simple', False  # simple workflow
+    
+    def determine_agent_chain(self, message, complexity_type):
+        """Determine which agents should be involved in processing"""
+        lower_message = message.lower()
+        agent_chain = ['supervisor']
         
-        # Immigration patterns
-        if any(keyword in lower_message for keyword in ['immigration', 'visa', 'green card', 'citizenship', 'asylum', 'deportation']):
-            return 'immigration'
+        # Determine primary agent (prioritize main topics over sub-topics)
+        if any(keyword in lower_message for keyword in ['immigration', 'visa', 'green card', 'citizenship', 'h1b']):
+            agent_chain.append('immigration')
+            # Check if we need sub-agents
+            if any(keyword in lower_message for keyword in ['document', 'form', 'application']):
+                agent_chain.append('document')
+            if any(keyword in lower_message for keyword in ['compliance', 'regulation', 'requirement']):
+                agent_chain.append('compliance')
+                
+        elif any(keyword in lower_message for keyword in ['family', 'divorce', 'custody']):
+            agent_chain.append('family')
+            if complexity_type == 'complex':
+                agent_chain.append('expert')
+                
+        elif any(keyword in lower_message for keyword in ['business', 'llc', 'incorporat', 'corporation']):
+            agent_chain.append('business')
+            agent_chain.extend(['document', 'compliance'])  # Business always needs docs and compliance
+            
+        elif any(keyword in lower_message for keyword in ['criminal', 'arrest', 'charges']):
+            agent_chain.append('criminal')
+            if complexity_type == 'complex':
+                agent_chain.append('expert')
+                
+        elif any(keyword in lower_message for keyword in ['document', 'contract', 'draft']) and not any(keyword in lower_message for keyword in ['immigration', 'visa', 'business', 'family', 'criminal']):
+            agent_chain.append('document')
+            
+        elif any(keyword in lower_message for keyword in ['compliance', 'gdpr', 'privacy']) and not any(keyword in lower_message for keyword in ['immigration', 'visa', 'business', 'family', 'criminal']):
+            agent_chain.append('compliance')
+            
+        else:
+            agent_chain.append('greeting')
         
-        # Family law patterns
-        if any(keyword in lower_message for keyword in ['divorce', 'custody', 'child support', 'adoption', 'family law']):
-            return 'family'
+        # Always add synthesis for multi-agent workflows
+        if len(agent_chain) > 2:
+            agent_chain.append('synthesis')
         
-        # Criminal law patterns
-        if any(keyword in lower_message for keyword in ['criminal', 'arrest', 'charges', 'court', 'trial', 'sentencing']):
-            return 'criminal'
+        return agent_chain
+    
+    def call_agent_with_sub_agents(self, agent_name, message, context, agent_chain):
+        """Call an agent and let it call sub-agents if needed"""
+        agent = self.agents[agent_name]
         
-        # Compliance patterns
-        if any(keyword in lower_message for keyword in ['gdpr', 'privacy', 'data protection', 'soc 2', 'compliance', 'regulatory']):
-            return 'compliance'
+        # Get the main response from the agent
+        main_response = agent.process(message, context)
         
-        # Business patterns
-        if any(keyword in lower_message for keyword in ['incorporat', 'llc', 'corporation', 'fundraising', 'business', 'startup']):
-            return 'business'
+        # Check if this agent needs to call sub-agents
+        sub_agent_responses = {}
         
-        # Document patterns
-        if any(keyword in lower_message for keyword in ['document', 'contract', 'agreement', 'generate', 'draft', 'template']):
-            return 'document'
+        if agent_name == 'immigration':
+            # Immigration agent can call document and compliance agents
+            if 'document' in agent_chain:
+                doc_agent = self.agents['document']
+                sub_agent_responses['document'] = doc_agent.process(f"Generate immigration documents for: {message}", context)
+            
+            if 'compliance' in agent_chain:
+                comp_agent = self.agents['compliance']
+                sub_agent_responses['compliance'] = comp_agent.process(f"Check compliance requirements for: {message}", context)
         
-        # Expert patterns (complex questions)
-        if len(message.split()) > 10 or any(keyword in lower_message for keyword in ['complex', 'detailed', 'analysis', 'research']):
-            return 'expert'
+        elif agent_name == 'business':
+            # Business agent always calls document and compliance
+            doc_agent = self.agents['document']
+            sub_agent_responses['document'] = doc_agent.process(f"Generate business documents for: {message}", context)
+            
+            comp_agent = self.agents['compliance']
+            sub_agent_responses['compliance'] = comp_agent.process(f"Check business compliance for: {message}", context)
         
-        # Default to greeting for simple messages
-        return 'greeting'
+        elif agent_name in ['family', 'criminal'] and 'expert' in agent_chain:
+            # Family and criminal can call expert for complex cases
+            expert_agent = self.agents['expert']
+            sub_agent_responses['expert'] = expert_agent.process(f"Provide expert analysis for: {message}", context)
+        
+        return main_response, sub_agent_responses
+    
+    def synthesize_responses(self, main_response, sub_agent_responses, agent_chain):
+        """Synthesize multiple agent responses into a coherent final response"""
+        if not sub_agent_responses:
+            return main_response
+        
+        # Build comprehensive response
+        synthesis = f"{main_response}\n\n"
+        
+        if 'document' in sub_agent_responses:
+            synthesis += f"**📄 Document Assistance:**\n{sub_agent_responses['document']}\n\n"
+        
+        if 'compliance' in sub_agent_responses:
+            synthesis += f"**⚖️ Compliance Requirements:**\n{sub_agent_responses['compliance']}\n\n"
+        
+        if 'expert' in sub_agent_responses:
+            synthesis += f"**🔍 Expert Analysis:**\n{sub_agent_responses['expert']}\n\n"
+        
+        # Add human escalation notice for complex cases
+        if len(agent_chain) > 3:  # Multiple agents involved
+            synthesis += "**⚠️ Important Notice:**\n"
+            synthesis += "This response involves multiple legal areas. For specific legal matters, I strongly recommend consulting with a qualified attorney who can provide personalized legal advice based on your unique situation.\n\n"
+        
+        return synthesis
     
     def process_message(self, message, context=None):
-        """Process message through the multi-layer agent system"""
+        """Process message through TRUE multi-layer agent system"""
         try:
-            # Route to appropriate agent
-            agent_type = self.route_message(message, context)
-            agent = self.agents[agent_type]
+            # Step 1: Analyze complexity and determine workflow
+            complexity_type, needs_human_review = self.analyze_complexity(message)
             
-            # Get response from agent
-            response = agent.process(message, context)
+            # Step 2: Determine agent chain
+            agent_chain = self.determine_agent_chain(message, complexity_type)
+            
+            # Step 3: Process through agent chain
+            main_agent = None
+            main_response = ""
+            sub_agent_responses = {}
+            
+            for agent_name in agent_chain:
+                if agent_name == 'supervisor':
+                    continue  # Skip supervisor, it's just for routing
+                elif agent_name == 'synthesis':
+                    # Synthesize all responses
+                    main_response = self.synthesize_responses(main_response, sub_agent_responses, agent_chain)
+                else:
+                    # Call the agent and its sub-agents (only process the main agent)
+                    if main_agent is None:  # Only process the first non-supervisor agent
+                        main_response, sub_agent_responses = self.call_agent_with_sub_agents(agent_name, message, context, agent_chain)
+                        main_agent = agent_name
+            
+            # Step 4: Add human escalation if needed
+            if needs_human_review:
+                main_response += "\n\n**🚨 Human Attorney Review Recommended:**\n"
+                main_response += "This case involves complex legal matters that require review by a qualified attorney. Please consult with a legal professional for personalized advice."
+            
+            # Log the multi-layer processing
+            logger.info(f"🔗 Multi-layer chain: {' → '.join(agent_chain)}")
+            logger.info(f"📊 Complexity: {complexity_type}, Human Review: {needs_human_review}")
+            logger.info(f"🤖 Sub-agents called: {list(sub_agent_responses.keys())}")
             
             return {
-                'response': response,
-                'agent_type': agent_type,
-                'agent_name': agent.name,
-                'confidence': agent.get_confidence(message),
-                'suggestions': agent.get_suggestions(message),
+                'response': main_response,
+                'agent_type': main_agent,
+                'agent_name': self.agents[main_agent].name if main_agent else 'Multi-Agent System',
+                'agent_chain': agent_chain,
+                'complexity_type': complexity_type,
+                'needs_human_review': needs_human_review,
+                'sub_agents_used': list(sub_agent_responses.keys()),
+                'confidence': 0.9 if sub_agent_responses else 0.7,
+                'suggestions': self.agents[main_agent].get_suggestions(message) if main_agent else [],
                 'timestamp': datetime.now().isoformat()
             }
             
         except Exception as e:
-            logger.error(f"Error in multi-layer agent system: {e}")
+            logger.error(f"Error in TRUE multi-layer agent system: {e}")
             return {
-                'response': "I'm sorry, I encountered an error processing your request. Please try again.",
+                'response': "I'm sorry, I encountered an error in the multi-layer system. Please try again.",
                 'agent_type': 'error',
                 'agent_name': 'Error Handler',
+                'agent_chain': ['error'],
+                'complexity_type': 'error',
+                'needs_human_review': True,
+                'sub_agents_used': [],
                 'confidence': 0.0,
                 'suggestions': [],
                 'timestamp': datetime.now().isoformat()
@@ -947,9 +1098,8 @@ def legal_chat():
         
         logger.info(f"💬 Received: {message} (model: {task_type})")
         
-        # Use Ollama for AI responses
+        # Try Ollama first (ultra-lightweight models)
         ai_response = call_ollama(message, task_type, context.get('history', []))
-        
         if ai_response:
             result = {
                 'response': ai_response,
@@ -963,9 +1113,8 @@ def legal_chat():
                 'timestamp': datetime.now().isoformat()
             }
         else:
-            # Fallback to old system if Ollama fails
+            # Fallback to multi-layer agent system if Ollama fails
             result = agent_system.process_message(message, context)
-            result['fallback'] = True
         
         logger.info(f"🤖 Response length: {len(result['response'])}")
         
@@ -1071,6 +1220,66 @@ def send_welcome_email(email, name):
     except Exception as e:
         logger.error(f"Error sending welcome email: {e}")
 
+# Audit API endpoints
+@app.route('/api/audit/logs', methods=['GET'])
+def get_audit_logs():
+    """Get audit logs - simplified version for standalone app"""
+    try:
+        # For now, return a simple response indicating audit system is available
+        return jsonify({
+            "status": "success",
+            "message": "Audit system is available",
+            "data": [],
+            "count": 0,
+            "note": "Full audit functionality requires the complete backend system"
+        })
+    except Exception as e:
+        logger.error(f"Error getting audit logs: {str(e)}")
+        return jsonify({"error": "Failed to retrieve audit logs"}), 500
+
+@app.route('/api/audit/dashboard/stats', methods=['GET'])
+def get_audit_dashboard_stats():
+    """Get audit dashboard statistics - simplified version"""
+    try:
+        return jsonify({
+            "status": "success",
+            "data": {
+                "time_range": {
+                    "start_time": datetime.now().isoformat(),
+                    "end_time": datetime.now().isoformat(),
+                    "hours": 24
+                },
+                "totals": {
+                    "audit_logs": 0,
+                    "security_events": 0,
+                    "user_activities": 0
+                },
+                "security_by_severity": {
+                    "low": 0,
+                    "medium": 0,
+                    "high": 0,
+                    "critical": 0
+                },
+                "events_by_type": {
+                    "security": 0,
+                    "user_activity": 0,
+                    "data_access": 0,
+                    "performance": 0,
+                    "api_usage": 0,
+                    "document_access": 0,
+                    "compliance": 0,
+                    "system": 0
+                },
+                "performance": {
+                    "avg_response_time_ms": 0
+                },
+                "top_endpoints": []
+            }
+        })
+    except Exception as e:
+        logger.error(f"Error getting audit dashboard stats: {str(e)}")
+        return jsonify({"error": "Failed to retrieve audit dashboard stats"}), 500
+
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 8081))
     print(f"🚀 Starting SmartProBono Advanced Multi-Layer Agent System")
@@ -1078,6 +1287,7 @@ if __name__ == '__main__':
     print(f"🤖 AI System: Multi-Layer Agent System with 8 specialized agents")
     print(f"📊 Database: Supabase PostgreSQL")
     print(f"🔄 Migration Status: COMPLETED")
+    print(f"🔍 Audit System: Available (simplified)")
     print(f"")
     print(f"Available agents:")
     for agent_type, agent in agent_system.agents.items():
@@ -1087,6 +1297,8 @@ if __name__ == '__main__':
     print(f"  • Health: http://localhost:{port}/api/health")
     print(f"  • Legal Chat: http://localhost:{port}/api/legal/chat")
     print(f"  • Beta Signup: http://localhost:{port}/api/beta/signup")
+    print(f"  • Audit Logs: http://localhost:{port}/api/audit/logs")
+    print(f"  • Audit Dashboard: http://localhost:{port}/api/audit/dashboard/stats")
     print(f"")
     print(f"🎯 Test the multi-layer system:")
     print(f"  • Say 'hello' → Greeting Agent")
