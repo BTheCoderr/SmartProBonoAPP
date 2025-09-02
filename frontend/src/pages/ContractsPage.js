@@ -58,9 +58,42 @@ function TabPanel(props) {
 
 const ContractsPage = () => {
   const [tabValue, setTabValue] = useState(0);
+  const [myContracts, setMyContracts] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
+  };
+
+  const handleUseTemplate = (template) => {
+    // Create a new contract from template
+    const newContract = {
+      id: Date.now(),
+      title: template.title,
+      type: template.type,
+      status: 'Draft',
+      createdAt: new Date().toISOString(),
+      template: template
+    };
+
+    // Add to My Contracts
+    setMyContracts(prev => [newContract, ...prev]);
+    
+    // Add to Recent Activity
+    const activity = {
+      id: Date.now(),
+      type: 'Contract Created',
+      description: `Created "${template.title}" from template`,
+      timestamp: new Date().toISOString(),
+      contractId: newContract.id
+    };
+    setRecentActivity(prev => [activity, ...prev]);
+
+    // Switch to My Contracts tab to show the new contract
+    setTabValue(1);
+
+    // Show success message (you could add a toast notification here)
+    alert(`Contract "${template.title}" created successfully! Check "My Contracts" tab.`);
   };
 
   const contractTemplates = [
@@ -257,9 +290,13 @@ const ContractsPage = () => {
                   startIcon={<AddIcon />}
                   sx={{
                     backgroundColor: 'white',
-                    color: designTokens.colors.primary[600],
+                    color: '#0D47A1', // Dark blue for better contrast
+                    fontWeight: 700,
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
                     '&:hover': {
                       backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
+                      transform: 'translateY(-2px)',
                     },
                   }}
                 >
@@ -438,6 +475,16 @@ const ContractsPage = () => {
                               variant="primary"
                               size="small"
                               startIcon={<AddIcon />}
+                              onClick={() => handleUseTemplate(template)}
+                              sx={{
+                                backgroundColor: '#1565C0',
+                                color: 'white',
+                                fontWeight: 600,
+                                '&:hover': {
+                                  backgroundColor: '#0D47A1',
+                                  transform: 'translateY(-1px)',
+                                },
+                              }}
                             >
                               Use Template
                             </Button>
@@ -479,7 +526,17 @@ const ContractsPage = () => {
                 </Box>
 
                 <List>
-                  {userContracts.map((contract, index) => (
+                  {myContracts.length === 0 ? (
+                    <Box sx={{ textAlign: 'center', py: 4 }}>
+                      <Typography variant="h6" color="text.secondary" gutterBottom>
+                        No contracts yet
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Use a template to create your first contract
+                      </Typography>
+                    </Box>
+                  ) : (
+                    myContracts.map((contract, index) => (
                     <React.Fragment key={contract.id}>
                       <ListItem
                         sx={{
@@ -496,7 +553,7 @@ const ContractsPage = () => {
                         <ListItemText
                           primary={
                             <Typography variant="h6" sx={{ fontWeight: designTokens.typography.fontWeight.semibold }}>
-                              {contract.name}
+                              {contract.title}
                             </Typography>
                           }
                           secondary={
@@ -537,9 +594,10 @@ const ContractsPage = () => {
                           </IconButton>
                         </Box>
                       </ListItem>
-                      {index < userContracts.length - 1 && <Divider />}
+                      {index < myContracts.length - 1 && <Divider />}
                     </React.Fragment>
-                  ))}
+                    ))
+                  )}
                 </List>
               </motion.div>
             </TabPanel>
@@ -557,15 +615,55 @@ const ContractsPage = () => {
                 >
                   Recent Activity
                 </Typography>
-                <Box sx={{ textAlign: 'center', py: designTokens.spacing[8] }}>
-                  <DescriptionIcon sx={{ fontSize: 64, color: designTokens.colors.neutral[300], mb: designTokens.spacing[4] }} />
-                  <Typography variant="h6" color="text.secondary" sx={{ mb: designTokens.spacing[2] }}>
-                    No recent activity
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Your contract activity will appear here
-                  </Typography>
-                </Box>
+                {recentActivity.length === 0 ? (
+                  <Box sx={{ textAlign: 'center', py: designTokens.spacing[8] }}>
+                    <DescriptionIcon sx={{ fontSize: 64, color: designTokens.colors.neutral[300], mb: designTokens.spacing[4] }} />
+                    <Typography variant="h6" color="text.secondary" sx={{ mb: designTokens.spacing[2] }}>
+                      No recent activity
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Your contract activity will appear here
+                    </Typography>
+                  </Box>
+                ) : (
+                  <List>
+                    {recentActivity.map((activity, index) => (
+                      <React.Fragment key={activity.id}>
+                        <ListItem
+                          sx={{
+                            p: designTokens.spacing[3],
+                            borderRadius: designTokens.borderRadius.md,
+                            '&:hover': {
+                              backgroundColor: designTokens.colors.neutral[50],
+                            },
+                          }}
+                        >
+                          <ListItemIcon>
+                            <AddIcon sx={{ color: designTokens.colors.success[500] }} />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography variant="h6" sx={{ fontWeight: designTokens.typography.fontWeight.semibold }}>
+                                {activity.type}
+                              </Typography>
+                            }
+                            secondary={
+                              <Box>
+                                <Typography variant="body2" color="text.secondary">
+                                  {activity.description}
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                  {new Date(activity.timestamp).toLocaleString()}
+                                </Typography>
+                              </Box>
+                            }
+                          />
+                        </ListItem>
+                        {index < recentActivity.length - 1 && <Divider />}
+                      </React.Fragment>
+                    ))}
+                  </List>
+                )}
               </motion.div>
             </TabPanel>
           </Card>

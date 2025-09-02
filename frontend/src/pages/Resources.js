@@ -105,6 +105,25 @@ const Resources = ({ type = 'standard' }) => {
     navigate('/rights');
   };
 
+  const handleResourceClick = (resource) => {
+    if (resource.type === 'link' || resource.type === 'article') {
+      // Navigate to internal pages
+      navigate(resource.link);
+    } else if (resource.type === 'pdf') {
+      // For PDFs, we'll show a message since we don't have actual PDFs
+      alert(`PDF: ${resource.title}\n\nThis would open the PDF document: ${resource.link}\n\nIn a real implementation, this would download or display the PDF.`);
+    } else if (resource.type === 'video') {
+      // For videos, show a message
+      alert(`Video: ${resource.title}\n\nThis would play the video: ${resource.link}\n\nIn a real implementation, this would open a video player.`);
+    } else if (resource.type === 'template') {
+      // Navigate to templates page
+      navigate('/services/contracts');
+    } else {
+      // Default action
+      alert(`Opening: ${resource.title}\n\nLink: ${resource.link}`);
+    }
+  };
+
   const handleLearnMoreProcedures = () => {
     navigate('/procedures');
   };
@@ -172,9 +191,15 @@ const Resources = ({ type = 'standard' }) => {
                         <Button
                           variant="outlined"
                           size="small"
-                          href={resource.link}
-                          target={resource.type === 'link' ? '_blank' : '_self'}
-                          rel={resource.type === 'link' ? 'noopener noreferrer' : ''}
+                          onClick={() => handleResourceClick(resource)}
+                          sx={{
+                            borderColor: '#1565C0',
+                            color: '#1565C0',
+                            '&:hover': {
+                              borderColor: '#0D47A1',
+                              backgroundColor: 'rgba(21, 101, 192, 0.04)',
+                            },
+                          }}
                         >
                           {resource.type === 'link' ? 'Visit' : 'View'}
                         </Button>
