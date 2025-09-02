@@ -15,6 +15,7 @@ const PageLayout = ({
   title, 
   description,
   showBreadcrumbs = true,
+  showBanner = true,
   maxWidth = "lg",
   sx = {}
 }) => {
@@ -35,17 +36,18 @@ const PageLayout = ({
   return (
     <Box>
       {/* Page Header */}
-      <Box 
-        sx={{ 
-          background: 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
-          color: 'white',
-          pt: { xs: 4, md: 6 },
-          pb: { xs: 4, md: 6 },
-          position: 'relative',
-          overflow: 'hidden',
-          ...sx
-        }}
-      >
+      {showBanner && (
+        <Box 
+          sx={{ 
+            background: 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
+            color: 'white',
+            pt: { xs: 4, md: 6 },
+            pb: { xs: 4, md: 6 },
+            position: 'relative',
+            overflow: 'hidden',
+            ...sx
+          }}
+        >
         {/* Background Pattern */}
         <Box
           sx={{
@@ -131,7 +133,8 @@ const PageLayout = ({
             </Typography>
           )}
         </Container>
-      </Box>
+        </Box>
+      )}
 
       {/* Page Content */}
       <Container 

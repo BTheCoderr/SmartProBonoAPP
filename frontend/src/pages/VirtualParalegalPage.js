@@ -528,6 +528,7 @@ const VirtualParalegalPage = () => {
     <PageLayout
       title="Virtual Paralegal"
       description="Manage clients, cases, tasks, and documents efficiently"
+      showBanner={false}
     >
       <Container maxWidth="xl" sx={{ py: 4 }}>
         <Box sx={{ mb: 4 }}>

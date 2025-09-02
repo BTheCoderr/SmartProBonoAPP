@@ -110,8 +110,13 @@ const Resources = ({ type = 'standard' }) => {
       // Navigate to internal pages
       navigate(resource.link);
     } else if (resource.type === 'pdf') {
-      // For PDFs, we'll show a message since we don't have actual PDFs
-      alert(`PDF: ${resource.title}\n\nThis would open the PDF document: ${resource.link}\n\nIn a real implementation, this would download or display the PDF.`);
+      // Check if it's a document checklist
+      if (resource.title.toLowerCase().includes('checklist')) {
+        navigate('/resources/checklist/immigration');
+      } else {
+        // For other PDFs, show a message since we don't have actual PDFs
+        alert(`PDF: ${resource.title}\n\nThis would open the PDF document: ${resource.link}\n\nIn a real implementation, this would download or display the PDF.`);
+      }
     } else if (resource.type === 'video') {
       // For videos, show a message
       alert(`Video: ${resource.title}\n\nThis would play the video: ${resource.link}\n\nIn a real implementation, this would open a video player.`);

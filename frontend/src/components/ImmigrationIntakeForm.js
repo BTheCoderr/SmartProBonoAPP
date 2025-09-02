@@ -302,6 +302,7 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
     email: '',
     phone: '',
     dateOfBirth: null,
+    nationality: '',
     countryOfBirth: '',
     currentResidence: '',
     visaType: initialServiceType,
@@ -457,6 +458,29 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
 
   const validateForm = () => {
     const newErrors = {};
+    
+    // Safety check for formData
+    if (!formData) {
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        dateOfBirth: null,
+        nationality: '',
+        countryOfBirth: '',
+        currentResidence: '',
+        visaType: initialServiceType,
+        urgency: 'normal',
+        priorApplications: false,
+        hasLegalRepresentation: 'no',
+        caseDescription: '',
+        documents: [],
+        currentImmigrationStatus: '',
+        desiredService: initialServiceType
+      });
+      return newErrors;
+    }
     
     // Validate required fields
     if (!formData.firstName?.trim()) newErrors.firstName = 'First name is required';
@@ -919,7 +943,7 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
                   <InputLabel>Nationality</InputLabel>
                   <Select
                     name="nationality"
-                    value={formData.nationality}
+                    value={formData?.nationality || ''}
                     onChange={handleInputChange('nationality')}
                     label="Nationality"
                     required
