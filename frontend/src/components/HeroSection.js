@@ -85,7 +85,7 @@ const HeroSection = () => {
       initial="hidden"
       animate="visible"
               sx={{
-          background: `linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)`,
+          background: `linear-gradient(135deg, #1565C0 0%, #42A5F5 100%)`,
           color: 'white',
           position: 'relative',
           overflow: 'hidden',
@@ -94,7 +94,7 @@ const HeroSection = () => {
           borderRadius: { xs: 0, md: '0 0 40px 40px' },
           mx: { xs: 0, md: 2 },
           mb: { xs: 0, md: 4 },
-          boxShadow: '0 8px 32px rgba(30, 64, 175, 0.3)',
+          boxShadow: '0 8px 32px rgba(21, 101, 192, 0.3)',
         }}
     >
               {/* Background Elements */}
