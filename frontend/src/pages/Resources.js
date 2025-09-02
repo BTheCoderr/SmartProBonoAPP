@@ -10,7 +10,9 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  CardContent,
+  CardActions
 } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { School as SchoolIcon } from '@mui/icons-material';
