@@ -10,9 +10,9 @@ const theme = createTheme({
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#1976D2', // Complementary blue
-      light: '#42A5F5', // Light blue
-      dark: '#0D47A1', // Dark blue
+      main: '#14B8A6', // Teal - SmartProBono secondary color
+      light: '#5EEAD4', // Light teal
+      dark: '#0F766E', // Dark teal
       contrastText: '#ffffff',
     },
     success: {
