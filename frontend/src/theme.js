@@ -41,9 +41,9 @@ const theme = createTheme({
       gradient: 'linear-gradient(135deg, #1565C0 0%, #42A5F5 100%)',
     },
     text: {
-      primary: '#1e293b', // Dark grey for better contrast
-      secondary: '#475569', // Medium grey
-      disabled: '#94a3b8', // Light grey
+      primary: '#0f172a', // Very dark grey for maximum contrast
+      secondary: '#334155', // Dark grey
+      disabled: '#64748b', // Medium grey
     },
     divider: designTokens.colors.neutral[200], // #e2e8f0
   },

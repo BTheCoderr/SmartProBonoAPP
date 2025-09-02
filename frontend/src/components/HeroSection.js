@@ -212,7 +212,7 @@ const HeroSection = () => {
                   fontSize: { xs: '1.1rem', md: '1.25rem' },
                   fontWeight: 500,
                   color: '#ffffff',
-                  textShadow: '0 2px 8px rgba(0,0,0,0.4)',
+                  textShadow: '0 2px 12px rgba(0,0,0,0.6)',
                 }}
               >
                 Get instant legal assistance, AI-powered document generation, and professional guidance - all in one secure platform.
@@ -243,7 +243,7 @@ const HeroSection = () => {
                           fontSize: '1.5rem',
                           mb: 0.5,
                           color: '#ffffff',
-                          textShadow: '0 2px 6px rgba(0,0,0,0.4)',
+                          textShadow: '0 2px 8px rgba(0,0,0,0.6)',
                         }}
                       >
                         {stat.value}
@@ -255,7 +255,7 @@ const HeroSection = () => {
                           fontSize: '0.75rem',
                           fontWeight: 600,
                           color: '#ffffff',
-                          textShadow: '0 1px 4px rgba(0,0,0,0.4)',
+                          textShadow: '0 1px 6px rgba(0,0,0,0.6)',
                         }}
                       >
                         {stat.label}
@@ -355,7 +355,7 @@ const HeroSection = () => {
                     opacity: 1,
                     fontWeight: 600,
                     color: '#ffffff',
-                    textShadow: '0 1px 4px rgba(0,0,0,0.4)',
+                    textShadow: '0 1px 6px rgba(0,0,0,0.6)',
                   }}
                 >
                   Trusted by:
@@ -387,7 +387,7 @@ const HeroSection = () => {
                           fontWeight: 600,
                           fontSize: '0.75rem',
                           color: '#ffffff',
-                          textShadow: '0 1px 4px rgba(0,0,0,0.4)',
+                          textShadow: '0 1px 6px rgba(0,0,0,0.6)',
                         }}
                       >
                         {signal.text}
