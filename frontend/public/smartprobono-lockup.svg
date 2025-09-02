@@ -1,0 +1,32 @@
+<svg width="640" height="200" viewBox="0 0 640 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .navy { fill: #0F3D5E; }
+      .teal { fill: #1FB6A6; }
+      .word-navy { fill: #0F3D5E; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; font-weight: 800; }
+      .word-teal { fill: #1FB6A6; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; font-weight: 800; }
+    </style>
+  </defs>
+
+  <!-- Icon -->
+  <g transform="translate(18,20) scale(2)">
+    <path class="navy" d="M32 4 L52 12 V30 C52 38 44 46 32 51 C20 46 12 38 12 30 V12 L32 4 Z"/>
+    <line x1="32" y1="12" x2="32" y2="33" stroke="#1FB6A6" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="20" y1="20" x2="44" y2="20" stroke="#1FB6A6" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="32" cy="20" r="2.3" fill="#1FB6A6"/>
+    <line x1="24" y1="20" x2="24" y2="24" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+    <line x1="40" y1="20" x2="40" y2="24" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+    <path class="teal" d="M19 24 L29 24 L26 28 C25 29 23 29 22 28 L19 24 Z"/>
+    <path class="teal" d="M35 24 L45 24 L42 28 C41 29 39 29 38 28 L35 24 Z"/>
+    <line x1="32" y1="33" x2="32" y2="45" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+    <line x1="26" y1="36" x2="26" y2="44" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+    <line x1="38" y1="36" x2="38" y2="44" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="32" cy="47" r="2.1" fill="#1FB6A6"/>
+    <circle cx="26" cy="46" r="1.9" fill="#1FB6A6"/>
+    <circle cx="38" cy="46" r="1.9" fill="#1FB6A6"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="260" y="95" font-size="54" class="word-navy">Smart</text>
+  <text x="260" y="150" font-size="54" class="word-teal">ProBono</text>
+</svg>
