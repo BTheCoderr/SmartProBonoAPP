@@ -1,11 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Container, Typography, Box, Grid, Paper, Card, CardContent, 
-  Button, List, ListItem, ListItemText, ListItemIcon, Chip, Divider,
-  Alert, IconButton, LinearProgress, Tab, Tabs, Avatar, Badge
+  Box, 
+  Typography, 
+  Grid, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  ListItemIcon, 
+  Chip, 
+  Divider,
+  Alert, 
+  IconButton, 
+  LinearProgress, 
+  Tab, 
+  Tabs, 
+  Avatar, 
+  Badge,
+  Stack
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
+import { 
+  PageLayout, 
+  Section, 
+  Button, 
+  Card, 
+  CardContent,
+  designTokens 
+} from '../design-system';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -16,6 +39,10 @@ import WarningIcon from '@mui/icons-material/Warning';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import GavelIcon from '@mui/icons-material/Gavel';
+import ChatIcon from '@mui/icons-material/Chat';
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -29,7 +56,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ pt: designTokens.spacing[6] }}>
           {children}
         </Box>
       )}
@@ -48,536 +75,435 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Simulate fetching data
-    setTimeout(() => {
-      setDocuments([
-        { 
-          id: '1', 
-          title: 'Expungement Request Form', 
-          status: 'completed', 
-          lastUpdated: '2025-05-06T14:30:00Z',
-          progress: 100,
-          type: 'expungement'
-        },
-        { 
-          id: '2', 
-          title: 'Housing Defense Letter', 
-          status: 'in_progress', 
-          lastUpdated: '2025-05-03T09:15:00Z',
-          progress: 65,
-          type: 'housing'
-        },
-        { 
-          id: '3', 
-          title: 'Fee Waiver Application', 
-          status: 'pending_review', 
-          lastUpdated: '2025-05-01T11:45:00Z',
-          progress: 90,
-          type: 'fee_waiver'
-        }
-      ]);
+    const fetchData = async () => {
+      setLoading(true);
+      
+      // Mock data
+      const mockDocuments = [
+        { id: 1, name: 'Contract Agreement', type: 'Contract', status: 'Draft', date: '2024-01-15' },
+        { id: 2, name: 'Employment Agreement', type: 'Employment', status: 'Review', date: '2024-01-14' },
+        { id: 3, name: 'NDA Template', type: 'Template', status: 'Complete', date: '2024-01-13' },
+      ];
 
-      setNotifications([
-        {
-          id: '1',
-          title: 'Document Ready for Review',
-          message: 'Your expungement request form is ready for review.',
-          date: '2025-05-06T16:30:00Z',
-          read: false,
-          type: 'document',
-          documentId: '1'
-        },
-        {
-          id: '2',
-          title: 'Deadline Approaching',
-          message: 'Housing defense submission deadline is in 2 days.',
-          date: '2025-05-04T08:45:00Z',
-          read: true,
-          type: 'deadline',
-          documentId: '2'
-        },
-        {
-          id: '3',
-          title: 'Application Status Update',
-          message: 'Your fee waiver application has been submitted to the court.',
-          date: '2025-05-02T13:20:00Z',
-          read: true,
-          type: 'status',
-          documentId: '3'
-        }
-      ]);
+      const mockNotifications = [
+        { id: 1, message: 'New legal document template available', type: 'info', time: '2 hours ago' },
+        { id: 2, message: 'Contract review deadline approaching', type: 'warning', time: '1 day ago' },
+        { id: 3, message: 'Document signed successfully', type: 'success', time: '2 days ago' },
+      ];
 
-      setUpcomingDeadlines([
-        {
-          id: '1',
-          title: 'Housing Defense Submission',
-          dueDate: '2025-05-08T23:59:59Z',
-          documentId: '2',
-          importance: 'high'
-        },
-        {
-          id: '2',
-          title: 'Fee Waiver Supporting Documents',
-          dueDate: '2025-05-15T23:59:59Z',
-          documentId: '3',
-          importance: 'medium'
-        }
-      ]);
+      const mockDeadlines = [
+        { id: 1, title: 'Contract Review', date: '2024-01-20', type: 'urgent' },
+        { id: 2, title: 'Legal Consultation', date: '2024-01-25', type: 'normal' },
+        { id: 3, title: 'Document Submission', date: '2024-01-30', type: 'normal' },
+      ];
 
-      setLoading(false);
-    }, 1000);
+      setTimeout(() => {
+        setDocuments(mockDocuments);
+        setNotifications(mockNotifications);
+        setUpcomingDeadlines(mockDeadlines);
+        setLoading(false);
+      }, 1000);
+    };
+
+    fetchData();
   }, []);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  const handleViewDocument = (documentId) => {
-    navigate(`/documents/${documentId}`);
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Complete': return 'success';
+      case 'Review': return 'warning';
+      case 'Draft': return 'info';
+      default: return 'default';
+    }
   };
 
-  const handleEditDocument = (documentId) => {
-    navigate(`/documents/${documentId}/edit`);
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case 'info': return <NotificationsIcon />;
+      case 'warning': return <WarningIcon />;
+      case 'success': return <CheckCircleIcon />;
+      default: return <NotificationsIcon />;
+    }
   };
 
-  const handleViewAllDocuments = () => {
-    navigate('/documents');
+  const getNotificationColor = (type) => {
+    switch (type) {
+      case 'info': return designTokens.colors.info[500];
+      case 'warning': return designTokens.colors.warning[500];
+      case 'success': return designTokens.colors.success[500];
+      default: return designTokens.colors.neutral[500];
+    }
   };
 
-  const handleMarkNotificationRead = (notificationId) => {
-    setNotifications(notifications.map(notification => 
-      notification.id === notificationId 
-        ? { ...notification, read: true } 
-        : notification
-    ));
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
   };
 
-  const handleViewAllNotifications = () => {
-    navigate('/notifications');
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
+    },
   };
-
-  const handleViewProfile = () => {
-    navigate('/profile');
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const getStatusChip = (status) => {
-    const statusConfig = {
-      completed: { color: 'success', label: 'Completed', icon: <CheckCircleIcon fontSize="small" /> },
-      in_progress: { color: 'primary', label: 'In Progress', icon: <AccessTimeIcon fontSize="small" /> },
-      pending_review: { color: 'warning', label: 'Pending Review', icon: <WarningIcon fontSize="small" /> },
-      draft: { color: 'default', label: 'Draft', icon: <ArticleIcon fontSize="small" /> }
-    };
-
-    const { color, label, icon } = statusConfig[status] || statusConfig.draft;
-
-    return (
-      <Chip 
-        icon={icon}
-        label={label} 
-        color={color} 
-        size="small" 
-        sx={{ fontWeight: 'medium' }}
-      />
-    );
-  };
-
-  const unreadNotifications = notifications.filter(notification => !notification.read).length;
 
   if (loading) {
     return (
-      <Container maxWidth="lg">
-        <Box py={4}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Dashboard
-          </Typography>
-          <Box sx={{ width: '100%', mt: 4 }}>
-            <LinearProgress />
-          </Box>
+      <PageLayout background="light" padding="normal">
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+          <LinearProgress sx={{ width: '100%', maxWidth: 400 }} />
         </Box>
-      </Container>
+      </PageLayout>
     );
   }
 
   return (
-    <Container maxWidth="lg">
-      <Box py={4}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-          <Typography variant="h4" component="h1">
-            Dashboard
-          </Typography>
-          <Box display="flex" alignItems="center">
-            <Badge badgeContent={unreadNotifications} color="error" sx={{ mr: 2 }}>
-              <IconButton color="primary" onClick={handleViewAllNotifications}>
-                <NotificationsIcon />
-              </IconButton>
-            </Badge>
-            <Button 
-              variant="outlined"
-              startIcon={<SettingsIcon />}
-              onClick={handleViewProfile}
-            >
-              Profile & Settings
-            </Button>
+    <PageLayout background="light" padding="normal">
+      {/* Welcome Section */}
+      <Section variant="hero" background="gradient" header={false}>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <Box sx={{ textAlign: 'center', py: designTokens.spacing[8] }}>
+            <motion.div variants={itemVariants}>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontWeight: designTokens.typography.fontWeight.bold,
+                  color: 'white',
+                  mb: designTokens.spacing[4],
+                  textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                }}
+              >
+                Welcome back, {currentUser?.first_name || 'User'}!
+              </Typography>
+              <Typography
+                variant="h5"
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  mb: designTokens.spacing[6],
+                  textShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                }}
+              >
+                Here's what's happening with your legal matters
+              </Typography>
+            </motion.div>
           </Box>
-        </Box>
-        
-        <Card sx={{ mb: 4 }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={tabValue} onChange={handleTabChange} aria-label="dashboard tabs">
+        </motion.div>
+      </Section>
+
+      {/* Quick Actions */}
+      <Section variant="default" background="white" header={false}>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <Box sx={{ mb: designTokens.spacing[8] }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: designTokens.typography.fontWeight.bold,
+                color: designTokens.colors.neutral[800],
+                mb: designTokens.spacing[6],
+                textAlign: 'center',
+              }}
+            >
+              Quick Actions
+            </Typography>
+            <Grid container spacing={designTokens.spacing[4]}>
+              {[
+                { title: 'AI Legal Chat', icon: <ChatIcon />, path: '/legal-chat', color: 'primary' },
+                { title: 'Scan Document', icon: <DocumentScannerIcon />, path: '/scan-document', color: 'secondary' },
+                { title: 'Legal Templates', icon: <DescriptionIcon />, path: '/templates', color: 'success' },
+                { title: 'Case Tracking', icon: <GavelIcon />, path: '/cases', color: 'warning' },
+              ].map((action, index) => (
+                <Grid item xs={12} sm={6} md={3} key={index}>
+                  <motion.div variants={itemVariants}>
+                    <Card
+                      variant="default"
+                      hoverable
+                      sx={{
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        height: '100%',
+                        '&:hover': {
+                          transform: 'translateY(-4px)',
+                        },
+                      }}
+                      onClick={() => navigate(action.path)}
+                    >
+                      <CardContent sx={{ p: designTokens.spacing[6] }}>
+                        <Box
+                          sx={{
+                            width: 60,
+                            height: 60,
+                            borderRadius: '50%',
+                            background: designTokens.gradients[action.color] || designTokens.gradients.primary,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            margin: '0 auto',
+                            mb: designTokens.spacing[4],
+                          }}
+                        >
+                          {React.cloneElement(action.icon, { 
+                            sx: { fontSize: 30, color: 'white' } 
+                          })}
+                        </Box>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: designTokens.typography.fontWeight.semibold,
+                            color: designTokens.colors.neutral[800],
+                          }}
+                        >
+                          {action.title}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </motion.div>
+      </Section>
+
+      {/* Dashboard Content */}
+      <Section variant="default" background="light" header={false}>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <Card variant="elevated" sx={{ p: designTokens.spacing[6] }}>
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
+              sx={{
+                borderBottom: 1,
+                borderColor: 'divider',
+                mb: designTokens.spacing[6],
+              }}
+            >
               <Tab label="Overview" />
               <Tab label="Documents" />
               <Tab label="Notifications" />
-              <Tab label="Calendar" />
+              <Tab label="Deadlines" />
             </Tabs>
-          </Box>
-          
-          <TabPanel value={tabValue} index={0}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <Card>
-                  <CardContent>
-                    <Box display="flex" alignItems="center" mb={2}>
-                      <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
-                        <DescriptionIcon />
-                      </Avatar>
-                      <Typography variant="h6">
-                        Documents
+
+            <TabPanel value={tabValue} index={0}>
+              <Grid container spacing={designTokens.spacing[6]}>
+                {/* Stats Cards */}
+                <Grid item xs={12} md={4}>
+                  <motion.div variants={itemVariants}>
+                    <Card variant="gradient" sx={{ textAlign: 'center', p: designTokens.spacing[6] }}>
+                      <TrendingUpIcon sx={{ fontSize: 48, color: designTokens.colors.success[500], mb: designTokens.spacing[3] }} />
+                      <Typography variant="h4" sx={{ fontWeight: designTokens.typography.fontWeight.bold, mb: designTokens.spacing[2] }}>
+                        {documents.length}
                       </Typography>
-                    </Box>
-                    <Typography variant="h4" align="center" gutterBottom>
-                      {documents.length}
-                    </Typography>
-                    <Grid container textAlign="center">
-                      <Grid item xs={4}>
-                        <Typography variant="body2" color="text.secondary">
-                          Complete
-                        </Typography>
-                        <Typography variant="h6">
-                          {documents.filter(doc => doc.status === 'completed').length}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2" color="text.secondary">
-                          In Progress
-                        </Typography>
-                        <Typography variant="h6">
-                          {documents.filter(doc => doc.status === 'in_progress').length}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2" color="text.secondary">
-                          Pending
-                        </Typography>
-                        <Typography variant="h6">
-                          {documents.filter(doc => doc.status === 'pending_review').length}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </Grid>
-              
-              <Grid item xs={12} md={8}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      Upcoming Deadlines
-                    </Typography>
-                    {upcomingDeadlines.length === 0 ? (
-                      <Alert severity="info">No upcoming deadlines</Alert>
-                    ) : (
-                      <List>
-                        {upcomingDeadlines.map((deadline) => (
-                          <ListItem 
-                            key={deadline.id}
-                            secondaryAction={
-                              <Button 
-                                size="small" 
-                                variant="outlined"
-                                onClick={() => handleViewDocument(deadline.documentId)}
-                              >
-                                View
-                              </Button>
-                            }
-                          >
-                            <ListItemIcon>
-                              <EventNoteIcon color={deadline.importance === 'high' ? 'error' : 'primary'} />
-                            </ListItemIcon>
-                            <ListItemText 
-                              primary={deadline.title}
-                              secondary={`Due: ${formatDate(deadline.dueDate)}`}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
-                    )}
-                  </CardContent>
-                </Card>
-              </Grid>
-              
-              <Grid item xs={12}>
-                <Card>
-                  <CardContent>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                      <Typography variant="h6">
-                        Recent Documents
+                      <Typography variant="body1" color="text.secondary">
+                        Active Documents
                       </Typography>
-                      <Button size="small" onClick={handleViewAllDocuments}>
-                        View All
-                      </Button>
-                    </Box>
-                    <List>
-                      {documents.slice(0, 3).map((document) => (
-                        <ListItem 
-                          key={document.id}
-                          secondaryAction={
-                            <Box>
-                              <Button 
-                                size="small" 
+                    </Card>
+                  </motion.div>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <motion.div variants={itemVariants}>
+                    <Card variant="gradient" sx={{ textAlign: 'center', p: designTokens.spacing[6] }}>
+                      <CheckCircleIcon sx={{ fontSize: 48, color: designTokens.colors.primary[500], mb: designTokens.spacing[3] }} />
+                      <Typography variant="h4" sx={{ fontWeight: designTokens.typography.fontWeight.bold, mb: designTokens.spacing[2] }}>
+                        {documents.filter(doc => doc.status === 'Complete').length}
+                      </Typography>
+                      <Typography variant="body1" color="text.secondary">
+                        Completed Tasks
+                      </Typography>
+                    </Card>
+                  </motion.div>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <motion.div variants={itemVariants}>
+                    <Card variant="gradient" sx={{ textAlign: 'center', p: designTokens.spacing[6] }}>
+                      <AccessTimeIcon sx={{ fontSize: 48, color: designTokens.colors.warning[500], mb: designTokens.spacing[3] }} />
+                      <Typography variant="h4" sx={{ fontWeight: designTokens.typography.fontWeight.bold, mb: designTokens.spacing[2] }}>
+                        {upcomingDeadlines.length}
+                      </Typography>
+                      <Typography variant="body1" color="text.secondary">
+                        Upcoming Deadlines
+                      </Typography>
+                    </Card>
+                  </motion.div>
+                </Grid>
+              </Grid>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={1}>
+              <motion.div variants={itemVariants}>
+                <List>
+                  {documents.map((doc, index) => (
+                    <React.Fragment key={doc.id}>
+                      <ListItem
+                        sx={{
+                          p: designTokens.spacing[4],
+                          borderRadius: designTokens.borderRadius.md,
+                          '&:hover': {
+                            backgroundColor: designTokens.colors.neutral[50],
+                          },
+                        }}
+                      >
+                        <ListItemIcon>
+                          <DescriptionIcon sx={{ color: designTokens.colors.primary[500] }} />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Typography variant="h6" sx={{ fontWeight: designTokens.typography.fontWeight.semibold }}>
+                              {doc.name}
+                            </Typography>
+                          }
+                          secondary={
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: designTokens.spacing[2], mt: designTokens.spacing[1] }}>
+                              <Chip
+                                label={doc.type}
+                                size="small"
                                 variant="outlined"
-                                sx={{ mr: 1 }}
-                                onClick={() => handleViewDocument(document.id)}
-                              >
-                                View
-                              </Button>
-                              <Button 
-                                size="small" 
-                                variant="contained"
-                                onClick={() => handleEditDocument(document.id)}
-                              >
-                                Edit
-                              </Button>
+                                sx={{ fontSize: '0.75rem' }}
+                              />
+                              <Chip
+                                label={doc.status}
+                                size="small"
+                                color={getStatusColor(doc.status)}
+                                sx={{ fontSize: '0.75rem' }}
+                              />
+                              <Typography variant="caption" color="text.secondary">
+                                {doc.date}
+                              </Typography>
                             </Box>
                           }
-                        >
-                          <ListItemIcon>
-                            <AssignmentIcon />
-                          </ListItemIcon>
-                          <ListItemText 
-                            primary={
-                              <Box display="flex" alignItems="center">
-                                {document.title}
-                                <Box ml={1}>
-                                  {getStatusChip(document.status)}
-                                </Box>
-                              </Box>
-                            }
-                            secondary={`Last updated: ${formatDate(document.lastUpdated)} | Type: ${document.type.replace('_', ' ')}`}
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
-          </TabPanel>
-          
-          <TabPanel value={tabValue} index={1}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-              <Typography variant="h6">
-                Your Documents
-              </Typography>
-              <Button 
-                variant="contained" 
-                startIcon={<ArticleIcon />}
-                onClick={() => navigate('/forms')}
-              >
-                Create New Document
-              </Button>
-            </Box>
-            
-            {documents.length === 0 ? (
-              <Alert severity="info">You don't have any documents yet</Alert>
-            ) : (
-              <List>
-                {documents.map((document) => (
-                  <Paper 
-                    key={document.id} 
-                    elevation={1} 
-                    sx={{ mb: 2, overflow: 'hidden' }}
-                  >
-                    <Box p={2}>
-                      <Grid container alignItems="center">
-                        <Grid item xs={12} md={6}>
-                          <Box display="flex" alignItems="center">
-                            <DescriptionIcon sx={{ mr: 2, color: 'primary.main' }} />
-                            <Box>
-                              <Typography variant="subtitle1">
-                                {document.title}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                Last updated: {formatDate(document.lastUpdated)}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                          <Box display="flex" alignItems="center" mt={{ xs: 1, md: 0 }}>
-                            <Typography variant="body2" sx={{ mr: 1 }}>
-                              Progress:
-                            </Typography>
-                            <Box sx={{ width: '100%', mr: 1 }}>
-                              <LinearProgress 
-                                variant="determinate" 
-                                value={document.progress} 
-                                sx={{ height: 8, borderRadius: 5 }}
-                              />
-                            </Box>
-                            <Typography variant="body2">
-                              {document.progress}%
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                          <Box 
-                            display="flex" 
-                            justifyContent={{ xs: 'flex-start', md: 'flex-end' }}
-                            mt={{ xs: 1, md: 0 }}
-                          >
-                            {getStatusChip(document.status)}
-                            <Button 
-                              size="small" 
-                              sx={{ ml: 1 }}
-                              onClick={() => handleViewDocument(document.id)}
-                            >
-                              View
-                            </Button>
-                            <Button 
-                              size="small" 
-                              variant="outlined"
-                              sx={{ ml: 1 }}
-                              onClick={() => handleEditDocument(document.id)}
-                            >
-                              Edit
-                            </Button>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  </Paper>
-                ))}
-              </List>
-            )}
-          </TabPanel>
-          
-          <TabPanel value={tabValue} index={2}>
-            <Typography variant="h6" gutterBottom>
-              Notifications
-            </Typography>
-            
-            {notifications.length === 0 ? (
-              <Alert severity="info">You don't have any notifications</Alert>
-            ) : (
-              <List>
-                {notifications.map((notification) => (
-                  <ListItem 
-                    key={notification.id}
-                    sx={{ 
-                      mb: 1, 
-                      bgcolor: notification.read ? 'transparent' : 'action.hover',
-                      borderRadius: 1,
-                    }}
-                    secondaryAction={
-                      <Button 
-                        size="small" 
-                        onClick={() => handleMarkNotificationRead(notification.id)}
-                      >
-                        {notification.read ? 'Already Read' : 'Mark as Read'}
-                      </Button>
-                    }
-                  >
-                    <ListItemIcon>
-                      {notification.type === 'document' && <DescriptionIcon color="primary" />}
-                      {notification.type === 'deadline' && <EventNoteIcon color="error" />}
-                      {notification.type === 'status' && <AssignmentIcon color="info" />}
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary={
-                        <Box display="flex" alignItems="center">
-                          {notification.title}
-                          {!notification.read && (
-                            <Chip 
-                              label="New" 
-                              size="small" 
-                              color="error" 
-                              sx={{ ml: 1, height: 20 }}
-                            />
-                          )}
-                        </Box>
-                      }
-                      secondary={
-                        <>
-                          <Typography variant="body2">
-                            {notification.message}
-                          </Typography>
-                          <Typography variant="caption">
-                            {formatDate(notification.date)}
-                          </Typography>
-                        </>
-                      }
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            )}
-          </TabPanel>
-          
-          <TabPanel value={tabValue} index={3}>
-            <Typography variant="h6" gutterBottom>
-              Calendar & Deadlines
-            </Typography>
-            <Alert severity="info" sx={{ mb: 2 }}>
-              Calendar integration coming soon. For now, view your upcoming deadlines here.
-            </Alert>
-            
-            {upcomingDeadlines.length === 0 ? (
-              <Alert severity="info">No upcoming deadlines</Alert>
-            ) : (
-              <List>
-                {upcomingDeadlines.map((deadline) => (
-                  <Card key={deadline.id} sx={{ mb: 2 }}>
-                    <CardContent>
-                      <Box display="flex" alignItems="center" mb={1}>
-                        <EventNoteIcon 
-                          color={deadline.importance === 'high' ? 'error' : 'primary'} 
-                          sx={{ mr: 2 }}
                         />
-                        <Typography variant="h6">
-                          {deadline.title}
-                        </Typography>
-                      </Box>
-                      <Typography variant="body1" gutterBottom>
-                        Due: {formatDate(deadline.dueDate)}
-                      </Typography>
-                      <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button 
-                          variant="outlined" 
-                          onClick={() => handleViewDocument(deadline.documentId)}
-                        >
-                          View Related Document
-                        </Button>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                ))}
-              </List>
-            )}
-          </TabPanel>
-        </Card>
-      </Box>
-    </Container>
+                        <IconButton>
+                          <MoreVertIcon />
+                        </IconButton>
+                      </ListItem>
+                      {index < documents.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                </List>
+              </motion.div>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={2}>
+              <motion.div variants={itemVariants}>
+                <List>
+                  {notifications.map((notification, index) => (
+                    <React.Fragment key={notification.id}>
+                      <ListItem
+                        sx={{
+                          p: designTokens.spacing[4],
+                          borderRadius: designTokens.borderRadius.md,
+                          '&:hover': {
+                            backgroundColor: designTokens.colors.neutral[50],
+                          },
+                        }}
+                      >
+                        <ListItemIcon>
+                          <Avatar sx={{ backgroundColor: getNotificationColor(notification.type), width: 40, height: 40 }}>
+                            {getNotificationIcon(notification.type)}
+                          </Avatar>
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Typography variant="body1" sx={{ fontWeight: designTokens.typography.fontWeight.medium }}>
+                              {notification.message}
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography variant="caption" color="text.secondary">
+                              {notification.time}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                      {index < notifications.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                </List>
+              </motion.div>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={3}>
+              <motion.div variants={itemVariants}>
+                <List>
+                  {upcomingDeadlines.map((deadline, index) => (
+                    <React.Fragment key={deadline.id}>
+                      <ListItem
+                        sx={{
+                          p: designTokens.spacing[4],
+                          borderRadius: designTokens.borderRadius.md,
+                          '&:hover': {
+                            backgroundColor: designTokens.colors.neutral[50],
+                          },
+                        }}
+                      >
+                        <ListItemIcon>
+                          <EventNoteIcon sx={{ color: deadline.type === 'urgent' ? designTokens.colors.error[500] : designTokens.colors.primary[500] }} />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Typography variant="h6" sx={{ fontWeight: designTokens.typography.fontWeight.semibold }}>
+                              {deadline.title}
+                            </Typography>
+                          }
+                          secondary={
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: designTokens.spacing[2], mt: designTokens.spacing[1] }}>
+                              <Chip
+                                label={deadline.date}
+                                size="small"
+                                color={deadline.type === 'urgent' ? 'error' : 'default'}
+                                sx={{ fontSize: '0.75rem' }}
+                              />
+                              {deadline.type === 'urgent' && (
+                                <Chip
+                                  label="Urgent"
+                                  size="small"
+                                  color="error"
+                                  sx={{ fontSize: '0.75rem' }}
+                                />
+                              )}
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                      {index < upcomingDeadlines.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                </List>
+              </motion.div>
+            </TabPanel>
+          </Card>
+        </motion.div>
+      </Section>
+    </PageLayout>
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

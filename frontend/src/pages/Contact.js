@@ -5,9 +5,6 @@ import {
   Box,
   Grid,
   TextField,
-  Button,
-  Card,
-  CardContent,
   Alert,
   Snackbar,
   Stack
@@ -16,7 +13,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import SendIcon from '@mui/icons-material/Send';
-import PageLayout from '../components/PageLayout';
+import { PageLayout, Section, Button, Card } from '../design-system';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -58,7 +55,7 @@ function Contact() {
           <Grid item xs={12} md={4}>
             <Stack spacing={2}>
               <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                <CardContent sx={{ p: 2 }}>
+                <Box sx={{ p: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <EmailIcon color="primary" sx={{ mr: 2 }} />
                     <Box>
@@ -68,11 +65,11 @@ function Contact() {
                       </Typography>
                     </Box>
                   </Box>
-                </CardContent>
+                </Box>
               </Card>
 
               <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                <CardContent sx={{ p: 2 }}>
+                <Box sx={{ p: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <PhoneIcon color="primary" sx={{ mr: 2 }} />
                     <Box>
@@ -82,11 +79,11 @@ function Contact() {
                       </Typography>
                     </Box>
                   </Box>
-                </CardContent>
+                </Box>
               </Card>
 
               <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                <CardContent sx={{ p: 2 }}>
+                <Box sx={{ p: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <LocationOnIcon color="primary" sx={{ mr: 2 }} />
                     <Box>
@@ -96,14 +93,14 @@ function Contact() {
                       </Typography>
                     </Box>
                   </Box>
-                </CardContent>
+                </Box>
               </Card>
             </Stack>
           </Grid>
 
           <Grid item xs={12} md={8}>
             <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <CardContent sx={{ p: 4 }}>
+              <Box sx={{ p: 4 }}>
                 <Typography variant="h5" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
                   Send us a Message
                 </Typography>
@@ -188,7 +185,7 @@ function Contact() {
                     Send Message
                   </Button>
                 </form>
-              </CardContent>
+              </Box>
             </Card>
           </Grid>
         </Grid>

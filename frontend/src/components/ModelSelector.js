@@ -13,7 +13,7 @@ import {
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import MemoryIcon from '@mui/icons-material/Memory';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
-import SchoolIcon from '@mui/icons-material/School';
+import { School as SchoolIcon } from '@mui/icons-material';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import DescriptionIcon from '@mui/icons-material/Description';
 

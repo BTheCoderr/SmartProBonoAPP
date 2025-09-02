@@ -21,7 +21,7 @@ import {
   VerifiedUser as VerifiedUserIcon,
   PhotoCamera as PhotoCameraIcon,
   Upload as UploadIcon,
-  CheckCircle as CheckCircleIcon,
+  CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 

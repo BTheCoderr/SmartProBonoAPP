@@ -1,7 +1,5 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import BalanceIcon from '@mui/icons-material/Balance';
-import GavelIcon from '@mui/icons-material/Gavel';
 import { styled } from '@mui/material/styles';
 
 const LogoText = styled(Typography)(({ theme, variant, size }) => ({
@@ -30,10 +28,10 @@ const LogoContainer = styled(Box)(({ theme, variant }) => ({
 }));
 
 const Logo = ({ variant = 'light', size = 'medium' }) => {
-  const iconSizes = {
-    small: '1.5rem',
-    medium: '1.75rem',
-    large: '2.5rem'
+  const logoSizes = {
+    small: { width: '32px', height: '32px' },
+    medium: { width: '40px', height: '40px' },
+    large: { width: '64px', height: '64px' }
   };
 
   return (
@@ -44,24 +42,15 @@ const Logo = ({ variant = 'light', size = 'medium' }) => {
         position: 'relative',
         filter: variant === 'light' ? 'drop-shadow(0px 2px 4px rgba(30, 136, 229, 0.5))' : 'none'
       }}>
-        <BalanceIcon sx={{ 
-          fontSize: iconSizes[size],
-          color: variant === 'light' ? 'primary.main' : 'white',
-          mr: -0.5,
-          position: 'relative',
-          zIndex: 2
-        }} />
-        <GavelIcon sx={{ 
-          fontSize: iconSizes[size],
-          color: variant === 'light' ? 'info.main' : 'white',
-          position: 'relative',
-          zIndex: 1,
-          ml: -0.5
-        }} />
+        <img 
+          src="/smartprobonologo.png" 
+          alt="SmartProBono Logo"
+          style={{
+            ...logoSizes[size],
+            objectFit: 'contain'
+          }}
+        />
       </Box>
-      <LogoText variant={variant} size={size}>
-        SmartProBono
-      </LogoText>
     </LogoContainer>
   );
 };

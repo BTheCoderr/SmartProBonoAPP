@@ -1,23 +1,32 @@
 import React, { useState } from 'react';
 import { 
-  Container, 
   Box, 
   Typography, 
   TextField, 
-  Button, 
-  Paper,
   Link,
   Grid,
   Alert,
   Snackbar,
-  CircularProgress
+  CircularProgress,
+  Divider
 } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { isSocketConnected } from '../services/socket';
+import { motion } from 'framer-motion';
+import { 
+  PageLayout, 
+  Section, 
+  Button, 
+  Card, 
+  designTokens 
+} from '../design-system';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import LoginIcon from '@mui/icons-material/Login';
+import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
 
 // Validation schema
 const LoginSchema = Yup.object().shape({
@@ -119,129 +128,306 @@ const LoginPage = () => {
     setShowAlert(false);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
+    },
+  };
+
   return (
-    <Container maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Paper
-          elevation={3}
-          sx={{
-            padding: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-          }}
+    <PageLayout background="light" padding="normal">
+      <Section variant="hero" background="gradient" header={false}>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
-            Sign In
-          </Typography>
-          
-          <Formik
-            initialValues={{ email: '', password: '' }}
-            validationSchema={LoginSchema}
-            onSubmit={handleSubmit}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '100vh',
+              py: designTokens.spacing[12],
+            }}
           >
-            {({ errors, touched, isSubmitting }) => (
-              <Form style={{ width: '100%' }}>
+            <motion.div variants={itemVariants}>
+              <Card
+                variant="elevated"
+                sx={{
+                  maxWidth: 480,
+                  width: '100%',
+                  p: designTokens.spacing[8],
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                }}
+              >
+                {/* Header */}
+                <motion.div variants={itemVariants}>
+                  <Box sx={{ textAlign: 'center', mb: designTokens.spacing[8] }}>
+                    <Box
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: '50%',
+                        background: designTokens.gradients.primary,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto',
+                        mb: designTokens.spacing[4],
+                      }}
+                    >
+                      <LoginIcon sx={{ fontSize: 40, color: 'white' }} />
+                    </Box>
+                    <Typography
+                      variant="h3"
+                      sx={{
+                        fontWeight: designTokens.typography.fontWeight.bold,
+                        color: designTokens.colors.neutral[800],
+                        mb: designTokens.spacing[2],
+                      }}
+                    >
+                      Welcome Back
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: designTokens.colors.neutral[500],
+                        fontSize: designTokens.typography.fontSize.lg,
+                      }}
+                    >
+                      Sign in to your SmartProBono account
+                    </Typography>
+                  </Box>
+                </motion.div>
+
+                {/* Alert */}
                 {showAlert && (
-                  <Alert severity={alertType} icon={<ErrorOutlineIcon />} sx={{ width: '100%', mb: 2 }}>
-                    {alertMessage}
-                  </Alert>
+                  <motion.div variants={itemVariants}>
+                    <Alert 
+                      severity={alertType} 
+                      icon={<ErrorOutlineIcon />} 
+                      sx={{ 
+                        mb: designTokens.spacing[4],
+                        borderRadius: designTokens.borderRadius.md,
+                      }}
+                    >
+                      {alertMessage}
+                    </Alert>
+                  </motion.div>
                 )}
-                <Field
-                  as={TextField}
-                  margin="normal"
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  error={touched.email && Boolean(errors.email)}
-                  helperText={touched.email && errors.email ? (
-                    <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />{errors.email}</span>
-                  ) : ''}
-                  disabled={isSubmitting || isConnectingWebSocket}
-                />
-                
-                <Field
-                  as={TextField}
-                  margin="normal"
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  error={touched.password && Boolean(errors.password)}
-                  helperText={touched.password && errors.password ? (
-                    <span style={{ color: 'red', display: 'flex', alignItems: 'center' }}><ErrorOutlineIcon fontSize="small" style={{ marginRight: 4 }} />{errors.password}</span>
-                  ) : ''}
-                  disabled={isSubmitting || isConnectingWebSocket}
-                />
-                
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting || isConnectingWebSocket}
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  {isSubmitting ? (
-                    <CircularProgress size={24} color="inherit" />
-                  ) : isConnectingWebSocket ? (
-                    <>
-                      <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} />
-                      Connecting...
-                    </>
-                  ) : (
-                    'Sign In'
-                  )}
-                </Button>
-                
-                <Grid container>
-                  <Grid item xs>
-                    <Link component={RouterLink} to="/forgot-password" variant="body2">
-                      Forgot password?
-                    </Link>
+
+                {/* Login Form */}
+                <motion.div variants={itemVariants}>
+                  <Formik
+                    initialValues={{ email: '', password: '' }}
+                    validationSchema={LoginSchema}
+                    onSubmit={handleSubmit}
+                  >
+                    {({ errors, touched, isSubmitting }) => (
+                      <Form>
+                        <Box sx={{ mb: designTokens.spacing[6] }}>
+                          <Field
+                            as={TextField}
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                            error={touched.email && Boolean(errors.email)}
+                            helperText={touched.email && errors.email}
+                            disabled={isSubmitting || isConnectingWebSocket}
+                            sx={{
+                              mb: designTokens.spacing[4],
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: designTokens.borderRadius.md,
+                              },
+                            }}
+                          />
+                          
+                          <Field
+                            as={TextField}
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            error={touched.password && Boolean(errors.password)}
+                            helperText={touched.password && errors.password}
+                            disabled={isSubmitting || isConnectingWebSocket}
+                            sx={{
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: designTokens.borderRadius.md,
+                              },
+                            }}
+                          />
+                        </Box>
+
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="primary"
+                          size="large"
+                          startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <LoginIcon />}
+                          disabled={isSubmitting || isConnectingWebSocket}
+                          sx={{ mb: designTokens.spacing[6] }}
+                        >
+                          {isSubmitting ? 'Signing In...' : 'Sign In'}
+                        </Button>
+                      </Form>
+                    )}
+                  </Formik>
+                </motion.div>
+
+                {/* Divider */}
+                <motion.div variants={itemVariants}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: designTokens.spacing[6] }}>
+                    <Divider sx={{ flex: 1 }} />
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        px: designTokens.spacing[4],
+                        color: designTokens.colors.neutral[500],
+                        fontWeight: designTokens.typography.fontWeight.medium,
+                      }}
+                    >
+                      Or continue with
+                    </Typography>
+                    <Divider sx={{ flex: 1 }} />
+                  </Box>
+                </motion.div>
+
+                {/* Social Login */}
+                <motion.div variants={itemVariants}>
+                  <Grid container spacing={designTokens.spacing[3]} sx={{ mb: designTokens.spacing[6] }}>
+                    <Grid item xs={6}>
+                      <Button
+                        variant="ghost"
+                        fullWidth
+                        startIcon={<GoogleIcon />}
+                        sx={{
+                          border: `1px solid ${designTokens.colors.neutral[300]}`,
+                          color: designTokens.colors.neutral[700],
+                          '&:hover': {
+                            backgroundColor: designTokens.colors.neutral[50],
+                          },
+                        }}
+                      >
+                        Google
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Button
+                        variant="ghost"
+                        fullWidth
+                        startIcon={<FacebookIcon />}
+                        sx={{
+                          border: `1px solid ${designTokens.colors.neutral[300]}`,
+                          color: designTokens.colors.neutral[700],
+                          '&:hover': {
+                            backgroundColor: designTokens.colors.neutral[50],
+                          },
+                        }}
+                      >
+                        Facebook
+                      </Button>
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    <Link component={RouterLink} to="/register" variant="body2">
-                      {"Don't have an account? Sign Up"}
+                </motion.div>
+
+                {/* Links */}
+                <motion.div variants={itemVariants}>
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Link
+                      component={RouterLink}
+                      to="/forgot-password"
+                      variant="body2"
+                      sx={{
+                        color: designTokens.colors.primary[600],
+                        textDecoration: 'none',
+                        fontWeight: designTokens.typography.fontWeight.medium,
+                        '&:hover': {
+                          textDecoration: 'underline',
+                        },
+                      }}
+                    >
+                      Forgot your password?
                     </Link>
-                  </Grid>
-                </Grid>
-              </Form>
-            )}
-          </Formik>
-        </Paper>
-      </Box>
-      
-      <Snackbar 
-        open={showAlert} 
-        autoHideDuration={alertType === 'error' ? 6000 : alertType === 'success' ? 2000 : null}
+                  </Box>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                  <Box sx={{ textAlign: 'center', mt: designTokens.spacing[6] }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: designTokens.colors.neutral[500],
+                        mb: designTokens.spacing[2],
+                      }}
+                    >
+                      Don't have an account?
+                    </Typography>
+                    <Link
+                      component={RouterLink}
+                      to="/register"
+                      variant="body2"
+                      sx={{
+                        color: designTokens.colors.primary[600],
+                        textDecoration: 'none',
+                        fontWeight: designTokens.typography.fontWeight.semibold,
+                        '&:hover': {
+                          textDecoration: 'underline',
+                        },
+                      }}
+                    >
+                      Sign up for free
+                    </Link>
+                  </Box>
+                </motion.div>
+              </Card>
+            </motion.div>
+          </Box>
+        </motion.div>
+      </Section>
+
+      {/* Snackbar for alerts */}
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={6000}
         onClose={handleCloseAlert}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={handleCloseAlert} 
+        <Alert
+          onClose={handleCloseAlert}
           severity={alertType}
-          variant="filled"
           sx={{ width: '100%' }}
         >
           {alertMessage}
         </Alert>
       </Snackbar>
-    </Container>
+    </PageLayout>
   );
 };
 
-export default LoginPage; 
+export default LoginPage;

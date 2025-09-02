@@ -20,7 +20,7 @@ import {
   TrendingUp as TrendingUpIcon,
   Gavel as GavelIcon,
   Assignment as AssignmentIcon,
-  Timeline as TimelineIcon,
+  Timeline as TimelineIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 

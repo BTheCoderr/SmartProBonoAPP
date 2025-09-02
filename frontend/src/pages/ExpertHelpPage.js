@@ -6,11 +6,7 @@ import {
   Paper, 
   Grid, 
   Avatar,
-  Button,
   TextField,
-  Card,
-  CardContent,
-  CardActions,
   Divider,
   Chip,
   List,
@@ -19,7 +15,9 @@ import {
   ListItemText,
   Tab,
   Tabs,
-  CircularProgress
+  CircularProgress,
+  CardContent,
+  CardActions
 } from '@mui/material';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import BusinessIcon from '@mui/icons-material/Business';
@@ -30,6 +28,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useNavigate } from 'react-router-dom';
+import { PageLayout, Section, Button, Card } from '../design-system';
 
 // Mock icon components
 const SecurityIcon = () => <Box component="span" sx={{ display: 'inline-block', width: 24, height: 24 }}></Box>;

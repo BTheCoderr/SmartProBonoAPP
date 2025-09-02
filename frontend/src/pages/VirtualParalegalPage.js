@@ -46,7 +46,7 @@ import {
   Assignment as AssignmentIcon,
   CheckCircle as CheckCircleIcon,
   Schedule as ScheduleIcon,
-  Priority as PriorityIcon,
+  LowPriority as PriorityIcon,
   Category as CategoryIcon
 } from '@mui/icons-material';
 import PageLayout from '../components/PageLayout';

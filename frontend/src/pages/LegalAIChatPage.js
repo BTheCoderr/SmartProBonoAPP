@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, Paper, CircularProgress, Chip, Grid } from '@mui/material';
+import { Container, Typography, Box, CircularProgress, Chip, Grid, Paper } from '@mui/material';
 import ImprovedLegalAIChat from '../components/ImprovedLegalAIChat';
 import { useTranslation } from 'react-i18next';
 import ComplianceIcon from '@mui/icons-material/VerifiedUser';
 import BusinessIcon from '@mui/icons-material/Business';
 import SecurityIcon from '@mui/icons-material/Security';
+import { PageLayout, Section, Card } from '../design-system';
 
 const LegalAIChatPage = () => {
   const { t } = useTranslation();

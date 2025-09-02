@@ -1,50 +1,51 @@
 import { createTheme } from '@mui/material/styles';
+import { designTokens } from './design-system/DesignSystem';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#2563eb', // Modern blue
-      light: '#3b82f6',
-      dark: '#1d4ed8',
+      main: designTokens.colors.primary[600], // #2563eb
+      light: designTokens.colors.primary[500], // #3b82f6
+      dark: designTokens.colors.primary[700], // #1d4ed8
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#7c3aed', // Modern purple
-      light: '#8b5cf6',
-      dark: '#6d28d9',
+      main: designTokens.colors.secondary[700], // #7c3aed
+      light: designTokens.colors.secondary[600], // #9333ea
+      dark: designTokens.colors.secondary[800], // #6b21a8
       contrastText: '#ffffff',
     },
     success: {
-      main: '#059669',
-      light: '#10b981',
-      dark: '#047857',
+      main: designTokens.colors.success[600], // #059669
+      light: designTokens.colors.success[500], // #10b981
+      dark: designTokens.colors.success[700], // #047857
     },
     warning: {
-      main: '#d97706',
-      light: '#f59e0b',
-      dark: '#b45309',
+      main: designTokens.colors.warning[600], // #d97706
+      light: designTokens.colors.warning[500], // #f59e0b
+      dark: designTokens.colors.warning[700], // #b45309
     },
     error: {
-      main: '#dc2626',
-      light: '#ef4444',
-      dark: '#b91c1c',
+      main: designTokens.colors.error[600], // #dc2626
+      light: designTokens.colors.error[500], // #ef4444
+      dark: designTokens.colors.error[700], // #b91c1c
     },
     info: {
-      main: '#0891b2',
-      light: '#06b6d4',
-      dark: '#0e7490',
+      main: designTokens.colors.info[600], // #0891b2
+      light: designTokens.colors.info[500], // #06b6d4
+      dark: designTokens.colors.info[700], // #0e7490
     },
     background: {
-      default: '#f8fafc',
+      default: designTokens.colors.neutral[50], // #f8fafc
       paper: '#ffffff',
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      gradient: designTokens.gradients.primary,
     },
     text: {
-      primary: '#1e293b',
-      secondary: '#64748b',
-      disabled: '#94a3b8',
+      primary: designTokens.colors.neutral[800], // #1e293b
+      secondary: designTokens.colors.neutral[500], // #64748b
+      disabled: designTokens.colors.neutral[400], // #94a3b8
     },
-    divider: '#e2e8f0',
+    divider: designTokens.colors.neutral[200], // #e2e8f0
   },
   typography: {
     fontFamily: [

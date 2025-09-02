@@ -43,7 +43,7 @@ import {
   Warning as WarningIcon,
   People as PeopleIcon,
   Devices as DevicesIcon,
-  Speed as SpeedIcon,
+  Speed as SpeedIcon
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
