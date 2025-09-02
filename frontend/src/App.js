@@ -33,6 +33,7 @@ import Contact from './pages/Contact';
 // Core layout components
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 // Page components
 import HomePage from './pages/HomePage';
@@ -45,6 +46,21 @@ import RegisterPage from './pages/RegisterPage';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFoundPage from './pages/NotFoundPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
+
+// Footer link pages
+import StatusPage from './pages/StatusPage';
+import HelpPage from './pages/HelpPage';
+import BugReportPage from './pages/BugReportPage';
+import FeatureRequestPage from './pages/FeatureRequestPage';
+import PartnersPage from './pages/PartnersPage';
+import PressPage from './pages/PressPage';
+import CareersPage from './pages/CareersPage';
+import TeamPage from './pages/TeamPage';
+import OurMissionPage from './pages/OurMissionPage';
+import GlossaryPage from './pages/GlossaryPage';
+import FAQPage from './pages/FAQPage';
+import BlogPage from './pages/BlogPage';
+import LiveChatPage from './pages/LiveChatPage';
 
 // New components
 import DocumentGenerator from './components/DocumentGenerator';
@@ -97,11 +113,7 @@ const ServicesLayout = () => (
           <Immigration />
         </ProtectedRoute>
       } />
-      <Route path="virtual-paralegal" element={
-        <ProtectedRoute>
-          <VirtualParalegalPage />
-        </ProtectedRoute>
-      } />
+
       <Route 
         path="analytics" 
         element={
@@ -230,14 +242,7 @@ function AppContent() {
               } 
             />
             
-            <Route 
-              path="/chat" 
-              element={
-                <ProtectedRoute>
-                  <LegalAIChatPage />
-                </ProtectedRoute>
-              } 
-            />
+            <Route path="/chat" element={<LiveChatPage />} /> {/* NO LOGIN REQUIRED */}
             
             <Route 
               path="/profile" 
@@ -266,11 +271,36 @@ function AppContent() {
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/expert-help" element={<ExpertHelpPage />} />
             
+            {/* Virtual Paralegal - Top level route */}
+            <Route 
+              path="/virtual-paralegal" 
+              element={
+                <ProtectedRoute>
+                  <VirtualParalegalPage />
+                </ProtectedRoute>
+              } 
+            />
+            
             {/* Additional MVP routes */}
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/contact" element={<Contact />} />
+            
+            {/* Footer links - NO LOGIN REQUIRED */}
+            <Route path="/status" element={<StatusPage />} />
+            <Route path="/help" element={<HelpPage />} />
+            <Route path="/bug-report" element={<BugReportPage />} />
+            <Route path="/feature-request" element={<FeatureRequestPage />} />
+            <Route path="/partners" element={<PartnersPage />} />
+            <Route path="/press" element={<PressPage />} />
+            <Route path="/careers" element={<CareersPage />} />
+            <Route path="/team" element={<TeamPage />} />
+            <Route path="/mission" element={<OurMissionPage />} />
+            <Route path="/rights" element={<RightsPage />} />
+            <Route path="/glossary" element={<GlossaryPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/blog" element={<BlogPage />} />
             
             {/* Conditionally render premium features */}
             <Route 
@@ -328,6 +358,7 @@ function App() {
         <I18nextProvider i18n={i18n}>
           <SnackbarProvider maxSnack={3}>
             <Router>
+              <ScrollToTop />
               <AuthProvider>
                 <AnalyticsProvider>
                   <AppContent />

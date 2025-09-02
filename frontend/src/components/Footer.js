@@ -21,7 +21,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import SecurityIcon from '@mui/icons-material/Security';
+import { Security as SecurityIcon } from '@mui/icons-material';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import SupportIcon from '@mui/icons-material/Support';
 

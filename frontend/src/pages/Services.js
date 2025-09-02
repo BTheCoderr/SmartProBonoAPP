@@ -2,26 +2,24 @@ import React from 'react';
 import {
   Box,
   Grid,
-  Card,
-  CardContent,
   Typography,
-  Button,
   Paper,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   Chip,
-  Container
+  Container,
+  CardContent
 } from '@mui/material';
-import PageLayout from '../components/PageLayout';
+import { PageLayout, Section, Button, Card } from '../design-system';
 import GavelIcon from '@mui/icons-material/Gavel';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import SchoolIcon from '@mui/icons-material/School';
+import { School as SchoolIcon } from '@mui/icons-material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import TranslateIcon from '@mui/icons-material/Translate';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import { AccountBalance as AccountBalanceIcon } from '@mui/icons-material';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import PersonIcon from '@mui/icons-material/Person';
 import { useNavigate } from 'react-router-dom';

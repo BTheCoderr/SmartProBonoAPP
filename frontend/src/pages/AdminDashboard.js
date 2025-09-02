@@ -5,15 +5,12 @@ import {
   Box,
   Paper,
   Grid,
-  Card,
-  CardContent,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Button,
   Alert,
   CircularProgress,
   Chip,
@@ -30,6 +27,7 @@ import {
   MenuItem,
   Badge
 } from '@mui/material';
+import { PageLayout, Section, Button, Card } from '../design-system';
 import PersonIcon from '@mui/icons-material/Person';
 import SecurityIcon from '@mui/icons-material/Security';
 import GroupIcon from '@mui/icons-material/Group';
@@ -514,7 +512,7 @@ const AdminDashboard = () => {
         <Grid container spacing={3} sx={{ mb: 3 }}>
           <Grid item xs={12} md={4}>
             <Card>
-              <CardContent>
+              <Box sx={{ p: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <AssignmentIcon color="primary" sx={{ fontSize: 40, mr: 2 }} />
                   <Box>
@@ -522,12 +520,12 @@ const AdminDashboard = () => {
                     <Typography variant="body2" color="text.secondary">New Cases</Typography>
                   </Box>
                 </Box>
-              </CardContent>
+              </Box>
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
             <Card>
-              <CardContent>
+              <Box sx={{ p: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <AssignmentIndIcon color="primary" sx={{ fontSize: 40, mr: 2 }} />
                   <Box>
@@ -535,12 +533,12 @@ const AdminDashboard = () => {
                     <Typography variant="body2" color="text.secondary">Active Cases</Typography>
                   </Box>
                 </Box>
-              </CardContent>
+              </Box>
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
             <Card>
-              <CardContent>
+              <Box sx={{ p: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <AssignmentTurnedInIcon color="primary" sx={{ fontSize: 40, mr: 2 }} />
                   <Box>
@@ -548,7 +546,7 @@ const AdminDashboard = () => {
                     <Typography variant="body2" color="text.secondary">Completed Cases</Typography>
                   </Box>
                 </Box>
-              </CardContent>
+              </Box>
             </Card>
           </Grid>
         </Grid>

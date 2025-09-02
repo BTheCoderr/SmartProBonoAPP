@@ -4,7 +4,6 @@ import {
   Box, 
   Typography, 
   TextField, 
-  Button, 
   Paper,
   Link,
   Grid,
@@ -17,6 +16,7 @@ import * as Yup from 'yup';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { PageLayout, Section, Button, Card } from '../design-system';
 
 // Validation schema
 const RegisterSchema = Yup.object().shape({

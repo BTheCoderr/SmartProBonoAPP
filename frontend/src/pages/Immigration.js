@@ -4,25 +4,23 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Button,
   Typography,
   Grid,
-  Card,
-  CardContent,
-  CardActions,
   Chip,
   Paper,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider
+  Divider,
+  CardContent,
+  CardActions
 } from '@mui/material';
-import PageLayout from '../components/PageLayout';
+import { PageLayout, Section, Button, Card } from '../design-system';
 import FlightIcon from '@mui/icons-material/Flight';
 import DescriptionIcon from '@mui/icons-material/Description';
 import GroupsIcon from '@mui/icons-material/Groups';
-import SchoolIcon from '@mui/icons-material/School';
+import { School as SchoolIcon } from '@mui/icons-material';
 import WorkIcon from '@mui/icons-material/Work';
 import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';

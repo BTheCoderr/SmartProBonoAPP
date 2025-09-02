@@ -1,15 +1,14 @@
-// WARNING: Imports have been commented out to fix linting errors.
-// Uncomment specific imports as needed when using them.
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
-  Container, Grid, Paper, Typography, Box, Button, Divider,
+  Container, Grid, Paper, Typography, Box, Divider,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  CircularProgress, Alert, Chip, IconButton, Card, CardContent,
+  CircularProgress, Alert, Chip, IconButton,
   LinearProgress, Tabs, Tab, TextField, InputAdornment,
   Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions,
   Tooltip, TablePagination
 } from '@mui/material';
+import { PageLayout, Section, Button, Card } from '../design-system';
 import {
   Search as SearchIcon, Assignment, AssignmentTurnedIn, VisibilityOutlined, GetAppOutlined,
   DeleteOutline, Edit, DescriptionOutlined, Add, FilterList, Sort,

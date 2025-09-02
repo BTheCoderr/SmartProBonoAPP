@@ -4,12 +4,12 @@ import {
   Container, 
   Typography, 
   Grid,
-  Paper, 
   Chip,
   useTheme,
   Divider,
   Alert,
-  Button
+  Button,
+  Paper
 } from '@mui/material';
 import { 
   Description as DocumentIcon,
@@ -22,6 +22,7 @@ import {
 import { motion } from 'framer-motion';
 import DocumentUpload from '../components/DocumentUpload';
 import DocumentChat from '../components/DocumentChat';
+import { PageLayout, Section, Card } from '../design-system';
 
 const DocumentsPage = () => {
   const [currentDocument, setCurrentDocument] = useState(null);
@@ -161,8 +162,7 @@ const DocumentsPage = () => {
               </Box>
 
               {/* Documents List */}
-              <Paper
-                elevation={3}
+              <Card
                 sx={{
                   borderRadius: 3,
                   overflow: 'hidden',
@@ -210,7 +210,7 @@ const DocumentsPage = () => {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: index * 0.1 }}
                         >
-                          <Paper
+                          <Card
                             variant="outlined"
                             sx={{
                               p: 2,
@@ -261,13 +261,13 @@ const DocumentsPage = () => {
                                 variant="outlined"
                               />
                             </Box>
-                          </Paper>
+                          </Card>
                         </motion.div>
                       ))}
                     </Box>
                   )}
               </Box>
-              </Paper>
+              </Card>
             </motion.div>
           </Grid>
 
@@ -284,7 +284,7 @@ const DocumentsPage = () => {
                   documentTitle={currentDocument.title}
                 />
               ) : (
-                <Paper
+                <Card
                   elevation={3}
                   sx={{
                     borderRadius: 3,
@@ -304,7 +304,7 @@ const DocumentsPage = () => {
                   <Typography variant="body2" color="text.secondary">
                     Upload a document first if you don't have any yet
                   </Typography>
-                </Paper>
+                </Card>
               )}
             </motion.div>
           </Grid>
@@ -354,7 +354,7 @@ const DocumentsPage = () => {
                     whileHover={{ y: -8 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Paper
+                    <Card
                       elevation={2}
                       sx={{
                         p: 4,
@@ -390,7 +390,7 @@ const DocumentsPage = () => {
                       <Typography variant="body2" color="text.secondary">
                         {feature.description}
                       </Typography>
-        </Paper>
+        </Card>
                   </motion.div>
                 </Grid>
               ))}

@@ -1,12 +1,9 @@
-// WARNING: Imports have been commented out to fix linting errors.
-// Uncomment specific imports as needed when using them.
 import React, { useState, useEffect } from 'react';
 import { 
   Container, 
   Box, 
   Typography, 
   TextField, 
-  Button, 
   Paper,
   Grid,
   Alert,
@@ -30,6 +27,7 @@ import {
   ListItemIcon,
   Chip
 } from '@mui/material';
+import { PageLayout, Section, Button, Card } from '../design-system';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, useLocation } from 'react-router-dom';

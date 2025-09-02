@@ -1,5 +1,3 @@
-// WARNING: Imports have been commented out to fix linting errors.
-// Uncomment specific imports as needed when using them.
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -7,30 +5,22 @@ import {
   Typography,
   Box,
   Grid,
-  Card,
-  CardContent,
-  Button,
-  TextField,
   Chip,
-  Paper,
-  InputAdornment,
   Divider,
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
-  CardActions
+  ListItemText
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import DescriptionIcon from '@mui/icons-material/Description';
-import SchoolIcon from '@mui/icons-material/School';
+import { School as SchoolIcon } from '@mui/icons-material';
 import GavelIcon from '@mui/icons-material/Gavel';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import PageLayout from '../components/PageLayout';
+import { PageLayout, Section, Button, Card } from '../design-system';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ArticleIcon from '@mui/icons-material/Article';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
-import LinkIcon from '@mui/icons-material/Link';
+import { Link as LinkIcon } from '@mui/icons-material';
 
 const resourceCategories = [
   {

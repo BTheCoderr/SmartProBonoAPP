@@ -15,10 +15,10 @@ import {
   Divider
 } from '@mui/material';
 import {
-  VideoLibraryIcon,
-  DescriptionIcon,
-  ArticleIcon,
-  SchoolIcon,
+  VideoLibrary as VideoLibraryIcon,
+  Description as DescriptionIcon,
+  Article as ArticleIcon,
+  School as SchoolIcon,
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';

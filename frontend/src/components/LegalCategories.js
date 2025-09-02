@@ -17,7 +17,7 @@ import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
 import WorkIcon from '@mui/icons-material/Work';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import { AccountBalance as AccountBalanceIcon } from '@mui/icons-material';
 import PublicIcon from '@mui/icons-material/Public';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 

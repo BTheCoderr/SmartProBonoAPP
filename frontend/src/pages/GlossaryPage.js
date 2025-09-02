@@ -23,7 +23,7 @@ import {
   Search as SearchIcon,
   Gavel as GavelIcon,
   Business as BusinessIcon,
-  Family as FamilyIcon,
+  FamilyRestroom as FamilyIcon,
   Security as SecurityIcon,
   Description as DescriptionIcon,
   AccountBalance as AccountBalanceIcon

@@ -27,7 +27,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Comment as CommentIcon,
-  Attachment as AttachmentIcon,
+  Attachment as AttachmentIcon
 } from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../services/api';

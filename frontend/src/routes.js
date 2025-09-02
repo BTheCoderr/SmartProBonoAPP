@@ -47,6 +47,27 @@ const ExternalResourcesPage = React.lazy(() => import('./pages/ExternalResources
 const ComplianceScannerPage = React.lazy(() => import('./pages/ComplianceScannerPage'));
 const PolicyGeneratorPage = React.lazy(() => import('./pages/PolicyGeneratorPage'));
 const RiskAssessmentPage = React.lazy(() => import('./pages/RiskAssessmentPage'));
+const DocumentScanPage = React.lazy(() => import('./pages/DocumentScanPage'));
+// Connect to existing pages instead of creating new ones
+const DocumentGenerationPage = React.lazy(() => import('./pages/DocumentGenerationPage'));
+const DocumentScannerPage = React.lazy(() => import('./pages/ScanDocument'));
+const KnowYourRightsPage = React.lazy(() => import('./pages/RightsPage'));
+const LegalTemplatesPage = React.lazy(() => import('./pages/LegalTemplatesPage'));
+const EducationalContentPage = React.lazy(() => import('./pages/EducationalContentPage'));
+const FAQPage = React.lazy(() => import('./pages/FAQPage'));
+const BlogPage = React.lazy(() => import('./pages/BlogPage'));
+const AboutUsPage = React.lazy(() => import('./pages/About'));
+const OurMissionPage = React.lazy(() => import('./pages/OurMissionPage'));
+const TeamPage = React.lazy(() => import('./pages/TeamPage'));
+const CareersPage = React.lazy(() => import('./pages/CareersPage'));
+const PressPage = React.lazy(() => import('./pages/PressPage'));
+const PartnersPage = React.lazy(() => import('./pages/PartnersPage'));
+const HelpCenterPage = React.lazy(() => import('./pages/HelpPage'));
+const LiveChatPage = React.lazy(() => import('./pages/LiveChatPage'));
+const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage'));
+const AccessibilityPage = React.lazy(() => import('./pages/AccessibilityPage'));
+const SitemapPage = React.lazy(() => import('./pages/SitemapPage'));
 
 const routes = [
   { path: '/', element: <BetaLandingPage /> },
@@ -83,9 +104,6 @@ const routes = [
   { path: '/expert-help', element: <ExpertHelpPage /> },
   { path: '/auth-test', element: <AuthTestPage /> },
   { path: '/design-test', element: <DesignSystemTest /> },
-  { path: '/feature-request', element: <FeatureRequestPage /> },
-  { path: '/bug-report', element: <BugReportPage /> },
-  { path: '/help', element: <HelpPage /> },
   { path: '/status', element: <StatusPage /> },
   { path: '/glossary', element: <GlossaryPage /> },
   { path: '/resources/immigration', element: <ImmigrationResourcesPage /> },
@@ -94,6 +112,47 @@ const routes = [
   { path: '/compliance-scanner', element: <ComplianceScannerPage /> },
   { path: '/policy-generator', element: <PolicyGeneratorPage /> },
   { path: '/risk-assessment', element: <RiskAssessmentPage /> },
+  // Service pages
+  { path: '/document-generation', element: <DocumentGenerationPage /> },
+  { path: '/document-scanner', element: <DocumentScannerPage /> },
+  { path: '/immigration', element: <ImmigrationResourcesPage /> },
+  // Resource pages
+  { path: '/know-your-rights', element: <KnowYourRightsPage /> },
+  { path: '/legal-templates', element: <LegalTemplatesPage /> },
+  { path: '/educational-content', element: <EducationalContentPage /> },
+  { path: '/faq', element: <FAQPage /> },
+  { path: '/blog', element: <BlogPage /> },
+  // Company pages
+  { path: '/about-us', element: <AboutUsPage /> },
+  { path: '/our-mission', element: <OurMissionPage /> },
+  { path: '/team', element: <TeamPage /> },
+  { path: '/careers', element: <CareersPage /> },
+  { path: '/press', element: <PressPage /> },
+  { path: '/partners', element: <PartnersPage /> },
+  // Support pages
+  // Legal pages
+  { path: '/privacy-policy', element: <PrivacyPolicyPage /> },
+  { path: '/terms-of-service', element: <TermsOfServicePage /> },
+  { path: '/accessibility', element: <AccessibilityPage /> },
+  { path: '/sitemap', element: <SitemapPage /> },
+  // Fix footer links - connect to ACTUAL existing pages
+  { path: '/status', element: <StatusPage /> }, // Footer expects /status
+  { path: '/help', element: <HelpPage /> }, // Footer expects /help
+  { path: '/chat', element: <LiveChatPage /> }, // Footer expects /chat
+  { path: '/bug-report', element: <BugReportPage /> }, // Footer expects /bug-report
+  { path: '/feature-request', element: <FeatureRequestPage /> }, // Footer expects /feature-request
+  { path: '/partners', element: <PartnersPage /> }, // Footer expects /partners
+  { path: '/press', element: <PressPage /> }, // Footer expects /press
+  { path: '/careers', element: <CareersPage /> }, // Footer expects /careers
+  { path: '/team', element: <TeamPage /> }, // Footer expects /team
+  { path: '/mission', element: <OurMissionPage /> }, // Footer expects /mission
+  { path: '/about', element: <About /> }, // Footer expects /about
+  { path: '/rights', element: <RightsPage /> }, // Footer expects /rights
+  { path: '/glossary', element: <GlossaryPage /> }, // Footer expects /glossary
+  { path: '/faq', element: <FAQPage /> }, // Footer expects /faq
+  { path: '/blog', element: <BlogPage /> }, // Footer expects /blog
+  { path: '/scan-document', element: <DocumentScanPage /> },
+  { path: '/documents', element: <DocumentsPage /> },
   { path: '*', element: <Navigate to="/not-found" replace /> },
 ];
 

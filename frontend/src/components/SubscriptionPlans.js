@@ -19,7 +19,7 @@ import {
   Check as CheckIcon,
   Star as StarIcon,
   Business as BusinessIcon,
-  Person as PersonIcon,
+  Person as PersonIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
