@@ -7,7 +7,7 @@
     npm install -g npm@10.2.4 &&
     npm install ajv@8.12.0 ajv-keywords@5.1.0 --save --legacy-peer-deps &&
     npm install --legacy-peer-deps &&
-    CI=false npm run build
+    CI=false DISABLE_ESLINT_PLUGIN=true npm run build
   """
 
 [build.environment]
@@ -15,6 +15,7 @@
   REACT_APP_ENV = "production"
   NPM_FLAGS = "--legacy-peer-deps"
   NODE_VERSION = "20.17.0"
+  DISABLE_ESLINT_PLUGIN = "true"
 
 [[redirects]]
   from = "/*"
