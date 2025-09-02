@@ -4,15 +4,15 @@ import { designTokens } from './design-system/DesignSystem';
 const theme = createTheme({
   palette: {
     primary: {
-      main: designTokens.colors.primary[600], // #2563eb
-      light: designTokens.colors.primary[500], // #3b82f6
-      dark: designTokens.colors.primary[700], // #1d4ed8
+      main: '#1565C0', // SmartProBono blue - darker for better contrast
+      light: '#42A5F5', // Lighter blue
+      dark: '#0D47A1', // Darker blue
       contrastText: '#ffffff',
     },
     secondary: {
-      main: designTokens.colors.secondary[700], // #7c3aed
-      light: designTokens.colors.secondary[600], // #9333ea
-      dark: designTokens.colors.secondary[800], // #6b21a8
+      main: '#1976D2', // Complementary blue
+      light: '#42A5F5', // Light blue
+      dark: '#0D47A1', // Dark blue
       contrastText: '#ffffff',
     },
     success: {
@@ -36,14 +36,14 @@ const theme = createTheme({
       dark: designTokens.colors.info[700], // #0e7490
     },
     background: {
-      default: designTokens.colors.neutral[50], // #f8fafc
+      default: '#f8fafc', // Light grey background
       paper: '#ffffff',
-      gradient: designTokens.gradients.primary,
+      gradient: 'linear-gradient(135deg, #1565C0 0%, #42A5F5 100%)',
     },
     text: {
-      primary: designTokens.colors.neutral[800], // #1e293b
-      secondary: designTokens.colors.neutral[500], // #64748b
-      disabled: designTokens.colors.neutral[400], // #94a3b8
+      primary: '#1e293b', // Dark grey for better contrast
+      secondary: '#475569', // Medium grey
+      disabled: '#94a3b8', // Light grey
     },
     divider: designTokens.colors.neutral[200], // #e2e8f0
   },
