@@ -38,6 +38,13 @@ export const AuthProvider = ({ children }) => {
            process.env.NODE_ENV === 'development';
   }, []);
 
+  // Define isBetaMode - bypass authentication for testing
+  const isBetaMode = useMemo(() => {
+    return process.env.NODE_ENV === 'development' || 
+           window.location.href.includes('beta') ||
+           localStorage.getItem('beta_mode') === 'true';
+  }, []);
+
   // Then define logout
   const logout = useCallback(async () => {
     if (isLoggingOut) return; // Prevent multiple logout attempts
@@ -268,6 +275,27 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // Mock login function for testing
+  const mockLogin = useCallback(() => {
+    const mockUser = {
+      id: 'test-user-123',
+      email: 'test@smartprobono.org',
+      name: 'Test User',
+      role: 'user'
+    };
+    
+    setUser(mockUser);
+    setAccessToken('mock-token');
+    setRefreshToken('mock-refresh-token');
+    
+    // Save to localStorage for persistence
+    localStorage.setItem('access_token', 'mock-token');
+    localStorage.setItem('refresh_token', 'mock-refresh-token');
+    localStorage.setItem('user', JSON.stringify(mockUser));
+    
+    return { success: true, user: mockUser };
+  }, []);
+
   // Memoize the context value to prevent unnecessary re-renders
   const value = useMemo(() => ({
     user,
@@ -275,14 +303,17 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    mockLogin,
     accessToken,
     refreshToken,
     notifications,
     isTestMode,
-    isAuthenticated: !!user,
+    isBetaMode,
+    isAuthenticated: !!user || isBetaMode,
+    currentUser: user,
     clearNotifications: () => setNotifications([]),
     refreshAccessToken
-  }), [user, loading, login, register, logout, accessToken, refreshToken, notifications, isTestMode, refreshAccessToken]);
+  }), [user, loading, login, register, logout, mockLogin, accessToken, refreshToken, notifications, isTestMode, isBetaMode, refreshAccessToken]);
 
   return (
     <AuthContext.Provider value={value}>
@@ -291,7 +322,7 @@ export const AuthProvider = ({ children }) => {
           <h2>Authentication Error</h2>
           <p>{authError}</p>
         </div>
-      ) : loading ? (
+      ) : loading && !isBetaMode ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
           <h2>Loading authentication...</h2>
         </div>
