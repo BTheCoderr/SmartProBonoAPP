@@ -36,7 +36,7 @@ function HideOnScroll(props) {
 }
 
 const Header = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, isBetaMode, enableBetaMode, disableBetaMode } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -99,6 +99,11 @@ const Header = () => {
   const profileMenuItems = [
     { text: t('navigation.profile'), path: '/profile', icon: <PersonIcon /> },
     ...(currentUser?.isAdmin ? [{ text: 'Admin Dashboard', path: '/admin', icon: <AdminPanelSettingsIcon /> }] : []),
+    { 
+      text: isBetaMode ? 'Disable Beta Mode' : 'Enable Beta Mode', 
+      onClick: isBetaMode ? disableBetaMode : enableBetaMode, 
+      icon: <Chip label={isBetaMode ? 'BETA ON' : 'BETA OFF'} size="small" color={isBetaMode ? 'success' : 'default'} />
+    },
     { text: t('navigation.logout'), onClick: handleLogout, icon: <LogoutIcon /> },
   ];
 
@@ -256,6 +261,21 @@ const Header = () => {
             {/* Logo */}
             <Box sx={{ display: 'flex', alignItems: 'center', mr: { xs: 1, sm: 3 } }}>
               <Logo />
+              {isBetaMode && (
+                <Chip 
+                  label="BETA" 
+                  size="small" 
+                  color="success" 
+                  sx={{ 
+                    ml: 1, 
+                    fontSize: '0.7rem',
+                    height: 20,
+                    '& .MuiChip-label': {
+                      px: 1
+                    }
+                  }} 
+                />
+              )}
             </Box>
 
             {/* Desktop Navigation */}
@@ -409,6 +429,23 @@ const Header = () => {
                 </>
               ) : (
                 <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
+                  {!isBetaMode && (
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={enableBetaMode}
+                      sx={{
+                        color: 'white',
+                        borderColor: 'rgba(255,255,255,0.3)',
+                        '&:hover': {
+                          borderColor: 'white',
+                          backgroundColor: 'rgba(255,255,255,0.1)',
+                        },
+                      }}
+                    >
+                      Beta Mode
+                    </Button>
+                  )}
                   <Button
                     variant="outlined"
                     size="small"

@@ -42,7 +42,9 @@ export const AuthProvider = ({ children }) => {
   const isBetaMode = useMemo(() => {
     return process.env.NODE_ENV === 'development' || 
            window.location.href.includes('beta') ||
-           localStorage.getItem('beta_mode') === 'true';
+           window.location.href.includes('localhost') ||
+           localStorage.getItem('beta_mode') === 'true' ||
+           localStorage.getItem('beta_mode') === 'on';
   }, []);
 
   // Then define logout
@@ -296,6 +298,24 @@ export const AuthProvider = ({ children }) => {
     return { success: true, user: mockUser };
   }, []);
 
+  // Enable beta mode function
+  const enableBetaMode = useCallback(() => {
+    localStorage.setItem('beta_mode', 'true');
+    // Force a re-render by updating a dummy state
+    setUser(prev => prev || { id: 'beta-user', email: 'beta@smartprobono.org', name: 'Beta User', role: 'user' });
+  }, []);
+
+  // Disable beta mode function
+  const disableBetaMode = useCallback(() => {
+    localStorage.removeItem('beta_mode');
+    setUser(null);
+    setAccessToken(null);
+    setRefreshToken(null);
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+  }, []);
+
   // Memoize the context value to prevent unnecessary re-renders
   const value = useMemo(() => ({
     user,
@@ -304,6 +324,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     mockLogin,
+    enableBetaMode,
+    disableBetaMode,
     accessToken,
     refreshToken,
     notifications,
@@ -313,7 +335,7 @@ export const AuthProvider = ({ children }) => {
     currentUser: user,
     clearNotifications: () => setNotifications([]),
     refreshAccessToken
-  }), [user, loading, login, register, logout, mockLogin, accessToken, refreshToken, notifications, isTestMode, isBetaMode, refreshAccessToken]);
+  }), [user, loading, login, register, logout, mockLogin, enableBetaMode, disableBetaMode, accessToken, refreshToken, notifications, isTestMode, isBetaMode, refreshAccessToken]);
 
   return (
     <AuthContext.Provider value={value}>
