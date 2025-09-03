@@ -67,6 +67,11 @@ import DocumentGenerator from './components/DocumentGenerator';
 import ExpungementWizard from './components/ExpungementWizard';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import DocumentScanPage from './pages/DocumentScanPage';
+import DocumentChecklistPage from './pages/DocumentChecklistPage';
+import ImmigrationResourcesPage from './pages/ImmigrationResourcesPage';
+import ImmigrationRightsPage from './pages/ImmigrationRightsPage';
+import ExternalResourcesPage from './pages/ExternalResourcesPage';
+import LegalGuidesPage from './pages/LegalGuidesPage';
 
 // Protected route wrapper - updated to use the current AuthContext implementation
 const ProtectedRoute = ({ children }) => {
@@ -133,6 +138,10 @@ const ResourcesLayout = () => (
     <Routes>
       <Route index element={<Resources />} />
       <Route path="rights" element={<RightsPage />} />
+      <Route path="checklist/:type" element={<DocumentChecklistPage />} />
+      <Route path="immigration" element={<ImmigrationResourcesPage />} />
+      <Route path="external" element={<ExternalResourcesPage />} />
+      <Route path="guides" element={<LegalGuidesPage />} />
       <Route 
         path="premium-guides" 
         element={
@@ -298,6 +307,7 @@ function AppContent() {
             <Route path="/team" element={<TeamPage />} />
             <Route path="/mission" element={<OurMissionPage />} />
             <Route path="/rights" element={<RightsPage />} />
+            <Route path="/rights/immigration" element={<ImmigrationRightsPage />} />
             <Route path="/glossary" element={<GlossaryPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/blog" element={<BlogPage />} />
