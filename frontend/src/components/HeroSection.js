@@ -90,7 +90,7 @@ const HeroSection = () => {
       initial="hidden"
       animate="visible"
               sx={{
-          background: `linear-gradient(135deg, #1565C0 0%, #42A5F5 100%)`,
+          background: `linear-gradient(135deg, #0F3D5E 0%, #1FB6A6 100%)`,
           color: 'white',
           position: 'relative',
           overflow: 'hidden',
