@@ -467,9 +467,10 @@ const Header = () => {
                     onClick={() => navigate('/register')}
                     sx={{
                       backgroundColor: 'white',
-                      color: theme.palette.primary.main,
+                      color: '#1565C0',
                       '&:hover': {
                         backgroundColor: 'rgba(255,255,255,0.9)',
+                        color: '#0D47A1',
                       },
                     }}
                   >
