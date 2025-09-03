@@ -637,14 +637,14 @@ const ContractsPage = () => {
                               </Typography>
                             }
                             secondary={
-                              <Box>
-                                <Typography variant="body2" color="text.secondary">
+                              <React.Fragment>
+                                <Typography component="span" variant="body2" color="text.secondary" display="block">
                                   {activity.description}
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography component="span" variant="caption" color="text.secondary">
                                   {new Date(activity.timestamp).toLocaleString()}
                                 </Typography>
-                              </Box>
+                              </React.Fragment>
                             }
                           />
                         </ListItem>

@@ -7,7 +7,7 @@
 import { generatePdfBuffer } from '../lib/pdf/generateWithPdfme';
 import { addHeaderFooter, drawSimpleTable, mergePdfs, placeSignatureImage, placeImageSignatureAt, placeTypedSignatureAt } from '../lib/pdf/enhanceWithPdfLib';
 import { uploadPdfAndGetSignedUrl, buildPdfPath, recordPdfDoc, getSignedUrl, listPdfsForCase } from '../lib/pdf/storage';
-import { fetchPlacementsByTemplate } from '../lib/pdf/templates';
+import { fetchPlacementsByTemplate, fetchPdfmeTemplate } from '../lib/pdf/templates';
 import SignatureService from './SignatureService';
 
 class PdfService {
@@ -358,13 +358,20 @@ class PdfService {
           label: savedPlacements.attorney.label || "Attorney"
         } : DEFAULT_ATTORNEY_POS);
 
+      // Load pdfme template if templateName provided
+      let runtimeTemplate = null;
+      if (templateName) {
+        const loaded = await fetchPdfmeTemplate(templateName);
+        runtimeTemplate = loaded?.templateJson;
+      }
+
       // Generate base PDF
       let current = await generatePdfBuffer({
         clientName: clientName || "John Doe",
         caseNumber: caseNumber || "SPB-12345",
         dateIssued: dateIssued || new Date().toLocaleDateString(),
         bodyText: bodyText || "This is a SmartProBono document.",
-      });
+      }, runtimeTemplate);
 
       // Add header/footer
       current = await addHeaderFooter(current, {

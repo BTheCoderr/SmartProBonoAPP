@@ -25,7 +25,7 @@ const ContractForm = ({ templateId, onSave, onPreview, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [contractName, setContractName] = useState('');
 
-  const template = ContractTemplateService.getTemplate(templateId);
+  const template = ContractTemplateService.getTemplateById(templateId);
   
   if (!template) {
     return (

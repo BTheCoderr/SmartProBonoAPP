@@ -3,7 +3,9 @@ import { Card as MuiCard, CardContent, CardActions } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { designTokens, componentVariants } from '../DesignSystem';
 
-const StyledCard = styled(MuiCard)(({ variant, hoverable }) => {
+const StyledCard = styled(MuiCard, {
+  shouldForwardProp: (prop) => prop !== 'hoverable',
+})(({ variant, hoverable }) => {
   const baseStyles = {
     borderRadius: designTokens.borderRadius.lg,
     transition: `all ${designTokens.animations.duration.normal} ${designTokens.animations.easing.easeInOut}`,

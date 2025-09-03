@@ -84,3 +84,43 @@ export async function getAllTemplateLayouts() {
     return [];
   }
 }
+
+/**
+ * Fetch pdfme template by template name
+ * @param {string} templateName - Template name to fetch
+ * @returns {Promise<Object|null>} - Template object with templateJson and basePdfBytes
+ */
+export async function fetchPdfmeTemplate(templateName) {
+  if (!templateName) return null;
+
+  try {
+    const { data, error } = await supabase
+      .from('pdf_templates')
+      .select('template_json, base_pdf_path')
+      .eq('template_name', templateName)
+      .maybeSingle();
+
+    if (error || !data) {
+      console.error('fetchPdfmeTemplate error:', error);
+      return null;
+    }
+
+    let basePdfBytes = undefined;
+    if (data.base_pdf_path) {
+      // Load base PDF from Storage if provided
+      const { data: file } = await supabase.storage
+        .from(process.env.REACT_APP_SUPABASE_STORAGE_BUCKET || 'smartprobono-pdfs')
+        .download(data.base_pdf_path);
+      
+      if (file) {
+        const buf = Buffer.from(await file.arrayBuffer());
+        basePdfBytes = new Uint8Array(buf);
+      }
+    }
+
+    return { templateJson: data.template_json, basePdfBytes };
+  } catch (error) {
+    console.error('fetchPdfmeTemplate error:', error);
+    return null;
+  }
+}

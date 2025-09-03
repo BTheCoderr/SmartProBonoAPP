@@ -54,6 +54,7 @@ const PdfGeneratorDemo = React.lazy(() => import('./components/PdfGeneratorDemo'
 const SignaturePage = React.lazy(() => import('./pages/SignaturePage'));
 const SignaturePlacementPage = React.lazy(() => import('./pages/SignaturePlacementPage'));
 const SignatureDemoPage = React.lazy(() => import('./pages/SignatureDemoPage'));
+const TemplatesDashboardPage = React.lazy(() => import('./pages/TemplatesDashboardPage'));
 // Connect to existing pages instead of creating new ones
 const DocumentGenerationPage = React.lazy(() => import('./pages/DocumentGenerationPage'));
 const DocumentScannerPage = React.lazy(() => import('./pages/ScanDocument'));
@@ -165,6 +166,7 @@ const routes = [
   { path: '/signature', element: <SignaturePage /> },
   { path: '/tools/signature-placement', element: <SignaturePlacementPage /> },
   { path: '/tools/signature-demo', element: <SignatureDemoPage /> },
+  { path: '/tools/templates', element: <TemplatesDashboardPage /> },
   { path: '*', element: <Navigate to="/not-found" replace /> },
 ];
 
