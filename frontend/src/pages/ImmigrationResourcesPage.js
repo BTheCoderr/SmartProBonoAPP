@@ -1,12 +1,8 @@
 import React from 'react';
 import {
-  Container,
   Typography,
   Box,
-  Card,
-  CardContent,
   Grid,
-  Button,
   List,
   ListItem,
   ListItemIcon,
@@ -22,7 +18,7 @@ import {
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import PageLayout from '../components/PageLayout';
+import { PageLayout, Section, Button, Card, CardContent, designTokens } from '../design-system';
 
 const ImmigrationResourcesPage = () => {
   const navigate = useNavigate();
@@ -101,19 +97,36 @@ const ImmigrationResourcesPage = () => {
       title="Immigration Resources"
       description="Comprehensive immigration resources and guides"
     >
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Section>
         <Box sx={{ mb: 4 }}>
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate('/resources')}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 3,
+              color: designTokens.colors.primary[600],
+              '&:hover': {
+                backgroundColor: designTokens.colors.primary[50]
+              }
+            }}
           >
             Back to Resources
           </Button>
-          <Typography variant="h4" component="h1" gutterBottom>
+          
+          <Typography variant="h4" sx={{ 
+            fontWeight: designTokens.typography.fontWeight.bold,
+            color: designTokens.colors.neutral[900],
+            mb: 2
+          }}>
             Immigration Resources
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" paragraph>
+          
+          <Typography variant="body1" sx={{ 
+            color: designTokens.colors.neutral[600],
+            mb: 4,
+            fontSize: '1.1rem',
+            lineHeight: 1.6
+          }}>
             Essential documents, guides, and information for immigration processes and procedures.
           </Typography>
         </Box>
@@ -201,7 +214,7 @@ const ImmigrationResourcesPage = () => {
             Contact Support
           </Button>
         </Box>
-      </Container>
+      </Section>
     </PageLayout>
   );
 };

@@ -1,12 +1,8 @@
 import React from 'react';
 import {
-  Container,
   Typography,
   Box,
-  Card,
-  CardContent,
   Grid,
-  Button,
   List,
   ListItem,
   ListItemIcon,
@@ -22,7 +18,7 @@ import {
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import PageLayout from '../components/PageLayout';
+import { PageLayout, Section, Button, Card, CardContent, designTokens } from '../design-system';
 
 const ExternalResourcesPage = () => {
   const navigate = useNavigate();
@@ -133,19 +129,36 @@ const ExternalResourcesPage = () => {
       title="External Resources"
       description="Helpful links to government and non-profit organizations"
     >
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Section>
         <Box sx={{ mb: 4 }}>
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate('/resources')}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 3,
+              color: designTokens.colors.primary[600],
+              '&:hover': {
+                backgroundColor: designTokens.colors.primary[50]
+              }
+            }}
           >
             Back to Resources
           </Button>
-          <Typography variant="h4" component="h1" gutterBottom>
+          
+          <Typography variant="h4" sx={{ 
+            fontWeight: designTokens.typography.fontWeight.bold,
+            color: designTokens.colors.neutral[900],
+            mb: 2
+          }}>
             External Resources
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" paragraph>
+          
+          <Typography variant="body1" sx={{ 
+            color: designTokens.colors.neutral[600],
+            mb: 4,
+            fontSize: '1.1rem',
+            lineHeight: 1.6
+          }}>
             Helpful links to government agencies, non-profit organizations, and other legal resources that can provide additional assistance.
           </Typography>
         </Box>
@@ -153,12 +166,25 @@ const ExternalResourcesPage = () => {
         <Grid container spacing={4}>
           {categories.map((category, categoryIndex) => (
             <Grid item xs={12} key={categoryIndex}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5" gutterBottom>
+              <Card
+                sx={{
+                  border: `1px solid ${designTokens.colors.neutral[200]}`,
+                  borderRadius: designTokens.borderRadius.lg,
+                  boxShadow: designTokens.shadows.sm,
+                  '&:hover': {
+                    boxShadow: designTokens.shadows.md,
+                  }
+                }}
+              >
+                <CardContent sx={{ p: designTokens.spacing[4] }}>
+                  <Typography variant="h5" sx={{ 
+                    fontWeight: designTokens.typography.fontWeight.semibold,
+                    color: designTokens.colors.neutral[900],
+                    mb: 2
+                  }}>
                     {category}
                   </Typography>
-                  <Divider sx={{ mb: 2 }} />
+                  <Divider sx={{ mb: 3, borderColor: designTokens.colors.neutral[200] }} />
                   <List>
                     {externalResources
                       .filter(resource => resource.category === category)
@@ -167,26 +193,50 @@ const ExternalResourcesPage = () => {
                           key={resourceIndex}
                           sx={{
                             mb: 2,
-                            bgcolor: 'background.paper',
-                            borderRadius: 1,
+                            p: designTokens.spacing[3],
+                            bgcolor: designTokens.colors.neutral[50],
+                            borderRadius: designTokens.borderRadius.md,
+                            border: `1px solid ${designTokens.colors.neutral[200]}`,
                             '&:hover': {
-                              bgcolor: 'action.hover',
+                              bgcolor: designTokens.colors.primary[50],
+                              border: `1px solid ${designTokens.colors.primary[200]}`,
+                              transform: 'translateY(-2px)',
+                              boxShadow: designTokens.shadows.sm,
                             },
+                            transition: 'all 0.2s ease'
                           }}
                         >
-                          <ListItemIcon>{resource.icon}</ListItemIcon>
+                          <ListItemIcon sx={{ color: designTokens.colors.primary[600] }}>
+                            {resource.icon}
+                          </ListItemIcon>
                           <ListItemText
                             primary={
                               <Box display="flex" alignItems="center" gap={1}>
-                                {resource.title}
+                                <Typography sx={{ 
+                                  fontWeight: designTokens.typography.fontWeight.medium,
+                                  color: designTokens.colors.neutral[900]
+                                }}>
+                                  {resource.title}
+                                </Typography>
                                 <Chip
                                   label="External Link"
                                   size="small"
-                                  color="primary"
+                                  sx={{
+                                    backgroundColor: designTokens.colors.primary[100],
+                                    color: designTokens.colors.primary[700],
+                                    fontWeight: designTokens.typography.fontWeight.medium
+                                  }}
                                 />
                               </Box>
                             }
-                            secondary={resource.description}
+                            secondary={
+                              <Typography sx={{ 
+                                color: designTokens.colors.neutral[600],
+                                mt: 0.5
+                              }}>
+                                {resource.description}
+                              </Typography>
+                            }
                           />
                           <Button
                             variant="outlined"
@@ -195,6 +245,14 @@ const ExternalResourcesPage = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             startIcon={<LinkIcon />}
+                            sx={{
+                              borderColor: designTokens.colors.primary[300],
+                              color: designTokens.colors.primary[600],
+                              '&:hover': {
+                                borderColor: designTokens.colors.primary[500],
+                                backgroundColor: designTokens.colors.primary[50],
+                              }
+                            }}
                           >
                             Visit
                           </Button>
@@ -207,28 +265,59 @@ const ExternalResourcesPage = () => {
           ))}
         </Grid>
 
-        <Box sx={{ mt: 4, textAlign: 'center' }}>
-          <Typography variant="h6" gutterBottom>
+        <Box sx={{ 
+          mt: 6, 
+          p: 4, 
+          backgroundColor: designTokens.colors.neutral[50],
+          borderRadius: designTokens.borderRadius.lg,
+          border: `1px solid ${designTokens.colors.neutral[200]}`,
+          textAlign: 'center'
+        }}>
+          <Typography variant="h6" sx={{ 
+            fontWeight: designTokens.typography.fontWeight.semibold,
+            color: designTokens.colors.neutral[900],
+            mb: 2
+          }}>
             Disclaimer
           </Typography>
-          <Typography variant="body2" color="text.secondary" paragraph>
+          <Typography variant="body2" sx={{ 
+            color: designTokens.colors.neutral[600],
+            mb: 3,
+            lineHeight: 1.6
+          }}>
             These external resources are provided for informational purposes only. SmartProBono is not responsible for the content or availability of these external websites. Always verify information and consult with qualified professionals for legal advice.
           </Typography>
-          <Button
-            variant="contained"
-            onClick={() => navigate('/legal-chat')}
-            sx={{ mr: 2 }}
-          >
-            Chat with AI Legal Assistant
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => navigate('/contact')}
-          >
-            Contact Support
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Button
+              variant="contained"
+              onClick={() => navigate('/legal-chat')}
+              sx={{
+                backgroundColor: designTokens.colors.primary[600],
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: designTokens.colors.primary[700],
+                }
+              }}
+            >
+              Chat with AI Legal Assistant
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => navigate('/contact')}
+              sx={{
+                borderColor: designTokens.colors.primary[300],
+                color: designTokens.colors.primary[600],
+                '&:hover': {
+                  borderColor: designTokens.colors.primary[500],
+                  backgroundColor: designTokens.colors.primary[50],
+                }
+              }}
+            >
+              Contact Support
+            </Button>
+          </Box>
         </Box>
-      </Container>
+      </Section>
     </PageLayout>
   );
 };
