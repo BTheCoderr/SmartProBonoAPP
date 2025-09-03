@@ -81,6 +81,11 @@ const ProtectedRoute = ({ children }) => {
     return <div>Loading...</div>;
   }
   
+  // Log user info for debugging
+  if (user) {
+    console.log('Protected route accessed by user:', user.email || user.id);
+  }
+  
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: window.location.pathname }} replace />;
   }
@@ -202,6 +207,9 @@ function AppContent() {
   
   // Use user to conditionally show content or features
   const showPremiumFeatures = user && user.isPremium;
+  
+  // Log authentication status for debugging
+  console.log('App authentication status:', { isAuthenticated, hasUser: !!user });
 
   return (
     <>

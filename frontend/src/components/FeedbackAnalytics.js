@@ -33,10 +33,6 @@ const FeedbackAnalytics = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, []);
-
   const fetchAnalytics = async () => {
     try {
       const response = await fetch('/api/feedback/analytics');
@@ -49,6 +45,10 @@ const FeedbackAnalytics = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
 
   if (loading) {
     return (

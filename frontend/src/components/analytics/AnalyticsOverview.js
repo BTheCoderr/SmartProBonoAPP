@@ -31,10 +31,6 @@ const AnalyticsOverview = () => {
     recentActivity: null,
   });
 
-  useEffect(() => {
-    loadAnalytics();
-  }, []);
-
   const loadAnalytics = async () => {
     try {
       setLoading(true);
@@ -55,6 +51,10 @@ const AnalyticsOverview = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadAnalytics();
+  }, []);
 
   const renderStats = () => {
     const { formStats } = data;
