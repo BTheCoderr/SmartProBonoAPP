@@ -20,6 +20,39 @@ const eventHandlers = {
 };
 
 /**
+ * Register a user with the socket server
+ * @param {string} userId - The user ID to register
+ * @returns {Promise} - Resolves when registered, rejects on error
+ */
+export const registerUser = (userId) => {
+  return new Promise((resolve, reject) => {
+    if (!socket) {
+      return reject(new Error('Socket not initialized'));
+    }
+    
+    if (!isConnected) {
+      return reject(new Error('Socket not connected'));
+    }
+
+    // Add timeout for registration
+    const timeoutId = setTimeout(() => {
+      reject(new Error('Registration timeout'));
+    }, 10000); // 10 second timeout
+
+    socket.emit('register', { user_id: userId }, (response) => {
+      clearTimeout(timeoutId);
+      
+      if (response && response.success) {
+        console.log(`User ${userId} registered successfully`);
+        resolve(response);
+      } else {
+        reject(new Error(response?.error || 'Registration failed'));
+      }
+    });
+  });
+};
+
+/**
  * Start heartbeat to detect disconnections
  */
 const startHeartbeat = () => {
@@ -235,36 +268,7 @@ export const initializeSocket = (userId) => {
   });
 };
 
-/**
- * Register the user with the socket server
- * @param {string} userId - The user ID to register
- * @returns {Promise} - Resolves when registered, rejects on error
- */
-export const registerUser = (userId) => {
-  return new Promise((resolve, reject) => {
-    if (!socket) {
-      return reject(new Error('Socket not initialized'));
-    }
-    
-    if (!isConnected) {
-      return reject(new Error('Socket not connected'));
-    }
 
-    // Add timeout for registration
-    const timeoutId = setTimeout(() => {
-      reject(new Error('Registration timeout'));
-    }, 10000); // 10 second timeout
-
-    socket.emit('register', { user_id: userId }, (response) => {
-      clearTimeout(timeoutId);
-      if (response && response.status === 'success') {
-        resolve(response);
-      } else {
-        reject(new Error('Registration failed: ' + (response?.error || 'Unknown error')));
-      }
-    });
-  });
-};
 
 /**
  * Add event handler with timeout protection

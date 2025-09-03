@@ -127,11 +127,13 @@ export const trackFormInteraction = (formId, action, data = {}) => {
   // Example: trackEvent('form_interaction', { formId, action, ...data });
 };
 
-export default {
+const storageService = {
   saveFormProgress,
   getFormProgress,
   hasFormProgress,
   getAllFormsProgress,
   clearAllFormsProgress,
   trackFormInteraction
-}; 
+};
+
+export default storageService; 

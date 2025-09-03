@@ -163,5 +163,6 @@ class SignatureService {
   }
 }
 
-// Export singleton instance
-export default new SignatureService();
+// Create and export singleton instance
+const signatureService = new SignatureService();
+export default signatureService;
