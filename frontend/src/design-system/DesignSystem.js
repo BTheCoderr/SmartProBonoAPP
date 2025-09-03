@@ -6,31 +6,31 @@
 // Design Tokens
 export const designTokens = {
   colors: {
-    // Primary Palette
+    // Primary Palette - SmartProBono Navy
     primary: {
-      50: '#eff6ff',
-      100: '#dbeafe', 
-      200: '#bfdbfe',
-      300: '#93c5fd',
-      400: '#60a5fa',
-      500: '#3b82f6', // Main
-      600: '#2563eb', // Dark
-      700: '#1d4ed8',
-      800: '#1e40af',
-      900: '#1e3a8a',
+      50: '#f0f4f8',
+      100: '#d9e2ec', 
+      200: '#bcccdc',
+      300: '#9fb3c8',
+      400: '#829ab1',
+      500: '#627d98', // Main
+      600: '#486581', // Dark
+      700: '#334e68',
+      800: '#243b53',
+      900: '#0F3D5E', // Brand Navy
     },
-    // Secondary Palette
+    // Secondary Palette - SmartProBono Teal
     secondary: {
-      50: '#faf5ff',
-      100: '#f3e8ff',
-      200: '#e9d5ff',
-      300: '#d8b4fe',
-      400: '#c084fc',
-      500: '#a855f7',
-      600: '#9333ea',
-      700: '#7c3aed', // Main
-      800: '#6b21a8',
-      900: '#581c87',
+      50: '#f0fdfa',
+      100: '#ccfbf1',
+      200: '#99f6e4',
+      300: '#5eead4',
+      400: '#2dd4bf',
+      500: '#14b8a6',
+      600: '#1FB6A6', // Brand Teal
+      700: '#0f766e',
+      800: '#115e59',
+      900: '#134e4a',
     },
     // Neutral Palette
     neutral: {
@@ -145,11 +145,11 @@ export const designTokens = {
   },
   
   gradients: {
-    primary: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
-    secondary: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
-    hero: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+    primary: 'linear-gradient(135deg, #0F3D5E 0%, #1FB6A6 100%)',
+    secondary: 'linear-gradient(135deg, #1FB6A6 0%, #0F3D5E 100%)',
+    hero: 'linear-gradient(135deg, #0F3D5E 0%, #1FB6A6 100%)',
     card: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-    overlay: 'linear-gradient(135deg, rgba(30, 64, 175, 0.8) 0%, rgba(59, 130, 246, 0.8) 100%)',
+    overlay: 'linear-gradient(135deg, rgba(15, 61, 94, 0.8) 0%, rgba(31, 182, 166, 0.8) 100%)',
   },
   
   animations: {
