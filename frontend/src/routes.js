@@ -51,6 +51,7 @@ const DocumentScanPage = React.lazy(() => import('./pages/DocumentScanPage'));
 const DocumentChecklistPage = React.lazy(() => import('./pages/DocumentChecklistPage'));
 const PdfTemplateEditor = React.lazy(() => import('./pages/tools/pdf-template-editor/PdfTemplateEditor'));
 const PdfGeneratorDemo = React.lazy(() => import('./components/PdfGeneratorDemo'));
+const SignaturePage = React.lazy(() => import('./pages/SignaturePage'));
 // Connect to existing pages instead of creating new ones
 const DocumentGenerationPage = React.lazy(() => import('./pages/DocumentGenerationPage'));
 const DocumentScannerPage = React.lazy(() => import('./pages/ScanDocument'));
@@ -159,6 +160,7 @@ const routes = [
   { path: '/resources/checklist/:type', element: <DocumentChecklistPage /> },
   { path: '/tools/pdf-template-editor', element: <PdfTemplateEditor /> },
   { path: '/tools/pdf-demo', element: <PdfGeneratorDemo /> },
+  { path: '/signature', element: <SignaturePage /> },
   { path: '*', element: <Navigate to="/not-found" replace /> },
 ];
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -11,9 +11,13 @@ import {
   CircularProgress,
   Chip,
   Stack,
+  FormControlLabel,
+  Checkbox,
+  Divider,
 } from '@mui/material';
-import { Download as DownloadIcon, CloudUpload as CloudUploadIcon } from '@mui/icons-material';
+import { Download as DownloadIcon, CloudUpload as CloudUploadIcon, Edit as EditIcon } from '@mui/icons-material';
 import PdfService from '../services/PdfService';
+import SignatureCapture from './SignatureCapture';
 
 const PdfGeneratorDemo = () => {
   const [formData, setFormData] = useState({
@@ -26,6 +30,25 @@ const PdfGeneratorDemo = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [includeSignature, setIncludeSignature] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+  const [showSignatureCapture, setShowSignatureCapture] = useState(false);
+
+  // Check if signature exists for the case
+  useEffect(() => {
+    const checkSignature = async () => {
+      try {
+        const exists = await PdfService.hasSignature(formData.caseNumber);
+        setHasSignature(exists);
+      } catch (error) {
+        console.error('Error checking signature:', error);
+      }
+    };
+    
+    if (formData.caseNumber) {
+      checkSignature();
+    }
+  }, [formData.caseNumber]);
 
   const handleInputChange = (field) => (event) => {
     setFormData(prev => ({
@@ -47,7 +70,8 @@ const PdfGeneratorDemo = () => {
           { cols: ['Fee Waiver', 'Prepared', 'Signature pending'] },
           { cols: ['Summons', 'Queued', 'Serve via sheriff'] },
         ],
-        filenameBase: 'intake-summary'
+        filenameBase: 'intake-summary',
+        includeSignature: includeSignature
       };
 
       const result = await PdfService.generateAndSaveToStorage(pdfData, 'demo-user');
@@ -63,6 +87,16 @@ const PdfGeneratorDemo = () => {
     if (result && result.signedUrl) {
       window.open(result.signedUrl, '_blank');
     }
+  };
+
+  const handleSignatureUploaded = (path) => {
+    setHasSignature(true);
+    setShowSignatureCapture(false);
+    console.log('Signature uploaded:', path);
+  };
+
+  const handleSignatureCleared = () => {
+    setHasSignature(false);
   };
 
   return (
@@ -117,6 +151,76 @@ const PdfGeneratorDemo = () => {
               />
             </Grid>
           </Grid>
+
+          {/* Signature Options */}
+          <Divider sx={{ my: 3 }} />
+          
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Signature Options
+            </Typography>
+            
+            <Stack spacing={2}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={includeSignature}
+                    onChange={(e) => setIncludeSignature(e.target.checked)}
+                    disabled={!hasSignature}
+                  />
+                }
+                label={
+                  <Box>
+                    <Typography variant="body2">
+                      Include signature in PDF
+                    </Typography>
+                    {!hasSignature && (
+                      <Typography variant="caption" color="text.secondary">
+                        No signature found for this case
+                      </Typography>
+                    )}
+                  </Box>
+                }
+              />
+              
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<EditIcon />}
+                  onClick={() => setShowSignatureCapture(!showSignatureCapture)}
+                  sx={{
+                    borderColor: '#1565C0',
+                    color: '#1565C0',
+                    '&:hover': {
+                      borderColor: '#0D47A1',
+                      backgroundColor: 'rgba(21, 101, 192, 0.04)',
+                    },
+                  }}
+                >
+                  {showSignatureCapture ? 'Hide Signature Capture' : 'Capture Signature'}
+                </Button>
+                
+                {hasSignature && (
+                  <Chip 
+                    label="Signature Available" 
+                    color="success" 
+                    size="small"
+                  />
+                )}
+              </Box>
+            </Stack>
+          </Box>
+
+          {/* Signature Capture Component */}
+          {showSignatureCapture && (
+            <Box sx={{ mb: 3 }}>
+              <SignatureCapture
+                caseNumber={formData.caseNumber}
+                onUploaded={handleSignatureUploaded}
+                onClear={handleSignatureCleared}
+              />
+            </Box>
+          )}
 
           <Box sx={{ mt: 3, textAlign: 'center' }}>
             <Button
@@ -198,6 +302,8 @@ const PdfGeneratorDemo = () => {
           <Typography variant="body2">• PDF generation with pdfme templates</Typography>
           <Typography variant="body2">• Professional headers and footers</Typography>
           <Typography variant="body2">• Dynamic table generation</Typography>
+          <Typography variant="body2">• Digital signature capture and storage</Typography>
+          <Typography variant="body2">• Automatic signature placement in PDFs</Typography>
           <Typography variant="body2">• Supabase Storage integration</Typography>
           <Typography variant="body2">• Signed URL generation</Typography>
           <Typography variant="body2">• Database record tracking</Typography>
