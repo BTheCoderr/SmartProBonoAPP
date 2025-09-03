@@ -76,6 +76,34 @@ const ContractsPage = () => {
     setTabValue(newValue);
   };
 
+  // Sample user contracts data
+  const userContracts = [
+    {
+      id: 1,
+      name: 'Employment Contract - John Smith',
+      type: 'Employment Agreement',
+      status: 'Draft',
+      createdDate: '2024-01-15',
+      lastModified: '2024-01-16',
+    },
+    {
+      id: 2,
+      name: 'NDA - Tech Startup',
+      type: 'Non-Disclosure Agreement',
+      status: 'Review',
+      createdDate: '2024-01-10',
+      lastModified: '2024-01-14',
+    },
+    {
+      id: 3,
+      name: 'Service Agreement - Client ABC',
+      type: 'Service Agreement',
+      status: 'Signed',
+      createdDate: '2024-01-05',
+      lastModified: '2024-01-12',
+    },
+  ];
+
   // Load user contracts on component mount
   useEffect(() => {
     const contracts = ContractTemplateService.getUserContracts();
@@ -85,7 +113,7 @@ const ContractsPage = () => {
     } else {
       setMyContracts(contracts);
     }
-  }, []);
+  }, [userContracts]);
 
   const handleUseTemplate = (template) => {
     setSelectedTemplate(template);
@@ -160,33 +188,6 @@ const ContractsPage = () => {
       default: return <DescriptionIcon />;
     }
   }
-
-  const userContracts = [
-    {
-      id: 1,
-      name: 'Employment Contract - John Smith',
-      type: 'Employment Agreement',
-      status: 'Draft',
-      createdDate: '2024-01-15',
-      lastModified: '2024-01-16',
-    },
-    {
-      id: 2,
-      name: 'NDA - Tech Startup',
-      type: 'Non-Disclosure Agreement',
-      status: 'Review',
-      createdDate: '2024-01-10',
-      lastModified: '2024-01-14',
-    },
-    {
-      id: 3,
-      name: 'Service Agreement - Marketing',
-      type: 'Service Agreement',
-      status: 'Complete',
-      createdDate: '2024-01-05',
-      lastModified: '2024-01-12',
-    },
-  ];
 
   const getStatusColor = (status) => {
     switch (status) {

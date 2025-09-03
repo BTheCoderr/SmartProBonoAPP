@@ -448,5 +448,6 @@ class PdfService {
   }
 }
 
-// Export a singleton instance
-export default new PdfService();
+// Create and export singleton instance
+const pdfService = new PdfService();
+export default pdfService;
