@@ -49,6 +49,7 @@ const PolicyGeneratorPage = React.lazy(() => import('./pages/PolicyGeneratorPage
 const RiskAssessmentPage = React.lazy(() => import('./pages/RiskAssessmentPage'));
 const DocumentScanPage = React.lazy(() => import('./pages/DocumentScanPage'));
 const DocumentChecklistPage = React.lazy(() => import('./pages/DocumentChecklistPage'));
+const PdfTemplateEditor = React.lazy(() => import('./pages/tools/pdf-template-editor/PdfTemplateEditor'));
 // Connect to existing pages instead of creating new ones
 const DocumentGenerationPage = React.lazy(() => import('./pages/DocumentGenerationPage'));
 const DocumentScannerPage = React.lazy(() => import('./pages/ScanDocument'));
@@ -155,6 +156,7 @@ const routes = [
   { path: '/scan-document', element: <DocumentScanPage /> },
   { path: '/documents', element: <DocumentsPage /> },
   { path: '/resources/checklist/:type', element: <DocumentChecklistPage /> },
+  { path: '/tools/pdf-template-editor', element: <PdfTemplateEditor /> },
   { path: '*', element: <Navigate to="/not-found" replace /> },
 ];
 
