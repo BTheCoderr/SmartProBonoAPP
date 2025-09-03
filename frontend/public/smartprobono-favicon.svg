@@ -1,0 +1,39 @@
+<svg width="128" height="128" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Colors -->
+  <!-- Navy and Teal -->
+  <defs>
+    <style>
+      .navy { fill: #0F3D5E; }
+      .teal { fill: #1FB6A6; }
+      .teal-stroke { stroke: #1FB6A6; }
+      .navy-stroke { stroke: #0F3D5E; }
+    </style>
+  </defs>
+
+  <!-- Shield -->
+  <path class="navy" d="M32 4 L52 12 V30 C52 38 44 46 32 51 C20 46 12 38 12 30 V12 L32 4 Z"/>
+  
+  <!-- Scales post -->
+  <line x1="32" y1="12" x2="32" y2="33" stroke="#1FB6A6" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Scales crossbar -->
+  <line x1="20" y1="20" x2="44" y2="20" stroke="#1FB6A6" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Center node -->
+  <circle cx="32" cy="20" r="2.3" fill="#1FB6A6"/>
+  <!-- Left hanger -->
+  <line x1="24" y1="20" x2="24" y2="24" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+  <!-- Right hanger -->
+  <line x1="40" y1="20" x2="40" y2="24" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+  <!-- Left pan -->
+  <path class="teal" d="M19 24 L29 24 L26 28 C25 29 23 29 22 28 L19 24 Z"/>
+  <!-- Right pan -->
+  <path class="teal" d="M35 24 L45 24 L42 28 C41 29 39 29 38 28 L35 24 Z"/>
+
+  <!-- Circuit traces -->
+  <line x1="32" y1="33" x2="32" y2="45" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+  <line x1="26" y1="36" x2="26" y2="44" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+  <line x1="38" y1="36" x2="38" y2="44" stroke="#1FB6A6" stroke-width="2" stroke-linecap="round"/>
+
+  <circle cx="32" cy="47" r="2.1" fill="#1FB6A6"/>
+  <circle cx="26" cy="46" r="1.9" fill="#1FB6A6"/>
+  <circle cx="38" cy="46" r="1.9" fill="#1FB6A6"/>
+</svg>
