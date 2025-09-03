@@ -16,11 +16,12 @@ class SignatureService {
    * Upload signature to Supabase Storage
    * @param {File} file - Signature file (PNG)
    * @param {string} caseNumber - Case number
+   * @param {string} role - Signature role ('client' or 'attorney')
    * @returns {Promise<Object>} - Upload result with path
    */
-  async uploadSignature(file, caseNumber) {
+  async uploadSignature(file, caseNumber, role = 'client') {
     try {
-      const path = `cases/${caseNumber}/signature.png`;
+      const path = `cases/${caseNumber}/signature_${role}.png`;
       
       // Convert file to buffer
       const arrayBuffer = await file.arrayBuffer();
@@ -42,6 +43,7 @@ class SignatureService {
       return {
         success: true,
         path,
+        role,
         message: 'Signature uploaded successfully'
       };
     } catch (error) {
@@ -53,11 +55,12 @@ class SignatureService {
   /**
    * Get signature from storage
    * @param {string} caseNumber - Case number
+   * @param {string} role - Signature role ('client' or 'attorney')
    * @returns {Promise<Uint8Array|null>} - Signature image data or null
    */
-  async getSignature(caseNumber) {
+  async getSignature(caseNumber, role = 'client') {
     try {
-      const path = `cases/${caseNumber}/signature.png`;
+      const path = `cases/${caseNumber}/signature_${role}.png`;
       
       const { data, error } = await supabaseAdmin.storage
         .from(this.bucket)
@@ -82,16 +85,17 @@ class SignatureService {
   /**
    * Check if signature exists for a case
    * @param {string} caseNumber - Case number
+   * @param {string} role - Signature role ('client' or 'attorney')
    * @returns {Promise<boolean>} - True if signature exists
    */
-  async hasSignature(caseNumber) {
+  async hasSignature(caseNumber, role = 'client') {
     try {
-      const path = `cases/${caseNumber}/signature.png`;
+      const path = `cases/${caseNumber}/signature_${role}.png`;
       
       const { data, error } = await supabaseAdmin.storage
         .from(this.bucket)
         .list(`cases/${caseNumber}`, {
-          search: 'signature.png'
+          search: `signature_${role}.png`
         });
 
       if (error) {

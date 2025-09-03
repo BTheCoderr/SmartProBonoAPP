@@ -82,3 +82,37 @@ export async function placeSignatureImage(
   page.drawImage(sig, { x: opts.x, y: opts.y, width: opts.width, height: opts.height });
   return await doc.save();
 }
+
+// Enhanced signature placement with labels
+export async function placeImageSignatureAt(pdfBytes, pngBytes, pos) {
+  const doc = await PDFDocument.load(pdfBytes);
+  const page = doc.getPages()[pos.pageIndex ?? 0];
+  const img = await doc.embedPng(pngBytes);
+  const width = pos.width ?? 160;
+  const height = pos.height ?? 60;
+  page.drawImage(img, { x: pos.x, y: pos.y, width, height });
+
+  if (pos.label) {
+    const font = await doc.embedFont(StandardFonts.Helvetica);
+    page.drawText(pos.label, { x: pos.x, y: pos.y + height + 6, size: 9, font, color: rgb(0,0,0) });
+  }
+  return await doc.save();
+}
+
+// Typed signature placement
+export async function placeTypedSignatureAt(pdfBytes, text, pos) {
+  const doc = await PDFDocument.load(pdfBytes);
+  const page = doc.getPages()[pos.pageIndex ?? 0];
+  const font = await doc.embedFont(StandardFonts.HelveticaOblique);
+  const size = pos.fontSize ?? 16;
+
+  // "/s/ John Doe" style
+  const sig = text.startsWith("/s/") ? text : `/s/ ${text}`;
+  page.drawText(sig, { x: pos.x, y: pos.y, size, font, color: rgb(0,0,0) });
+
+  if (pos.label) {
+    const labFont = await doc.embedFont(StandardFonts.Helvetica);
+    page.drawText(pos.label, { x: pos.x, y: pos.y + size + 6, size: 9, font: labFont, color: rgb(0,0,0) });
+  }
+  return await doc.save();
+}

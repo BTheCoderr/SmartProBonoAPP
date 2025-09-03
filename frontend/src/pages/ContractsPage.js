@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -12,7 +12,11 @@ import {
   IconButton,
   Stack,
   Tabs,
-  Tab
+  Tab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { 
@@ -35,6 +39,9 @@ import SecurityIcon from '@mui/icons-material/Security';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import GavelIcon from '@mui/icons-material/Gavel';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import ContractTemplateService from '../services/ContractTemplateService';
+import ContractForm from '../components/ContractForm';
+import ContractPreview from '../components/ContractPreview';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,104 +67,86 @@ const ContractsPage = () => {
   const [tabValue, setTabValue] = useState(0);
   const [myContracts, setMyContracts] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [previewContract, setPreviewContract] = useState(null);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
+  // Load user contracts on component mount
+  useEffect(() => {
+    const contracts = ContractTemplateService.getUserContracts();
+    setMyContracts(contracts);
+  }, []);
+
   const handleUseTemplate = (template) => {
-    // Create a new contract from template
-    const newContract = {
-      id: Date.now(),
-      title: template.title,
-      type: template.type,
-      status: 'Draft',
-      createdAt: new Date().toISOString(),
-      template: template
-    };
-
-    // Add to My Contracts
-    setMyContracts(prev => [newContract, ...prev]);
-    
-    // Add to Recent Activity
-    const activity = {
-      id: Date.now(),
-      type: 'Contract Created',
-      description: `Created "${template.title}" from template`,
-      timestamp: new Date().toISOString(),
-      contractId: newContract.id
-    };
-    setRecentActivity(prev => [activity, ...prev]);
-
-    // Switch to My Contracts tab to show the new contract
-    setTabValue(1);
-
-    // Show success message (you could add a toast notification here)
-    alert(`Contract "${template.title}" created successfully! Check "My Contracts" tab.`);
+    setSelectedTemplate(template);
+    setShowForm(true);
   };
 
-  const contractTemplates = [
-    {
-      id: 1,
-      title: 'Employment Agreement',
-      description: 'Standard employment contract template with customizable terms',
-      category: 'Employment',
-      icon: <WorkIcon />,
-      features: ['Salary Terms', 'Benefits Package', 'Non-compete Clause', 'Termination Terms'],
-      price: 'Free',
-      popular: true,
-    },
-    {
-      id: 2,
-      title: 'Non-Disclosure Agreement (NDA)',
-      description: 'Confidentiality agreement for protecting sensitive information',
-      category: 'Business',
-      icon: <SecurityIcon />,
-      features: ['Confidentiality Terms', 'Duration', 'Scope of Information', 'Remedies'],
-      price: 'Free',
-      popular: true,
-    },
-    {
-      id: 3,
-      title: 'Service Agreement',
-      description: 'Professional service contract for freelancers and consultants',
-      category: 'Business',
-      icon: <BusinessIcon />,
-      features: ['Service Scope', 'Payment Terms', 'Timeline', 'Deliverables'],
-      price: 'Free',
-      popular: false,
-    },
-    {
-      id: 4,
-      title: 'Partnership Agreement',
-      description: 'Business partnership contract with profit sharing terms',
-      category: 'Business',
-      icon: <AssignmentIcon />,
-      features: ['Partnership Terms', 'Profit Sharing', 'Decision Making', 'Exit Strategy'],
-      price: 'Free',
-      popular: false,
-    },
-    {
-      id: 5,
-      title: 'Lease Agreement',
-      description: 'Property rental agreement for residential or commercial use',
-      category: 'Real Estate',
-      icon: <GavelIcon />,
-      features: ['Rent Terms', 'Security Deposit', 'Maintenance', 'Termination'],
-      price: 'Free',
-      popular: false,
-    },
-    {
-      id: 6,
-      title: 'Consulting Agreement',
-      description: 'Independent contractor agreement for consulting services',
-      category: 'Business',
-      icon: <TrendingUpIcon />,
-      features: ['Project Scope', 'Payment Schedule', 'Intellectual Property', 'Confidentiality'],
-      price: 'Free',
-      popular: true,
-    },
-  ];
+  const handleFormSave = (savedContract) => {
+    setMyContracts(prev => [savedContract, ...prev]);
+    setRecentActivity(prev => [{
+      id: Date.now(),
+      action: 'Created',
+      contract: savedContract.name,
+      timestamp: new Date().toLocaleTimeString(),
+    }, ...prev]);
+    
+    setShowForm(false);
+    setSelectedTemplate(null);
+    
+    // Show success message
+    alert(`Contract "${savedContract.name}" created successfully! Check "My Contracts" tab.`);
+  };
+
+  const handleFormPreview = (contract) => {
+    setPreviewContract(contract);
+    setShowPreview(true);
+  };
+
+  const handleFormCancel = () => {
+    setShowForm(false);
+    setSelectedTemplate(null);
+  };
+
+  const handlePreviewClose = () => {
+    setShowPreview(false);
+    setPreviewContract(null);
+  };
+
+  const handlePreviewEdit = () => {
+    setShowPreview(false);
+    setPreviewContract(null);
+    // Keep form open for editing
+  };
+
+  const handlePreviewDownload = () => {
+    // TODO: Implement PDF generation and download
+    alert('PDF download functionality will be implemented with the signature system');
+  };
+
+  // Get templates from service
+  const contractTemplates = ContractTemplateService.getAllTemplates().map(template => ({
+    ...template,
+    icon: getTemplateIcon(template.id)
+  }));
+
+  // Helper function to get icon for template
+  function getTemplateIcon(templateId) {
+    switch (templateId) {
+      case 'employment': return <WorkIcon />;
+      case 'nda': return <SecurityIcon />;
+      case 'service': return <BusinessIcon />;
+      case 'partnership': return <AssignmentIcon />;
+      case 'lease': return <GavelIcon />;
+      case 'consulting': return <TrendingUpIcon />;
+      default: return <DescriptionIcon />;
+    }
+  }
 
   const userContracts = [
     {
@@ -669,6 +658,56 @@ const ContractsPage = () => {
           </Card>
         </motion.div>
       </Section>
+
+      {/* Contract Form Dialog */}
+      <Dialog
+        open={showForm}
+        onClose={handleFormCancel}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            minHeight: '80vh',
+          }
+        }}
+      >
+        <DialogContent sx={{ p: 0 }}>
+          {selectedTemplate && (
+            <ContractForm
+              templateId={selectedTemplate.id}
+              onSave={handleFormSave}
+              onPreview={handleFormPreview}
+              onCancel={handleFormCancel}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Contract Preview Dialog */}
+      <Dialog
+        open={showPreview}
+        onClose={handlePreviewClose}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            minHeight: '90vh',
+          }
+        }}
+      >
+        <DialogContent sx={{ p: 0 }}>
+          {previewContract && (
+            <ContractPreview
+              contract={previewContract}
+              onEdit={handlePreviewEdit}
+              onDownload={handlePreviewDownload}
+              onClose={handlePreviewClose}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </PageLayout>
   );
 };

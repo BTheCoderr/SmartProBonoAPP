@@ -9,16 +9,20 @@ import {
   CardContent,
   Stack,
   IconButton,
+  FormControl,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { Save as SaveIcon, Clear as ClearIcon, CheckCircle as CheckCircleIcon } from '@mui/icons-material';
 import PdfService from '../services/PdfService';
 
-const SignatureCapture = ({ caseNumber, onUploaded, onClear }) => {
+const SignatureCapture = ({ caseNumber, onUploaded, onClear, defaultRole = 'client' }) => {
   const sigRef = useRef(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [uploadedPath, setUploadedPath] = useState(null);
+  const [role, setRole] = useState(defaultRole);
 
   const handleSave = async () => {
     try {
@@ -42,12 +46,12 @@ const SignatureCapture = ({ caseNumber, onUploaded, onClear }) => {
       form.append('caseNumber', caseNumber);
 
       // Upload to Supabase Storage
-      const result = await PdfService.uploadSignature(file, caseNumber);
+      const result = await PdfService.uploadSignature(file, caseNumber, role);
       
       if (result.success) {
         setUploadedPath(result.path);
         setSuccess(true);
-        onUploaded?.(result.path);
+        onUploaded?.(result.path, result.role);
       } else {
         throw new Error(result.message || 'Upload failed');
       }
@@ -77,6 +81,28 @@ const SignatureCapture = ({ caseNumber, onUploaded, onClear }) => {
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3, textAlign: 'center' }}>
           Sign with your finger, mouse, or stylus. Your signature will be securely stored and can be added to legal documents.
         </Typography>
+
+        {/* Role Selector */}
+        <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'center' }}>
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            Signer Role:
+          </Typography>
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <Select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              sx={{
+                '& .MuiSelect-select': {
+                  color: '#1565C0',
+                  fontWeight: 600,
+                },
+              }}
+            >
+              <MenuItem value="client">Client</MenuItem>
+              <MenuItem value="attorney">Attorney</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
 
         {/* Signature Canvas */}
         <Box
