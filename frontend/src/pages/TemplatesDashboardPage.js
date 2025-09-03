@@ -51,10 +51,6 @@ const TemplatesDashboardPage = () => {
     [templates, selected]
   );
 
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
   const loadTemplates = async () => {
     try {
       const res = await fetch('/api/templates/list');
@@ -67,6 +63,10 @@ const TemplatesDashboardPage = () => {
       setError('Failed to load templates');
     }
   };
+
+  useEffect(() => {
+    loadTemplates();
+  }, []);
 
   const loadTemplate = async (name) => {
     try {
@@ -115,6 +115,10 @@ const TemplatesDashboardPage = () => {
 
       if (!res.ok) {
         const errorData = await res.json();
+        if (res.status === 401) {
+          setError('Please log in to save templates');
+          return;
+        }
         throw new Error(errorData.error || 'Save failed');
       }
 
@@ -151,6 +155,10 @@ const TemplatesDashboardPage = () => {
 
       if (!res.ok) {
         const errorData = await res.json();
+        if (res.status === 401) {
+          setError('Please log in to save placements');
+          return;
+        }
         throw new Error(errorData.error || 'Save placements failed');
       }
 
@@ -192,6 +200,10 @@ const TemplatesDashboardPage = () => {
       
       const json = await res.json();
       if (!res.ok) {
+        if (res.status === 401) {
+          setError('Please log in to upload files');
+          return;
+        }
         throw new Error(json?.error || 'Upload failed');
       }
 

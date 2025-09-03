@@ -1,10 +1,14 @@
 import { supabase } from '../../../lib/supabase/client';
+import { getUserOrThrow } from '../../../lib/supabase/auth';
 
 export const dynamic = 'force-dynamic';
 const BUCKET = process.env.REACT_APP_SUPABASE_STORAGE_BUCKET || 'smartprobono-pdfs';
 
 export async function POST(req) {
   try {
+    // Check authentication
+    const user = await getUserOrThrow();
+    
     const form = await req.formData();
     const file = form.get('file');
     const templateName = form.get('templateName');
@@ -39,6 +43,9 @@ export async function POST(req) {
 
     return Response.json({ ok: true, basePdfPath: path });
   } catch (e) {
+    if (e.message.includes('Unauthorized')) {
+      return Response.json({ error: 'Unauthorized - Please log in to continue' }, { status: 401 });
+    }
     return Response.json({ error: e?.message || 'upload failed' }, { status: 500 });
   }
 }

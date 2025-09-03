@@ -367,7 +367,12 @@ function App() {
         <CssBaseline />
         <I18nextProvider i18n={i18n}>
           <SnackbarProvider maxSnack={3}>
-            <Router>
+            <Router
+              future={{
+                v7_startTransition: true,
+                v7_relativeSplatPath: true,
+              }}
+            >
               <ScrollToTop />
               <AuthProvider>
                 <AnalyticsProvider>

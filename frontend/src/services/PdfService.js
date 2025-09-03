@@ -8,6 +8,7 @@ import { generatePdfBuffer } from '../lib/pdf/generateWithPdfme';
 import { addHeaderFooter, drawSimpleTable, mergePdfs, placeSignatureImage, placeImageSignatureAt, placeTypedSignatureAt } from '../lib/pdf/enhanceWithPdfLib';
 import { uploadPdfAndGetSignedUrl, buildPdfPath, recordPdfDoc, getSignedUrl, listPdfsForCase } from '../lib/pdf/storage';
 import { fetchPlacementsByTemplate, fetchPdfmeTemplate } from '../lib/pdf/templates';
+import { getCurrentUser } from '../lib/supabase/auth';
 import SignatureService from './SignatureService';
 
 class PdfService {
@@ -425,11 +426,12 @@ class PdfService {
       const path = buildPdfPath({ caseNumber, filenameBase: "smartprobono" });
       const { signedUrl } = await uploadPdfAndGetSignedUrl(current, path, 60 * 60);
 
-      // Record in database
+      // Record in database with user info
+      const user = await getCurrentUser();
       await recordPdfDoc({
         caseNumber,
         storagePath: path,
-        createdBy: null
+        createdBy: user?.id || null
       });
 
       return {
