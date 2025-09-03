@@ -21,9 +21,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Security as SecurityIcon } from '@mui/icons-material';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import SupportIcon from '@mui/icons-material/Support';
+
 
 const Footer = () => {
   const theme = useTheme();
@@ -83,11 +81,7 @@ const Footer = () => {
     { icon: <YouTubeIcon />, href: 'https://youtube.com/smartprobono', label: 'YouTube' },
   ];
 
-  const trustSignals = [
-    { icon: <SecurityIcon />, text: 'Bank-Level Security', color: 'success' },
-    { icon: <VerifiedUserIcon />, text: 'Licensed Attorneys', color: 'primary' },
-    { icon: <SupportIcon />, text: '24/7 Support', color: 'info' },
-  ];
+
 
   return (
     <Box
@@ -146,35 +140,7 @@ const Footer = () => {
                 Our AI-powered platform connects you with the legal assistance you need.
               </Typography>
 
-              {/* Trust Signals */}
-              <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-                {trustSignals.map((signal, index) => (
-                  <Chip
-                    key={index}
-                    icon={signal.icon}
-                    label={signal.text}
-                    color={signal.color}
-                    size="small"
-                    sx={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                      color: '#ffffff',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      fontWeight: 600,
-                      backdropFilter: 'blur(10px)',
-                      '& .MuiChip-icon': {
-                        color: signal.color === 'success' ? '#10b981' : 
-                               signal.color === 'primary' ? '#14B8A6' : '#06b6d4',
-                      },
-                      '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                        transform: 'translateY(-1px)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                      },
-                      transition: 'all 0.2s ease',
-                    }}
-                  />
-                ))}
-              </Stack>
+
 
               {/* Contact Info */}
               <Stack spacing={2}>
