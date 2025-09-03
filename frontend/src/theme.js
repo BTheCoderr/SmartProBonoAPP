@@ -4,15 +4,15 @@ import { designTokens } from './design-system/DesignSystem';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1565C0', // SmartProBono blue - darker for better contrast
-      light: '#42A5F5', // Lighter blue
-      dark: '#0D47A1', // Darker blue
+      main: '#0F3D5E', // SmartProBono Navy - brand color
+      light: '#627d98', // Lighter navy
+      dark: '#0F3D5E', // Dark navy
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#14B8A6', // Teal - SmartProBono secondary color
-      light: '#5EEAD4', // Light teal
-      dark: '#0F766E', // Dark teal
+      main: '#1FB6A6', // SmartProBono Teal - brand color
+      light: '#2dd4bf', // Light teal
+      dark: '#0f766e', // Dark teal
       contrastText: '#ffffff',
     },
     success: {
