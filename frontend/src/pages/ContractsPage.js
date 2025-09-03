@@ -79,7 +79,12 @@ const ContractsPage = () => {
   // Load user contracts on component mount
   useEffect(() => {
     const contracts = ContractTemplateService.getUserContracts();
-    setMyContracts(contracts);
+    // If no contracts from service, use the sample data
+    if (contracts.length === 0) {
+      setMyContracts(userContracts);
+    } else {
+      setMyContracts(contracts);
+    }
   }, []);
 
   const handleUseTemplate = (template) => {
@@ -682,6 +687,9 @@ const ContractsPage = () => {
           }
         }}
       >
+        <DialogTitle>
+          {selectedTemplate ? `Create ${selectedTemplate.name}` : 'Create Contract'}
+        </DialogTitle>
         <DialogContent sx={{ p: 0 }}>
           {selectedTemplate && (
             <ContractForm
@@ -692,6 +700,9 @@ const ContractsPage = () => {
             />
           )}
         </DialogContent>
+        <DialogActions>
+          <Button onClick={handleFormCancel}>Cancel</Button>
+        </DialogActions>
       </Dialog>
 
       {/* Contract Preview Dialog */}
@@ -707,6 +718,7 @@ const ContractsPage = () => {
           }
         }}
       >
+        <DialogTitle>Contract Preview</DialogTitle>
         <DialogContent sx={{ p: 0 }}>
           {previewContract && (
             <ContractPreview
@@ -717,6 +729,9 @@ const ContractsPage = () => {
             />
           )}
         </DialogContent>
+        <DialogActions>
+          <Button onClick={handlePreviewClose}>Close</Button>
+        </DialogActions>
       </Dialog>
     </PageLayout>
   );
