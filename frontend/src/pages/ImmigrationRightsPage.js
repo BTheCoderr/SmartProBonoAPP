@@ -1,18 +1,13 @@
 import React from 'react';
 import {
-  Container,
   Typography,
   Box,
-  Card,
-  CardContent,
   Grid,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Chip,
-  Divider,
-  Button
+  Divider
 } from '@mui/material';
 import {
   Gavel as GavelIcon,
