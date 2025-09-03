@@ -293,7 +293,7 @@ const ExternalResourcesPage = () => {
               onClick={() => navigate('/legal-chat')}
               sx={{
                 backgroundColor: designTokens.colors.primary[600],
-                color: 'white',
+                color: designTokens.colors.neutral[50],
                 '&:hover': {
                   backgroundColor: designTokens.colors.primary[700],
                 }
