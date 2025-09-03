@@ -37,10 +37,6 @@ const CaseDetailPage = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
   const loadTemplates = async () => {
     try {
       const res = await fetch('/api/templates/list');
@@ -56,6 +52,10 @@ const CaseDetailPage = () => {
       setError('Failed to load templates');
     }
   };
+
+  useEffect(() => {
+    loadTemplates();
+  }, []);
 
   const handleGenerate = async () => {
     try {

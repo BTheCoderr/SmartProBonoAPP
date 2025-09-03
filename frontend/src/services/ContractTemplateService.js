@@ -481,5 +481,6 @@ Date: _______________                      Date: _______________`
   }
 }
 
-// Export singleton instance
-export default new ContractTemplateService();
+// Create and export singleton instance
+const contractTemplateService = new ContractTemplateService();
+export default contractTemplateService;
