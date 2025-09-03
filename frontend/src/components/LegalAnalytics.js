@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Paper,
@@ -31,7 +31,7 @@ const LegalAnalytics = ({ caseData, onRecommendation }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedFactor, setSelectedFactor] = useState(null);
 
-  const analyzeCaseData = async () => {
+  const analyzeCaseData = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch('/api/legal/analyze', {
@@ -49,13 +49,13 @@ const LegalAnalytics = ({ caseData, onRecommendation }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [caseData]);
 
   useEffect(() => {
     if (caseData) {
       analyzeCaseData();
     }
-  }, [caseData]);
+  }, [caseData, analyzeCaseData]);
 
   const getSuccessRateColor = (rate) => {
     if (rate >= 75) return 'success';
@@ -118,9 +118,12 @@ const LegalAnalytics = ({ caseData, onRecommendation }) => {
         {analysis && (
           <>
             <Box sx={{ mb: 4, textAlign: 'center' }}>
-              <Typography variant="h4" gutterBottom>
-                {t('analytics.caseAnalysis')}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+                <AssignmentIcon sx={{ mr: 2, fontSize: '2rem' }} />
+                <Typography variant="h4" gutterBottom>
+                  {t('analytics.caseAnalysis')}
+                </Typography>
+              </Box>
               <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 3 }}>
                 <Chip
                   icon={<TrendingUpIcon />}

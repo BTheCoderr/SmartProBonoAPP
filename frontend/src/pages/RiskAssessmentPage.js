@@ -53,7 +53,7 @@ const RiskAssessmentPage = () => {
   const [assessing, setAssessing] = useState(false);
   const [assessmentResults, setAssessmentResults] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
-  const [, setRiskConfig] = useState({
+  const [riskConfig, setRiskConfig] = useState({
     businessType: '',
     industry: '',
     dataVolume: 'medium',
@@ -66,6 +66,10 @@ const RiskAssessmentPage = () => {
     budget: 'medium'
   });
   const [, setOpenConfig] = useState(false);
+
+  const handleRiskConfigUpdate = (newConfig) => {
+    setRiskConfig(prev => ({ ...prev, ...newConfig }));
+  };
 
   const riskCategories = [
     {
@@ -509,6 +513,16 @@ const RiskAssessmentPage = () => {
           <Typography variant="h4" component="h1" gutterBottom>
             Risk Assessment Dashboard
           </Typography>
+          <Divider sx={{ my: 2 }} />
+          <Alert severity="info" sx={{ mb: 2 }}>
+            Configure your risk assessment settings below
+          </Alert>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Current Risk Config: {riskConfig.businessType || 'Not set'} - {riskConfig.industry || 'Not set'}
+          </Typography>
+          <Button variant="outlined" onClick={() => handleRiskConfigUpdate({ businessType: 'Technology', industry: 'Software' })}>
+            Update Risk Config
+          </Button>
           <Typography variant="subtitle1" color="text.secondary">
             Analyze and mitigate risks across your organization with AI-powered assessment tools
           </Typography>

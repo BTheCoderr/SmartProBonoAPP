@@ -13,7 +13,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import SendIcon from '@mui/icons-material/Send';
-import { PageLayout, Section, Button, Card } from '../design-system';
+import { PageLayout, Button, Card } from '../design-system';
 
 function Contact() {
   const [formData, setFormData] = useState({

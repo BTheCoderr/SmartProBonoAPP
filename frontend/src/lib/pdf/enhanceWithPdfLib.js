@@ -21,6 +21,10 @@ export async function addHeaderFooter(pdfBytes, opts = {}) {
     const { width, height } = page.getSize();
     if (opts.header) {
       page.drawText(opts.header, { x: 36, y: height - 24, size, font, color: rgb(0, 0, 0) });
+      // Use width to center the header if it's too long
+      if (opts.header.length > 50) {
+        page.drawText(opts.header, { x: width / 2 - (opts.header.length * size) / 4, y: height - 24, size, font, color: rgb(0, 0, 0) });
+      }
     }
     if (opts.footer) {
       page.drawText(`${opts.footer}  ·  Page ${idx + 1} of ${doc.getPageCount()}`, {
@@ -49,14 +53,13 @@ export async function drawSimpleTable(
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const page = doc.getPages()[0];
 
-  let y = start.y;
-  for (const r of rows) {
+  const drawRow = (row, yPos) => {
     let x = start.x;
-    r.cols.forEach((txt, i) => {
-      page.drawText(txt ?? "", { x: x + 4, y: y + 6, size: 10, font, color: rgb(0, 0, 0) });
+    row.cols.forEach((txt, i) => {
+      page.drawText(txt ?? "", { x: x + 4, y: yPos + 6, size: 10, font, color: rgb(0, 0, 0) });
       page.drawRectangle({
         x,
-        y,
+        y: yPos,
         width: colWidths[i],
         height: rowHeight,
         borderColor: rgb(0, 0, 0),
@@ -65,6 +68,11 @@ export async function drawSimpleTable(
       });
       x += colWidths[i];
     });
+  };
+
+  let y = start.y;
+  for (const r of rows) {
+    drawRow(r, y);
     y -= rowHeight;
   }
   return await doc.save();

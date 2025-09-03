@@ -62,16 +62,11 @@ export const ErrorBoundaryWithAnalytics: React.FC<{ children: React.ReactNode }>
         analytics.trackError(error, info.componentStack);
     };
 
-    return (
-        <ErrorBoundary
-            FallbackComponent={({ error }: FallbackProps) => (
-                <div>Something went wrong. Please try again.</div>
-            )}
-            onError={handleError}
-        >
-            {children}
-        </ErrorBoundary>
-    );
+    return React.createElement(ErrorBoundary, {
+        FallbackComponent: ({ error }: FallbackProps) => 
+            React.createElement('div', null, 'Something went wrong. Please try again.'),
+        onError: handleError
+    }, children);
 };
 
 export { analytics };

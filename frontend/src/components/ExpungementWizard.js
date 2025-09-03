@@ -26,6 +26,8 @@ import {
   Card,
   CardContent,
   Divider,
+  Tooltip,
+  IconButton,
 } from '@mui/material';
 import { expungementApi, documentsApi } from '../services/api';
 import useApi from '../hooks/useApi';
@@ -220,8 +222,12 @@ const ExpungementWizard = () => {
     });
     setEligibility(null);
     setActiveStep(0);
+    setLoading(false);
+    setError(null);
     localStorage.removeItem('expungementProgress');
   };
+
+
 
   const renderStepContent = (step) => {
     switch (step) {
@@ -293,19 +299,24 @@ const ExpungementWizard = () => {
       case 2:
         return (
           <Box>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {t('expungement.caseDetails.title')}
+              <Tooltip title="Get help with case details">
+                <IconButton size="small" onClick={() => {
+                  alert('Case details help: Please provide accurate information about your case including the case number, court name, and case type. This information is crucial for determining eligibility.');
+                }}>
+                  <HelpIcon />
+                </IconButton>
+              </Tooltip>
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label={t('expungement.caseDetails.caseNumber')}
+                  name="caseNumber"
                   value={formData.caseDetails.caseNumber || ''}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    caseDetails: { ...formData.caseDetails, caseNumber: e.target.value }
-                  })}
+                  onChange={handleInputChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -319,7 +330,69 @@ const ExpungementWizard = () => {
                   })}
                 />
               </Grid>
-              {/* Add more case detail fields */}
+              
+              {/* Case Type Selection */}
+              <Grid item xs={12}>
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">Case Type</FormLabel>
+                  <RadioGroup
+                    value={formData.caseDetails.caseType || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      caseDetails: { ...formData.caseDetails, caseType: e.target.value }
+                    })}
+                  >
+                    <FormControlLabel value="misdemeanor" control={<Radio />} label="Misdemeanor" />
+                    <FormControlLabel value="felony" control={<Radio />} label="Felony" />
+                    <FormControlLabel value="infraction" control={<Radio />} label="Infraction" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              
+              {/* Additional Information Checkboxes */}
+              <Grid item xs={12}>
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">Additional Information</FormLabel>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.caseDetails.hasProbation || false}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            caseDetails: { ...formData.caseDetails, hasProbation: e.target.checked }
+                          })}
+                        />
+                      }
+                      label="Case involved probation"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.caseDetails.hasFines || false}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            caseDetails: { ...formData.caseDetails, hasFines: e.target.checked }
+                          })}
+                        />
+                      }
+                      label="Case involved fines or fees"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.caseDetails.hasRestitution || false}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            caseDetails: { ...formData.caseDetails, hasRestitution: e.target.checked }
+                          })}
+                        />
+                      }
+                      label="Case involved restitution"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
             </Grid>
           </Box>
         );
@@ -635,6 +708,15 @@ const ExpungementWizard = () => {
           </Alert>
         )}
 
+        {/* Progress Tracking */}
+        {savedProgress && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            <Typography variant="body2">
+              Progress saved: {new Date(savedProgress.timestamp).toLocaleString()}
+            </Typography>
+          </Alert>
+        )}
+
         {renderStepContent(activeStep)}
 
         {activeStep === 4 && renderEligibilityCheck()}
@@ -642,12 +724,22 @@ const ExpungementWizard = () => {
         {activeStep === 5 && renderEligibilityResults()}
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-          <Button
-            disabled={activeStep === 0 || checkingEligibility || fetchingRules || savingProgress || generatingDocs}
-            onClick={handleBack}
-          >
-            {t('common.back')}
-          </Button>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              disabled={activeStep === 0 || checkingEligibility || fetchingRules || savingProgress || generatingDocs}
+              onClick={handleBack}
+            >
+              {t('common.back')}
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleReset}
+              disabled={checkingEligibility || fetchingRules || savingProgress || generatingDocs}
+            >
+              Reset
+            </Button>
+          </Box>
           <Button
             variant="contained"
             onClick={handleNext}

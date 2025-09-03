@@ -7,7 +7,7 @@ const BUCKET = process.env.REACT_APP_SUPABASE_STORAGE_BUCKET || 'smartprobono-pd
 export async function POST(req) {
   try {
     // Check authentication
-    const user = await getUserOrThrow();
+    await getUserOrThrow();
     
     const form = await req.formData();
     const file = form.get('file');

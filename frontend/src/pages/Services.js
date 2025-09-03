@@ -9,9 +9,10 @@ import {
   ListItemIcon,
   ListItemText,
   Chip,
-  CardContent
+  CardContent,
+  Container
 } from '@mui/material';
-import { PageLayout, Button, Card } from '../design-system';
+import { PageLayout, Button, Card, Section } from '../design-system';
 import GavelIcon from '@mui/icons-material/Gavel';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
@@ -90,6 +91,8 @@ function Services() {
       title="Our Services"
       description="Comprehensive legal services to support your needs"
     >
+      <Section>
+        <Container maxWidth="lg">
       {/* Services Grid */}
       <Grid container spacing={4} sx={{ mb: 8 }}>
         {services.map((service, index) => (
@@ -230,6 +233,8 @@ function Services() {
           </Grid>
         </Grid>
       </Paper>
+        </Container>
+      </Section>
     </PageLayout>
   );
 }

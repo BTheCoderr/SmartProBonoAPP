@@ -28,15 +28,15 @@ import {
   Grid,
   Card,
   CardContent,
-  Divider,
   Chip,
+
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import EditIcon from '@mui/icons-material/Edit';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import MicIcon from '@mui/icons-material/Mic';
@@ -285,7 +285,19 @@ const DocumentGenerator = ({
     }
   };
 
-  const handleChange = (field, value) => {
+  // Drag and drop functionality
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    
+    const items = Array.from(sections);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    
+    setSections(items);
+  };
+
+  // Voice input functionality
+  const handleChange = useCallback((field, value) => {
     setFormData(prev => {
       const newData = { ...prev, [field]: value };
       
@@ -298,7 +310,15 @@ const DocumentGenerator = ({
       
       return newData;
     });
-  };
+  }, [documentType, currentUser?.id]);
+
+  const handleVoiceInput = useCallback((transcript) => {
+    // Auto-fill the first empty field with voice input
+    const emptyField = Object.keys(formData).find(field => !formData[field]);
+    if (emptyField) {
+      handleChange(emptyField, transcript);
+    }
+  }, [formData, handleChange]);
 
   const handleSubmitDocument = async () => {
     setLoading(true);
@@ -306,6 +326,15 @@ const DocumentGenerator = ({
     
     try {
       const result = await onSubmit(formData, documentType);
+      
+      // Use the result to show success message
+      if (result && result.success) {
+        toast.success(result.message || 'Document submitted successfully!');
+      } else if (result && result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success('Document submitted successfully!');
+      }
       
       // Clear draft from localStorage on successful submission
       localStorage.removeItem(`${documentType}FormDraft`);
@@ -328,6 +357,24 @@ const DocumentGenerator = ({
       handleSubmitDocument();
     }
   };
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = false;
+      recognitionInstance.lang = 'en-US';
+      
+      recognitionInstance.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        handleVoiceInput(transcript);
+      };
+      
+      setRecognition(recognitionInstance);
+    }
+  }, [handleVoiceInput]);
 
   const handleBack = () => {
     setActiveStep(prev => Math.max(0, prev - 1));
@@ -463,11 +510,17 @@ const DocumentGenerator = ({
   const canProceed = validateStep();
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
+    <Box sx={{ mb: 4, backgroundColor: theme.palette.background.default }}>
+      <Paper elevation={3} sx={{ p: 3, mb: 3, backgroundColor: theme.palette.background.paper }}>
         <Box display="flex" alignItems="center" mb={3}>
           <AssignmentIcon fontSize="large" color="primary" sx={{ mr: 2 }} />
+          <DescriptionIcon fontSize="large" color="secondary" sx={{ mr: 1 }} />
           <Typography variant="h5">{template.title}</Typography>
+          <Tooltip title={t('documentGenerator.helpText', 'Generate professional legal documents with AI assistance')}>
+            <IconButton size="small" sx={{ ml: 1 }}>
+              <HelpOutlineIcon />
+            </IconButton>
+          </Tooltip>
           
           <Box ml="auto" display="flex" alignItems="center">
             <Button 
@@ -525,7 +578,7 @@ const DocumentGenerator = ({
                 <Select
                   value={fontSize}
                   label="Font Size"
-                  onChange={(e) => setFontSize(e.target.value)}
+                  onChange={handleFontSizeChange}
                 >
                   <MenuItem value="small">Small</MenuItem>
                   <MenuItem value="medium">Medium</MenuItem>
@@ -533,6 +586,21 @@ const DocumentGenerator = ({
                 </Select>
               </FormControl>
             </Tooltip>
+            
+            <Box sx={{ ml: 2 }}>
+              <Tooltip title="Get help with accessibility features">
+                <IconButton onClick={() => {
+                  toast.info('Accessibility mode helps users with disabilities navigate the form more easily');
+                }}>
+                  <HelpOutlineIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Toggle accessibility features">
+                <IconButton onClick={handleAccessibilityToggle}>
+                  <AccessibilityNewIcon color={accessibilityMode ? 'primary' : 'inherit'} />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </AccordionDetails>
         </Accordion>
         
@@ -629,6 +697,109 @@ const DocumentGenerator = ({
               />
             </Box>
             
+            {/* Sections Editor */}
+            <Box sx={{ mb: 3, p: 2, border: '1px dashed', borderRadius: 1 }}>
+              <Typography variant="h6" gutterBottom>
+                Document Sections
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<EditIcon />}
+                  onClick={() => setIsEditing(!isEditing)}
+                >
+                  {isEditing ? 'Done Editing' : 'Edit Sections'}
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<DragIndicatorIcon />}
+                  onClick={() => console.log('Drag mode enabled')}
+                >
+                  Reorder
+                </Button>
+              </Box>
+              {sections.length > 0 && (
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable droppableId="sections" direction="horizontal">
+                    {(provided) => (
+                      <Box 
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}
+                      >
+                        {sections.map((section, index) => (
+                          <Draggable key={index} draggableId={index.toString()} index={index}>
+                            {(provided) => (
+                              <Chip
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                label={section}
+                                onDelete={isEditing ? () => {
+                                  const newSections = sections.filter((_, i) => i !== index);
+                                  setSections(newSections);
+                                } : undefined}
+                              />
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </Box>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              )}
+            </Box>
+            
+            {/* Content Editor Section */}
+            {isEditing && (
+              <Box sx={{ mb: 3, p: 2, border: '1px dashed', borderColor: 'primary.main', borderRadius: 1 }}>
+                <Typography variant="h6" gutterBottom>
+                  Edit Document Content
+                </Typography>
+                <TextField
+                  fullWidth
+                  label="Document Title"
+                  value={formData.documentTitle || ''}
+                  onChange={handleInputChange('documentTitle')}
+                  placeholder="Enter document title..."
+                  variant="outlined"
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  value={editingContent}
+                  onChange={handleInputChange('editingContent')}
+                  placeholder="Enter additional content or notes for your document..."
+                  variant="outlined"
+                />
+                <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => {
+                      if (editingContent.trim()) {
+                        setSections(prev => [...prev, editingContent.trim()]);
+                        setEditingContent('');
+                        toast.success('Content added to document sections');
+                      }
+                    }}
+                  >
+                    Add to Sections
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => setEditingContent('')}
+                  >
+                    Clear
+                  </Button>
+                </Box>
+              </Box>
+            )}
+            
             <Grid container spacing={3}>
               {currentFields.map(field => {
               const fieldDef = fieldDefinitions[documentType][field];
@@ -672,6 +843,48 @@ const DocumentGenerator = ({
           </>
         )}
         
+        {/* Progress Tracking */}
+        <Box sx={{ mt: 3, p: 2, backgroundColor: 'rgba(0,0,0,0.02)', borderRadius: 1 }}>
+          <Typography variant="h6" gutterBottom>
+            Progress Tracking
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <Button
+              variant="outlined"
+              startIcon={<MicIcon />}
+              onClick={() => {
+                if (isRecording && recognition) {
+                  recognition.stop();
+                  setIsRecording(false);
+                } else if (recognition) {
+                  recognition.start();
+                  setIsRecording(true);
+                } else {
+                  toast.error('Speech recognition not supported in this browser');
+                }
+              }}
+              color={isRecording ? 'error' : 'primary'}
+            >
+              {isRecording ? 'Stop Recording' : 'Start Recording'}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                const newProgress = { ...progress, [activeStep]: new Date().toISOString() };
+                setProgress(newProgress);
+                localStorage.setItem('documentProgress', JSON.stringify(newProgress));
+              }}
+            >
+              Save Progress
+            </Button>
+          </Box>
+          {Object.keys(progress).length > 0 && (
+            <Typography variant="body2" color="text.secondary">
+              Last saved: {new Date(progress[activeStep] || Date.now()).toLocaleString()}
+            </Typography>
+          )}
+        </Box>
+        
         <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
           <Box>
             <Button
@@ -679,9 +892,9 @@ const DocumentGenerator = ({
               variant="outlined"
               startIcon={<SmartToyIcon />}
               onClick={handleRequestAIHelp}
-              disabled={isAIHelping || isLastStep}
+              disabled={isAIHelping}
             >
-              AI Assist
+              {isAIHelping ? aiStatus : 'AI Assist'}
             </Button>
           </Box>
           
@@ -696,8 +909,8 @@ const DocumentGenerator = ({
             <Button
               variant="contained"
               color="primary"
-              onClick={handleNext}
-              disabled={loading || !canProceed}
+              onClick={isLastStep ? handleSubmit : handleNext}
+              disabled={loading || (isLastStep ? !validateForm() : !canProceed)}
             >
               {isLastStep ? 'Submit' : 'Next'}
             </Button>

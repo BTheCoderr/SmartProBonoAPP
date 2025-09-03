@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Box, 
   Typography, 
@@ -77,7 +77,7 @@ const ContractsPage = () => {
   };
 
   // Sample user contracts data
-  const userContracts = [
+  const userContracts = useMemo(() => [
     {
       id: 1,
       name: 'Employment Contract - John Smith',
@@ -102,7 +102,7 @@ const ContractsPage = () => {
       createdDate: '2024-01-05',
       lastModified: '2024-01-12',
     },
-  ];
+  ], []); // Empty dependency array since this is static data
 
   // Load user contracts on component mount
   useEffect(() => {
@@ -113,7 +113,7 @@ const ContractsPage = () => {
     } else {
       setMyContracts(contracts);
     }
-  }, []); // Remove userContracts dependency to avoid re-renders
+  }, [userContracts]); // Include userContracts dependency
 
   const handleUseTemplate = (template) => {
     setSelectedTemplate(template);

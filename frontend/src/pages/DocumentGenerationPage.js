@@ -253,6 +253,21 @@ const DocumentGenerationPage = () => {
             <Card>
               <CardHeader title="Choose a Template" />
               <CardContent>
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                  <InputLabel>Quick Select Template</InputLabel>
+                  <Select
+                    value={selectedTemplate || ''}
+                    onChange={(e) => handleTemplateSelect(e.target.value)}
+                    label="Quick Select Template"
+                  >
+                    {documentTemplates.map((template) => (
+                      <MenuItem key={template.id} value={template.id}>
+                        {template.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <Divider sx={{ my: 2 }} />
                 <Grid container spacing={2}>
                   {documentTemplates.map((template) => (
                     <Grid item xs={12} key={template.id}>
@@ -294,6 +309,32 @@ const DocumentGenerationPage = () => {
           {/* Form and Generation */}
           <Grid item xs={12} md={6}>
             {renderFormFields()}
+            
+            <Paper sx={{ p: 2, mt: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Document Features:
+              </Typography>
+              <List dense>
+                <ListItem>
+                  <ListItemIcon>
+                    <CheckCircleIcon color="success" />
+                  </ListItemIcon>
+                  <ListItemText primary="Professional formatting" />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <CheckCircleIcon color="success" />
+                  </ListItemIcon>
+                  <ListItemText primary="Legal compliance" />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <CheckCircleIcon color="success" />
+                  </ListItemIcon>
+                  <ListItemText primary="Instant download" />
+                </ListItem>
+              </List>
+            </Paper>
             
             {generatedDocument && (
               <Paper sx={{ p: 3, mt: 2, bgcolor: 'success.light', color: 'success.contrastText' }}>
@@ -363,6 +404,10 @@ const DocumentGenerationPage = () => {
                 <Typography variant="body2" color="text.secondary">
                   Provide the required information using our simple form
                 </Typography>
+                <Box sx={{ mt: 2 }}>
+                  <EditIcon color="primary" sx={{ mr: 1 }} />
+                  <SaveIcon color="primary" />
+                </Box>
               </Box>
             </Grid>
             <Grid item xs={12} md={4}>

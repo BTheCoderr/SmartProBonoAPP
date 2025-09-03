@@ -46,7 +46,7 @@ const VoiceInput = ({ onTranscript, isListening, setIsListening }) => {
         recognition.stop();
       }
     };
-  }, [onTranscript, setIsListening]);
+  }, [onTranscript, setIsListening, recognition]);
 
   const toggleListening = () => {
     if (!recognition) {

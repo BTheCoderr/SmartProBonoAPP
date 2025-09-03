@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, CircularProgress, Chip, Grid, Paper } from '@mui/material';
+import { Container, Typography, Box, CircularProgress, Chip, Grid, Paper, Button } from '@mui/material';
 import ImprovedLegalAIChat from '../components/ImprovedLegalAIChat';
 import { useTranslation } from 'react-i18next';
 import ComplianceIcon from '@mui/icons-material/VerifiedUser';
@@ -9,6 +9,12 @@ import { Card } from '../design-system';
 
 const LegalAIChatPage = () => {
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
+  
+  const handleStartChat = () => {
+    setLoading(true);
+    setTimeout(() => setLoading(false), 2000);
+  };
   
   const complianceTopics = [
     { name: 'GDPR Compliance', color: 'primary', icon: '🛡️' },
@@ -22,11 +28,20 @@ const LegalAIChatPage = () => {
   return (
     <Container maxWidth="lg">
       <Box py={3}>
+        <Card sx={{ p: 3, mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            AI Assistant Status: {loading ? 'Processing...' : 'Ready'}
+          </Typography>
+          <Button variant="contained" onClick={handleStartChat} disabled={loading}>
+            {loading ? 'Starting...' : 'Start Chat'}
+          </Button>
+        </Card>
         {/* Header Section */}
         <Box sx={{ textAlign: 'center', mb: 4 }}>
           <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700, color: '#333' }}>
-            AI Legal Compliance Assistant
+            {t('legalAI.title', 'AI Legal Compliance Assistant')}
           </Typography>
+          {loading && <CircularProgress sx={{ mb: 2 }} />}
           <Typography variant="h6" color="text.secondary" paragraph sx={{ maxWidth: 800, mx: 'auto' }}>
             Get instant compliance guidance, generate legal documents, and ensure your startup meets all regulatory requirements. 
             Our AI agents specialize in startup legal needs from GDPR to SOC 2.

@@ -78,14 +78,27 @@ const DocumentPreview = ({
   // Initial preview generation and auto-update setup
   useEffect(() => {
     if (open && formData) {
-      generatePreview(formData);
+      debouncedGeneratePreview(formData);
     }
     return () => {
       if (pdfUrl) {
         URL.revokeObjectURL(pdfUrl);
       }
     };
-  }, [open, formData]);
+  }, [open, formData, debouncedGeneratePreview, pdfUrl]);
+
+  // Real-time preview updates when form data changes
+  useEffect(() => {
+    if (open && formData && Object.keys(formData).length > 0) {
+      // Only update if we have meaningful form data
+      const hasContent = Object.values(formData).some(value => 
+        value && value.toString().trim().length > 0
+      );
+      if (hasContent) {
+        debouncedGeneratePreview(formData);
+      }
+    }
+  }, [formData, open, debouncedGeneratePreview]);
 
   // Handle document load
   const onDocumentLoadSuccess = ({ numPages }) => {

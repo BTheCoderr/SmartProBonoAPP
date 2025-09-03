@@ -149,6 +149,8 @@ const BugReportPage = () => {
                   Found something that's not working correctly? Help us fix it by providing detailed information about the issue.
                 </Typography>
                 
+                <Divider sx={{ my: 2 }} />
+                
                 <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                   <Grid container spacing={3}>
                     <Grid item xs={12}>

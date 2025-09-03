@@ -127,9 +127,14 @@ const StatusPage = () => {
         <Card sx={{ mb: 4 }}>
           <CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-              <Typography variant="h5">
-                System Status
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <SpeedIcon color="primary" />
+                <Typography variant="h5">
+                  System Status
+                </Typography>
+                <ChatIcon color="secondary" />
+                <DescriptionIcon color="action" />
+              </Box>
               <Chip
                 icon={getStatusIcon(systemStatus.overall)}
                 label={getStatusText(systemStatus.overall)}
@@ -137,6 +142,7 @@ const StatusPage = () => {
                 size="large"
               />
             </Box>
+            <Divider sx={{ my: 2 }} />
             <Typography variant="body2" color="text.secondary">
               Last updated: {new Date(systemStatus.lastUpdated).toLocaleString()}
             </Typography>

@@ -28,7 +28,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card } from '../design-system';
+import { Button, Card, PageLayout, Section } from '../design-system';
 
 // Mock icon components
 const SecurityIcon = () => <Box component="span" sx={{ display: 'inline-block', width: 24, height: 24 }}></Box>;
@@ -151,7 +151,9 @@ const ExpertHelpPage = () => {
   };
   
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <PageLayout>
+      <Section>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography variant="h3" component="h1" gutterBottom fontWeight="bold" sx={{ color: '#333' }}>
         Startup Legal Experts
       </Typography>
@@ -355,6 +357,8 @@ const ExpertHelpPage = () => {
         </Button>
       </Paper>
     </Container>
+        </Section>
+      </PageLayout>
   );
 };
 

@@ -7,9 +7,7 @@ import {
   Button,
   CircularProgress,
   Avatar,
-  Chip,
   useTheme,
-  Fade,
   Zoom,
   Divider,
   Alert
@@ -93,23 +91,7 @@ const DocumentChat = ({ documentId, documentTitle }) => {
     return timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const getMessageVariant = (type) => {
-    switch (type) {
-      case 'user': return 'contained';
-      case 'ai': return 'outlined';
-      case 'error': return 'outlined';
-      default: return 'outlined';
-    }
-  };
 
-  const getMessageColor = (type) => {
-    switch (type) {
-      case 'user': return 'primary';
-      case 'ai': return 'success';
-      case 'error': return 'error';
-      default: return 'default';
-    }
-  };
 
   return (
     <motion.div

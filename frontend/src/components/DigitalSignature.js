@@ -6,7 +6,7 @@ import { PDFDocument } from 'pdf-lib';
 const DigitalSignature = ({ pdfUrl, onSignComplete }) => {
   const [open, setOpen] = useState(false);
   const sigPad = useRef(null);
-  const [signatureData, setSignatureData] = useState(null);
+  const [, setSignatureData] = useState(null);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

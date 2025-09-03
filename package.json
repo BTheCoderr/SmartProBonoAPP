@@ -21,6 +21,7 @@
     "url": "https://github.com/BTheCoderr/SmartProBonoAPP/issues"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
     "@mui/lab": "^6.0.0-beta.25",
     "@mui/x-date-pickers": "^8.1.0",
     "@types/file-saver": "^2.0.7",

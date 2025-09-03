@@ -204,6 +204,13 @@ const Dashboard = () => {
               >
                 Here's what's happening with your legal matters
               </Typography>
+              <Alert severity="info" sx={{ mb: 2, maxWidth: 600, mx: 'auto' }}>
+                <TrendingUpIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                Welcome to your personalized legal assistance dashboard
+              </Alert>
+              <IconButton sx={{ color: 'white', mt: 2 }}>
+                <SettingsIcon />
+              </IconButton>
             </motion.div>
           </Box>
         </motion.div>
@@ -252,23 +259,25 @@ const Dashboard = () => {
                       onClick={() => navigate(action.path)}
                     >
                       <CardContent sx={{ p: designTokens.spacing[6] }}>
-                        <Box
-                          sx={{
-                            width: 60,
-                            height: 60,
-                            borderRadius: '50%',
-                            background: designTokens.gradients[action.color] || designTokens.gradients.primary,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            margin: '0 auto',
-                            mb: designTokens.spacing[4],
-                          }}
-                        >
-                          {React.cloneElement(action.icon, { 
-                            sx: { fontSize: 30, color: 'white' } 
-                          })}
-                        </Box>
+                        <Badge badgeContent={action.badge || 0} color="error">
+                          <Box
+                            sx={{
+                              width: 60,
+                              height: 60,
+                              borderRadius: '50%',
+                              background: designTokens.gradients[action.color] || designTokens.gradients.primary,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              margin: '0 auto',
+                              mb: designTokens.spacing[4],
+                            }}
+                          >
+                            {React.cloneElement(action.icon, { 
+                              sx: { fontSize: 30, color: 'white' } 
+                            })}
+                          </Box>
+                        </Badge>
                         <Typography
                           variant="h6"
                           sx={{
@@ -297,6 +306,9 @@ const Dashboard = () => {
           viewport={{ once: true }}
         >
           <Card variant="elevated" sx={{ p: designTokens.spacing[6] }}>
+            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+              <Typography variant="h6">Dashboard Sections:</Typography>
+            </Stack>
             <Tabs
               value={tabValue}
               onChange={handleTabChange}
@@ -318,7 +330,7 @@ const Dashboard = () => {
                 <Grid item xs={12} md={4}>
                   <motion.div variants={itemVariants}>
                     <Card variant="gradient" sx={{ textAlign: 'center', p: designTokens.spacing[6] }}>
-                      <TrendingUpIcon sx={{ fontSize: 48, color: designTokens.colors.success[500], mb: designTokens.spacing[3] }} />
+                      <ArticleIcon sx={{ fontSize: 48, color: designTokens.colors.success[500], mb: designTokens.spacing[3] }} />
                       <Typography variant="h4" sx={{ fontWeight: designTokens.typography.fontWeight.bold, mb: designTokens.spacing[2] }}>
                         {documents.length}
                       </Typography>
@@ -331,7 +343,7 @@ const Dashboard = () => {
                 <Grid item xs={12} md={4}>
                   <motion.div variants={itemVariants}>
                     <Card variant="gradient" sx={{ textAlign: 'center', p: designTokens.spacing[6] }}>
-                      <CheckCircleIcon sx={{ fontSize: 48, color: designTokens.colors.primary[500], mb: designTokens.spacing[3] }} />
+                      <AssignmentIcon sx={{ fontSize: 48, color: designTokens.colors.primary[500], mb: designTokens.spacing[3] }} />
                       <Typography variant="h4" sx={{ fontWeight: designTokens.typography.fontWeight.bold, mb: designTokens.spacing[2] }}>
                         {documents.filter(doc => doc.status === 'Complete').length}
                       </Typography>
@@ -400,6 +412,9 @@ const Dashboard = () => {
                             </Box>
                           }
                         />
+                        <Button variant="outlined" size="small" sx={{ mr: 1 }}>
+                          View
+                        </Button>
                         <IconButton>
                           <MoreVertIcon />
                         </IconButton>

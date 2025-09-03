@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   CardContent,
@@ -47,7 +47,7 @@ import {
 const AuditDashboard = () => {
   const [auditLogs, setAuditLogs] = useState([]);
   const [securityEvents, setSecurityEvents] = useState([]);
-  const [userActivities, setUserActivities] = useState([]);
+
   const [dashboardStats, setDashboardStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -81,7 +81,7 @@ const AuditDashboard = () => {
   };
 
   // Fetch audit logs
-  const fetchAuditLogs = async () => {
+  const fetchAuditLogs = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -115,10 +115,10 @@ const AuditDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, toast]);
 
   // Fetch security events
-  const fetchSecurityEvents = async () => {
+  const fetchSecurityEvents = useCallback(async () => {
     try {
       const params = new URLSearchParams();
       if (filters.severity) params.append('severity', filters.severity);
@@ -139,7 +139,7 @@ const AuditDashboard = () => {
     } catch (error) {
       console.error('Error fetching security events:', error);
     }
-  };
+  }, [filters]);
 
   // Export audit logs
   const exportAuditLogs = async () => {
@@ -201,7 +201,7 @@ const AuditDashboard = () => {
     } else if (selectedTab === 'security') {
       fetchSecurityEvents();
     }
-  }, [selectedTab, filters]);
+  }, [selectedTab, filters, fetchAuditLogs, fetchSecurityEvents]);
 
   const getSeverityColor = (severity) => {
     switch (severity) {

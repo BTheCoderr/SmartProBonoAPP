@@ -49,6 +49,16 @@ const PremiumRouteGuard = ({ children, isPremium = false }) => {
             >
               {t('common.goBack')}
             </Button>
+            <Button
+              variant="text"
+              onClick={() => {
+                // Use Navigate to redirect to login with current location as state
+                return <Navigate to="/login" state={{ from: location }} replace />;
+              }}
+              sx={{ ml: 1 }}
+            >
+              Login
+            </Button>
           </Box>
         </Paper>
       </Box>
