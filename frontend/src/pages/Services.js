@@ -9,7 +9,6 @@ import {
   ListItemIcon,
   ListItemText,
   Chip,
-  Container,
   CardContent
 } from '@mui/material';
 import { PageLayout, Section, Button, Card } from '../design-system';
