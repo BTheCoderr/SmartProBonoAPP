@@ -8,6 +8,7 @@ import ReactGA from 'react-ga4';
 import ErrorBoundary from './components/ErrorBoundary';
 import theme from './theme';
 import routes from './routes';
+import TestPage from './pages/TestPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AnalyticsProvider } from './contexts/AnalyticsContext';
 import i18n from './translations/i18n';
@@ -222,6 +223,7 @@ function AppContent() {
         <React.Suspense fallback={<LoadingFallback />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/test" element={<TestPage />} />
             
             <Route 
               path="/dashboard" 
