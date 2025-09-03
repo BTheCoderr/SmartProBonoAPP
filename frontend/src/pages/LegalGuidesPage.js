@@ -102,11 +102,16 @@ const LegalGuidesPage = () => {
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate('/resources')}
+            variant="outlined"
             sx={{
               mb: 3,
               color: designTokens.colors.primary[600],
+              borderColor: designTokens.colors.primary[600],
+              fontWeight: 600,
               '&:hover': {
-                backgroundColor: designTokens.colors.primary[50]
+                backgroundColor: designTokens.colors.primary[50],
+                borderColor: designTokens.colors.primary[700],
+                color: designTokens.colors.primary[700]
               }
             }}
           >
