@@ -28,7 +28,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useNavigate } from 'react-router-dom';
-import { PageLayout, Section, Button, Card } from '../design-system';
+import { Button, Card } from '../design-system';
 
 // Mock icon components
 const SecurityIcon = () => <Box component="span" sx={{ display: 'inline-block', width: 24, height: 24 }}></Box>;

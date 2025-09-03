@@ -15,10 +15,7 @@ import {
   Switch,
   FormGroup,
   FormControlLabel,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+
   IconButton,
   List,
   ListItem,
@@ -27,7 +24,7 @@ import {
   ListItemIcon,
   Chip
 } from '@mui/material';
-import { PageLayout, Section, Button, Card } from '../design-system';
+import { Button, Card } from '../design-system';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -127,8 +124,8 @@ const formatNotificationTime = (timestamp) => {
 const ProfilePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { currentUser, updateProfile, logout } = useAuth();
-  const [error, setError] = useState('');
+  const { currentUser, logout } = useAuth();
+  const [, setError] = useState('');
   const [message, setMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState('success');
@@ -143,7 +140,7 @@ const ProfilePage = () => {
     messages: true
   });
   const [notifications, setNotifications] = useState([]);
-  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [, setLoadingNotifications] = useState(false);
 
   useEffect(() => {
     // Check for tab param in URL
@@ -246,10 +243,7 @@ const ProfilePage = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+
 
   const handleCloseAlert = () => {
     setShowAlert(false);

@@ -11,7 +11,7 @@ import {
   Chip,
   CardContent
 } from '@mui/material';
-import { PageLayout, Section, Button, Card } from '../design-system';
+import { PageLayout, Button, Card } from '../design-system';
 import GavelIcon from '@mui/icons-material/Gavel';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';

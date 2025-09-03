@@ -5,10 +5,9 @@ import { useTranslation } from 'react-i18next';
 import ComplianceIcon from '@mui/icons-material/VerifiedUser';
 import BusinessIcon from '@mui/icons-material/Business';
 import SecurityIcon from '@mui/icons-material/Security';
-import { PageLayout, Section, Card } from '../design-system';
+import { Card } from '../design-system';
 
 const LegalAIChatPage = () => {
-  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   
   const complianceTopics = [

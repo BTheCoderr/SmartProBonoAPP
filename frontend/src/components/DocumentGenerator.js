@@ -488,6 +488,54 @@ const DocumentGenerator = ({
           </Box>
         </Box>
         
+        {/* Template Selector */}
+        <Accordion sx={{ mb: 3 }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h6">Template Options</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Select Template</InputLabel>
+              <Select
+                value={selectedTemplate}
+                label="Select Template"
+                onChange={(e) => handleTemplateSelect(e.target.value)}
+              >
+                {templates.map((template) => (
+                  <MenuItem key={template.id} value={template.id}>
+                    {template.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={accessibilityMode}
+                  onChange={(e) => setAccessibilityMode(e.target.checked)}
+                />
+              }
+              label="Accessibility Mode"
+            />
+            
+            <Tooltip title="Adjust font size for better readability">
+              <FormControl sx={{ ml: 2 }}>
+                <InputLabel>Font Size</InputLabel>
+                <Select
+                  value={fontSize}
+                  label="Font Size"
+                  onChange={(e) => setFontSize(e.target.value)}
+                >
+                  <MenuItem value="small">Small</MenuItem>
+                  <MenuItem value="medium">Medium</MenuItem>
+                  <MenuItem value="large">Large</MenuItem>
+                </Select>
+              </FormControl>
+            </Tooltip>
+          </AccordionDetails>
+        </Accordion>
+        
         <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
           {template.steps.map((step, index) => (
             <Step key={index}>
@@ -562,8 +610,27 @@ const DocumentGenerator = ({
             ))}
           </Box>
         ) : (
-          <Grid container spacing={3}>
-            {currentFields.map(field => {
+          <>
+            {/* Voice Input Section */}
+            <Box sx={{ mb: 3, p: 2, border: '1px dashed', borderRadius: 1 }}>
+              <Typography variant="h6" gutterBottom>
+                Voice Input
+              </Typography>
+              <VoiceInput
+                onTranscript={(text) => {
+                  // Auto-fill the first empty field with voice input
+                  const firstEmptyField = currentFields.find(field => !formData[field]);
+                  if (firstEmptyField) {
+                    handleChange(firstEmptyField, text);
+                  }
+                }}
+                isListening={isListening}
+                onListeningChange={setIsListening}
+              />
+            </Box>
+            
+            <Grid container spacing={3}>
+              {currentFields.map(field => {
               const fieldDef = fieldDefinitions[documentType][field];
               
               if (!fieldDef) return null;
@@ -601,7 +668,8 @@ const DocumentGenerator = ({
                 </Grid>
               );
             })}
-          </Grid>
+            </Grid>
+          </>
         )}
         
         <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>

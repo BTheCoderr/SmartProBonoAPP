@@ -466,7 +466,6 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
         email: '',
         phone: '',
         dateOfBirth: null,
-        nationality: '',
         countryOfBirth: '',
         currentResidence: '',
         visaType: initialServiceType,

@@ -32,7 +32,7 @@ import {
 import PageLayout from '../components/PageLayout';
 
 const StatusPage = () => {
-  const [systemStatus, setSystemStatus] = useState({
+  const [systemStatus] = useState({
     overall: 'operational',
     services: [
       { name: 'Web Application', status: 'operational', responseTime: '120ms' },

@@ -44,6 +44,9 @@ const Header = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isSmallMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
+  // Log mobile detection for debugging
+  console.log('Mobile detection:', { isMobile, isSmallMobile });
+  
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);

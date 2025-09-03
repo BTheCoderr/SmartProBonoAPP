@@ -1,45 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Typography,
   Box,
-  Grid,
   Card,
   CardContent,
   CardHeader,
-  Button,
-  TextField,
+  Grid,
+  Chip,
+  Paper,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  IconButton,
-  Chip,
-  LinearProgress,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Checkbox,
-  FormControlLabel,
-  Paper,
   Divider,
+  Alert,
+  LinearProgress,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
+} from '@mui/material';
+import {
+  Button,
   Stepper,
   Step,
   StepLabel,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Tabs,
   Tab,
-  Slider,
-  RadioGroup,
-  Radio
+
 } from '@mui/material';
 import {
   Security as SecurityIcon,
@@ -48,13 +36,11 @@ import {
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
   Info as InfoIcon,
-  TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
   Timeline as TimelineIcon,
   Business as BusinessIcon,
   Storage as StorageIcon,
   Person as PersonIcon,
-  Web as WebIcon,
   ExpandMore as ExpandMoreIcon,
   PlayArrow as PlayArrowIcon,
   Refresh as RefreshIcon,
@@ -67,7 +53,7 @@ const RiskAssessmentPage = () => {
   const [assessing, setAssessing] = useState(false);
   const [assessmentResults, setAssessmentResults] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
-  const [riskConfig, setRiskConfig] = useState({
+  const [, setRiskConfig] = useState({
     businessType: '',
     industry: '',
     dataVolume: 'medium',
@@ -79,7 +65,7 @@ const RiskAssessmentPage = () => {
     geographicPresence: [],
     budget: 'medium'
   });
-  const [openConfig, setOpenConfig] = useState(false);
+  const [, setOpenConfig] = useState(false);
 
   const riskCategories = [
     {

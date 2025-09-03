@@ -3,6 +3,7 @@
  * This is a client-side authentication check that can be used in components
  */
 
+import React, { useState, useEffect } from 'react';
 import { getCurrentUser } from '../lib/supabase/auth';
 
 /**
@@ -66,10 +67,10 @@ export async function getUserOrRedirect(redirectTo = '/login') {
  */
 export function withAuth(WrappedComponent, redirectTo = '/login') {
   return function ProtectedComponent(props) {
-    const [isAuth, setIsAuth] = React.useState(null);
-    const [loading, setLoading] = React.useState(true);
+    const [isAuth, setIsAuth] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    React.useEffect(() => {
+    useEffect(() => {
       const checkAuth = async () => {
         const authenticated = await isAuthenticated();
         setIsAuth(authenticated);

@@ -8,14 +8,14 @@ import {
   TextField,
   Button,
   Grid,
-  Alert,
+
   Chip,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Paper,
-  Divider
+
 } from '@mui/material';
 import { Send as SendIcon, Lightbulb as LightbulbIcon } from '@mui/icons-material';
 import PageLayout from '../components/PageLayout';

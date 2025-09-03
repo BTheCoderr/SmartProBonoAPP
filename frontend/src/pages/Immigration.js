@@ -12,12 +12,12 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
+
   CardContent,
   CardActions
 } from '@mui/material';
-import { PageLayout, Section, Button, Card } from '../design-system';
-import FlightIcon from '@mui/icons-material/Flight';
+import { PageLayout, Button, Card } from '../design-system';
+
 import DescriptionIcon from '@mui/icons-material/Description';
 import GroupsIcon from '@mui/icons-material/Groups';
 import { School as SchoolIcon } from '@mui/icons-material';

@@ -13,8 +13,8 @@ import {
 import {
   PictureAsPdf as PictureAsPdfIcon,
   Article as ArticleIcon,
-  VideoLibrary as VideoLibraryIcon,
-  Description as DescriptionIcon,
+
+
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
