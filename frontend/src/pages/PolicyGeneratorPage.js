@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Typography,
@@ -9,14 +9,10 @@ import {
   CardHeader,
   Button,
   TextField,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
+
   Chip,
   LinearProgress,
-  Alert,
+
   Dialog,
   DialogTitle,
   DialogContent,
@@ -26,15 +22,13 @@ import {
   Select,
   MenuItem,
   Checkbox,
-  FormControlLabel,
+
   Paper,
   Divider,
   Stepper,
   Step,
   StepLabel,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
+
   Tabs,
   Tab
 } from '@mui/material';
@@ -44,16 +38,16 @@ import {
   Download as DownloadIcon,
   Preview as PreviewIcon,
   Edit as EditIcon,
-  Save as SaveIcon,
+
   Share as ShareIcon,
-  ExpandMore as ExpandMoreIcon,
+
   Business as BusinessIcon,
   Security as SecurityIcon,
   Person as PersonIcon,
   Storage as StorageIcon,
-  Timeline as TimelineIcon,
+
   CheckCircle as CheckCircleIcon,
-  Warning as WarningIcon
+
 } from '@mui/icons-material';
 import PageLayout from '../components/PageLayout';
 
@@ -73,7 +67,7 @@ const PolicyGeneratorPage = () => {
     complianceFrameworks: [],
     retentionPeriod: '',
     securityMeasures: [],
-    thirdPartyServices: []
+
   });
   const [openPreview, setOpenPreview] = useState(false);
 
@@ -158,18 +152,7 @@ const PolicyGeneratorPage = () => {
     'Regular Updates'
   ];
 
-  const thirdPartyServices = [
-    'Google Analytics',
-    'Facebook Pixel',
-    'Mailchimp',
-    'Stripe',
-    'PayPal',
-    'AWS',
-    'Microsoft Azure',
-    'Salesforce',
-    'HubSpot',
-    'Zendesk'
-  ];
+
 
   const generationSteps = [
     'Analyzing Requirements',

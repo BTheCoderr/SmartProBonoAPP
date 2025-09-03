@@ -41,7 +41,7 @@ const LoginSchema = Yup.object().shape({
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState('error');
   const [alertMessage, setAlertMessage] = useState('');
@@ -52,7 +52,7 @@ const LoginPage = () => {
       setError('');
       setShowAlert(false);
       
-      const { success, error, user } = await login(values.email, values.password);
+      const { success, error } = await login(values.email, values.password);
       
       if (success) {
         // Show connecting message

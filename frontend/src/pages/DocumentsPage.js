@@ -9,7 +9,7 @@ import {
   Divider,
   Alert,
   Button,
-  Paper
+
 } from '@mui/material';
 import { 
   Description as DocumentIcon,
@@ -22,7 +22,7 @@ import {
 import { motion } from 'framer-motion';
 import DocumentUpload from '../components/DocumentUpload';
 import DocumentChat from '../components/DocumentChat';
-import { PageLayout, Section, Card } from '../design-system';
+import { Card } from '../design-system';
 
 const DocumentsPage = () => {
   const [currentDocument, setCurrentDocument] = useState(null);

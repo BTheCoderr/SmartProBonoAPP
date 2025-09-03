@@ -13,7 +13,7 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  CardMedia
+
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -64,7 +64,7 @@ const sampleDocuments = [
 const DocumentScanPage = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectedDocument, setSelectedDocument] = useState(null);
-  const [analysisResult, setAnalysisResult] = useState(null);
+  const [, setAnalysisResult] = useState(null);
   
   const steps = ['Select Document', 'Analyze Document', 'Review Results'];
   

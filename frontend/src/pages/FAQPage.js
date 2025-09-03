@@ -17,7 +17,7 @@ import {
   Help as HelpIcon,
   QuestionAnswer as QuestionAnswerIcon
 } from '@mui/icons-material';
-import { PageLayout, Section, Button, Card } from '../design-system';
+import { PageLayout, Button, Card } from '../design-system';
 
 const FAQPage = () => {
   const [searchTerm, setSearchTerm] = useState('');

@@ -1,5 +1,3 @@
-import ApiService from './ApiService';
-import WebSocketService from './WebSocketService';
 import { trackGAEvent, ANALYTICS_EVENTS } from '../config/analytics';
 
 class AnalyticsService {
@@ -37,9 +35,7 @@ class AnalyticsService {
         }
       };
       
-      // Track in backend
-      await ApiService.post('/api/analytics/form-view', data);
-      WebSocketService.emit('form_view', data);
+
       
       // Track in GA4
       trackGAEvent(ANALYTICS_EVENTS.FORM_VIEW, {
@@ -66,9 +62,7 @@ class AnalyticsService {
         previousAttempts: this.getPreviousAttempts(formType)
       };
       
-      // Track in backend
-      await ApiService.post('/api/analytics/form-start', data);
-      WebSocketService.emit('form_start', data);
+
       
       // Track in GA4
       trackGAEvent(ANALYTICS_EVENTS.FORM_START, {
@@ -97,9 +91,7 @@ class AnalyticsService {
         ...completionData
       };
       
-      // Track in backend
-      await ApiService.post('/api/analytics/form-completion', data);
-      WebSocketService.emit('form_completion', data);
+
       
       // Track in GA4
       trackGAEvent(ANALYTICS_EVENTS.FORM_COMPLETION, {
@@ -129,8 +121,7 @@ class AnalyticsService {
         incompleteFields: this.getIncompleteFields(formType),
         formProgress: sessionData.formProgress
       };
-      await ApiService.post('/api/analytics/form-abandonment', data);
-      WebSocketService.emit('form_abandonment', data);
+
     } catch (error) {
       console.error('Error tracking form abandonment:', error);
     }
@@ -150,8 +141,7 @@ class AnalyticsService {
       
       this.updateSessionInteractions(formType, interaction);
       
-      await ApiService.post('/api/analytics/field-interaction', interaction);
-      WebSocketService.emit('field_interaction', interaction);
+
     } catch (error) {
       console.error('Error tracking field interaction:', error);
     }
@@ -170,8 +160,7 @@ class AnalyticsService {
       
       this.updateFieldTiming(formType, fieldName, duration);
       
-      await ApiService.post('/api/analytics/field-timing', timing);
-      WebSocketService.emit('field_timing', timing);
+
     } catch (error) {
       console.error('Error tracking field timing:', error);
     }
@@ -196,79 +185,24 @@ class AnalyticsService {
       
       this.updateSessionErrors(formType, error);
       
-      await ApiService.post('/api/analytics/form-error', error);
-      WebSocketService.emit('form_error', error);
+
     } catch (error) {
       console.error('Error tracking form error:', error);
     }
   }
 
   // Analytics Retrieval Methods
-  static async getFormAnalytics(formType, dateRange = '7d') {
-    try {
-      const response = await ApiService.get(`/api/analytics/forms/${formType}`, {
-        params: { dateRange }
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error getting form analytics:', error);
-      throw error;
-    }
-  }
 
-  static async getDashboardStats(filters = {}) {
-    try {
-      const response = await ApiService.get('/api/analytics/dashboard/stats', {
-        params: filters
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error getting dashboard stats:', error);
-      throw error;
-    }
-  }
 
-  static async getFieldCompletionRates(formType) {
-    try {
-      const response = await ApiService.get(`/api/analytics/forms/${formType}/completion-rates`);
-      return response.data;
-    } catch (error) {
-      console.error('Error getting field completion rates:', error);
-      throw error;
-    }
-  }
 
-  static async getFormHeatmap(formType) {
-    try {
-      const response = await ApiService.get(`/api/analytics/forms/${formType}/heatmap`);
-      return response.data;
-    } catch (error) {
-      console.error('Error getting form heatmap:', error);
-      throw error;
-    }
-  }
 
-  static async getAbandonmentAnalysis(formType) {
-    try {
-      const response = await ApiService.get(`/api/analytics/forms/${formType}/abandonment`);
-      return response.data;
-    } catch (error) {
-      console.error('Error getting abandonment analysis:', error);
-      throw error;
-    }
-  }
 
-  static async getFormSuccessRate(formType, dateRange = '30d') {
-    try {
-      const response = await ApiService.get(`/api/analytics/forms/${formType}/success-rate`, {
-        params: { dateRange }
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error getting form success rate:', error);
-      throw error;
-    }
-  }
+
+
+
+
+
+
 
   // Helper Methods
   static generateSessionId() {

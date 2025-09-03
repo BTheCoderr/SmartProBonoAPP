@@ -17,7 +17,7 @@ import {
   Alert,
   CircularProgress,
   Avatar,
-  Badge,
+
   Tabs,
   Tab,
   Table,
@@ -35,8 +35,7 @@ import EventIcon from '@mui/icons-material/Event';
 import FlightIcon from '@mui/icons-material/Flight';
 import PersonIcon from '@mui/icons-material/Person';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
-import config from '../config';
+
 import { immigrationApi } from '../services/api';
 
 // Mock data for cases - in a real app, this would come from an API
@@ -103,48 +102,7 @@ const mockCases = [
   }
 ];
 
-// Mock data for immigration forms - in a real app, this would come from an API
-const mockImmigrationForms = [
-  {
-    id: '1',
-    firstName: 'Maria',
-    lastName: 'Garcia',
-    email: 'maria.garcia@example.com',
-    phone: '555-123-4567',
-    dateOfBirth: '1985-06-15',
-    nationality: 'Mexican',
-    currentImmigrationStatus: 'Visa Holder',
-    desiredService: 'Green Card Application',
-    createdAt: '2024-04-10T15:30:00Z',
-    status: 'new'
-  },
-  {
-    id: '2',
-    firstName: 'Ahmed',
-    lastName: 'Hassan',
-    email: 'ahmed.hassan@example.com',
-    phone: '555-234-5678',
-    dateOfBirth: '1990-03-21',
-    nationality: 'Egyptian',
-    currentImmigrationStatus: 'Student Visa',
-    desiredService: 'Employment-Based Immigration',
-    createdAt: '2024-04-11T09:45:00Z',
-    status: 'in-progress'
-  },
-  {
-    id: '3',
-    firstName: 'Li',
-    lastName: 'Wei',
-    email: 'li.wei@example.com',
-    phone: '555-345-6789',
-    dateOfBirth: '1975-11-08',
-    nationality: 'Chinese',
-    currentImmigrationStatus: 'Asylum Seeker',
-    desiredService: 'Asylum/Refugee Status',
-    createdAt: '2024-04-12T14:20:00Z',
-    status: 'new'
-  }
-];
+
 
 // Upcoming meetings for calendar section
 const upcomingMeetings = mockCases

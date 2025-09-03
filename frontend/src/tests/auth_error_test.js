@@ -62,7 +62,7 @@ describe('Authentication Error Handling', () => {
     
     try {
       handleAuthError(error);
-      fail('Error should have been thrown');
+      throw new Error('Error should have been thrown');
     } catch (e) {
       expect(e.code).toBe(AUTH_ERROR_CODES.INVALID_CREDENTIALS);
       expect(e.message).toBe('Invalid email or password');
@@ -80,7 +80,7 @@ describe('Authentication Error Handling', () => {
     
     try {
       handleAuthError(error);
-      fail('Error should have been thrown');
+      throw new Error('Error should have been thrown');
     } catch (e) {
       expect(e.code).toBe(AUTH_ERROR_CODES.USER_EXISTS);
       expect(e.message).toBe('User already exists with this email');
@@ -98,7 +98,7 @@ describe('Authentication Error Handling', () => {
     
     try {
       handleAuthError(error);
-      fail('Error should have been thrown');
+      throw new Error('Error should have been thrown');
     } catch (e) {
       expect(e.code).toBe(AUTH_ERROR_CODES.VALIDATION_ERROR);
       expect(e.message).toBe('Validation error');
@@ -116,7 +116,7 @@ describe('Authentication Error Handling', () => {
     
     try {
       handleAuthError(error);
-      fail('Error should have been thrown');
+      throw new Error('Error should have been thrown');
     } catch (e) {
       expect(e.code).toBe(AUTH_ERROR_CODES.NETWORK_ERROR);
       expect(e.message).toBe('Server error');
@@ -131,7 +131,7 @@ describe('Authentication Error Handling', () => {
     
     try {
       handleAuthError(error);
-      fail('Error should have been thrown');
+      throw new Error('Error should have been thrown');
     } catch (e) {
       expect(e.code).toBe(AUTH_ERROR_CODES.UNKNOWN_ERROR);
       expect(e.message).toBe('An unexpected error occurred');

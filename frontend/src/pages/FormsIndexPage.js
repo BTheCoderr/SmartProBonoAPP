@@ -4,7 +4,7 @@ import {
   Button, Box, Paper, Divider, Chip
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { Description, AttachMoney, AccessTime, Gavel } from '@mui/icons-material';
+import { Description, AttachMoney, Gavel } from '@mui/icons-material';
 
 const legalForms = [
   {

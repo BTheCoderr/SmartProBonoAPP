@@ -127,6 +127,16 @@ const Footer = () => {
               >
                 SmartProBono
               </Typography>
+              <Chip 
+                label="Beta" 
+                size="small" 
+                sx={{ 
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+                  color: '#ffffff',
+                  fontWeight: 'bold',
+                  ml: 2
+                }} 
+              />
               <Typography
                 variant="body1"
                 sx={{

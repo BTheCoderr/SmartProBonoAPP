@@ -15,9 +15,9 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Chip,
+
   Paper,
-  Divider,
+
   InputAdornment
 } from '@mui/material';
 import {
@@ -25,14 +25,14 @@ import {
   Search as SearchIcon,
   Help as HelpIcon,
   QuestionAnswer as QuestionAnswerIcon,
-  VideoLibrary as VideoLibraryIcon,
+
   Description as DescriptionIcon,
   ContactSupport as ContactSupportIcon,
   BugReport as BugReportIcon,
   Lightbulb as LightbulbIcon,
   Security as SecurityIcon,
   Speed as SpeedIcon,
-  AccountCircle as AccountCircleIcon
+
 } from '@mui/icons-material';
 import PageLayout from '../components/PageLayout';
 

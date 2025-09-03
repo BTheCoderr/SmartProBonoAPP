@@ -77,6 +77,10 @@ const HeroSection = () => {
       icon: <CheckCircleIcon sx={{ fontSize: 24, color: theme.palette.warning.main }} />,
       text: 'ABA Compliant',
     },
+    {
+      icon: <SupportIcon sx={{ fontSize: 24, color: theme.palette.info.main }} />,
+      text: 'Expert Support',
+    },
   ];
 
   return (

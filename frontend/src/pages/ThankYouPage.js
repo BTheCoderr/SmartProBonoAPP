@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -31,14 +31,9 @@ const steps = ['Form Submitted', 'Document Upload', 'Review Process', 'Consultat
 export default function ThankYouPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const formData = location.state?.formData || {};
   const intakeId = location.state?.intakeId;
 
-  useEffect(() => {
-    if (!intakeId) {
-      navigate('/intake');
-    }
-  }, [intakeId, navigate]);
+
 
   const requiredDocuments = [
     'Government-issued ID',

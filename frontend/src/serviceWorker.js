@@ -40,7 +40,9 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  self.clients.claim();
+  if (typeof self.clients !== 'undefined') {
+    self.clients.claim();
+  }
 });
 
 // Fetch event - handle offline support
@@ -161,7 +163,7 @@ self.addEventListener('notificationclick', (event) => {
 
   if (event.action === 'open') {
     event.waitUntil(
-      clients.openWindow(event.notification.data)
+      typeof self.clients !== 'undefined' && self.clients.openWindow(event.notification.data)
     );
   }
 }); 
