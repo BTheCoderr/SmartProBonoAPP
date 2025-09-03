@@ -130,6 +130,23 @@ const ExpungementWizard = () => {
     loadSavedProgress();
   }, []);
 
+  const validateStep = (step) => {
+    switch (step) {
+      case 0:
+        return formData.state && formData.caseType;
+      case 1:
+        return true; // State rules are informational
+      case 2:
+        return Object.keys(formData.caseDetails).length > 0;
+      case 3:
+        return formData.documents.length > 0;
+      case 4:
+        return true; // Eligibility check is handled separately
+      default:
+        return true;
+    }
+  };
+
   const handleNext = async () => {
     try {
       // Validate current step
@@ -176,23 +193,6 @@ const ExpungementWizard = () => {
 
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
-  };
-
-  const validateStep = (step) => {
-    switch (step) {
-      case 0:
-        return formData.state && formData.caseType;
-      case 1:
-        return true; // State rules are informational
-      case 2:
-        return Object.keys(formData.caseDetails).length > 0;
-      case 3:
-        return formData.documents.length > 0;
-      case 4:
-        return true; // Eligibility check is handled separately
-      default:
-        return true;
-    }
   };
 
   const handleInputChange = (e) => {

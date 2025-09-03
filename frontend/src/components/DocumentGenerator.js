@@ -300,19 +300,6 @@ const DocumentGenerator = ({
     });
   };
 
-  const handleNext = () => {
-    const template = documentTemplates[documentType];
-    if (activeStep < template.steps.length - 1) {
-      setActiveStep(prev => prev + 1);
-    } else {
-      handleSubmitDocument();
-    }
-  };
-
-  const handleBack = () => {
-    setActiveStep(prev => Math.max(0, prev - 1));
-  };
-
   const handleSubmitDocument = async () => {
     setLoading(true);
     setError(null);
@@ -331,6 +318,19 @@ const DocumentGenerator = ({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleNext = () => {
+    const template = documentTemplates[documentType];
+    if (activeStep < template.steps.length - 1) {
+      setActiveStep(prev => prev + 1);
+    } else {
+      handleSubmitDocument();
+    }
+  };
+
+  const handleBack = () => {
+    setActiveStep(prev => Math.max(0, prev - 1));
   };
 
   const handleSaveDraft = async () => {

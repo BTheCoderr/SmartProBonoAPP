@@ -113,7 +113,7 @@ const ContractsPage = () => {
     } else {
       setMyContracts(contracts);
     }
-  }, [userContracts]);
+  }, []); // Remove userContracts dependency to avoid re-renders
 
   const handleUseTemplate = (template) => {
     setSelectedTemplate(template);

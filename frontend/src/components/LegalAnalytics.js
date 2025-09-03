@@ -31,12 +31,6 @@ const LegalAnalytics = ({ caseData, onRecommendation }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedFactor, setSelectedFactor] = useState(null);
 
-  useEffect(() => {
-    if (caseData) {
-      analyzeCaseData();
-    }
-  }, [caseData]);
-
   const analyzeCaseData = async () => {
     setLoading(true);
     try {
@@ -56,6 +50,12 @@ const LegalAnalytics = ({ caseData, onRecommendation }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (caseData) {
+      analyzeCaseData();
+    }
+  }, [caseData]);
 
   const getSuccessRateColor = (rate) => {
     if (rate >= 75) return 'success';

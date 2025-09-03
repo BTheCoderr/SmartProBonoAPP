@@ -49,10 +49,6 @@ const AnalyticsDashboard = () => {
     successRate: null
   });
 
-  useEffect(() => {
-    loadAnalytics();
-  }, [selectedForm, dateRange]);
-
   const loadAnalytics = async () => {
     setLoading(true);
     setError(null);
@@ -75,6 +71,10 @@ const AnalyticsDashboard = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadAnalytics();
+  }, [selectedForm, dateRange]);
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
