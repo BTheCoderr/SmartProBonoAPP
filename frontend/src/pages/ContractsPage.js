@@ -129,6 +129,14 @@ const ContractsPage = () => {
     alert('PDF download functionality will be implemented with the signature system');
   };
 
+  const handleCreateNewContract = () => {
+    setTabValue(1); // Switch to Templates tab
+  };
+
+  const handleBrowseTemplates = () => {
+    setTabValue(1); // Switch to Templates tab
+  };
+
   // Get templates from service
   const contractTemplates = ContractTemplateService.getAllTemplates().map(template => ({
     ...template,
@@ -277,6 +285,7 @@ const ContractsPage = () => {
                   variant="primary"
                   size="large"
                   startIcon={<AddIcon />}
+                  onClick={handleCreateNewContract}
                   sx={{
                     backgroundColor: 'white',
                     color: '#0D47A1', // Dark blue for better contrast
@@ -295,6 +304,7 @@ const ContractsPage = () => {
                   variant="secondary"
                   size="large"
                   startIcon={<DescriptionIcon />}
+                  onClick={handleBrowseTemplates}
                   sx={{
                     borderColor: 'rgba(255, 255, 255, 0.8)',
                     color: 'white',
