@@ -102,16 +102,15 @@ const ImmigrationResourcesPage = () => {
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate('/resources')}
-            variant="outlined"
+            variant="contained"
             sx={{
               mb: 3,
-              color: designTokens.colors.primary[600],
-              borderColor: designTokens.colors.primary[600],
+              backgroundColor: designTokens.colors.primary[600],
+              color: '#ffffff',
               fontWeight: 600,
               '&:hover': {
-                backgroundColor: designTokens.colors.primary[50],
-                borderColor: designTokens.colors.primary[700],
-                color: designTokens.colors.primary[700]
+                backgroundColor: designTokens.colors.primary[700],
+                color: '#ffffff'
               }
             }}
           >
