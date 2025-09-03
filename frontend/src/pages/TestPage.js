@@ -20,6 +20,7 @@ import {
 import MobileFileScanner from '../components/MobileFileScanner';
 import DocumentGenerator from '../components/DocumentGenerator';
 import { designTokens } from '../design-system';
+import { brandColors, colorIssues, auditColors } from '../utils/colorAudit';
 
 const TestPage = () => {
   const [testResults, setTestResults] = useState({
@@ -95,14 +96,19 @@ const TestPage = () => {
         {/* Color Palette Display */}
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Box sx={{ p: 2, bgcolor: designTokens.colors.primary[900], borderRadius: 2, mb: 1 }}>
+            <Box sx={{ p: 2, bgcolor: brandColors.primary, borderRadius: 2, mb: 1 }}>
               <Typography variant="body2" color="white">
-                Primary Navy: {designTokens.colors.primary[900]}
+                Primary Navy: {brandColors.primary}
               </Typography>
             </Box>
-            <Box sx={{ p: 2, bgcolor: designTokens.colors.secondary[600], borderRadius: 2 }}>
+            <Box sx={{ p: 2, bgcolor: brandColors.secondary, borderRadius: 2, mb: 1 }}>
               <Typography variant="body2" color="white">
-                Secondary Teal: {designTokens.colors.secondary[600]}
+                Secondary Teal: {brandColors.secondary}
+              </Typography>
+            </Box>
+            <Box sx={{ p: 2, bgcolor: brandColors.primaryLight, borderRadius: 2 }}>
+              <Typography variant="body2" color="white">
+                Primary Light: {brandColors.primaryLight}
               </Typography>
             </Box>
           </Grid>
@@ -111,14 +117,73 @@ const TestPage = () => {
               p: 2, 
               background: designTokens.gradients.primary, 
               borderRadius: 2,
-              color: 'white'
+              color: 'white',
+              mb: 1
             }}>
               <Typography variant="body2">
                 Brand Gradient: Navy to Teal
               </Typography>
             </Box>
+            <Box sx={{ 
+              p: 2, 
+              background: designTokens.gradients.secondary, 
+              borderRadius: 2,
+              color: 'white'
+            }}>
+              <Typography variant="body2">
+                Secondary Gradient: Teal to Navy
+              </Typography>
+            </Box>
           </Grid>
         </Grid>
+
+        {/* Color Issues Check */}
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="h6" gutterBottom sx={{ color: designTokens.colors.primary[900] }}>
+            🔍 Color Issues Detection
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle2" gutterBottom>❌ Old Colors to Avoid:</Typography>
+              {colorIssues.oldBlue.slice(0, 3).map((color, index) => (
+                <Box key={index} sx={{ 
+                  p: 1, 
+                  bgcolor: color, 
+                  borderRadius: 1, 
+                  mb: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}>
+                  <Typography variant="caption" color="white">
+                    {color} (Old Blue)
+                  </Typography>
+                </Box>
+              ))}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle2" gutterBottom>✅ Recommended Replacements:</Typography>
+              {colorIssues.oldBlue.slice(0, 3).map((color, index) => {
+                const recommendation = auditColors.getColorRecommendation(color);
+                return (
+                  <Box key={index} sx={{ 
+                    p: 1, 
+                    bgcolor: recommendation || brandColors.primary, 
+                    borderRadius: 1, 
+                    mb: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }}>
+                    <Typography variant="caption" color="white">
+                      {recommendation || brandColors.primary} (Brand Color)
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </Grid>
+          </Grid>
+        </Box>
       </Paper>
 
       {/* PDF Scanner Test */}
