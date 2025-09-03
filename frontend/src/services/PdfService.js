@@ -1,7 +1,12 @@
 /**
  * SmartProBono PDF Generation Service
  * Handles PDF generation using the combined pdfme + pdf-lib approach
+ * Now with Supabase storage integration
  */
+
+import { generatePdfBuffer } from '../lib/pdf/generateWithPdfme';
+import { addHeaderFooter, drawSimpleTable, mergePdfs } from '../lib/pdf/enhanceWithPdfLib';
+import { uploadPdfAndGetSignedUrl, buildPdfPath, recordPdfDoc, getSignedUrl, listPdfsForCase } from '../lib/pdf/storage';
 
 class PdfService {
   constructor() {
@@ -106,6 +111,118 @@ class PdfService {
     };
 
     return await this.generatePdf(data);
+  }
+
+  /**
+   * Generate PDF and save to Supabase Storage
+   * @param {Object} data - PDF data
+   * @param {string} createdBy - User ID who created the PDF
+   * @returns {Promise<Object>} - Result with signed URL and storage path
+   */
+  async generateAndSaveToStorage(data, createdBy = null) {
+    try {
+      const caseNumber = data.caseNumber || `SPB-${Date.now()}`;
+      
+      // 1) Generate base PDF
+      const basePdf = await generatePdfBuffer({
+        clientName: data.clientName || 'John Doe',
+        caseNumber,
+        dateIssued: data.dateIssued || new Date().toLocaleDateString(),
+        bodyText: data.bodyText || 'This is a SmartProBono document.',
+      });
+
+      // 2) Add header/footer
+      let current = await addHeaderFooter(basePdf, {
+        header: 'SmartProBono • Access to Justice',
+        footer: 'Confidential — For client use only',
+      });
+
+      // 3) Add table if provided
+      if (data.tableRows && data.tableRows.length > 0) {
+        current = await drawSimpleTable(
+          current,
+          data.tableRows,
+          { x: 36, y: 520 },
+          [250, 100, 150],
+          24
+        );
+      }
+
+      // 4) Merge attachments if provided
+      if (data.attachments && data.attachments.length > 0) {
+        const buffers = [current, ...data.attachments.map(b64 => Buffer.from(b64, 'base64'))];
+        current = await mergePdfs(buffers);
+      }
+
+      // 5) Save to Supabase Storage
+      const path = buildPdfPath({ caseNumber, filenameBase: data.filenameBase || 'smartprobono' });
+      const { signedUrl } = await uploadPdfAndGetSignedUrl(current, path, 60 * 60);
+
+      // 6) Record in database
+      await recordPdfDoc({ caseNumber, storagePath: path, createdBy });
+
+      return {
+        success: true,
+        caseNumber,
+        storagePath: path,
+        signedUrl,
+        pdfBytes: current
+      };
+    } catch (error) {
+      console.error('Generate and save error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get signed URL for existing PDF
+   * @param {string} storagePath - Path to PDF in storage
+   * @param {number} expiresIn - Expiration time in seconds
+   * @returns {Promise<string>} - Signed URL
+   */
+  async getSignedUrl(storagePath, expiresIn = 3600) {
+    try {
+      const { signedUrl } = await getSignedUrl(storagePath, expiresIn);
+      return signedUrl;
+    } catch (error) {
+      console.error('Get signed URL error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * List PDFs for a case
+   * @param {string} caseNumber - Case number
+   * @returns {Promise<Array>} - List of PDF documents
+   */
+  async listPdfsForCase(caseNumber) {
+    try {
+      const { items } = await listPdfsForCase(caseNumber);
+      return items;
+    } catch (error) {
+      console.error('List PDFs error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate and download PDF with Supabase storage
+   * @param {Object} data - PDF data
+   * @param {string} filename - Download filename
+   * @param {string} createdBy - User ID
+   */
+  async generateSaveAndDownload(data, filename, createdBy = null) {
+    try {
+      const result = await this.generateAndSaveToStorage(data, createdBy);
+      
+      // Download the PDF
+      this.downloadPdf(new Blob([result.pdfBytes], { type: 'application/pdf' }), filename);
+      
+      return result;
+    } catch (error) {
+      console.error('Generate save and download error:', error);
+      throw error;
+    }
   }
 }
 
