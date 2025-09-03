@@ -117,11 +117,15 @@ const ImmigrationRightsPage = () => {
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={handleBackClick}
+            variant="contained"
             sx={{
               mb: 3,
-              color: designTokens.colors.primary[600],
+              backgroundColor: designTokens.colors.primary[600],
+              color: '#ffffff',
+              fontWeight: 600,
               '&:hover': {
-                backgroundColor: designTokens.colors.primary[50]
+                backgroundColor: designTokens.colors.primary[700],
+                color: '#ffffff'
               }
             }}
           >

@@ -316,8 +316,10 @@ const ExpertHelpPage = () => {
                   onClick={() => navigate('/legal-chat')}
                   sx={{ 
                     background: 'linear-gradient(45deg, #667eea, #764ba2)',
+                    color: '#ffffff',
                     '&:hover': {
                       background: 'linear-gradient(45deg, #5a6fd8, #6a4190)',
+                      color: '#ffffff'
                     }
                   }}
                 >
