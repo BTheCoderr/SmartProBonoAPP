@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 // If types get in the way, keep the ts-ignore — @pdfme/ui ships JS
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -9,7 +9,25 @@ import { template as baseTemplate, fonts } from "../../../lib/pdf/pdfmeSchemas.j
 const PdfTemplateEditor = () => {
   const ref = useRef(null);
 
-
+  // Initialize the Designer with baseTemplate and fonts
+  useEffect(() => {
+    if (ref.current) {
+      const designer = new Designer({
+        domContainer: ref.current,
+        template: baseTemplate,
+        options: {
+          font: fonts
+        }
+      });
+      
+      // Store designer instance for cleanup
+      return () => {
+        if (designer) {
+          designer.destroy();
+        }
+      };
+    }
+  }, []);
 
   return (
     <Box sx={{ p: 3 }}>

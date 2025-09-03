@@ -61,7 +61,7 @@ const FeedbackAnalytics = () => {
   if (error) {
     return (
       <Alert severity="error" sx={{ m: 2 }}>
-        {error}
+        {t('feedbackAnalytics.error', error)}
       </Alert>
     );
   }

@@ -117,6 +117,13 @@ const MobileFileScanner = ({ onScanComplete, documentType = 'general' }) => {
         </Typography>
       </Box>
       
+      {/* Error display */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+      
       {/* Hidden file inputs */}
       <input
         type="file"
@@ -189,6 +196,11 @@ const MobileFileScanner = ({ onScanComplete, documentType = 'general' }) => {
               <Typography variant="subtitle1" fontWeight="bold">
                 Detected Information:
               </Typography>
+              {currentUser && (
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  Scanned by: {currentUser.name || currentUser.email}
+                </Typography>
+              )}
               <Box component="pre" sx={{ 
                 p: 2, 
                 bgcolor: 'grey.100', 

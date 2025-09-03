@@ -2,20 +2,6 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-const LogoText = styled(Typography)(({ theme, variant, size }) => ({
-  background: variant === 'light' 
-    ? 'linear-gradient(45deg, #1565C0 30%, #42A5F5 90%)'
-    : 'linear-gradient(45deg, #FFFFFF 30%, #E3F2FD 90%)',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
-  fontWeight: 700,
-  display: 'inline',
-  marginLeft: theme.spacing(1),
-  fontSize: size === 'small' ? '1.25rem' : size === 'large' ? '2.5rem' : '1.5rem',
-  letterSpacing: '0.5px',
-  textShadow: variant === 'light' ? '0px 0px 8px rgba(33, 150, 243, 0.3)' : 'none'
-}));
-
 const LogoContainer = styled(Box)(({ theme, variant }) => ({
   display: 'flex', 
   alignItems: 'center',
@@ -64,6 +50,18 @@ const Logo = ({ variant = 'light', size = 'medium', type = 'mark' }) => {
             objectFit: 'contain'
           }}
         />
+        {type === 'text' && (
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              ml: 1, 
+              fontWeight: 'bold',
+              color: variant === 'light' ? 'white' : 'primary.main'
+            }}
+          >
+            SmartProBono
+          </Typography>
+        )}
       </Box>
     </LogoContainer>
   );

@@ -103,6 +103,9 @@ const FAQPage = () => {
           <Typography variant="h5" color="text.secondary" sx={{ mb: 4 }}>
             Find answers to common questions about our services
           </Typography>
+          <Button variant="contained" color="primary" size="large">
+            Get Started
+          </Button>
           
           <TextField
             fullWidth

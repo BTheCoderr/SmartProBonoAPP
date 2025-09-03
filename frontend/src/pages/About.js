@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography, Box, Grid, Card, CardContent, Avatar, Chip } from '@mui/material';
+import { Container, Typography, Box, Grid, CardContent, Avatar, Chip } from '@mui/material';
 import { 
   Gavel as GavelIcon, 
   People as PeopleIcon, 

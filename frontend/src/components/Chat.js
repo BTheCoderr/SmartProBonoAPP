@@ -15,7 +15,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [currentModel, setCurrentModel] = useState('');
+  const [, setCurrentModel] = useState('');
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {

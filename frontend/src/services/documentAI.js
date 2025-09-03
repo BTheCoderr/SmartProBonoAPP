@@ -17,6 +17,9 @@ class DocumentAIService {
     if (typeof window !== 'undefined' && window.supabase) {
       this.supabase = window.supabase;
     }
+    // Log the environment variables for debugging
+    console.log('SUPABASE_URL:', SUPABASE_URL);
+    console.log('SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? 'Set' : 'Not set');
   }
 
   // Upload a document to local worker
@@ -167,8 +170,8 @@ class DocumentAIService {
   // Generate UUID for document IDs
   generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : ((r & 0x3) | 0x8);
       return v.toString(16);
     });
   }

@@ -16,18 +16,20 @@ const ScanDocument = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
+  const fetchCategories = async () => {
+    try {
+      const response = await documentsApi.getDocumentCategories();
+      if (response && response.categories) {
+        setDocumentCategories(response.categories);
+      }
+    } catch (error) {
+      console.error('Error fetching document categories:', error);
+    }
+  };
+
   useEffect(() => {
     // Fetch available document categories if needed
-    const fetchCategories = async () => {
-      try {
-        const response = await documentsApi.getDocumentCategories();
-        if (response && response.categories) {
-          setDocumentCategories(response.categories);
-        }
-      } catch (error) {
-        console.error('Error fetching document categories:', error);
-      }
-    };
+    fetchCategories();
 
     // Uncomment when API endpoint is ready
     // fetchCategories();
@@ -77,6 +79,9 @@ const ScanDocument = () => {
       <Typography variant="h4" component="h1" sx={{ mb: 4, fontWeight: 'bold' }}>
         Scan & Process Documents
       </Typography>
+      <Button variant="outlined" onClick={fetchCategories} sx={{ mb: 2 }}>
+        Refresh Categories
+      </Button>
       
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs 

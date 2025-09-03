@@ -164,6 +164,23 @@ const SignatureCapture = ({ caseNumber, onUploaded, onClear, defaultRole = 'clie
           </Button>
         </Stack>
 
+        {/* Additional IconButton for quick actions */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <IconButton
+            color="primary"
+            onClick={() => {
+              // Quick save action
+              if (sigRef.current && !sigRef.current.isEmpty()) {
+                handleSave();
+              }
+            }}
+            disabled={!sigRef.current || sigRef.current.isEmpty() || busy}
+            title="Quick Save"
+          >
+            <CheckCircleIcon />
+          </IconButton>
+        </Box>
+
         {/* Status Messages */}
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>

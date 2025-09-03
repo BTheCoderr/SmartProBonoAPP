@@ -338,6 +338,14 @@ const ProfilePage = () => {
           alignItems: 'center',
         }}
       >
+        <Card sx={{ p: 3, mb: 3, width: '100%' }}>
+          <Typography variant="h6" gutterBottom>
+            Profile Actions
+          </Typography>
+          <Button variant="outlined" color="error" onClick={logout}>
+            Logout
+          </Button>
+        </Card>
         <Paper
           elevation={3}
           sx={{

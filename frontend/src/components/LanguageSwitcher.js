@@ -13,7 +13,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import TranslateIcon from '@mui/icons-material/Translate';
 import CheckIcon from '@mui/icons-material/Check';
-import FlagIcon from '@mui/icons-material/Flag';
+
 import LanguageIcon from '@mui/icons-material/Language';
 
 const languages = [

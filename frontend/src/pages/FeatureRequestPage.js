@@ -13,9 +13,10 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem,
+    MenuItem,
   Paper,
-
+  Alert,
+  Divider
 } from '@mui/material';
 import { Send as SendIcon, Lightbulb as LightbulbIcon } from '@mui/icons-material';
 import PageLayout from '../components/PageLayout';
@@ -122,6 +123,12 @@ const FeatureRequestPage = () => {
                 <Typography variant="body2" color="text.secondary" paragraph>
                   Have an idea for improving SmartProBono? We'd love to hear it! Your suggestions help us build better tools for the legal community.
                 </Typography>
+                
+                <Alert severity="info" sx={{ mb: 2 }}>
+                  Your feature request will be reviewed by our development team.
+                </Alert>
+                
+                <Divider sx={{ my: 2 }} />
                 
                 <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                   <Grid container spacing={3}>

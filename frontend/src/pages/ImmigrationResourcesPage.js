@@ -13,8 +13,8 @@ import {
 import {
   PictureAsPdf as PictureAsPdfIcon,
   Article as ArticleIcon,
-
-
+  VideoLibrary,
+  Description,
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -117,13 +117,16 @@ const ImmigrationResourcesPage = () => {
             Back to Resources
           </Button>
           
-          <Typography variant="h4" sx={{ 
-            fontWeight: designTokens.typography.fontWeight.bold,
-            color: designTokens.colors.neutral[900],
-            mb: 2
-          }}>
-            Immigration Resources
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <VideoLibrary sx={{ fontSize: 32, color: 'primary.main' }} />
+            <Typography variant="h4" sx={{ 
+              fontWeight: designTokens.typography.fontWeight.bold,
+              color: designTokens.colors.neutral[900]
+            }}>
+              Immigration Resources
+            </Typography>
+            <Description sx={{ fontSize: 32, color: 'secondary.main' }} />
+          </Box>
           
           <Typography variant="body1" sx={{ 
             color: designTokens.colors.neutral[600],

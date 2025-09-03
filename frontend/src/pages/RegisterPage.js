@@ -94,6 +94,14 @@ const RegisterPage = () => {
           alignItems: 'center',
         }}
       >
+        <Card sx={{ p: 3, mb: 3, width: '100%' }}>
+          <Typography variant="h6" gutterBottom>
+            Welcome to SmartProBono
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Create your account to get started
+          </Typography>
+        </Card>
         <Paper
           elevation={3}
           sx={{

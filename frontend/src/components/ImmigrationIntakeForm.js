@@ -514,10 +514,16 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
         return;
       }
 
-      const response = await ApiService.post('/api/intake/immigration', values);
+      const response = await ApiService.post('/api/intake/immigration', values, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
       
       if (response.success) {
         setSubmitted(true);
+        // Update session ID to track successful submission
+        setSessionId(`immigration-form-submitted-${Date.now()}`);
         // Clear saved form data on successful submission
         saveFormProgress('immigrationIntakeForm', null);
         enqueueSnackbar('Form submitted successfully!', { variant: 'success' });
@@ -593,6 +599,16 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
                     onBlur={handleBlur}
                     error={touched.phone && Boolean(errors.phone)}
                     helperText={touched.phone && errors.phone}
+                  />
+                  <TextField
+                    fullWidth
+                    name="dateOfBirth"
+                    label="Date of Birth"
+                    type="date"
+                    InputLabelProps={{ shrink: true }}
+                    value={formData.dateOfBirth || ''}
+                    onChange={handleDateChange}
+                    sx={{ mb: 2 }}
                   />
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -848,6 +864,18 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
       <Typography variant="body2" color="text.secondary" paragraph>
         Please complete this form to help us understand your immigration needs. All information is confidential.
       </Typography>
+      
+      {/* Form completion progress */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          Form Completion: {Math.round(formProgress)}%
+        </Typography>
+        <LinearProgress 
+          variant="determinate" 
+          value={formProgress} 
+          sx={{ height: 8, borderRadius: 4 }}
+        />
+      </Box>
       
       {/* Use the ProgressTracker component instead of inline progress indicator */}
       <ProgressTracker 

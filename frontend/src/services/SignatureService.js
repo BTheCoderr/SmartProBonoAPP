@@ -92,6 +92,9 @@ class SignatureService {
     try {
       const path = `cases/${caseNumber}/signature_${role}.png`;
       
+      // Log the path for debugging
+      console.log('Checking signature path:', path);
+      
       const { data, error } = await supabaseAdmin.storage
         .from(this.bucket)
         .list(`cases/${caseNumber}`, {

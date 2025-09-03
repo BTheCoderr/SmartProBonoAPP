@@ -40,8 +40,8 @@ const LoginSchema = Yup.object().shape({
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
-  const [, setError] = useState('');
+  const { login, user } = useAuth();
+  const [error, setError] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState('error');
   const [alertMessage, setAlertMessage] = useState('');
@@ -52,7 +52,7 @@ const LoginPage = () => {
       setError('');
       setShowAlert(false);
       
-      const { success, error } = await login(values.email, values.password);
+      const { success, error: loginError } = await login(values.email, values.password);
       
       if (success) {
         // Show connecting message
@@ -111,7 +111,8 @@ const LoginPage = () => {
         setTimeout(checkSocketConnection, 500);
       } else {
         setAlertType('error');
-        setAlertMessage(error || 'Invalid email or password');
+        setError(loginError || 'Invalid email or password');
+        setAlertMessage(loginError || 'Invalid email or password');
         setShowAlert(true);
       }
     } catch (error) {
@@ -217,6 +218,11 @@ const LoginPage = () => {
                     >
                       Sign in to your SmartProBono account
                     </Typography>
+                    {error && (
+                      <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                        {error}
+                      </Typography>
+                    )}
                   </Box>
                 </motion.div>
 
@@ -298,6 +304,13 @@ const LoginPage = () => {
                       </Form>
                     )}
                   </Formik>
+                  
+                  {/* User Display */}
+                  <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Current User: {user?.email || 'Not logged in'}
+                    </Typography>
+                  </Box>
                 </motion.div>
 
                 {/* Divider */}

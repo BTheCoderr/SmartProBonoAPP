@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Grid,
@@ -49,7 +49,7 @@ const AnalyticsDashboard = () => {
     successRate: null
   });
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -70,11 +70,11 @@ const AnalyticsDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedForm, dateRange]);
 
   useEffect(() => {
     loadAnalytics();
-  }, [selectedForm, dateRange]);
+  }, [selectedForm, dateRange, loadAnalytics]);
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -341,6 +341,10 @@ const AnalyticsDashboard = () => {
           <Typography variant="h4" gutterBottom>
             Analytics Dashboard
           </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Last updated: {format(new Date(), 'PPP p')}
+          </Typography>
+          <Divider sx={{ mb: 3 }} />
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={12} md={4}>
               <FormControl fullWidth>

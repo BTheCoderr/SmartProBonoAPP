@@ -20,6 +20,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 const TestimonialsSection = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
 
   const testimonials = [
@@ -133,7 +134,7 @@ const TestimonialsSection = () => {
         >
           <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
             <Chip
-              label="💬 Testimonials"
+              label={isMobile ? "💬 Reviews" : "💬 Testimonials"}
               color="secondary"
               sx={{
                 mb: 2,

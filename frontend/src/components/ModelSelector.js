@@ -10,7 +10,7 @@ import {
   Tooltip,
   Chip
 } from '@mui/material';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+
 import MemoryIcon from '@mui/icons-material/Memory';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import { School as SchoolIcon } from '@mui/icons-material';

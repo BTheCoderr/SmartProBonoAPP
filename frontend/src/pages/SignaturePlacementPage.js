@@ -105,6 +105,19 @@ const SignaturePlacementPage = () => {
             Design signature placement layouts for your contract templates. 
             Drag and resize signature boxes to position them exactly where you want.
           </Typography>
+          
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Template Type</InputLabel>
+            <Select
+              value={templateName}
+              label="Template Type"
+              onChange={(e) => setTemplateName(e.target.value)}
+            >
+              <MenuItem value="default-intake-v1">Default Intake Form</MenuItem>
+              <MenuItem value="immigration-form-v1">Immigration Form</MenuItem>
+              <MenuItem value="legal-contract-v1">Legal Contract</MenuItem>
+            </Select>
+          </FormControl>
 
           {/* Configuration */}
           <Card sx={{ mb: 4 }}>

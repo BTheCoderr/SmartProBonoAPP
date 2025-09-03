@@ -66,6 +66,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState(mockUsers);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const [tabValue, setTabValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterAnchorEl, setFilterAnchorEl] = useState(null);
@@ -204,6 +205,29 @@ const AdminDashboard = () => {
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  // Fetch admin data using axios
+  const fetchAdminData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/admin/dashboard');
+      // Handle response data here
+      console.log('Admin data:', response.data);
+    } catch (err) {
+      setError('Failed to fetch admin data');
+      console.error('Error fetching admin data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle case selection
+  const handleCaseSelect = (caseId) => {
+    const caseData = [...casesData.new, ...casesData.active, ...casesData.completed]
+      .find(c => c.id === caseId);
+    setSelectedCase(caseData);
+    setSelectedCaseId(caseId);
   };
 
   const handleTabChange = (event, newValue) => {
@@ -416,7 +440,7 @@ const AdminDashboard = () => {
         </TableHead>
         <TableBody>
           {cases.map((caseItem) => (
-            <TableRow key={caseItem.id}>
+            <TableRow key={caseItem.id} onClick={() => handleCaseSelect(caseItem.id)} sx={{ cursor: 'pointer' }}>
               <TableCell>{caseItem.id}</TableCell>
               <TableCell>{caseItem.clientName}</TableCell>
               <TableCell>{caseItem.caseType}</TableCell>
@@ -488,16 +512,30 @@ const AdminDashboard = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 3 }}>
+    <PageLayout>
+      <Section>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Paper elevation={3} sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h5" component="h1" gutterBottom>
-            Admin Dashboard
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <SecurityIcon sx={{ mr: 1 }} />
+            <Typography variant="h5" component="h1" gutterBottom>
+              Admin Dashboard
+            </Typography>
+            {loading && <CircularProgress size={24} />}
+          </Box>
+          
+          {/* Error Display */}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
               variant="contained"
               startIcon={<PersonAddIcon />}
+              onClick={fetchAdminData}
             >
               Add Attorney
             </Button>
@@ -550,6 +588,80 @@ const AdminDashboard = () => {
             </Card>
           </Grid>
         </Grid>
+
+        {/* Stats Cards */}
+        <Grid container spacing={3} sx={{ mb: 3 }}>
+          {statsCardsData.map((stat, index) => (
+            <Grid item xs={12} md={3} key={index}>
+              <Card>
+                <Box sx={{ p: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    {stat.icon}
+                    <Box sx={{ ml: 2 }}>
+                      <Typography variant="h5">{stat.value}</Typography>
+                      <Typography variant="body2" color="text.secondary">{stat.title}</Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Users Section */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Recent Users ({users.length})
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Username</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Role</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Created</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {users.slice(0, 5).map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Chip 
+                        label={user.role} 
+                        color={user.role === 'admin' ? 'error' : 'primary'} 
+                        size="small" 
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Chip 
+                        label={user.active ? 'Active' : 'Inactive'} 
+                        color={user.active ? 'success' : 'default'} 
+                        size="small" 
+                      />
+                    </TableCell>
+                    <TableCell>{formatDate(user.created_at)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+
+        {/* Selected Case Display */}
+        {selectedCase && (
+          <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+            <Typography variant="h6" gutterBottom>
+              Selected Case: {selectedCase.id}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Client: {selectedCase.clientName} | Type: {selectedCase.caseType} | Status: {selectedCase.status}
+            </Typography>
+          </Box>
+        )}
 
         <Box sx={{ mb: 3 }}>
           <Tabs value={tabValue} onChange={handleTabChange}>
@@ -716,7 +828,9 @@ const AdminDashboard = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+        </Container>
+      </Section>
+    </PageLayout>
   );
 };
 

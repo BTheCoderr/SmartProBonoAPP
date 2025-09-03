@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { 
   Grid, Card, CardContent, Typography, Button, 
-  Dialog, TextField, Tab, Tabs, Box, IconButton,
-  InputAdornment, CircularProgress, Alert
+  TextField, Tab, Tabs, Box,
+  InputAdornment
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+
 import ContractForm from './ContractForm';
-import axios from 'axios';
 import config from '../config';
 
 const ContractTemplates = () => {
@@ -18,7 +17,7 @@ const ContractTemplates = () => {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
 
   const categories = [
     "All",
@@ -148,12 +147,7 @@ const ContractTemplates = () => {
     }
   };
 
-  const handleFormChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+
 
   return (
     <Box>

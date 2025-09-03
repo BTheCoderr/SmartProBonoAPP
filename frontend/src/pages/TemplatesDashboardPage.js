@@ -296,6 +296,21 @@ const TemplatesDashboardPage = () => {
           <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center', mb: 4 }}>
             Manage PDF templates, signature placements, and test generation in one place.
           </Typography>
+          
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Template Category</InputLabel>
+            <Select
+              value={selected}
+              label="Template Category"
+              onChange={(e) => setSelected(e.target.value)}
+            >
+              <MenuItem value="legal">Legal Documents</MenuItem>
+              <MenuItem value="immigration">Immigration Forms</MenuItem>
+              <MenuItem value="business">Business Forms</MenuItem>
+            </Select>
+          </FormControl>
+          
+          <Divider sx={{ my: 2 }} />
 
           {/* Status Messages */}
           {error && (
@@ -373,6 +388,14 @@ const TemplatesDashboardPage = () => {
                               </Stack>
                             }
                           />
+                          <ListItemSecondaryAction>
+                            <IconButton edge="end" aria-label="edit">
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton edge="end" aria-label="delete">
+                              <DeleteIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
                         </ListItem>
                       ))}
                     </List>

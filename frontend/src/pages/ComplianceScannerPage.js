@@ -70,6 +70,12 @@ const ComplianceScannerPage = () => {
   });
   const [openConfig, setOpenConfig] = useState(false);
 
+  // Use useEffect for initialization
+  useEffect(() => {
+    // Initialize compliance scanner
+    console.log('Compliance scanner initialized');
+  }, []);
+
   const complianceFrameworks = [
     { id: 'gdpr', name: 'GDPR', description: 'General Data Protection Regulation' },
     { id: 'ccpa', name: 'CCPA', description: 'California Consumer Privacy Act' },
@@ -434,14 +440,15 @@ const ComplianceScannerPage = () => {
               <Card>
                 <CardHeader title="Start Compliance Scan" />
                 <CardContent>
-                  <Typography variant="body1" paragraph>
+                  <Alert severity="info" sx={{ mb: 2 }}>
                     Our compliance scanner will analyze your website and systems to identify potential compliance issues with major regulations.
-                  </Typography>
+                  </Alert>
                   
-                  <Box sx={{ mb: 3 }}>
+                  <Paper elevation={1} sx={{ p: 2, mb: 3 }}>
                     <Typography variant="h6" gutterBottom>
                       What We Scan:
                     </Typography>
+                    <Divider sx={{ mb: 2 }} />
                     <List>
                       <ListItem>
                         <ListItemIcon><WebIcon /></ListItemIcon>
@@ -450,6 +457,11 @@ const ComplianceScannerPage = () => {
                       <ListItem>
                         <ListItemIcon><StorageIcon /></ListItemIcon>
                         <ListItemText primary="Data collection practices" />
+                        <ListItemSecondaryAction>
+                          <IconButton edge="end" aria-label="info">
+                            <InfoIcon />
+                          </IconButton>
+                        </ListItemSecondaryAction>
                       </ListItem>
                       <ListItem>
                         <ListItemIcon><SecurityIcon /></ListItemIcon>
@@ -460,7 +472,18 @@ const ComplianceScannerPage = () => {
                         <ListItemText primary="Privacy policy compliance" />
                       </ListItem>
                     </List>
-                  </Box>
+                  </Paper>
+                  
+                  <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography variant="h6">Advanced Configuration</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography variant="body2">
+                        Configure advanced scanning options and compliance frameworks.
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
 
                   <Box sx={{ display: 'flex', gap: 2 }}>
                     <Button
@@ -490,6 +513,13 @@ const ComplianceScannerPage = () => {
                   <List dense>
                     {complianceFrameworks.map((framework) => (
                       <ListItem key={framework.id}>
+                        <ListItemIcon>
+                          {framework.id === 'gdpr' && <BusinessIcon />}
+                          {framework.id === 'ccpa' && <AssessmentIcon />}
+                          {framework.id === 'hipaa' && <TimelineIcon />}
+                          {framework.id === 'sox' && <SettingsIcon />}
+                          {framework.id === 'pci' && <SecurityIcon />}
+                        </ListItemIcon>
                         <ListItemText
                           primary={framework.name}
                           secondary={framework.description}

@@ -122,6 +122,9 @@ class AnalyticsService {
         formProgress: sessionData.formProgress
       };
 
+      // Log the data for debugging
+      console.log('Form abandonment data:', data);
+
     } catch (error) {
       console.error('Error tracking form abandonment:', error);
     }
@@ -157,6 +160,9 @@ class AnalyticsService {
         interactionCount: this.getFieldInteractionCount(formType, fieldName),
         validationAttempts: this.getFieldValidationAttempts(formType, fieldName)
       };
+      
+      // Log the timing for debugging
+      console.log('Field timing data:', timing);
       
       this.updateFieldTiming(formType, fieldName, duration);
       
@@ -288,6 +294,8 @@ class AnalyticsService {
 
   static getIncompleteFields(formType) {
     const sessionData = this.getSessionData(formType);
+    // Log the session data for debugging
+    console.log('Session data for incomplete fields:', sessionData);
     const formState = this.getFormState(formType);
     
     return Object.entries(formState)

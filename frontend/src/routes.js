@@ -146,6 +146,7 @@ const routes = [
   // Fix footer links - connect to ACTUAL existing pages
   { path: '/status', element: <StatusPage /> }, // Footer expects /status
   { path: '/help', element: <HelpPage /> }, // Footer expects /help
+  { path: '/help-center', element: <HelpCenterPage /> }, // Help center page
   { path: '/chat', element: <LiveChatPage /> }, // Footer expects /chat
   { path: '/bug-report', element: <BugReportPage /> }, // Footer expects /bug-report
   { path: '/feature-request', element: <FeatureRequestPage /> }, // Footer expects /feature-request

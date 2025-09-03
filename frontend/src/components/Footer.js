@@ -104,8 +104,8 @@ const Footer = () => {
           bottom: 0,
           opacity: 0.05,
           background: `
-            radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255,255,255,0.3) 0%, transparent 50%)
+            radial-gradient(circle at 20% 80%, ${theme.palette.primary.light}20 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, ${theme.palette.secondary.light}20 0%, transparent 50%)
           `,
         }}
       />

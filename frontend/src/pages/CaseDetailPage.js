@@ -104,7 +104,13 @@ const CaseDetailPage = () => {
   return (
     <PageLayout>
       <Section>
-        <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
+        <Box sx={{ 
+          maxWidth: 800, 
+          mx: 'auto', 
+          p: 3,
+          backgroundColor: designTokens.colors.background,
+          borderRadius: designTokens.borderRadius.medium
+        }}>
           <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 4 }}>
             <Button
               startIcon={<BackIcon />}
@@ -148,6 +154,14 @@ const CaseDetailPage = () => {
               </Typography>
               
               <Stack spacing={3}>
+                <TextField
+                  fullWidth
+                  label="Case Notes"
+                  multiline
+                  rows={3}
+                  placeholder="Add any additional notes about this case..."
+                  sx={{ mb: 2 }}
+                />
                 <FormControl fullWidth>
                   <InputLabel>Select Template</InputLabel>
                   <Select
@@ -199,8 +213,9 @@ const CaseDetailPage = () => {
 
           {/* Results */}
           {result && (
-            <Card sx={{ mt: 3 }}>
-              <CardContent>
+            <Paper elevation={2} sx={{ mt: 3 }}>
+              <Card sx={{ mt: 3 }}>
+                <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Generation Results
                 </Typography>
@@ -281,6 +296,8 @@ const CaseDetailPage = () => {
               </Grid>
             </CardContent>
           </Card>
+            </Paper>
+          )}
         </Box>
       </Section>
     </PageLayout>

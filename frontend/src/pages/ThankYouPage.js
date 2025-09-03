@@ -32,8 +32,7 @@ export default function ThankYouPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const intakeId = location.state?.intakeId;
-
-
+  const formData = location.state?.formData || {};
 
   const requiredDocuments = [
     'Government-issued ID',
@@ -82,6 +81,9 @@ export default function ThankYouPage() {
             </Typography>
             <Typography variant="subtitle1" color="text.secondary" paragraph>
               Your intake form has been successfully submitted. Case ID: {intakeId}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Form data received: {Object.keys(formData).length} fields
             </Typography>
           </Box>
 

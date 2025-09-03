@@ -33,6 +33,41 @@ const ImprovedLegalAIChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Determine which agent should handle the message
+  const determineAgent = (message) => {
+    const lowerMessage = message.toLowerCase();
+    
+    // Compliance keywords
+    if (lowerMessage.includes('gdpr') || lowerMessage.includes('compliance') || 
+        lowerMessage.includes('privacy') || lowerMessage.includes('data protection')) {
+      return aiAgents.find(agent => agent.name === "Compliance Agent") || aiAgents[1];
+    }
+    
+    // Business law keywords
+    if (lowerMessage.includes('llc') || lowerMessage.includes('corporation') || 
+        lowerMessage.includes('incorporation') || lowerMessage.includes('business') ||
+        lowerMessage.includes('contract') || lowerMessage.includes('fundraising')) {
+      return aiAgents.find(agent => agent.name === "Business Law Agent") || aiAgents[2];
+    }
+    
+    // Document analysis keywords
+    if (lowerMessage.includes('document') || lowerMessage.includes('contract') || 
+        lowerMessage.includes('agreement') || lowerMessage.includes('review') ||
+        lowerMessage.includes('analyze')) {
+      return aiAgents.find(agent => agent.name === "Document Analysis Agent") || aiAgents[3];
+    }
+    
+    // Expert referral keywords
+    if (lowerMessage.includes('complex') || lowerMessage.includes('expert') || 
+        lowerMessage.includes('attorney') || lowerMessage.includes('lawyer') ||
+        lowerMessage.includes('litigation') || lowerMessage.includes('court')) {
+      return aiAgents.find(agent => agent.name === "Expert Referral Agent") || aiAgents[4];
+    }
+    
+    // Default to greeting agent
+    return aiAgents.find(agent => agent.name === "Greeting Agent") || aiAgents[0];
+  };
+
   const cleanMarkdown = (text) => {
     // Remove markdown formatting for cleaner display
     return text
@@ -48,74 +83,8 @@ const ImprovedLegalAIChat = () => {
     if (messages.length > 0 && messages[messages.length - 1]?.sender === 'ai') {
       setTimeout(scrollToBottom, 100);
     }
-  }, [messages.length]); // Changed from [messages] to [messages.length]
+  }, [messages]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
-
-    const userMessage = {
-      id: Date.now(),
-      text: input,
-      sender: 'user',
-      timestamp: new Date().toISOString(),
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
-
-    try {
-      // Call the real multi-agent API
-      const response = await fetch('http://localhost:8081/api/legal/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: input,
-          task_type: 'chat'
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      const aiMessage = {
-        id: Date.now() + 1,
-        text: data.response,
-        sender: 'assistant',
-        timestamp: new Date().toISOString(),
-        agent: data.model_info?.name || 'Legal AI',
-        agentType: data.model_info?.type || 'general',
-        confidence: 0.9,
-        escalate: data.escalate || false
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
-      setCurrentAgent({
-        name: data.model_info?.name || 'Legal AI',
-        type: data.model_info?.type || 'general'
-      });
-    } catch (error) {
-      console.error('Error sending message:', error);
-      const errorMessage = {
-        id: Date.now() + 1,
-        text: "I'm sorry, I encountered an error. Please try again.",
-        sender: 'assistant',
-        timestamp: new Date().toISOString(),
-        isError: true
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Simulate AI response based on agent type
   const simulateAIResponse = async (message, agent) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
@@ -167,6 +136,117 @@ const ImprovedLegalAIChat = () => {
 
     // Default response
     return "I'm here to help with your legal questions. Could you be more specific about what you need assistance with?";
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = {
+      id: Date.now(),
+      text: input,
+      sender: 'user',
+      timestamp: new Date().toISOString(),
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      // Determine which agent should handle this message
+      const agent = determineAgent(input);
+      setCurrentAgent(agent);
+
+      // Try routing to specific agent first
+      if (agent && routeToAgent) {
+        try {
+          const routedResponse = await routeToAgent(input, agent);
+          if (routedResponse) {
+            const aiMessage = {
+              id: Date.now() + 1,
+              text: routedResponse,
+              sender: 'assistant',
+              timestamp: new Date().toISOString(),
+              agent: agent.name,
+              agentType: agent.type || 'specialized',
+              confidence: 0.95
+            };
+            setMessages(prev => [...prev, aiMessage]);
+            return;
+          }
+        } catch (routeError) {
+          console.log('Agent routing failed, falling back to API:', routeError);
+        }
+      }
+
+      // Call the real multi-agent API
+      const response = await fetch('http://localhost:8081/api/legal/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: input,
+          task_type: 'chat'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      const aiMessage = {
+        id: Date.now() + 1,
+        text: data.response,
+        sender: 'assistant',
+        timestamp: new Date().toISOString(),
+        agent: data.model_info?.name || 'Legal AI',
+        agentType: data.model_info?.type || 'general',
+        confidence: 0.9,
+        escalate: data.escalate || false
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+      setCurrentAgent({
+        name: data.model_info?.name || 'Legal AI',
+        type: data.model_info?.type || 'general'
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      // Try simulateAIResponse as fallback
+      try {
+        const agent = determineAgent(input);
+        const simulatedResponse = await simulateAIResponse(input, agent);
+        const aiMessage = {
+          id: Date.now() + 1,
+          text: simulatedResponse,
+          sender: 'assistant',
+          timestamp: new Date().toISOString(),
+          agent: agent?.name || 'Simulated AI',
+          agentType: 'simulated',
+          confidence: 0.7
+        };
+        setMessages(prev => [...prev, aiMessage]);
+        return;
+      } catch (simError) {
+        console.error('Simulated response also failed:', simError);
+      }
+      
+      const errorMessage = {
+        id: Date.now() + 1,
+        text: "I'm sorry, I encountered an error. Please try again.",
+        sender: 'assistant',
+        timestamp: new Date().toISOString(),
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getAgentColor = (agentType) => {
@@ -255,9 +335,12 @@ const ImprovedLegalAIChat = () => {
                     }}>
                       {message.sender === 'user' ? <PersonIcon /> : <SmartToyIcon />}
                     </Avatar>
-                    <Typography variant="caption" color="text.secondary">
-                      {message.sender === 'user' ? 'You' : (message.agent || 'AI Assistant')}
-                    </Typography>
+                    <ListItemText
+                      primary={message.sender === 'user' ? 'You' : (message.agent || 'AI Assistant')}
+                      secondary={new Date(message.timestamp).toLocaleTimeString()}
+                      primaryTypographyProps={{ variant: 'caption', color: 'text.secondary' }}
+                      secondaryTypographyProps={{ variant: 'caption', color: 'text.disabled' }}
+                    />
                   </Box>
                   <Paper
                     elevation={1}
@@ -278,6 +361,9 @@ const ImprovedLegalAIChat = () => {
                       </Alert>
                     )}
                   </Paper>
+                  {message.id !== messages[messages.length - 1]?.id && (
+                    <Divider sx={{ my: 1, width: '100%' }} />
+                  )}
                 </ListItem>
               ))}
               {isLoading && (
@@ -310,13 +396,30 @@ const ImprovedLegalAIChat = () => {
                 variant="outlined"
                 size="small"
               />
+              <Tooltip title="Send message">
+                <IconButton
+                  type="submit"
+                  color="primary"
+                  disabled={!input.trim() || isLoading}
+                  sx={{ minWidth: 'auto', px: 2 }}
+                >
+                  <SendIcon />
+                </IconButton>
+              </Tooltip>
               <Button
-                type="submit"
-                variant="contained"
+                variant="outlined"
+                size="small"
+                onClick={() => {
+                  if (input.trim()) {
+                    // Trigger form submission
+                    const form = document.querySelector('form');
+                    if (form) form.dispatchEvent(new Event('submit'));
+                  }
+                }}
                 disabled={!input.trim() || isLoading}
-                sx={{ minWidth: 'auto', px: 2 }}
+                sx={{ ml: 1 }}
               >
-                <SendIcon />
+                Send
               </Button>
             </Box>
           </form>
