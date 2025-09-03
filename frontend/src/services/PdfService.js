@@ -5,8 +5,9 @@
  */
 
 import { generatePdfBuffer } from '../lib/pdf/generateWithPdfme';
-import { addHeaderFooter, drawSimpleTable, mergePdfs } from '../lib/pdf/enhanceWithPdfLib';
+import { addHeaderFooter, drawSimpleTable, mergePdfs, placeSignatureImage } from '../lib/pdf/enhanceWithPdfLib';
 import { uploadPdfAndGetSignedUrl, buildPdfPath, recordPdfDoc, getSignedUrl, listPdfsForCase } from '../lib/pdf/storage';
+import SignatureService from './SignatureService';
 
 class PdfService {
   constructor() {
@@ -154,6 +155,28 @@ class PdfService {
         current = await mergePdfs(buffers);
       }
 
+      // 4.5) Add signature if requested and available
+      if (data.includeSignature) {
+        try {
+          const signatureData = await SignatureService.getSignature(caseNumber);
+          if (signatureData) {
+            current = await placeSignatureImage(current, signatureData, {
+              pageIndex: 0,
+              x: 380,
+              y: 120,
+              width: 160,
+              height: 60,
+            });
+            console.log('Signature added to PDF');
+          } else {
+            console.log('No signature found for case:', caseNumber);
+          }
+        } catch (error) {
+          console.error('Error adding signature to PDF:', error);
+          // Continue without signature rather than failing
+        }
+      }
+
       // 5) Save to Supabase Storage
       const path = buildPdfPath({ caseNumber, filenameBase: data.filenameBase || 'smartprobono' });
       const { signedUrl } = await uploadPdfAndGetSignedUrl(current, path, 60 * 60);
@@ -221,6 +244,64 @@ class PdfService {
       return result;
     } catch (error) {
       console.error('Generate save and download error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Upload signature for a case
+   * @param {File} file - Signature file
+   * @param {string} caseNumber - Case number
+   * @returns {Promise<Object>} - Upload result
+   */
+  async uploadSignature(file, caseNumber) {
+    try {
+      return await SignatureService.uploadSignature(file, caseNumber);
+    } catch (error) {
+      console.error('Upload signature error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Check if signature exists for a case
+   * @param {string} caseNumber - Case number
+   * @returns {Promise<boolean>} - True if signature exists
+   */
+  async hasSignature(caseNumber) {
+    try {
+      return await SignatureService.hasSignature(caseNumber);
+    } catch (error) {
+      console.error('Check signature error:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get signature URL for preview
+   * @param {string} caseNumber - Case number
+   * @param {number} expiresIn - Expiration time in seconds
+   * @returns {Promise<string|null>} - Signed URL or null
+   */
+  async getSignatureUrl(caseNumber, expiresIn = 3600) {
+    try {
+      return await SignatureService.getSignatureUrl(caseNumber, expiresIn);
+    } catch (error) {
+      console.error('Get signature URL error:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Delete signature for a case
+   * @param {string} caseNumber - Case number
+   * @returns {Promise<boolean>} - Success status
+   */
+  async deleteSignature(caseNumber) {
+    try {
+      return await SignatureService.deleteSignature(caseNumber);
+    } catch (error) {
+      console.error('Delete signature error:', error);
       throw error;
     }
   }
