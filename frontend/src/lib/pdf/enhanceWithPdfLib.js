@@ -1,21 +1,18 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 // Merge multiple PDFs (Uint8Array each) into one
-export async function mergePdfs(buffers: Uint8Array[]) {
+export async function mergePdfs(buffers) {
   const out = await PDFDocument.create();
   for (const buf of buffers) {
     const src = await PDFDocument.load(buf);
     const pages = await out.copyPages(src, src.getPageIndices());
     pages.forEach((p) => out.addPage(p));
   }
-  return (await out.save()) as Uint8Array;
+  return await out.save();
 }
 
 // Add simple header/footer text and page numbers
-export async function addHeaderFooter(
-  pdfBytes: Uint8Array,
-  opts: { header?: string; footer?: string }
-) {
+export async function addHeaderFooter(pdfBytes, opts = {}) {
   const doc = await PDFDocument.load(pdfBytes);
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const size = 9;
@@ -36,14 +33,14 @@ export async function addHeaderFooter(
     }
   });
 
-  return (await doc.save()) as Uint8Array;
+  return await doc.save();
 }
 
 // Super-lightweight fixed table (good enough for short lists)
 // For real pagination and long tables, we can extend this later.
 export async function drawSimpleTable(
-  pdfBytes: Uint8Array,
-  rows: Array<{ cols: string[] }>,
+  pdfBytes,
+  rows,
   start = { x: 36, y: 600 },
   colWidths = [200, 150, 150],
   rowHeight = 22
@@ -70,18 +67,18 @@ export async function drawSimpleTable(
     });
     y -= rowHeight;
   }
-  return (await doc.save()) as Uint8Array;
+  return await doc.save();
 }
 
 // Place a PNG signature image at coordinates on a page
 export async function placeSignatureImage(
-  pdfBytes: Uint8Array,
-  pngBytes: Uint8Array,
+  pdfBytes,
+  pngBytes,
   opts = { pageIndex: 0, x: 380, y: 120, width: 160, height: 60 }
 ) {
   const doc = await PDFDocument.load(pdfBytes);
   const page = doc.getPages()[opts.pageIndex];
   const sig = await doc.embedPng(pngBytes);
   page.drawImage(sig, { x: opts.x, y: opts.y, width: opts.width, height: opts.height });
-  return (await doc.save()) as Uint8Array;
+  return await doc.save();
 }
