@@ -71,6 +71,7 @@ const CareersPage = React.lazy(() => import('./pages/CareersPage'));
 const PressPage = React.lazy(() => import('./pages/PressPage'));
 const PartnersPage = React.lazy(() => import('./pages/PartnersPage'));
 const HelpCenterPage = React.lazy(() => import('./pages/HelpPage'));
+const TestPage = React.lazy(() => import('./pages/TestPage'));
 const LiveChatPage = React.lazy(() => import('./pages/LiveChatPage'));
 const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage'));
@@ -147,6 +148,7 @@ const routes = [
   { path: '/status', element: <StatusPage /> }, // Footer expects /status
   { path: '/help', element: <HelpPage /> }, // Footer expects /help
   { path: '/help-center', element: <HelpCenterPage /> }, // Help center page
+  { path: '/test', element: <TestPage /> }, // Test page for functionality
   { path: '/chat', element: <LiveChatPage /> }, // Footer expects /chat
   { path: '/bug-report', element: <BugReportPage /> }, // Footer expects /bug-report
   { path: '/feature-request', element: <FeatureRequestPage /> }, // Footer expects /feature-request
