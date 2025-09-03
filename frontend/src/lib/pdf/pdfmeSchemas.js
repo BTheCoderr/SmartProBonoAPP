@@ -1,8 +1,7 @@
-import type { Template, Font, Schema } from "@pdfme/common";
 import { BLANK_PDF } from "@pdfme/common";
 
 // Optional: embed a TTF later by setting fonts.Roboto.data = ArrayBuffer
-export const fonts: Record<string, Font> = {
+export const fonts = {
   Roboto: {
     data: undefined,
     fallback: true,
@@ -13,7 +12,7 @@ export const fonts: Record<string, Font> = {
 export const basePdf = BLANK_PDF;
 
 // Define your data schema fields
-export const schema: Schema = {
+export const schema = {
   clientName: { type: "text" },
   caseNumber: { type: "text" },
   dateIssued: { type: "text" },
@@ -21,7 +20,7 @@ export const schema: Schema = {
 };
 
 // Minimal template. Positions/styles will be set with the Designer UI later.
-export const template: Template = {
+export const template = {
   basePdf,
   schemas: [schema],
 };

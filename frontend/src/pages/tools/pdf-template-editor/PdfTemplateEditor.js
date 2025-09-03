@@ -4,7 +4,7 @@ import { Box, Typography, Paper } from "@mui/material";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Designer } from "@pdfme/ui";
-import { template as baseTemplate, fonts } from "../../../lib/pdf/pdfmeSchemas";
+import { template as baseTemplate, fonts } from "../../../lib/pdf/pdfmeSchemas.js";
 
 const PdfTemplateEditor = () => {
   const ref = useRef(null);
