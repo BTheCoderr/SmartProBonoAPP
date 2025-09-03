@@ -5,8 +5,9 @@
  */
 
 import { generatePdfBuffer } from '../lib/pdf/generateWithPdfme';
-import { addHeaderFooter, drawSimpleTable, mergePdfs, placeSignatureImage } from '../lib/pdf/enhanceWithPdfLib';
+import { addHeaderFooter, drawSimpleTable, mergePdfs, placeSignatureImage, placeImageSignatureAt, placeTypedSignatureAt } from '../lib/pdf/enhanceWithPdfLib';
 import { uploadPdfAndGetSignedUrl, buildPdfPath, recordPdfDoc, getSignedUrl, listPdfsForCase } from '../lib/pdf/storage';
+import { fetchPlacementsByTemplate } from '../lib/pdf/templates';
 import SignatureService from './SignatureService';
 
 class PdfService {
@@ -302,6 +303,137 @@ class PdfService {
       return await SignatureService.deleteSignature(caseNumber);
     } catch (error) {
       console.error('Delete signature error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate PDF with auto-loaded signature placements
+   * @param {Object} input - PDF generation parameters
+   * @returns {Promise<Object>} - Generation result with signed URL
+   */
+  async generatePdfWithTemplate(input) {
+    try {
+      const {
+        caseNumber,
+        templateName,
+        includeSignature = false,
+        clientSignature = {},
+        attorneySignature = {},
+        bodyText,
+        tableRows,
+        clientName,
+        dateIssued,
+        attachments = []
+      } = input;
+
+      // Auto-load placements if not provided
+      let savedPlacements = null;
+      if (templateName && includeSignature) {
+        savedPlacements = await fetchPlacementsByTemplate(templateName);
+      }
+
+      // Default positions
+      const DEFAULT_CLIENT_POS = { pageIndex: 0, x: 380, y: 120, width: 160, height: 60, label: "Client" };
+      const DEFAULT_ATTORNEY_POS = { pageIndex: 0, x: 380, y: 60, width: 160, height: 60, label: "Attorney" };
+
+      // Determine final positions
+      const clientPos = clientSignature.pos || 
+        (savedPlacements?.client ? {
+          pageIndex: savedPlacements.client.pageIndex,
+          x: savedPlacements.client.x,
+          y: savedPlacements.client.y,
+          width: savedPlacements.client.width || 160,
+          height: savedPlacements.client.height || 60,
+          label: savedPlacements.client.label || "Client"
+        } : DEFAULT_CLIENT_POS);
+
+      const attorneyPos = attorneySignature.pos || 
+        (savedPlacements?.attorney ? {
+          pageIndex: savedPlacements.attorney.pageIndex,
+          x: savedPlacements.attorney.x,
+          y: savedPlacements.attorney.y,
+          width: savedPlacements.attorney.width || 160,
+          height: savedPlacements.attorney.height || 60,
+          label: savedPlacements.attorney.label || "Attorney"
+        } : DEFAULT_ATTORNEY_POS);
+
+      // Generate base PDF
+      let current = await generatePdfBuffer({
+        clientName: clientName || "John Doe",
+        caseNumber: caseNumber || "SPB-12345",
+        dateIssued: dateIssued || new Date().toLocaleDateString(),
+        bodyText: bodyText || "This is a SmartProBono document.",
+      });
+
+      // Add header/footer
+      current = await addHeaderFooter(current, {
+        header: "SmartProBono • Access to Justice",
+        footer: "Confidential — For client use only",
+      });
+
+      // Add table if provided
+      if (tableRows && tableRows.length > 0) {
+        current = await drawSimpleTable(
+          current,
+          tableRows,
+          { x: 36, y: 520 },
+          [250, 100, 150],
+          24
+        );
+      }
+
+      // Merge attachments if provided
+      if (attachments.length > 0) {
+        const buffers = [current, ...attachments.map(b64 => new Uint8Array(Buffer.from(b64, "base64")))];
+        current = await mergePdfs(buffers);
+      }
+
+      // Add signatures if requested
+      if (includeSignature) {
+        // Client signature
+        if (clientSignature.type === "typed" && clientSignature.text) {
+          current = await placeTypedSignatureAt(current, clientSignature.text, { ...clientPos, fontSize: clientPos.fontSize || 16 });
+        } else {
+          // Try to get client signature image
+          const clientSigData = await SignatureService.getSignature(caseNumber, 'client');
+          if (clientSigData) {
+            current = await placeImageSignatureAt(current, clientSigData, clientPos);
+          }
+        }
+
+        // Attorney signature
+        if (attorneySignature.type === "typed" && attorneySignature.text) {
+          current = await placeTypedSignatureAt(current, attorneySignature.text, { ...attorneyPos, fontSize: attorneyPos.fontSize || 16 });
+        } else {
+          // Try to get attorney signature image
+          const attorneySigData = await SignatureService.getSignature(caseNumber, 'attorney');
+          if (attorneySigData) {
+            current = await placeImageSignatureAt(current, attorneySigData, attorneyPos);
+          }
+        }
+      }
+
+      // Save to storage and return signed URL
+      const path = buildPdfPath({ caseNumber, filenameBase: "smartprobono" });
+      const { signedUrl } = await uploadPdfAndGetSignedUrl(current, path, 60 * 60);
+
+      // Record in database
+      await recordPdfDoc({
+        caseNumber,
+        storagePath: path,
+        createdBy: null
+      });
+
+      return {
+        ok: true,
+        caseNumber,
+        storagePath: path,
+        signedUrl,
+        usedPlacements: savedPlacements ? 'auto-loaded' : 'default'
+      };
+    } catch (error) {
+      console.error('Error generating PDF with template:', error);
       throw error;
     }
   }
