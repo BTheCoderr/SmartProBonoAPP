@@ -127,7 +127,7 @@ const Footer = () => {
                 sx={{
                   fontWeight: 800,
                   mb: 2,
-                  background: 'linear-gradient(45deg, #ffffff 30%, #e2e8f0 90%)',
+                  background: 'linear-gradient(45deg, #1e293b 30%, #475569 90%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -158,12 +158,19 @@ const Footer = () => {
                     color={signal.color}
                     size="small"
                     sx={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      color: 'white',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      color: '#1e293b',
+                      border: '1px solid rgba(30, 41, 59, 0.2)',
+                      fontWeight: 600,
                       '& .MuiChip-icon': {
-                        color: theme.palette[signal.color].light,
+                        color: theme.palette[signal.color].main,
                       },
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        transform: 'translateY(-1px)',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      },
+                      transition: 'all 0.2s ease',
                     }}
                   />
                 ))}
