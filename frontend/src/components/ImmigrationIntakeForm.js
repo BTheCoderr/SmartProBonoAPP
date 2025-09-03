@@ -312,7 +312,6 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
     specialCircumstances: '',
     preferredLanguage: 'English',
     documents: initialServiceType ? requiredDocuments[initialServiceType] || [] : [],
-    nationality: '',
     currentImmigrationStatus: '',
     desiredService: '',
     caseDescription: '',
@@ -943,7 +942,7 @@ const ImmigrationIntakeForm = ({ onCancel, initialServiceType = '' }) => {
                   <InputLabel>Nationality</InputLabel>
                   <Select
                     name="nationality"
-                    value={formData?.nationality || ''}
+                    value={formData && formData.nationality ? formData.nationality : ''}
                     onChange={handleInputChange('nationality')}
                     label="Nationality"
                     required

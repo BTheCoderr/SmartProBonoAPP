@@ -92,8 +92,8 @@ const Footer = () => {
   return (
     <Box
       sx={{
-          background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
-          color: '#1e293b',
+          background: 'linear-gradient(135deg, #1565C0 0%, #42A5F5 100%)',
+          color: '#ffffff',
           pt: { xs: 6, md: 8 },
           pb: { xs: 4, md: 6 },
         position: 'relative',
@@ -127,10 +127,8 @@ const Footer = () => {
                 sx={{
                   fontWeight: 800,
                   mb: 2,
-                  background: 'linear-gradient(45deg, #1e293b 30%, #475569 90%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
+                  color: '#ffffff',
+                  textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                 }}
               >
                 SmartProBono
@@ -158,17 +156,19 @@ const Footer = () => {
                     color={signal.color}
                     size="small"
                     sx={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                      color: '#1e293b',
-                      border: '1px solid rgba(30, 41, 59, 0.2)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
                       fontWeight: 600,
+                      backdropFilter: 'blur(10px)',
                       '& .MuiChip-icon': {
-                        color: theme.palette[signal.color].main,
+                        color: signal.color === 'success' ? '#10b981' : 
+                               signal.color === 'primary' ? '#14B8A6' : '#06b6d4',
                       },
                       '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
                         transform: 'translateY(-1px)',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
                       },
                       transition: 'all 0.2s ease',
                     }}
@@ -208,8 +208,9 @@ const Footer = () => {
                 sx={{
                   fontWeight: 700,
                   mb: 3,
-                  color: '#1e293b',
+                  color: '#ffffff',
                   fontSize: '1.1rem',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.3)',
                 }}
               >
                 {section.title}
@@ -221,13 +222,14 @@ const Footer = () => {
                     component={RouterLink}
                     to={link.path}
                     sx={{
-                      color: 'rgba(30, 41, 59, 0.8)',
+                      color: 'rgba(255, 255, 255, 0.8)',
                       textDecoration: 'none',
                       fontSize: '0.9rem',
                       transition: 'all 0.2s ease',
                       '&:hover': {
-                        color: '#1e293b',
+                        color: '#ffffff',
                         transform: 'translateX(4px)',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.3)',
                       },
                     }}
                   >
@@ -239,7 +241,7 @@ const Footer = () => {
           ))}
         </Grid>
 
-        <Divider sx={{ my: 4, borderColor: 'rgba(30, 41, 59, 0.2)' }} />
+        <Divider sx={{ my: 4, borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 
         {/* Bottom Section */}
         <Grid container spacing={3} alignItems="center">
@@ -247,9 +249,10 @@ const Footer = () => {
             <Typography
               variant="body2"
               sx={{
-                opacity: 0.8,
+                opacity: 0.9,
                 textAlign: { xs: 'center', md: 'left' },
-                color: '#475569',
+                color: 'rgba(255, 255, 255, 0.8)',
+                textShadow: '0 1px 2px rgba(0,0,0,0.3)',
               }}
             >
               © {new Date().getFullYear()} SmartProBono. All rights reserved. 
@@ -274,13 +277,14 @@ const Footer = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
-                      color: 'rgba(30, 41, 59, 0.7)',
-                      border: '1px solid rgba(30, 41, 59, 0.2)',
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
                       '&:hover': {
-                        color: '#1e293b',
-                        borderColor: 'rgba(30, 41, 59, 0.4)',
-                        backgroundColor: 'rgba(30, 41, 59, 0.1)',
+                        color: '#ffffff',
+                        borderColor: 'rgba(255, 255, 255, 0.6)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
                         transform: 'translateY(-2px)',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
                       },
                       transition: 'all 0.2s ease',
                     }}
@@ -298,7 +302,7 @@ const Footer = () => {
           sx={{
             mt: 4,
             pt: 3,
-            borderTop: '1px solid rgba(30, 41, 59, 0.2)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.2)',
             textAlign: 'center',
           }}
         >
@@ -312,10 +316,10 @@ const Footer = () => {
               component={RouterLink}
               to="/privacy"
               sx={{
-                color: 'rgba(30, 41, 59, 0.7)',
+                color: 'rgba(255, 255, 255, 0.7)',
                 textDecoration: 'none',
                 fontSize: '0.875rem',
-                '&:hover': { color: '#1e293b' },
+                '&:hover': { color: '#ffffff' },
               }}
             >
               Privacy Policy
@@ -324,10 +328,10 @@ const Footer = () => {
               component={RouterLink}
               to="/terms"
               sx={{
-                color: 'rgba(30, 41, 59, 0.7)',
+                color: 'rgba(255, 255, 255, 0.7)',
                 textDecoration: 'none',
                 fontSize: '0.875rem',
-                '&:hover': { color: '#1e293b' },
+                '&:hover': { color: '#ffffff' },
               }}
             >
               Terms of Service
@@ -336,10 +340,10 @@ const Footer = () => {
               component={RouterLink}
               to="/accessibility"
               sx={{
-                color: 'rgba(30, 41, 59, 0.7)',
+                color: 'rgba(255, 255, 255, 0.7)',
                 textDecoration: 'none',
                 fontSize: '0.875rem',
-                '&:hover': { color: '#1e293b' },
+                '&:hover': { color: '#ffffff' },
               }}
             >
               Accessibility
@@ -348,10 +352,10 @@ const Footer = () => {
               component={RouterLink}
               to="/sitemap"
               sx={{
-                color: 'rgba(30, 41, 59, 0.7)',
+                color: 'rgba(255, 255, 255, 0.7)',
                 textDecoration: 'none',
                 fontSize: '0.875rem',
-                '&:hover': { color: '#1e293b' },
+                '&:hover': { color: '#ffffff' },
               }}
             >
               Sitemap
