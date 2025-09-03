@@ -49,6 +49,13 @@ const SignaturePlacementEditor = ({
   const [success, setSuccess] = useState(false);
   const dragState = useRef(null);
 
+  const clampBox = (b, size) => {
+    if (!size) return b;
+    const nx = Math.min(Math.max(0, b.x), size.w - b.w);
+    const ny = Math.min(Math.max(0, b.y), size.h - b.h);
+    return { ...b, x: nx, y: ny };
+  };
+
   // Render page 1
   useEffect(() => {
     if (!pdfUrl) return;
@@ -125,13 +132,6 @@ const SignaturePlacementEditor = ({
 
   const onMouseUp = () => {
     dragState.current = null;
-  };
-
-  const clampBox = (b, size) => {
-    if (!size) return b;
-    const nx = Math.min(Math.max(0, b.x), size.w - b.w);
-    const ny = Math.min(Math.max(0, b.y), size.h - b.h);
-    return { ...b, x: nx, y: ny };
   };
 
   const handleSave = async () => {

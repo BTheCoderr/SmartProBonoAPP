@@ -70,11 +70,11 @@ const CaseDetailPage = () => {
         includeSignature: true,
         clientSignature: { type: 'image' },
         attorneySignature: { type: 'typed', text: 'Attorney Name, Esq.' },
-        bodyText: `Generated for case ${caseNumber}`,
+        bodyText: 'Generated for case ' + caseNumber,
         tableRows: [
           { cols: ['Document', 'Status', 'Notes'] },
-          { cols: ['Case File', 'Generated', `Case ${caseNumber}` }],
-          { cols: ['Template', 'Applied', templateName }],
+          { cols: ['Case File', 'Generated', 'Case ' + caseNumber] },
+          { cols: ['Template', 'Applied', templateName] },
         ],
       };
 
