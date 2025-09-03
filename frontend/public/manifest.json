@@ -22,7 +22,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#0F3D5E",
   "background_color": "#ffffff",
   "orientation": "portrait",
   "categories": ["legal", "productivity", "social"],
