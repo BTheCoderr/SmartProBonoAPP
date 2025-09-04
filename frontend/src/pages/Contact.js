@@ -175,10 +175,10 @@ function Contact() {
                       textTransform: 'none',
                       py: 1.5,
                       px: 4,
-                      background: 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
+                      background: 'linear-gradient(135deg, #0F3D5E 0%, #1FB6A6 100%)',
                       color: '#ffffff',
                       '&:hover': {
-                        boxShadow: '0 2px 8px rgba(33, 150, 243, .3)',
+                        boxShadow: '0 2px 8px rgba(31, 182, 166, .3)',
                         transform: 'translateY(-2px)',
                         color: '#ffffff'
                       }

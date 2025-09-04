@@ -37,7 +37,7 @@ const templates = {
     description: 'Template for creating a last will and testament',
     languages: ['English'],
     category: 'PERSONAL',
-    color: '#1976d2',
+    color: '#0F3D5E',
     fields: ['fullName', 'address', 'beneficiaries', 'executor']
   },
   'Power of Attorney': {

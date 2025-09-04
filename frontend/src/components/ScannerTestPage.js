@@ -22,7 +22,7 @@ const ScannerTestPage = () => {
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
-      <Box sx={{ bgcolor: '#e3f2fd', p: 3, borderRadius: 2, mb: 3, border: '2px solid #1976d2' }}>
+      <Box sx={{ bgcolor: '#e3f2fd', p: 3, borderRadius: 2, mb: 3, border: '2px solid #0F3D5E' }}>
         <Typography variant="h4" gutterBottom color="primary">
           Scanner Test Page
         </Typography>
