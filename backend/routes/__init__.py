@@ -50,3 +50,10 @@ def register_blueprints(app):
         print("✅ Audit routes registered")
     except ImportError as e:
         print(f"⚠️ Audit routes not available: {e}")
+    
+    try:
+        from .contact import contact_bp
+        app.register_blueprint(contact_bp)
+        print("✅ Contact routes registered")
+    except ImportError as e:
+        print(f"⚠️ Contact routes not available: {e}")
