@@ -87,6 +87,17 @@ const MobileFileScanner = ({ onScanComplete, documentType = 'general' }) => {
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        setError(`File type ${file.type} is not supported. Please upload a PDF or image file.`);
+        setNotification({
+          open: true,
+          message: `File type ${file.type} is not supported. Please upload a PDF or image file.`,
+          severity: 'error'
+        });
+        return;
+      }
       processImage(file);
     }
   };
@@ -127,7 +138,7 @@ const MobileFileScanner = ({ onScanComplete, documentType = 'general' }) => {
       {/* Hidden file inputs */}
       <input
         type="file"
-        accept="image/*"
+        accept="image/*,application/pdf"
         ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleFileChange}
@@ -136,7 +147,7 @@ const MobileFileScanner = ({ onScanComplete, documentType = 'general' }) => {
       {/* Separate input specifically for camera capture */}
       <input
         type="file"
-        accept="image/*"
+        accept="image/*,application/pdf"
         capture="environment"
         ref={cameraInputRef}
         style={{ display: 'none' }}

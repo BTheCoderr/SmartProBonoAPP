@@ -3,7 +3,7 @@
  * Checks all pages and components for consistent brand color usage
  */
 
-import { designTokens } from '../design-system';
+// import { designTokens } from '../design-system';
 
 // Brand colors that should be used consistently
 export const brandColors = {
@@ -234,7 +234,7 @@ export const checkComponentColors = (component) => {
 };
 
 // Export default audit configuration
-export default {
+const auditConfig = {
   brandColors,
   colorIssues,
   pagesToAudit,
@@ -242,3 +242,5 @@ export default {
   auditColors,
   checkComponentColors,
 };
+
+export default auditConfig;
