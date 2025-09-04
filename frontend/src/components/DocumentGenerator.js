@@ -613,11 +613,15 @@ In production, this would be a real PDF document.`;
                 label="Select Template"
                 onChange={(e) => handleTemplateSelect(e.target.value)}
               >
-                {templates.map((template) => (
-                  <MenuItem key={template.id} value={template.id}>
-                    {template.name}
-                  </MenuItem>
-                ))}
+                {templates.map((template) => {
+                  const templateId = typeof template === 'string' ? template : template.id;
+                  const templateName = templateMetadata[templateId]?.name || templateId;
+                  return (
+                    <MenuItem key={templateId} value={templateId}>
+                      {templateName}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
             
