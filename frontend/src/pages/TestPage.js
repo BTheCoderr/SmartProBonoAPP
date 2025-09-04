@@ -8,12 +8,10 @@ import {
   CardContent,
   Button,
   Alert,
-  Paper,
-  Divider
+  Paper
 } from '@mui/material';
 import {
   DocumentScanner as DocumentScannerIcon,
-  Description as DescriptionIcon,
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon
 } from '@mui/icons-material';
@@ -201,7 +199,7 @@ const TestPage = () => {
         <Box sx={{ border: `2px dashed ${designTokens.colors.primary[300]}`, borderRadius: 2, p: 2 }}>
           <MobileFileScanner 
             onScanComplete={handleScannerTest}
-            documentType="test"
+            documentType="general"
           />
         </Box>
       </Paper>
@@ -236,7 +234,7 @@ const TestPage = () => {
             PDF Generator Component Preview:
           </Typography>
           <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
-            <DocumentGenerator />
+            <DocumentGenerator documentType="expungement" />
           </Box>
         </Box>
       </Paper>
