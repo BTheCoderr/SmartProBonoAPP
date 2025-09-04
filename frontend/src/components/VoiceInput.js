@@ -9,7 +9,7 @@ import {
 import { Mic as MicIcon, MicOff as MicOffIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-const VoiceInput = ({ onTranscript, isListening, setIsListening }) => {
+const VoiceInput = ({ onTranscript, isListening = false, setIsListening = () => {} }) => {
   const { t } = useTranslation();
   const [error, setError] = useState(null);
   const [recognition, setRecognition] = useState(null);
@@ -33,11 +33,15 @@ const VoiceInput = ({ onTranscript, isListening, setIsListening }) => {
 
       recognitionInstance.onerror = (event) => {
         setError(event.error);
-        setIsListening(false);
+        if (typeof setIsListening === 'function') {
+          setIsListening(false);
+        }
       };
 
       recognitionInstance.onend = () => {
-        setIsListening(false);
+        if (typeof setIsListening === 'function') {
+          setIsListening(false);
+        }
       };
 
       setRecognition(recognitionInstance);
@@ -56,12 +60,19 @@ const VoiceInput = ({ onTranscript, isListening, setIsListening }) => {
       return;
     }
 
-    if (isListening) {
-      recognition.stop();
-    } else {
-      setError(null);
-      recognition.start();
-      setIsListening(true);
+    try {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        setError(null);
+        recognition.start();
+        if (typeof setIsListening === 'function') {
+          setIsListening(true);
+        }
+      }
+    } catch (err) {
+      console.error('Error toggling voice input:', err);
+      setError('voice_input_error');
     }
   };
 
