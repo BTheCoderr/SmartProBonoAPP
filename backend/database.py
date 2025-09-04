@@ -1,14 +1,9 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 import os
 from dotenv import load_dotenv
+from .extensions import db, migrate
 
 # Load environment variables
 load_dotenv()
-
-# Create database object without binding it to an app yet
-db = SQLAlchemy()
-migrate = Migrate()
 
 def init_db(app):
     """Initialize database with the Flask app"""
