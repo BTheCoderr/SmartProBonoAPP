@@ -32,10 +32,10 @@ import ImmigrationIntakeForm from '../components/ImmigrationIntakeForm';
 const services = [
   {
     title: 'Family-Based Immigration',
-    icon: <FamilyRestroomIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
+    icon: <FamilyRestroomIcon sx={{ fontSize: 40, color: '#0F3D5E' }} />,
     description: 'Reunite with your family members through proper immigration channels',
     documents: ['Birth certificates', 'Marriage certificates', 'Proof of citizenship', 'Financial documents'],
-    color: '#1976d2'
+    color: '#0F3D5E'
   },
   {
     title: 'Student Visas',

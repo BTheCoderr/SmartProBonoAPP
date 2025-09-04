@@ -79,8 +79,8 @@ const ScanDocument = () => {
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, mb: 4, bgcolor: '#f9f9ff', border: '2px solid #1976d2' }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ color: '#1976d2', borderBottom: '2px solid #1976d2', pb: 2 }}>
+      <Paper elevation={3} sx={{ p: 3, mb: 4, bgcolor: '#f9f9ff', border: '2px solid #0F3D5E' }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ color: '#0F3D5E', borderBottom: '2px solid #0F3D5E', pb: 2 }}>
           Document Scanner
         </Typography>
 

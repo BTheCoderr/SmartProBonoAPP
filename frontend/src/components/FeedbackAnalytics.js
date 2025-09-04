@@ -131,7 +131,7 @@ const FeedbackAnalytics = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="value" fill="#1976d2" />
+                  <Bar dataKey="value" fill="#0F3D5E" />
                 </BarChart>
               </ResponsiveContainer>
             </Box>

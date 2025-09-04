@@ -218,7 +218,7 @@ const PerformanceMetrics: React.FC = () => {
                     type="monotone"
                     data={metrics.memory_usage}
                     dataKey="value"
-                    stroke="#2196f3"
+                    stroke="#0F3D5E"
                     name="Memory Usage"
                   />
                 </LineChart>

@@ -158,7 +158,7 @@ const BetaLandingPage = () => {
       icon: <ChatIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />,
       title: "AI Legal Assistant",
       description: "Get instant answers to your legal questions 24/7",
-      color: '#2196f3',
+      color: '#0F3D5E',
       onClick: () => navigate('/legal-chat')
     },
     {

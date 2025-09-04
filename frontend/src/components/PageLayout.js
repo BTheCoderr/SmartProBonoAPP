@@ -39,7 +39,7 @@ const PageLayout = ({
       {showBanner && (
         <Box 
           sx={{ 
-            background: 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
+            background: 'linear-gradient(135deg, #0F3D5E 0%, #1FB6A6 100%)',
             color: 'white',
             pt: { xs: 4, md: 6 },
             pb: { xs: 4, md: 6 },

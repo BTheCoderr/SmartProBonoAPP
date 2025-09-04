@@ -27,10 +27,10 @@ import { useNavigate } from 'react-router-dom';
 const services = [
   {
     title: 'Legal Consultation',
-    icon: <GavelIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
+    icon: <GavelIcon sx={{ fontSize: 40, color: '#0F3D5E' }} />,
     description: 'Professional legal advice and consultation services.',
     features: ['One-on-one consultation', 'Case evaluation', 'Legal strategy planning'],
-    color: '#1976d2',
+    color: '#0F3D5E',
     path: '/legal-chat'
   },
   {
