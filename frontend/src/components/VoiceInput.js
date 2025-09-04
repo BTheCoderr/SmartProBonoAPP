@@ -15,13 +15,15 @@ const VoiceInput = ({ onTranscript, isListening, setIsListening }) => {
   const [recognition, setRecognition] = useState(null);
 
   useEffect(() => {
+    let recognitionInstance = null;
+    
     if ('webkitSpeechRecognition' in window) {
-      const recognition = new window.webkitSpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = document.documentElement.lang || 'en-US';
+      recognitionInstance = new window.webkitSpeechRecognition();
+      recognitionInstance.continuous = true;
+      recognitionInstance.interimResults = true;
+      recognitionInstance.lang = document.documentElement.lang || 'en-US';
 
-      recognition.onresult = (event) => {
+      recognitionInstance.onresult = (event) => {
         const transcript = Array.from(event.results)
           .map(result => result[0])
           .map(result => result.transcript)
@@ -29,24 +31,24 @@ const VoiceInput = ({ onTranscript, isListening, setIsListening }) => {
         onTranscript(transcript);
       };
 
-      recognition.onerror = (event) => {
+      recognitionInstance.onerror = (event) => {
         setError(event.error);
         setIsListening(false);
       };
 
-      recognition.onend = () => {
+      recognitionInstance.onend = () => {
         setIsListening(false);
       };
 
-      setRecognition(recognition);
+      setRecognition(recognitionInstance);
     }
 
     return () => {
-      if (recognition) {
-        recognition.stop();
+      if (recognitionInstance) {
+        recognitionInstance.stop();
       }
     };
-  }, [onTranscript, setIsListening, recognition]);
+  }, [onTranscript, setIsListening]);
 
   const toggleListening = () => {
     if (!recognition) {
