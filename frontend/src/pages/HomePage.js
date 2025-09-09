@@ -4,7 +4,6 @@ import HeroSection from '../components/HeroSection';
 import FeaturesSection from '../components/FeaturesSection';
 import TestimonialsSection from '../components/TestimonialsSection';
 import Footer from '../components/Footer';
-import TestPage from './TestPage';
 
 function HomePage() {
   return (
@@ -19,9 +18,6 @@ function HomePage() {
       </Section>
       <Section variant="default" background="light">
         <TestimonialsSection />
-      </Section>
-      <Section variant="default" background="white">
-        <TestPage />
       </Section>
       <Footer />
     </PageLayout>

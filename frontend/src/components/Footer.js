@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -24,51 +25,52 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 
 const Footer = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const footerSections = [
     {
-      title: 'Services',
+      title: t('footer.services'),
       links: [
-        { text: 'AI Legal Assistant', path: '/legal-chat' },
-        { text: 'Document Generation', path: '/services/contracts' },
-        { text: 'Immigration Help', path: '/services/immigration' },
-        { text: 'Virtual Paralegal', path: '/virtual-paralegal' },
-        { text: 'Document Scanner', path: '/scan-document' },
-        { text: 'Pro Bono Services', path: '/services' },
+        { text: t('footer.aiLegalAssistant'), path: '/legal-chat' },
+        { text: t('footer.documentGeneration'), path: '/services/contracts' },
+        { text: t('footer.immigrationHelp'), path: '/services/immigration' },
+        { text: t('footer.virtualParalegal'), path: '/virtual-paralegal' },
+        { text: t('footer.documentScanner'), path: '/scan-document' },
+        { text: t('footer.proBonoServices'), path: '/services' },
       ],
     },
     {
-      title: 'Resources',
+      title: t('footer.resources'),
       links: [
-        { text: 'Know Your Rights', path: '/resources/rights' },
-        { text: 'Legal Templates', path: '/resources/templates' },
-        { text: 'Educational Content', path: '/resources' },
-        { text: 'Legal Glossary', path: '/resources/glossary' },
-        { text: 'FAQ', path: '/faq' },
-        { text: 'Blog', path: '/blog' },
+        { text: t('footer.knowYourRights'), path: '/resources/rights' },
+        { text: t('footer.legalTemplates'), path: '/resources/templates' },
+        { text: t('footer.educationalContent'), path: '/resources' },
+        { text: t('footer.legalGlossary'), path: '/resources/glossary' },
+        { text: t('footer.faq'), path: '/faq' },
+        { text: t('footer.blog'), path: '/blog' },
       ],
     },
     {
-      title: 'Company',
+      title: t('footer.company'),
       links: [
-        { text: 'About Us', path: '/about' },
-        { text: 'Our Mission', path: '/mission' },
-        { text: 'Team', path: '/team' },
-        { text: 'Careers', path: '/careers' },
-        { text: 'Press', path: '/press' },
-        { text: 'Partners', path: '/partners' },
+        { text: t('footer.aboutUs'), path: '/about' },
+        { text: t('footer.ourMission'), path: '/mission' },
+        { text: t('footer.team'), path: '/team' },
+        { text: t('footer.careers'), path: '/careers' },
+        { text: t('footer.press'), path: '/press' },
+        { text: t('footer.partners'), path: '/partners' },
       ],
     },
     {
-      title: 'Support',
+      title: t('footer.support'),
       links: [
-        { text: 'Help Center', path: '/help' },
-        { text: 'Contact Us', path: '/contact' },
-        { text: 'Live Chat', path: '/chat' },
-        { text: 'Status Page', path: '/status' },
-        { text: 'Bug Report', path: '/bug-report' },
-        { text: 'Feature Request', path: '/feature-request' },
+        { text: t('footer.helpCenter'), path: '/help' },
+        { text: t('footer.contactUs'), path: '/contact' },
+        { text: t('footer.liveChat'), path: '/chat' },
+        { text: t('footer.statusPage'), path: '/status' },
+        { text: t('footer.bugReport'), path: '/bug-report' },
+        { text: t('footer.featureRequest'), path: '/feature-request' },
       ],
     },
   ];
@@ -146,8 +148,7 @@ const Footer = () => {
                   maxWidth: '400px',
                 }}
               >
-                Making legal help accessible, affordable, and easy to understand for everyone. 
-                Our AI-powered platform connects you with the legal assistance you need.
+                {t('company.description')}
               </Typography>
 
 
@@ -231,7 +232,7 @@ const Footer = () => {
                 textShadow: '0 1px 2px rgba(0,0,0,0.3)',
               }}
             >
-              © {new Date().getFullYear()} SmartProBono. All rights reserved. 
+              © {new Date().getFullYear()} SmartProBono. {t('footer.allRightsReserved')} 
               Making legal help accessible to everyone.
           </Typography>
           </Grid>
@@ -298,7 +299,7 @@ const Footer = () => {
                 '&:hover': { color: '#ffffff' },
               }}
             >
-              Privacy Policy
+              {t('footer.privacyPolicy')}
             </Link>
             <Link
               component={RouterLink}
@@ -310,7 +311,7 @@ const Footer = () => {
                 '&:hover': { color: '#ffffff' },
               }}
             >
-              Terms of Service
+              {t('footer.termsOfService')}
             </Link>
             <Link
               component={RouterLink}
@@ -322,7 +323,7 @@ const Footer = () => {
                 '&:hover': { color: '#ffffff' },
               }}
             >
-              Accessibility
+              {t('footer.accessibility')}
             </Link>
             <Link
               component={RouterLink}
@@ -334,7 +335,7 @@ const Footer = () => {
                 '&:hover': { color: '#ffffff' },
               }}
             >
-              Sitemap
+              {t('footer.sitemap')}
             </Link>
           </Stack>
         </Box>

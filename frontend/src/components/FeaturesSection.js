@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ChatIcon from '@mui/icons-material/Chat';
 import GavelIcon from '@mui/icons-material/Gavel';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -23,65 +24,66 @@ import BuildIcon from '@mui/icons-material/Build';
 import PersonIcon from '@mui/icons-material/Person';
 
 const FeaturesSection = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
 
   const features = [
     {
-      title: "AI Legal Assistant",
-      description: "Get instant answers to your legal questions 24/7 with our advanced AI-powered chat system",
+      title: t('features.items.aiLegalAssistant.title'),
+      description: t('features.items.aiLegalAssistant.description'),
       icon: <ChatIcon sx={{ fontSize: 48, color: theme.palette.primary.main }} />,
       path: '/legal-chat',
       color: 'primary',
-      badge: "Most Popular",
-      benefits: ["24/7 Availability", "Instant Responses", "Legal Expertise"],
+      badge: t('features.items.aiLegalAssistant.badge'),
+      benefits: t('features.items.aiLegalAssistant.benefits'),
       gradient: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
     },
     {
-      title: "Document Generation",
-      description: "Create professional legal documents with AI assistance and customizable templates",
+      title: t('features.items.documentGeneration.title'),
+      description: t('features.items.documentGeneration.description'),
       icon: <DescriptionIcon sx={{ fontSize: 48, color: theme.palette.secondary.main }} />,
       path: '/services/contracts',
       color: 'secondary',
-      badge: "New",
-      benefits: ["AI-Powered", "Custom Templates", "Legal Compliance"],
+      badge: t('features.items.documentGeneration.badge'),
+      benefits: t('features.items.documentGeneration.benefits'),
       gradient: `linear-gradient(135deg, ${theme.palette.secondary.light} 0%, ${theme.palette.secondary.main} 100%)`,
     },
     {
-      title: "Know Your Rights",
-      description: "Get instant information about your legal rights and protections in various areas",
+      title: t('features.items.knowYourRights.title'),
+      description: t('features.items.knowYourRights.description'),
       icon: <GavelIcon sx={{ fontSize: 48, color: theme.palette.success.main }} />,
       path: '/resources/rights',
       color: 'success',
-      benefits: ["Comprehensive Guide", "Easy to Understand", "Up-to-Date"],
+      benefits: t('features.items.knowYourRights.benefits'),
       gradient: `linear-gradient(135deg, ${theme.palette.success.light} 0%, ${theme.palette.success.main} 100%)`,
     },
     {
-      title: "Virtual Paralegal",
-      description: "AI-powered paralegal assistance for attorneys and legal aid organizations",
+      title: t('features.items.virtualParalegal.title'),
+      description: t('features.items.virtualParalegal.description'),
       icon: <PersonIcon sx={{ fontSize: 48, color: theme.palette.info.main }} />,
       path: '/virtual-paralegal',
       color: 'info',
-      badge: "Pro Feature",
-      benefits: ["Time Saving", "Cost Effective", "Professional Grade"],
+      badge: t('features.items.virtualParalegal.badge'),
+      benefits: t('features.items.virtualParalegal.benefits'),
       gradient: `linear-gradient(135deg, ${theme.palette.info.light} 0%, ${theme.palette.info.main} 100%)`,
     },
     {
-      title: "Immigration Help",
-      description: "Comprehensive support for visa applications and immigration processes",
+      title: t('features.items.immigrationHelp.title'),
+      description: t('features.items.immigrationHelp.description'),
       icon: <FlightIcon sx={{ fontSize: 48, color: theme.palette.warning.main }} />,
       path: '/services/immigration',
       color: 'warning',
-      benefits: ["Step-by-Step Guide", "Form Assistance", "Expert Tips"],
+      benefits: t('features.items.immigrationHelp.benefits'),
       gradient: `linear-gradient(135deg, ${theme.palette.warning.light} 0%, ${theme.palette.warning.main} 100%)`,
     },
     {
-      title: "Pro Bono Services",
-      description: "Connect with legal professionals offering free services and assistance",
+      title: t('features.items.proBonoServices.title'),
+      description: t('features.items.proBonoServices.description'),
       icon: <BuildIcon sx={{ fontSize: 48, color: theme.palette.error.main }} />,
       path: '/services',
       color: 'error',
-      benefits: ["Free Services", "Expert Attorneys", "Local Support"],
+      benefits: t('features.items.proBonoServices.benefits'),
       gradient: `linear-gradient(135deg, ${theme.palette.error.light} 0%, ${theme.palette.error.main} 100%)`,
     },
     {
@@ -94,13 +96,13 @@ const FeaturesSection = () => {
       gradient: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
     },
     {
-      title: "Document Scanner",
-      description: "AI-powered document analysis and legal document processing",
+      title: t('features.items.documentScanner.title'),
+      description: t('features.items.documentScanner.description'),
       icon: <DescriptionIcon sx={{ fontSize: 48, color: theme.palette.secondary.main }} />,
       path: '/scan-document',
       color: 'secondary',
-      badge: "AI-Powered",
-      benefits: ["OCR Technology", "Legal Analysis", "Smart Processing"],
+      badge: t('features.items.documentScanner.badge'),
+      benefits: t('features.items.documentScanner.benefits'),
       gradient: `linear-gradient(135deg, ${theme.palette.secondary.light} 0%, ${theme.palette.secondary.main} 100%)`,
     },
   ];
@@ -169,7 +171,7 @@ const FeaturesSection = () => {
         >
           <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
             <Chip
-              label="🚀 Our Services"
+              label={t('features.badge')}
               color="primary"
               sx={{
                 mb: 2,
@@ -189,9 +191,7 @@ const FeaturesSection = () => {
                 color: '#1e293b',
               }}
             >
-              Everything You Need for
-              <br />
-              Legal Assistance
+              {t('features.title')}
             </Typography>
             <Typography
               variant="h5"
@@ -204,8 +204,7 @@ const FeaturesSection = () => {
                 color: '#475569',
               }}
             >
-              Comprehensive legal tools and resources designed to make legal help accessible, 
-              affordable, and easy to understand for everyone.
+              {t('features.subtitle')}
             </Typography>
           </Box>
         </motion.div>
@@ -325,7 +324,7 @@ const FeaturesSection = () => {
                       {/* Benefits */}
                       <Box sx={{ mb: 3 }}>
                         <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center">
-                          {feature.benefits.map((benefit, idx) => (
+                          {(Array.isArray(feature.benefits) ? feature.benefits : []).map((benefit, idx) => (
                             <Chip
                               key={idx}
                               label={benefit}

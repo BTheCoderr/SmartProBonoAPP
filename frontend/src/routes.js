@@ -49,6 +49,7 @@ const PolicyGeneratorPage = React.lazy(() => import('./pages/PolicyGeneratorPage
 const RiskAssessmentPage = React.lazy(() => import('./pages/RiskAssessmentPage'));
 const DocumentScanPage = React.lazy(() => import('./pages/DocumentScanPage'));
 const DocumentChecklistPage = React.lazy(() => import('./pages/DocumentChecklistPage'));
+const LegalToolsPage = React.lazy(() => import('./pages/LegalToolsPage'));
 const PdfTemplateEditor = React.lazy(() => import('./pages/tools/pdf-template-editor/PdfTemplateEditor'));
 const PdfGeneratorDemo = React.lazy(() => import('./components/PdfGeneratorDemo'));
 const SignaturePage = React.lazy(() => import('./pages/SignaturePage'));
@@ -163,6 +164,7 @@ const routes = [
   { path: '/faq', element: <FAQPage /> }, // Footer expects /faq
   { path: '/blog', element: <BlogPage /> }, // Footer expects /blog
   { path: '/scan-document', element: <DocumentScanPage /> },
+  { path: '/legal-tools', element: <LegalToolsPage /> },
   { path: '/documents', element: <DocumentsPage /> },
   { path: '/resources/checklist/:type', element: <DocumentChecklistPage /> },
   { path: '/tools/pdf-template-editor', element: <PdfTemplateEditor /> },

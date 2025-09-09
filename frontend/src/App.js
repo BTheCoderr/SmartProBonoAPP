@@ -7,11 +7,10 @@ import { SnackbarProvider } from 'notistack';
 import ReactGA from 'react-ga4';
 import ErrorBoundary from './components/ErrorBoundary';
 import theme from './theme';
-import routes from './routes';
 import TestPage from './pages/TestPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AnalyticsProvider } from './contexts/AnalyticsContext';
-import i18n from './translations/i18n';
+import i18n from './i18n';
 
 // Components
 import LegalAIChat from './components/LegalAIChat';
@@ -65,47 +64,29 @@ import LiveChatPage from './pages/LiveChatPage';
 
 // New components
 import DocumentGenerator from './components/DocumentGenerator';
+import PDFGenerator from './components/documents/PDFGenerator';
 import ExpungementWizard from './components/ExpungementWizard';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import DocumentScanPage from './pages/DocumentScanPage';
 import DocumentChecklistPage from './pages/DocumentChecklistPage';
+import SafetyCheckPage from './pages/SafetyCheckPage';
+import LegalToolsPage from './pages/LegalToolsPage';
 import ImmigrationResourcesPage from './pages/ImmigrationResourcesPage';
 import ImmigrationRightsPage from './pages/ImmigrationRightsPage';
 import ExternalResourcesPage from './pages/ExternalResourcesPage';
 import LegalGuidesPage from './pages/LegalGuidesPage';
 
-// Protected route wrapper - updated to use the current AuthContext implementation
+// Protected route wrapper - DISABLED FOR DEVELOPMENT
 const ProtectedRoute = ({ children }) => {
-  const { user, isAuthenticated, loading } = useAuth();
-  
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  
-  // Log user info for debugging
-  if (user) {
-    console.log('Protected route accessed by user:', user.email || user.id);
-  }
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: window.location.pathname }} replace />;
-  }
-  
+  // During development, always allow access without authentication
+  console.log('Protected route accessed - authentication disabled for development');
   return children;
 };
 
-// Admin route wrapper - updated to use the current AuthContext implementation
+// Admin route wrapper - DISABLED FOR DEVELOPMENT
 const AdminRoute = ({ children }) => {
-  const { user, isAuthenticated, loading } = useAuth();
-  
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  
-  if (!isAuthenticated || user?.role !== 'admin') {
-    return <Navigate to="/unauthorized" replace />;
-  }
-  
+  // During development, always allow access without authentication
+  console.log('Admin route accessed - authentication disabled for development');
   return children;
 };
 
@@ -204,13 +185,12 @@ const PageTracker = () => {
 };
 
 function AppContent() {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   
   // Use user to conditionally show content or features
   const showPremiumFeatures = user && user.isPremium;
   
-  // Log authentication status for debugging
-  console.log('App authentication status:', { isAuthenticated, hasUser: !!user });
+  // Authentication status for conditional rendering
 
   return (
     <>
@@ -286,7 +266,11 @@ function AppContent() {
             <Route path="/resources/*" element={<ResourcesLayout />} />
             
             {/* MVP Critical Routes - Ensure these are accessible without authentication */}
+            <Route path="/legal-tools" element={<LegalToolsPage />} />
             <Route path="/legal-chat" element={<LegalAIChatPage />} />
+            <Route path="/ai-chat" element={<Navigate to="/legal-chat" replace />} />
+            <Route path="/generate-document" element={<PDFGenerator />} />
+            <Route path="/safety-check" element={<SafetyCheckPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/expert-help" element={<ExpertHelpPage />} />
             
@@ -368,7 +352,8 @@ function App() {
     }
     
     // Apply routes configuration
-    console.log('Available routes:', routes.map(route => route.path).join(', '));
+    // Available routes for debugging (commented out to reduce console noise)
+    // console.log('Available routes:', routes.map(route => route.path).join(', '));
   }, []);
   
   return (

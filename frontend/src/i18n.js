@@ -5,39 +5,56 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import enTranslation from './translations/en.json';
 import esTranslation from './translations/es.json';
 import ptTranslation from './translations/pt.json';
+import frTranslation from './translations/fr.json';
+import zhTranslation from './translations/zh.json';
+import arTranslation from './translations/ar.json';
 
-// Initialize i18next for internationalization
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources: {
-      en: {
-        translation: enTranslation
+// Initialize i18next for internationalization (only if not already initialized)
+if (!i18n.isInitialized) {
+  i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      resources: {
+        en: {
+          translation: enTranslation
+        },
+        es: {
+          translation: esTranslation
+        },
+        pt: {
+          translation: ptTranslation
+        },
+        fr: {
+          translation: frTranslation
+        },
+        zh: {
+          translation: zhTranslation
+        },
+        ar: {
+          translation: arTranslation
+        }
       },
-      es: {
-        translation: esTranslation
+      fallbackLng: 'en',
+      debug: false, // Disable debug to reduce console noise
+      
+      // User's language preference from local storage
+      detection: {
+        order: ['localStorage', 'navigator'],
+        lookupLocalStorage: 'preferredLanguage',
       },
-      pt: {
-        translation: ptTranslation
+      
+      interpolation: {
+        escapeValue: false, // React already escapes values
+      },
+      
+      // Enable returnObjects to access nested translation objects
+      returnObjects: true,
+      
+      react: {
+        useSuspense: true,
       }
-    },
-    fallbackLng: 'en',
-    debug: process.env.NODE_ENV === 'development',
-    
-    // User's language preference from local storage
-    detection: {
-      order: ['localStorage', 'navigator'],
-      lookupLocalStorage: 'preferredLanguage',
-    },
-    
-    interpolation: {
-      escapeValue: false, // React already escapes values
-    },
-    
-    react: {
-      useSuspense: true,
-    }
-  });
+    });
+}
 
 export default i18n;

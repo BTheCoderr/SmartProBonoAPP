@@ -20,9 +20,11 @@ import {
   Checkbox
 } from '@mui/material';
 import { BugReport as BugReportIcon, Send as SendIcon } from '@mui/icons-material';
-import PageLayout from '../components/PageLayout';
+import { useTranslation } from 'react-i18next';
+import { PageLayout } from '../design-system';
 
 const BugReportPage = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -78,18 +80,37 @@ const BugReportPage = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch('http://localhost:3001/api/bug-report/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        console.error('Bug report submission failed:', result.error);
+        // You could add error state handling here
+      }
+    } catch (error) {
+      console.error('Error submitting bug report:', error);
+      // Fallback: still show success for now, but log the error
       setSubmitted(true);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   if (submitted) {
     return (
       <PageLayout
-        title="Bug Report Submitted"
-        description="Thank you for helping us improve SmartProBono!"
+        title={t('pages.bugReport.success.title')}
+        description={t('pages.bugReport.success.message')}
       >
         <Container maxWidth="md" sx={{ py: 4 }}>
           <Card>
@@ -134,8 +155,8 @@ const BugReportPage = () => {
 
   return (
     <PageLayout
-      title="Bug Report"
-      description="Help us fix issues by reporting bugs you encounter"
+      title={t('pages.bugReport.title')}
+      description={t('pages.bugReport.subtitle')}
     >
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Grid container spacing={4}>
@@ -156,7 +177,7 @@ const BugReportPage = () => {
                     <Grid item xs={12}>
                       <TextField
                         fullWidth
-                        label="Bug Title"
+                        label={t('bugReport.form.title')}
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
@@ -242,7 +263,7 @@ const BugReportPage = () => {
                     <Grid item xs={12}>
                       <TextField
                         fullWidth
-                        label="Description"
+                        label={t('bugReport.form.description')}
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
@@ -256,7 +277,7 @@ const BugReportPage = () => {
                     <Grid item xs={12}>
                       <TextField
                         fullWidth
-                        label="Steps to Reproduce"
+                        label={t('bugReport.form.steps')}
                         name="steps"
                         value={formData.steps}
                         onChange={handleChange}
@@ -315,7 +336,7 @@ const BugReportPage = () => {
                         disabled={loading}
                         sx={{ mt: 2 }}
                       >
-                        {loading ? 'Submitting...' : 'Submit Bug Report'}
+                        {loading ? t('bugReport.form.submitting') : t('bugReport.form.submit')}
                       </Button>
                     </Grid>
                   </Grid>

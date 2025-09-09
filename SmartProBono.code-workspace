@@ -1,0 +1,39 @@
+{
+    "folders": [
+        {
+            "name": "SmartProBono Root",
+            "path": "."
+        },
+        {
+            "name": "Legal AI Backend",
+            "path": "./legal_ai_backend"
+        },
+        {
+            "name": "Frontend",
+            "path": "./frontend"
+        }
+    ],
+    "settings": {
+        "python.defaultInterpreterPath": "./legal_ai_backend/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.linting.enabled": true,
+        "python.formatting.provider": "black",
+        "terminal.integrated.cwd": "${workspaceFolder}",
+        "files.exclude": {
+            "**/__pycache__": true,
+            "**/*.pyc": true,
+            "**/node_modules": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.black-formatter",
+            "ms-python.flake8",
+            "ms-python.pylint",
+            "ms-vscode.vscode-json",
+            "bradlc.vscode-tailwindcss",
+            "esbenp.prettier-vscode"
+        ]
+    }
+}

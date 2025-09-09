@@ -1,0 +1,461 @@
+{
+  "common": {
+    "appName": "SmartProBono",
+    "next": "下一步",
+    "back": "返回",
+    "save": "保存",
+    "cancel": "取消",
+    "submit": "提交",
+    "loading": "加载中...",
+    "changeLanguage": "更改语言",
+    "search": "搜索",
+    "view": "查看",
+    "edit": "编辑",
+    "delete": "删除",
+    "create": "创建"
+  },
+  "navigation": {
+    "home": "首页",
+    "dashboard": "仪表板",
+    "forms": "表单",
+    "documents": "文档",
+    "resources": "资源",
+    "chat": "法律AI聊天",
+    "profile": "个人资料",
+    "login": "登录",
+    "register": "注册",
+    "logout": "登出",
+    "legalTools": "法律工具",
+    "documentScanner": "文档扫描器",
+    "pdfGenerator": "PDF生成器",
+    "aiLegalChat": "AI法律聊天",
+    "documentAnalysis": "文档分析",
+    "templates": "模板",
+    "safetyCheck": "安全检查",
+    "contactForm": "联系表单",
+    "adminDashboard": "管理仪表板",
+    "enableBetaMode": "启用测试模式",
+    "disableBetaMode": "禁用测试模式",
+    "additionalTools": "更多工具"
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "与我们的团队取得联系",
+    "form": {
+      "firstName": "名字",
+      "lastName": "姓氏",
+      "email": "电子邮件地址",
+      "phone": "电话号码",
+      "subject": "主题",
+      "message": "消息",
+      "send": "发送消息",
+      "sending": "发送中...",
+      "success": "消息发送成功！",
+      "error": "发送消息失败。请重试。"
+    },
+    "info": {
+      "email": "电子邮件",
+      "phone": "电话",
+      "address": "地址",
+      "businessHours": "营业时间",
+      "responseTime": "响应时间"
+    }
+  },
+  "bugReport": {
+    "title": "错误报告",
+    "subtitle": "通过报告问题帮助我们改进",
+    "form": {
+      "title": "错误标题",
+      "description": "描述",
+      "steps": "重现步骤",
+      "expected": "预期行为",
+      "actual": "实际行为",
+      "severity": "严重程度",
+      "browser": "浏览器",
+      "device": "设备",
+      "email": "电子邮件",
+      "canContact": "我们可以联系您了解更多详情吗？",
+      "submit": "提交错误报告",
+      "submitting": "提交中...",
+      "success": "错误报告提交成功！",
+      "error": "提交错误报告失败。请重试。"
+    },
+    "severity": {
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "critical": "严重"
+    }
+  },
+  "featureRequest": {
+    "title": "功能请求",
+    "subtitle": "建议新功能来改进我们的平台",
+    "form": {
+      "title": "功能标题",
+      "description": "描述",
+      "category": "类别",
+      "priority": "优先级",
+      "email": "电子邮件",
+      "submit": "提交功能请求",
+      "submitting": "提交中...",
+      "success": "功能请求提交成功！",
+      "error": "提交功能请求失败。请重试。"
+    },
+    "categories": {
+      "ui": "用户界面",
+      "functionality": "功能",
+      "performance": "性能",
+      "integration": "集成",
+      "accessibility": "可访问性",
+      "other": "其他"
+    },
+    "priorities": {
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "critical": "严重"
+    }
+  },
+  "legalTools": {
+    "title": "法律工具",
+    "subtitle": "强大的AI驱动法律辅助工具",
+    "tools": {
+      "documentScanner": {
+        "title": "文档扫描器",
+        "description": "上传和分析法律文档，获得AI驱动的洞察",
+        "features": ["AI分析", "文本提取", "法律洞察"]
+      },
+      "pdfGenerator": {
+        "title": "PDF生成器",
+        "description": "从模板创建专业的法律文档",
+        "features": ["模板", "自定义表单", "专业输出"]
+      },
+      "aiLegalChat": {
+        "title": "AI法律聊天",
+        "description": "从我们的AI助手获得即时法律建议和指导",
+        "features": ["24/7支持", "法律指导", "即时回答"]
+      },
+      "safetyCheck": {
+        "title": "安全检查",
+        "description": "验证法律合规性并识别潜在问题",
+        "features": ["合规检查", "风险评估", "法律审查"]
+      }
+    }
+  },
+  "team": {
+    "title": "我们的团队",
+    "subtitle": "认识SmartProBono背后的专业团队",
+    "departments": {
+      "legal": "法律",
+      "engineering": "工程",
+      "support": "支持",
+      "security": "安全",
+      "education": "教育",
+      "outreach": "外联"
+    }
+  },
+  "press": {
+    "title": "新闻媒体",
+    "subtitle": "最新消息、新闻稿和媒体报道",
+    "sections": {
+      "pressReleases": "新闻稿",
+      "mediaCoverage": "媒体报道",
+      "pressKit": "新闻资料包",
+      "contact": "媒体联系"
+    },
+    "buttons": {
+      "readMore": "阅读更多",
+      "download": "下载",
+      "contact": "联系媒体"
+    }
+  },
+  "mission": {
+    "title": "我们的使命",
+    "subtitle": "通过技术和创新民主化法律访问",
+    "points": {
+      "universalAccess": {
+        "title": "普遍访问",
+        "description": "我们相信每个人都应该获得优质的法律援助，无论其财务状况、位置或背景如何。"
+      },
+      "technology": {
+        "title": "技术驱动的解决方案",
+        "description": "我们利用尖端的AI和技术使法律流程更加高效、可访问和用户友好。"
+      },
+      "education": {
+        "title": "法律教育",
+        "description": "我们通过教育资源和指导，赋予个人关于其权利和法律选择的知识。"
+      },
+      "community": {
+        "title": "社区影响",
+        "description": "我们专注于服务服务不足的社区，解决法律访问的系统性障碍。"
+      }
+    }
+  },
+  "resources": {
+    "title": "法律资源",
+    "subtitle": "访问免费的法律资源、文档和教育材料",
+    "description": "访问我们的法律资源、指南和模板集合，帮助您理解和导航您的法律之旅。",
+    "categories": {
+      "immigration": {
+        "title": "移民资源",
+        "description": "移民流程的基本文档和指南"
+      },
+      "legalGuides": {
+        "title": "法律指南",
+        "description": "各种法律主题的综合指南"
+      },
+      "external": {
+        "title": "外部资源",
+        "description": "政府和非营利组织的有用链接"
+      }
+    },
+    "items": {
+      "immigrationFormsGuide": {
+        "title": "移民表格指南",
+        "description": "常见移民表格的分步指南"
+      },
+      "documentChecklist": {
+        "title": "文档清单",
+        "description": "所需文件的综合清单"
+      },
+      "knowYourRights": {
+        "title": "了解您的权利",
+        "description": "了解您在移民程序中的权利"
+      },
+      "legalProcessOverview": {
+        "title": "法律程序概述",
+        "description": "解释法律程序的视频指南"
+      },
+      "documentTemplates": {
+        "title": "文档模板",
+        "description": "常见的法律文档模板"
+      },
+      "uscisWebsite": {
+        "title": "USCIS官方网站",
+        "description": "美国公民和移民服务"
+      },
+      "immigrationCourt": {
+        "title": "移民法庭信息",
+        "description": "移民审查执行办公室"
+      }
+    },
+    "buttons": {
+      "view": "查看",
+      "visit": "访问"
+    }
+  },
+  "footer": {
+    "services": "服务",
+    "resources": "资源",
+    "company": "公司",
+    "support": "支持",
+    "aboutUs": "关于我们",
+    "careers": "职业",
+    "helpCenter": "帮助中心",
+    "contactUs": "联系我们",
+    "bugReport": "错误报告",
+    "featureRequest": "功能请求"
+  },
+  "hero": {
+    "title": "法律帮助变得简单",
+    "subtitle": "AI驱动的法律协助",
+    "description": "让法律帮助变得可及、负担得起且易于理解。我们的AI驱动平台将您与所需的法律协助连接起来。",
+    "getStarted": "免费开始",
+    "buttons": {
+      "scanDocuments": "扫描文档",
+      "pdfGenerator": "PDF生成器",
+      "aiLegalChat": "AI法律聊天"
+    },
+    "features": {
+      "bankLevelSecurity": "银行级安全",
+      "licensedAttorneys": "持牌律师",
+      "abaCompliant": "ABA合规",
+      "expertSupport": "专家支持"
+    },
+    "badge": "🚀 现在提供AI驱动的法律协助"
+  },
+  "features": {
+    "title": "法律协助所需的一切",
+    "subtitle": "全面的法律工具和资源，旨在让法律帮助变得可及、负担得起且易于理解。",
+    "badge": "🚀 我们的服务",
+    "items": {
+      "aiLegalAssistant": {
+        "title": "AI法律助手",
+        "description": "通过我们先进的AI驱动聊天系统，24/7即时回答您的法律问题",
+        "badge": "最受欢迎",
+        "benefits": ["24/7可用性", "即时响应", "法律专业知识"]
+      },
+      "documentGeneration": {
+        "title": "文档生成",
+        "description": "通过AI辅助和可定制模板创建专业法律文档",
+        "badge": "新功能",
+        "benefits": ["AI驱动", "自定义模板", "法律合规"]
+      },
+      "knowYourRights": {
+        "title": "了解您的权利",
+        "description": "即时获取您在各种领域的法律权利和保护信息",
+        "benefits": ["综合指南", "易于理解", "最新信息"]
+      },
+      "virtualParalegal": {
+        "title": "虚拟律师助理",
+        "description": "为律师和法律援助组织提供AI驱动的律师助理协助",
+        "badge": "专业功能",
+        "benefits": ["节省时间", "成本效益", "专业级"]
+      },
+      "immigrationHelp": {
+        "title": "移民帮助",
+        "description": "为签证申请和移民流程提供全面支持",
+        "benefits": ["分步指南", "表格协助", "专家提示"]
+      },
+      "proBonoServices": {
+        "title": "公益服务",
+        "description": "为无法负担传统法律服务的人提供免费法律协助",
+        "benefits": ["免费法律帮助", "社区支持", "专家志愿者"]
+      },
+      "documentScanner": {
+        "title": "文档扫描器",
+        "description": "为法律文档提供AI驱动的文档分析和文本提取",
+        "badge": "AI",
+        "benefits": ["智能分析", "文本提取", "快速处理"]
+      }
+    }
+  },
+  "company": {
+    "description": "让法律帮助变得可及、负担得起且易于理解。我们的AI驱动平台将您与所需的法律协助连接起来。"
+  },
+  "aiChat": {
+    "welcome": "欢迎使用SmartProBono AI助手",
+    "description": "我可以帮助处理法律合规、商法、文档分析等。",
+    "suggestions": {
+      "gdprCompliance": "GDPR合规",
+      "entityFormation": "实体组建",
+      "privacyPolicy": "隐私政策",
+      "documentReview": "文档审查"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "页面未找到",
+      "message": "抱歉，我们找不到您要查找的页面。它可能已被移动、删除，或者您输入了错误的URL。"
+    }
+  },
+  "careers": {
+    "title": "职业",
+    "subtitle": "加入我们的团队，帮助让法律协助变得人人可及。",
+    "description": "我们正在构建法律技术的未来，需要充满激情的人加入我们的使命。"
+  },
+  "blog": {
+    "title": "博客",
+    "subtitle": "阅读我们最新的文章和法律见解。",
+    "description": "通过我们团队的最新法律新闻、见解和专家建议保持更新。"
+  },
+  "glossary": {
+    "title": "法律词汇表",
+    "subtitle": "理解法律术语和概念",
+    "description": "一个全面的法律术语词典，帮助您理解法律程序。",
+    "searchPlaceholder": "搜索法律术语...",
+    "categories": {
+      "general": "一般法律术语",
+      "business": "商法",
+      "family": "家庭法",
+      "criminal": "刑法",
+      "immigration": "移民法",
+      "civil": "民法",
+      "contracts": "合同法",
+      "property": "财产法"
+    }
+  },
+  "templates": {
+    "title": "法律模板",
+    "subtitle": "浏览我们的法律文档模板集合。",
+    "description": "访问为各种法律情况专业制作的法律文档模板。"
+  },
+  "documentGenerator": {
+    "helpText": "使用AI辅助生成专业的法律文档"
+  },
+  "accessibility": {
+    "voiceInput": {
+      "start": "开始语音输入"
+    }
+  },
+  "about": {
+    "values": {
+      "justiceForAll": {
+        "title": "人人享有正义",
+        "description": "我们相信每个人都应该获得优质的法律代表，无论其财务状况如何。"
+      },
+      "communityFirst": {
+        "title": "社区优先",
+        "description": "我们的平台将客户与致力于服务其社区的专业法律人士联系起来。"
+      },
+      "accessibility": {
+        "title": "可访问性",
+        "description": "我们通过技术使法律服务变得可访问，消除阻碍人们获得帮助的障碍。"
+      },
+      "innovation": {
+        "title": "创新",
+        "description": "我们利用尖端的AI和技术使法律流程更加高效和用户友好。"
+      },
+      "transparency": {
+        "title": "透明度",
+        "description": "我们相信在整个法律过程中进行清晰的沟通、公平的定价和诚实的建议。"
+      },
+      "support": {
+        "title": "支持",
+        "description": "我们的团队在这里指导您的每一步，在您最需要的时候提供您需要的支持。"
+      }
+    }
+  },
+  "pages": {
+    "about": {
+      "title": "关于SmartProBono",
+      "subtitle": "让法律帮助人人可及",
+      "hero": {
+        "title": "民主化法律访问",
+        "description": "我们相信每个人都应该获得优质的法律援助，无论其财务状况如何。SmartProBono使用尖端AI技术使法律帮助更加便捷、实惠和高效。"
+      }
+    },
+    "contact": {
+      "title": "联系我们",
+      "subtitle": "与我们的团队取得联系",
+      "form": {
+        "firstName": "名字",
+        "lastName": "姓氏",
+        "email": "电子邮件地址",
+        "phone": "电话号码",
+        "submit": "发送消息"
+      }
+    },
+    "bugReport": {
+      "title": "错误报告",
+      "subtitle": "通过报告问题帮助我们改进",
+      "form": {
+        "title": "错误标题",
+        "description": "描述",
+        "submit": "提交错误报告"
+      },
+      "success": {
+        "title": "错误报告已提交！",
+        "message": "感谢您报告此错误。我们的团队将调查并努力修复。",
+        "another": "报告另一个错误"
+      }
+    },
+    "featureRequest": {
+      "title": "功能请求",
+      "subtitle": "通过建议新功能帮助我们改进SmartProBono",
+      "form": {
+        "title": "功能标题",
+        "description": "详细描述",
+        "submit": "提交功能请求"
+      },
+      "success": {
+        "title": "功能请求已提交！",
+        "message": "感谢您的建议！我们的产品团队将审查您的功能请求。",
+        "another": "提交另一个请求"
+      }
+    }
+  },
+  "legalAI": {
+    "title": "AI法律合规助手"
+  }
+}

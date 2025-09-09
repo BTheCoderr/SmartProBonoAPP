@@ -1,0 +1,477 @@
+{
+  "common": {
+    "appName": "SmartProBono",
+    "next": "Suivant",
+    "back": "Retour",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "submit": "Soumettre",
+    "loading": "Chargement...",
+    "changeLanguage": "Changer de Langue",
+    "search": "Rechercher",
+    "view": "Voir",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "create": "Créer"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de Bord",
+    "forms": "Formulaires",
+    "documents": "Documents",
+    "resources": "Ressources",
+    "chat": "Chat Juridique IA",
+    "profile": "Profil",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion",
+    "legalTools": "Outils Juridiques",
+    "documentScanner": "Scanner de Documents",
+    "pdfGenerator": "Générateur PDF",
+    "aiLegalChat": "Chat Juridique IA",
+    "documentAnalysis": "Analyse de Documents",
+    "templates": "Modèles",
+    "safetyCheck": "Vérification de Sécurité",
+    "contactForm": "Formulaire de Contact",
+    "adminDashboard": "Tableau de Bord Admin",
+    "enableBetaMode": "Activer le Mode Beta",
+    "disableBetaMode": "Désactiver le Mode Beta",
+    "additionalTools": "Outils Supplémentaires"
+  },
+  "contact": {
+    "title": "Nous Contacter",
+    "subtitle": "Contactez notre équipe",
+    "form": {
+      "firstName": "Prénom",
+      "lastName": "Nom de Famille",
+      "email": "Adresse Email",
+      "phone": "Numéro de Téléphone",
+      "subject": "Sujet",
+      "message": "Message",
+      "send": "Envoyer le Message",
+      "sending": "Envoi en cours...",
+      "success": "Message envoyé avec succès !",
+      "error": "Échec de l'envoi du message. Veuillez réessayer."
+    },
+    "info": {
+      "email": "Email",
+      "phone": "Téléphone",
+      "address": "Adresse",
+      "businessHours": "Heures d'Ouverture",
+      "responseTime": "Temps de Réponse"
+    }
+  },
+  "bugReport": {
+    "title": "Rapport de Bug",
+    "subtitle": "Aidez-nous à améliorer en signalant des problèmes",
+    "form": {
+      "title": "Titre du Bug",
+      "description": "Description",
+      "steps": "Étapes pour Reproduire",
+      "expected": "Comportement Attendu",
+      "actual": "Comportement Actuel",
+      "severity": "Gravité",
+      "browser": "Navigateur",
+      "device": "Appareil",
+      "email": "Email",
+      "canContact": "Pouvons-nous vous contacter pour plus de détails ?",
+      "submit": "Soumettre le Rapport de Bug",
+      "submitting": "Soumission...",
+      "success": "Rapport de bug soumis avec succès !",
+      "error": "Échec de la soumission du rapport de bug. Veuillez réessayer."
+    },
+    "severity": {
+      "low": "Faible",
+      "medium": "Moyen",
+      "high": "Élevé",
+      "critical": "Critique"
+    }
+  },
+  "featureRequest": {
+    "title": "Demande de Fonctionnalité",
+    "subtitle": "Suggérez de nouvelles fonctionnalités pour améliorer notre plateforme",
+    "form": {
+      "title": "Titre de la Fonctionnalité",
+      "description": "Description",
+      "category": "Catégorie",
+      "priority": "Priorité",
+      "email": "Email",
+      "submit": "Soumettre la Demande de Fonctionnalité",
+      "submitting": "Soumission...",
+      "success": "Demande de fonctionnalité soumise avec succès !",
+      "error": "Échec de la soumission de la demande de fonctionnalité. Veuillez réessayer."
+    },
+    "categories": {
+      "ui": "Interface Utilisateur",
+      "functionality": "Fonctionnalité",
+      "performance": "Performance",
+      "integration": "Intégration",
+      "accessibility": "Accessibilité",
+      "other": "Autre"
+    },
+    "priorities": {
+      "low": "Faible",
+      "medium": "Moyen",
+      "high": "Élevé",
+      "critical": "Critique"
+    }
+  },
+  "legalTools": {
+    "title": "Outils Juridiques",
+    "subtitle": "Outils d'assistance juridique alimentés par l'IA",
+    "tools": {
+      "documentScanner": {
+        "title": "Scanner de Documents",
+        "description": "Téléchargez et analysez des documents juridiques avec des insights alimentés par l'IA",
+        "features": ["Analyse IA", "Extraction de Texte", "Insights Juridiques"]
+      },
+      "pdfGenerator": {
+        "title": "Générateur PDF",
+        "description": "Créez des documents juridiques professionnels à partir de modèles",
+        "features": ["Modèles", "Formulaires Personnalisés", "Sortie Professionnelle"]
+      },
+      "aiLegalChat": {
+        "title": "Chat Juridique IA",
+        "description": "Obtenez des conseils juridiques instantanés de notre assistant IA",
+        "features": ["Support 24/7", "Orientation Juridique", "Réponses Instantanées"]
+      },
+      "safetyCheck": {
+        "title": "Vérification de Sécurité",
+        "description": "Vérifiez la conformité juridique et identifiez les problèmes potentiels",
+        "features": ["Vérification de Conformité", "Évaluation des Risques", "Révision Juridique"]
+      }
+    }
+  },
+  "team": {
+    "title": "Notre Équipe",
+    "subtitle": "Rencontrez les professionnels dévoués derrière SmartProBono",
+    "departments": {
+      "legal": "Juridique",
+      "engineering": "Ingénierie",
+      "support": "Support",
+      "security": "Sécurité",
+      "education": "Éducation",
+      "outreach": "Sensibilisation"
+    }
+  },
+  "press": {
+    "title": "Presse et Médias",
+    "subtitle": "Dernières actualités, communiqués de presse et couverture médiatique",
+    "sections": {
+      "pressReleases": "Communiqués de Presse",
+      "mediaCoverage": "Couverture Médiatique",
+      "pressKit": "Kit de Presse",
+      "contact": "Contact Presse"
+    },
+    "buttons": {
+      "readMore": "Lire Plus",
+      "download": "Télécharger",
+      "contact": "Contacter la Presse"
+    }
+  },
+  "mission": {
+    "title": "Notre Mission",
+    "subtitle": "Démocratiser l'accès juridique grâce à la technologie et l'innovation",
+    "points": {
+      "universalAccess": {
+        "title": "Accès Universel",
+        "description": "Nous croyons que tout le monde mérite l'accès à une assistance juridique de qualité, indépendamment de sa situation financière, de sa localisation ou de ses antécédents."
+      },
+      "technology": {
+        "title": "Solutions Alimentées par la Technologie",
+        "description": "Nous exploitons l'IA et la technologie de pointe pour rendre les processus juridiques plus efficaces, accessibles et conviviaux."
+      },
+      "education": {
+        "title": "Éducation Juridique",
+        "description": "Nous autonomisons les individus avec des connaissances sur leurs droits et options juridiques grâce à des ressources éducatives et des conseils."
+      },
+      "community": {
+        "title": "Impact Communautaire",
+        "description": "Nous nous concentrons sur le service aux communautés mal desservies et sur l'élimination des barrières systémiques à l'accès juridique."
+      }
+    }
+  },
+  "resources": {
+    "title": "Ressources Juridiques",
+    "subtitle": "Accédez à des ressources juridiques gratuites, documents et matériels éducatifs",
+    "description": "Accédez à notre collection de ressources juridiques, guides et modèles pour vous aider à comprendre et naviguer votre parcours juridique.",
+    "categories": {
+      "immigration": {
+        "title": "Ressources d'Immigration",
+        "description": "Documents essentiels et guides pour les processus d'immigration"
+      },
+      "legalGuides": {
+        "title": "Guides Juridiques",
+        "description": "Guides complets sur divers sujets juridiques"
+      },
+      "external": {
+        "title": "Ressources Externes",
+        "description": "Liens utiles vers des organisations gouvernementales et à but non lucratif"
+      }
+    },
+    "items": {
+      "immigrationFormsGuide": {
+        "title": "Guide des Formulaires d'Immigration",
+        "description": "Guide étape par étape pour les formulaires d'immigration courants"
+      },
+      "documentChecklist": {
+        "title": "Liste de Vérification des Documents",
+        "description": "Liste de vérification complète des documents requis"
+      },
+      "knowYourRights": {
+        "title": "Connaissez Vos Droits",
+        "description": "Comprendre vos droits pendant les procédures d'immigration"
+      },
+      "legalProcessOverview": {
+        "title": "Aperçu du Processus Juridique",
+        "description": "Guide vidéo expliquant le processus juridique"
+      },
+      "documentTemplates": {
+        "title": "Modèles de Documents",
+        "description": "Modèles courants de documents juridiques"
+      },
+      "uscisWebsite": {
+        "title": "Site Web Officiel de l'USCIS",
+        "description": "Services de Citoyenneté et d'Immigration des États-Unis"
+      },
+      "immigrationCourt": {
+        "title": "Informations du Tribunal d'Immigration",
+        "description": "Bureau Exécutif de Révision de l'Immigration"
+      }
+    },
+    "buttons": {
+      "view": "Voir",
+      "visit": "Visiter"
+    }
+  },
+  "footer": {
+    "services": "Services",
+    "resources": "Ressources",
+    "company": "Entreprise",
+    "support": "Support",
+    "aboutUs": "À Propos",
+    "careers": "Carrières",
+    "helpCenter": "Centre d'Aide",
+    "contactUs": "Nous Contacter",
+    "bugReport": "Rapport de Bug",
+    "featureRequest": "Demande de Fonctionnalité",
+    "ourMission": "Notre Mission",
+    "team": "Équipe",
+    "press": "Presse",
+    "partners": "Partenaires",
+    "liveChat": "Chat en Direct",
+    "statusPage": "Page de Statut",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsOfService": "Conditions de Service",
+    "accessibility": "Accessibilité",
+    "sitemap": "Plan du Site",
+    "allRightsReserved": "Tous droits réservés",
+    "aiLegalAssistant": "Assistant Juridique IA",
+    "documentGeneration": "Génération de Documents",
+    "immigrationHelp": "Aide à l'Immigration",
+    "virtualParalegal": "Parajuriste Virtuel",
+    "documentScanner": "Scanner de Documents",
+    "proBonoServices": "Services Pro Bono",
+    "knowYourRights": "Connaissez Vos Droits",
+    "legalTemplates": "Modèles Juridiques",
+    "educationalContent": "Contenu Éducatif",
+    "legalGlossary": "Glossaire Juridique",
+    "faq": "FAQ",
+    "blog": "Blog",
+    "aiLegalAssistant": "Assistant Juridique IA",
+    "documentGeneration": "Génération de Documents",
+    "immigrationHelp": "Aide à l'Immigration",
+    "virtualParalegal": "Parajuriste Virtuel",
+    "documentScanner": "Scanner de Documents",
+    "proBonoServices": "Services Pro Bono",
+    "knowYourRights": "Connaissez Vos Droits",
+    "legalTemplates": "Modèles Juridiques",
+    "educationalContent": "Contenu Éducatif",
+    "legalGlossary": "Glossaire Juridique",
+    "faq": "FAQ",
+    "ourMission": "Notre Mission",
+    "team": "Équipe",
+    "press": "Presse",
+    "partners": "Partenaires",
+    "liveChat": "Chat en Direct",
+    "statusPage": "Page de Statut",
+    "accessibility": "Accessibilité",
+    "sitemap": "Plan du Site"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page Non Trouvée",
+      "message": "Désolé, nous n'avons pas pu trouver la page que vous recherchez. Elle a peut-être été déplacée, supprimée, ou vous avez saisi une URL incorrecte."
+    }
+  },
+  "common": {
+    "backToHome": "Retour à l'Accueil",
+    "goBack": "Retour",
+    "changeLanguage": "Changer de Langue",
+    "error": "Erreur"
+  },
+  "careers": {
+    "title": "Carrières",
+    "subtitle": "Rejoignez notre équipe et aidez à rendre l'assistance juridique accessible à tous.",
+    "description": "Nous construisons l'avenir de la technologie juridique et avons besoin de personnes passionnées pour rejoindre notre mission."
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Lisez nos derniers articles et idées juridiques.",
+    "description": "Restez à jour avec les dernières nouvelles juridiques, idées et conseils d'experts de notre équipe."
+  },
+  "glossary": {
+    "title": "Glossaire Juridique",
+    "subtitle": "Comprenez les termes et concepts juridiques",
+    "description": "Un dictionnaire complet de termes juridiques pour vous aider à comprendre le processus juridique.",
+    "searchPlaceholder": "Rechercher des termes juridiques...",
+    "categories": {
+      "general": "Termes Juridiques Généraux",
+      "business": "Droit des Affaires",
+      "family": "Droit de la Famille",
+      "criminal": "Droit Pénal",
+      "immigration": "Droit de l'Immigration",
+      "civil": "Droit Civil",
+      "contracts": "Droit des Contrats",
+      "property": "Droit de la Propriété"
+    }
+  },
+  "templates": {
+    "title": "Modèles Juridiques",
+    "subtitle": "Parcourez notre collection de modèles de documents juridiques.",
+    "description": "Accédez à des modèles de documents juridiques professionnellement conçus pour diverses situations juridiques."
+  },
+  "documentGenerator": {
+    "helpText": "Générez des documents juridiques professionnels avec l'assistance de l'IA"
+  },
+  "accessibility": {
+    "voiceInput": {
+      "start": "Commencer la Saisie Vocale"
+    }
+  },
+  "footer": {
+    "services": "Services",
+    "company": "Entreprise",
+    "support": "Support",
+    "legal": "Légal",
+    "followUs": "Suivez-nous",
+    "newsletter": "Newsletter",
+    "newsletterDescription": "Restez informé des dernières nouvelles juridiques et ressources",
+    "subscribe": "S'abonner",
+    "allRightsReserved": "Tous droits réservés",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsOfService": "Conditions d'Utilisation",
+    "contactUs": "Nous Contacter",
+    "aboutUs": "À Propos de Nous",
+    "careers": "Carrières",
+    "blog": "Blog",
+    "helpCenter": "Centre d'Aide",
+    "bugReport": "Rapport de Bug",
+    "featureRequest": "Demande de Fonctionnalité"
+  },
+  "about": {
+    "values": {
+      "justiceForAll": {
+        "title": "Justice pour Tous",
+        "description": "Nous croyons que tout le monde mérite l'accès à une représentation juridique de qualité, indépendamment de sa situation financière."
+      },
+      "communityFirst": {
+        "title": "Communauté d'Abord",
+        "description": "Notre plateforme connecte les clients avec des professionnels juridiques dédiés qui sont engagés à servir leurs communautés."
+      },
+      "accessibility": {
+        "title": "Accessibilité",
+        "description": "Nous rendons les services juridiques accessibles grâce à la technologie, en éliminant les barrières qui empêchent les gens d'obtenir de l'aide."
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "Nous exploitons l'IA et la technologie de pointe pour rendre les processus juridiques plus efficaces et conviviaux."
+      },
+      "transparency": {
+        "title": "Transparence",
+        "description": "Nous croyons en la communication claire, les prix équitables et les conseils honnêtes tout au long du processus juridique."
+      },
+      "support": {
+        "title": "Support",
+        "description": "Notre équipe est là pour vous guider à chaque étape, en fournissant le support dont vous avez besoin quand vous en avez le plus besoin."
+      }
+    }
+  },
+  "hero": {
+    "title": "Aide Juridique Gratuite",
+    "subtitle": "Rendue Simple",
+    "description": "Obtenez une assistance juridique instantanée, une génération de documents alimentée par l'IA et des conseils professionnels - le tout sur une plateforme sécurisée.",
+    "getStarted": "Commencer Gratuitement",
+    "learnMore": "En Savoir Plus",
+    "whyChoose": "Pourquoi Choisir SmartProBono ?",
+    "features": {
+      "aiPowered": "Assistance Juridique Alimentée par l'IA",
+      "instantHelp": "Aide Juridique Instantanée",
+      "securePlatform": "Sécurisé et Confidentiel",
+      "freeAccess": "100% Accès Gratuit",
+      "expertSupport": "Support d'Experts",
+      "documentGeneration": "Génération Intelligente de Documents",
+      "bankLevelSecurity": "Sécurité de Niveau Bancaire",
+      "licensedAttorneys": "Avocats Licenciés",
+      "abaCompliant": "Conforme ABA"
+    },
+    "badge": "🚀 Maintenant avec Assistance Juridique avec IA",
+    "buttons": {
+      "scanDocuments": "Scanner des Documents",
+      "pdfGenerator": "Générateur PDF",
+      "aiLegalChat": "Chat Juridique IA"
+    }
+  },
+  "pages": {
+    "about": {
+      "title": "À Propos de SmartProBono",
+      "subtitle": "Rendre l'aide juridique accessible à tous",
+      "hero": {
+        "title": "Démocratiser l'Accès Juridique",
+        "description": "Nous croyons que tout le monde mérite l'accès à une assistance juridique de qualité, indépendamment de sa situation financière. SmartProBono utilise une technologie d'IA de pointe pour rendre l'aide juridique plus accessible, abordable et efficace."
+      }
+    },
+    "contact": {
+      "title": "Nous Contacter",
+      "subtitle": "Contactez notre équipe",
+      "form": {
+        "firstName": "Prénom",
+        "lastName": "Nom de Famille",
+        "email": "Adresse E-mail",
+        "phone": "Numéro de Téléphone",
+        "submit": "Envoyer le Message"
+      }
+    },
+    "bugReport": {
+      "title": "Rapport de Bug",
+      "subtitle": "Aidez-nous à améliorer en signalant les problèmes",
+      "form": {
+        "title": "Titre du Bug",
+        "description": "Description",
+        "submit": "Soumettre le Rapport de Bug"
+      },
+      "success": {
+        "title": "Rapport de Bug Soumis !",
+        "message": "Merci d'avoir signalé ce bug. Notre équipe enquêtera et travaillera sur une correction.",
+        "another": "Signaler un Autre Bug"
+      }
+    },
+    "featureRequest": {
+      "title": "Demande de Fonctionnalité",
+      "subtitle": "Aidez-nous à améliorer SmartProBono en suggérant de nouvelles fonctionnalités",
+      "form": {
+        "title": "Titre de la Fonctionnalité",
+        "description": "Description Détaillée",
+        "submit": "Soumettre la Demande"
+      },
+      "success": {
+        "title": "Demande Soumise !",
+        "message": "Merci pour votre suggestion ! Notre équipe produit examinera votre demande de fonctionnalité.",
+        "another": "Soumettre une Autre Demande"
+      }
+    }
+  },
+  "legalAI": {
+    "title": "Assistant IA de Conformité Juridique"
+  }
+}

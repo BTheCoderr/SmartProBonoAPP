@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { 
   Button, 
-  Menu, 
-  MenuItem, 
   IconButton, 
   Tooltip, 
   Box, 
   Typography,
-  ListItemIcon,
-  ListItemText
+  Popover
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import TranslateIcon from '@mui/icons-material/Translate';
@@ -19,7 +16,10 @@ import LanguageIcon from '@mui/icons-material/Language';
 const languages = [
   { code: 'en', label: 'English', flag: '🇺🇸' },
   { code: 'es', label: 'Español', flag: '🇪🇸' },
-  { code: 'pt', label: 'Português', flag: '🇧🇷' }
+  { code: 'pt', label: 'Português', flag: '🇧🇷' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'zh', label: '中文', flag: '🇨🇳' },
+  { code: 'ar', label: 'العربية', flag: '🇸🇦' }
 ];
 
 const LanguageSwitcher = ({ variant = 'icon' }) => {
@@ -28,10 +28,12 @@ const LanguageSwitcher = ({ variant = 'icon' }) => {
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (event) => {
     setAnchorEl(null);
   };
 
@@ -65,29 +67,55 @@ const LanguageSwitcher = ({ variant = 'icon' }) => {
             <TranslateIcon />
           </IconButton>
         </Tooltip>
-        <Menu
+        <Popover
           id="language-menu"
-          anchorEl={anchorEl}
           open={open}
+          anchorEl={anchorEl}
           onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'language-button',
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          sx={{
+            '& .MuiPaper-root': {
+              zIndex: 9999,
+              mt: 1,
+              minWidth: 200
+            }
           }}
         >
-          {languages.map((language) => (
-            <MenuItem 
-              key={language.code}
-              onClick={() => changeLanguage(language.code)}
-              selected={i18n.language === language.code}
-            >
-              <ListItemIcon sx={{ fontSize: '1.2rem' }}>
-                {language.flag}
-              </ListItemIcon>
-              <ListItemText>{language.label}</ListItemText>
-              {i18n.language === language.code && <CheckIcon fontSize="small" />}
-            </MenuItem>
-          ))}
-        </Menu>
+          <Box sx={{ p: 1 }}>
+            {languages.map((language) => (
+              <Box
+                key={language.code}
+                onClick={() => changeLanguage(language.code)}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  p: 1.5,
+                  cursor: 'pointer',
+                  borderRadius: 1,
+                  '&:hover': {
+                    bgcolor: 'action.hover'
+                  },
+                  bgcolor: i18n.language === language.code ? 'action.selected' : 'transparent'
+                }}
+              >
+                <Typography sx={{ fontSize: '1.2rem', mr: 1.5 }}>
+                  {language.flag}
+                </Typography>
+                <Typography sx={{ flexGrow: 1 }}>
+                  {language.label}
+                </Typography>
+                {i18n.language === language.code && <CheckIcon fontSize="small" />}
+              </Box>
+            ))}
+          </Box>
+        </Popover>
       </>
     );
   }
@@ -102,29 +130,55 @@ const LanguageSwitcher = ({ variant = 'icon' }) => {
         >
           {getCurrentLanguageLabel()}
         </Button>
-        <Menu
+        <Popover
           id="language-menu"
-          anchorEl={anchorEl}
           open={open}
+          anchorEl={anchorEl}
           onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'language-button',
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          sx={{
+            '& .MuiPaper-root': {
+              zIndex: 9999,
+              mt: 1,
+              minWidth: 200
+            }
           }}
         >
-          {languages.map((language) => (
-            <MenuItem 
-              key={language.code}
-              onClick={() => changeLanguage(language.code)}
-              selected={i18n.language === language.code}
-            >
-              <ListItemIcon sx={{ fontSize: '1.2rem' }}>
-                {language.flag}
-              </ListItemIcon>
-              <ListItemText>{language.label}</ListItemText>
-              {i18n.language === language.code && <CheckIcon fontSize="small" />}
-            </MenuItem>
-          ))}
-        </Menu>
+          <Box sx={{ p: 1 }}>
+            {languages.map((language) => (
+              <Box
+                key={language.code}
+                onClick={() => changeLanguage(language.code)}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  p: 1.5,
+                  cursor: 'pointer',
+                  borderRadius: 1,
+                  '&:hover': {
+                    bgcolor: 'action.hover'
+                  },
+                  bgcolor: i18n.language === language.code ? 'action.selected' : 'transparent'
+                }}
+              >
+                <Typography sx={{ fontSize: '1.2rem', mr: 1.5 }}>
+                  {language.flag}
+                </Typography>
+                <Typography sx={{ flexGrow: 1 }}>
+                  {language.label}
+                </Typography>
+                {i18n.language === language.code && <CheckIcon fontSize="small" />}
+              </Box>
+            ))}
+          </Box>
+        </Popover>
       </>
     );
   }

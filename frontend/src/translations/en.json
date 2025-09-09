@@ -24,7 +24,439 @@
     "profile": "Profile",
     "login": "Login",
     "register": "Register",
-    "logout": "Logout"
+    "logout": "Logout",
+    "legalTools": "Legal Tools",
+    "documentScanner": "Document Scanner",
+    "pdfGenerator": "PDF Generator",
+    "aiLegalChat": "AI Legal Chat",
+    "documentAnalysis": "Document Analysis",
+    "templates": "Templates",
+    "safetyCheck": "Safety Check",
+    "contactForm": "Contact Form",
+    "adminDashboard": "Admin Dashboard",
+    "enableBetaMode": "Enable Beta Mode",
+    "disableBetaMode": "Disable Beta Mode",
+    "additionalTools": "Additional Tools"
+  },
+  "footer": {
+    "services": "Services",
+    "company": "Company",
+    "support": "Support",
+    "legal": "Legal",
+    "followUs": "Follow Us",
+    "newsletter": "Newsletter",
+    "newsletterDescription": "Stay updated with the latest legal news and resources",
+    "subscribe": "Subscribe",
+    "allRightsReserved": "All rights reserved",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contactUs": "Contact Us",
+    "aboutUs": "About Us",
+    "careers": "Careers",
+    "blog": "Blog",
+    "helpCenter": "Help Center",
+    "bugReport": "Bug Report",
+    "featureRequest": "Feature Request"
+  },
+  "about": {
+    "values": {
+      "justiceForAll": {
+        "title": "Justice for All",
+        "description": "We believe everyone deserves access to quality legal representation, regardless of their financial situation."
+      },
+      "communityFirst": {
+        "title": "Community First", 
+        "description": "Our platform connects clients with dedicated legal professionals who are committed to serving their communities."
+      },
+      "accessibility": {
+        "title": "Accessibility",
+        "description": "We make legal services accessible through technology, breaking down barriers that prevent people from getting help."
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "We leverage cutting-edge AI and technology to make legal processes more efficient and user-friendly."
+      },
+      "transparency": {
+        "title": "Transparency",
+        "description": "We believe in clear communication, fair pricing, and honest advice throughout the legal process."
+      },
+      "support": {
+        "title": "Support",
+        "description": "Our team is here to guide you every step of the way, providing the support you need when you need it most."
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in touch with our team",
+    "form": {
+      "firstName": "First Name",
+      "lastName": "Last Name", 
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!",
+      "error": "Failed to send message. Please try again."
+    },
+    "info": {
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "businessHours": "Business Hours",
+      "responseTime": "Response Time"
+    }
+  },
+  "bugReport": {
+    "title": "Bug Report",
+    "subtitle": "Help us improve by reporting issues",
+    "form": {
+      "title": "Bug Title",
+      "description": "Description",
+      "steps": "Steps to Reproduce",
+      "expected": "Expected Behavior",
+      "actual": "Actual Behavior",
+      "severity": "Severity",
+      "browser": "Browser",
+      "device": "Device",
+      "email": "Email",
+      "canContact": "Can we contact you for more details?",
+      "submit": "Submit Bug Report",
+      "submitting": "Submitting...",
+      "success": "Bug report submitted successfully!",
+      "error": "Failed to submit bug report. Please try again."
+    },
+    "severity": {
+      "low": "Low",
+      "medium": "Medium", 
+      "high": "High",
+      "critical": "Critical"
+    }
+  },
+  "featureRequest": {
+    "title": "Feature Request",
+    "subtitle": "Suggest new features to improve our platform",
+    "form": {
+      "title": "Feature Title",
+      "description": "Description",
+      "category": "Category",
+      "priority": "Priority",
+      "email": "Email",
+      "submit": "Submit Feature Request",
+      "submitting": "Submitting...",
+      "success": "Feature request submitted successfully!",
+      "error": "Failed to submit feature request. Please try again."
+    },
+    "categories": {
+      "ui": "User Interface",
+      "functionality": "Functionality",
+      "performance": "Performance",
+      "integration": "Integration",
+      "accessibility": "Accessibility",
+      "other": "Other"
+    },
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    }
+  },
+  "legalTools": {
+    "title": "Legal Tools",
+    "subtitle": "Powerful AI-driven legal assistance tools",
+    "tools": {
+      "documentScanner": {
+        "title": "Document Scanner",
+        "description": "Upload and analyze legal documents with AI-powered insights",
+        "features": ["AI Analysis", "Text Extraction", "Legal Insights"]
+      },
+      "pdfGenerator": {
+        "title": "PDF Generator", 
+        "description": "Create professional legal documents from templates",
+        "features": ["Templates", "Custom Forms", "Professional Output"]
+      },
+      "aiLegalChat": {
+        "title": "AI Legal Chat",
+        "description": "Get instant legal advice and guidance from our AI assistant",
+        "features": ["24/7 Support", "Legal Guidance", "Instant Answers"]
+      },
+      "safetyCheck": {
+        "title": "Safety Check",
+        "description": "Verify legal compliance and identify potential issues",
+        "features": ["Compliance Check", "Risk Assessment", "Legal Review"]
+      }
+    }
+  },
+  "team": {
+    "title": "Our Team",
+    "subtitle": "Meet the dedicated professionals behind SmartProBono",
+    "departments": {
+      "legal": "Legal",
+      "engineering": "Engineering", 
+      "support": "Support",
+      "security": "Security",
+      "education": "Education",
+      "outreach": "Outreach"
+    }
+  },
+  "press": {
+    "title": "Press & Media",
+    "subtitle": "Latest news, press releases, and media coverage",
+    "sections": {
+      "pressReleases": "Press Releases",
+      "mediaCoverage": "Media Coverage",
+      "pressKit": "Press Kit",
+      "contact": "Press Contact"
+    },
+    "buttons": {
+      "readMore": "Read More",
+      "download": "Download",
+      "contact": "Contact Press"
+    }
+  },
+  "mission": {
+    "title": "Our Mission",
+    "subtitle": "Democratizing legal access through technology and innovation",
+    "points": {
+      "universalAccess": {
+        "title": "Universal Access",
+        "description": "We believe everyone deserves access to quality legal assistance, regardless of their financial situation, location, or background."
+      },
+      "technology": {
+        "title": "Technology-Driven Solutions",
+        "description": "We leverage cutting-edge AI and technology to make legal processes more efficient, accessible, and user-friendly."
+      },
+      "education": {
+        "title": "Legal Education",
+        "description": "We empower individuals with knowledge about their rights and legal options through educational resources and guidance."
+      },
+      "community": {
+        "title": "Community Impact",
+        "description": "We focus on serving underserved communities and addressing systemic barriers to legal access."
+      }
+    }
+  },
+  "resources": {
+    "title": "Legal Resources",
+    "subtitle": "Access free legal resources, documents, and educational materials",
+    "description": "Access our collection of legal resources, guides, and templates to help you understand and navigate your legal journey.",
+    "categories": {
+      "immigration": {
+        "title": "Immigration Resources",
+        "description": "Essential documents and guides for immigration processes"
+      },
+      "legalGuides": {
+        "title": "Legal Guides",
+        "description": "Comprehensive guides on various legal topics"
+      },
+      "external": {
+        "title": "External Resources",
+        "description": "Helpful links to government and non-profit organizations"
+      }
+    },
+    "items": {
+      "immigrationFormsGuide": {
+        "title": "Immigration Forms Guide",
+        "description": "Step-by-step guide for common immigration forms"
+      },
+      "documentChecklist": {
+        "title": "Document Checklist",
+        "description": "Comprehensive checklist of required documents"
+      },
+      "knowYourRights": {
+        "title": "Know Your Rights",
+        "description": "Understanding your rights during immigration proceedings"
+      },
+      "legalProcessOverview": {
+        "title": "Legal Process Overview",
+        "description": "Video guide explaining the legal process"
+      },
+      "documentTemplates": {
+        "title": "Document Templates",
+        "description": "Common legal document templates"
+      },
+      "uscisWebsite": {
+        "title": "USCIS Official Website",
+        "description": "U.S. Citizenship and Immigration Services"
+      },
+      "immigrationCourt": {
+        "title": "Immigration Court Information",
+        "description": "Executive Office for Immigration Review"
+      }
+    },
+    "buttons": {
+      "view": "View",
+      "visit": "Visit"
+    }
+  },
+  "footer": {
+    "services": "Services",
+    "resources": "Resources",
+    "company": "Company",
+    "support": "Support",
+    "aboutUs": "About Us",
+    "careers": "Careers",
+    "helpCenter": "Help Center",
+    "contactUs": "Contact Us",
+    "bugReport": "Bug Report",
+    "featureRequest": "Feature Request",
+    "ourMission": "Our Mission",
+    "team": "Team",
+    "press": "Press",
+    "partners": "Partners",
+    "liveChat": "Live Chat",
+    "statusPage": "Status Page",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "accessibility": "Accessibility",
+    "sitemap": "Sitemap",
+    "allRightsReserved": "All rights reserved",
+    "aiLegalAssistant": "AI Legal Assistant",
+    "documentGeneration": "Document Generation",
+    "immigrationHelp": "Immigration Help",
+    "virtualParalegal": "Virtual Paralegal",
+    "documentScanner": "Document Scanner",
+    "proBonoServices": "Pro Bono Services",
+    "knowYourRights": "Know Your Rights",
+    "legalTemplates": "Legal Templates",
+    "educationalContent": "Educational Content",
+    "legalGlossary": "Legal Glossary",
+    "faq": "FAQ",
+    "blog": "Blog"
+  },
+  "hero": {
+    "title": "Legal Help Made Simple",
+    "subtitle": "AI-Powered Legal Assistance",
+    "description": "Making legal help accessible, affordable, and easy to understand for everyone. Our AI-powered platform connects you with the legal assistance you need.",
+    "getStarted": "Get Started Free",
+    "buttons": {
+      "scanDocuments": "Scan Documents",
+      "pdfGenerator": "PDF Generator", 
+      "aiLegalChat": "AI Legal Chat"
+    },
+    "features": {
+      "bankLevelSecurity": "Bank-Level Security",
+      "licensedAttorneys": "Licensed Attorneys",
+      "abaCompliant": "ABA Compliant",
+      "expertSupport": "Expert Support"
+    },
+    "badge": "🚀 Now with AI-Powered Legal Assistance"
+  },
+  "features": {
+    "title": "Everything You Need for Legal Assistance",
+    "subtitle": "Comprehensive legal tools and resources designed to make legal help accessible, affordable, and easy to understand for everyone.",
+    "badge": "🚀 Our Services",
+    "items": {
+      "aiLegalAssistant": {
+        "title": "AI Legal Assistant",
+        "description": "Get instant answers to your legal questions 24/7 with our advanced AI-powered chat system",
+        "badge": "Most Popular",
+        "benefits": ["24/7 Availability", "Instant Responses", "Legal Expertise"]
+      },
+      "documentGeneration": {
+        "title": "Document Generation",
+        "description": "Create professional legal documents with AI assistance and customizable templates",
+        "badge": "New",
+        "benefits": ["AI-Powered", "Custom Templates", "Legal Compliance"]
+      },
+      "knowYourRights": {
+        "title": "Know Your Rights",
+        "description": "Get instant information about your legal rights and protections in various areas",
+        "benefits": ["Comprehensive Guide", "Easy to Understand", "Up-to-Date"]
+      },
+      "virtualParalegal": {
+        "title": "Virtual Paralegal",
+        "description": "AI-powered paralegal assistance for attorneys and legal aid organizations",
+        "badge": "Pro Feature",
+        "benefits": ["Time Saving", "Cost Effective", "Professional Grade"]
+      },
+      "immigrationHelp": {
+        "title": "Immigration Help",
+        "description": "Comprehensive support for visa applications and immigration processes",
+        "benefits": ["Step-by-Step Guide", "Form Assistance", "Expert Tips"]
+      },
+      "proBonoServices": {
+        "title": "Pro Bono Services",
+        "description": "Free legal assistance for those who cannot afford traditional legal services",
+        "benefits": ["Free Legal Help", "Community Support", "Expert Volunteers"]
+      },
+      "documentScanner": {
+        "title": "Document Scanner",
+        "description": "AI-powered document analysis and text extraction for legal documents",
+        "badge": "AI",
+        "benefits": ["Smart Analysis", "Text Extraction", "Quick Processing"]
+      }
+    }
+  },
+  "company": {
+    "description": "Making legal help accessible, affordable, and easy to understand for everyone. Our AI-powered platform connects you with the legal assistance you need."
+  },
+  "aiChat": {
+    "welcome": "Welcome to SmartProBono AI Assistant",
+    "description": "I can help with legal compliance, business law, document analysis, and more.",
+    "suggestions": {
+      "gdprCompliance": "GDPR Compliance",
+      "entityFormation": "Entity Formation", 
+      "privacyPolicy": "Privacy Policy",
+      "documentReview": "Document Review"
+    }
+  },
+  "legalAI": {
+    "title": "AI Legal Compliance Assistant"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page Not Found",
+      "message": "Sorry, we couldn't find the page you're looking for. It might have been moved, deleted, or you entered the wrong URL."
+    }
+  },
+  "common": {
+    "backToHome": "Back to Home",
+    "goBack": "Go Back",
+    "changeLanguage": "Change Language",
+    "error": "Error"
+  },
+  "careers": {
+    "title": "Careers",
+    "subtitle": "Join our team and help make legal assistance accessible to everyone.",
+    "description": "We're building the future of legal technology and need passionate people to join our mission."
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Read our latest articles and legal insights.",
+    "description": "Stay updated with the latest legal news, insights, and expert advice from our team."
+  },
+  "glossary": {
+    "title": "Legal Glossary",
+    "subtitle": "Understand legal terms and concepts",
+    "description": "A comprehensive dictionary of legal terms to help you understand the legal process.",
+    "searchPlaceholder": "Search legal terms...",
+    "categories": {
+      "general": "General Legal Terms",
+      "business": "Business Law",
+      "family": "Family Law",
+      "criminal": "Criminal Law",
+      "immigration": "Immigration Law",
+      "civil": "Civil Law",
+      "contracts": "Contract Law",
+      "property": "Property Law"
+    }
+  },
+  "templates": {
+    "title": "Legal Templates",
+    "subtitle": "Browse our collection of legal document templates.",
+    "description": "Access professionally crafted legal document templates for various legal situations."
+  },
+  "documentGenerator": {
+    "helpText": "Generate professional legal documents with AI assistance"
+  },
+  "accessibility": {
+    "voiceInput": {
+      "start": "Start Voice Input"
+    }
   },
   "auth": {
     "login": "Login",
@@ -177,5 +609,126 @@
     "networkError": "Network error. Please check your connection.",
     "unauthorized": "You are not authorized to view this page.",
     "notFound": "The requested resource was not found."
+  },
+  "pages": {
+    "about": {
+      "title": "About SmartProBono",
+      "subtitle": "Making legal help accessible to everyone",
+      "hero": {
+        "title": "Democratizing Legal Access",
+        "description": "We believe everyone deserves access to quality legal assistance, regardless of their financial situation. SmartProBono uses cutting-edge AI technology to make legal help more accessible, affordable, and efficient."
+      },
+      "mission": {
+        "title": "Our Mission",
+        "description": "To break down barriers to legal justice by providing free, AI-powered legal assistance to those who need it most."
+      },
+      "technology": {
+        "title": "Our Technology",
+        "description": "We leverage advanced artificial intelligence to provide comprehensive legal support"
+      },
+      "team": {
+        "title": "Our Team",
+        "description": "Meet the dedicated professionals who make SmartProBono possible"
+      }
+    },
+    "contact": {
+      "title": "Contact Us",
+      "subtitle": "Get in touch with our team",
+      "form": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "caseType": "Case Type",
+        "urgency": "Urgency Level",
+        "state": "State",
+        "city": "City",
+        "zipCode": "ZIP Code",
+        "contactMethod": "Preferred Contact Method",
+        "bestTime": "Best Time to Contact",
+        "hearAbout": "How did you hear about us?",
+        "hasAttorney": "Do you currently have an attorney?",
+        "caseValue": "Estimated Case Value",
+        "message": "Message",
+        "submit": "Send Message"
+      }
+    },
+    "bugReport": {
+      "title": "Bug Report",
+      "subtitle": "Help us improve by reporting issues",
+      "form": {
+        "title": "Bug Title",
+        "description": "Description",
+        "steps": "Steps to Reproduce",
+        "expected": "Expected Behavior",
+        "actual": "Actual Behavior",
+        "severity": "Severity",
+        "browser": "Browser",
+        "device": "Device",
+        "email": "Your Email (Optional)",
+        "canContact": "I can be contacted for additional information",
+        "submit": "Submit Bug Report"
+      },
+      "success": {
+        "title": "Bug Report Submitted!",
+        "message": "Thank you for reporting this bug. Our team will investigate and work on a fix.",
+        "followUp": "If you provided your email, we'll notify you when the issue is resolved.",
+        "another": "Report Another Bug"
+      }
+    },
+    "featureRequest": {
+      "title": "Feature Request",
+      "subtitle": "Help us improve SmartProBono by suggesting new features",
+      "form": {
+        "title": "Feature Title",
+        "description": "Detailed Description",
+        "category": "Category",
+        "priority": "Priority",
+        "email": "Your Email (Optional)",
+        "submit": "Submit Feature Request"
+      },
+      "success": {
+        "title": "Feature Request Submitted!",
+        "message": "Thank you for your suggestion! Our product team will review your feature request.",
+        "followUp": "If you provided your email, we'll notify you if this feature is implemented.",
+        "another": "Submit Another Request"
+      }
+    },
+    "helpCenter": {
+      "title": "Help Center",
+      "subtitle": "Find answers to common questions and get support",
+      "search": "Search for help...",
+      "quickLinks": "Quick Links",
+      "resources": "Resources",
+      "faq": "Frequently Asked Questions"
+    },
+    "partners": {
+      "title": "Partners",
+      "subtitle": "Our partners who help us make legal assistance accessible",
+      "benefits": "Why Partner With Us?",
+      "becomePartner": "Become a Partner"
+    },
+    "press": {
+      "title": "Press",
+      "subtitle": "Press releases and media coverage of SmartProBono",
+      "pressKit": "Press Kit",
+      "releases": "Press Releases",
+      "coverage": "Media Coverage",
+      "awards": "Awards & Recognition"
+    },
+    "team": {
+      "title": "Our Team",
+      "subtitle": "Meet the dedicated professionals who make SmartProBono possible",
+      "departments": "Our Departments",
+      "joinMission": "Join Our Mission"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "subtitle": "Learn about our mission to make legal help accessible to everyone",
+      "whatDrivesUs": "What Drives Us",
+      "ourImpact": "Our Impact",
+      "ourValues": "Our Values",
+      "ourGoals": "Our Goals"
+    }
   }
 } 

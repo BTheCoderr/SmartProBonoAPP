@@ -3,8 +3,7 @@ import {
   AppBar, Toolbar, Typography, Button, IconButton, 
   Menu, MenuItem, Box, Avatar, Tooltip, 
   useMediaQuery, useTheme, Drawer, List, ListItem, 
-  ListItemIcon, ListItemText, Badge, Chip, useScrollTrigger,
-  Slide, Container
+  ListItemIcon, ListItemText, Badge, Chip, Container
 } from '@mui/material';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -18,22 +17,18 @@ import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
+import DescriptionIcon from '@mui/icons-material/Description';
+import GavelIcon from '@mui/icons-material/Gavel';
+import ChatIcon from '@mui/icons-material/Chat';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import SecurityIcon from '@mui/icons-material/Security';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 import Logo from './Logo';
 
-// Hide header on scroll down, show on scroll up
-function HideOnScroll(props) {
-  const { children } = props;
-  const trigger = useScrollTrigger();
-
-  return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      {children}
-    </Slide>
-  );
-}
+// HideOnScroll component removed - not currently used
 
 const Header = () => {
   const { currentUser, logout, isBetaMode, enableBetaMode, disableBetaMode } = useAuth();
@@ -42,12 +37,11 @@ const Header = () => {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const isSmallMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
-  // Log mobile detection for debugging
-  console.log('Mobile detection:', { isMobile, isSmallMobile });
+  // Mobile detection for responsive behavior
   
   const [anchorEl, setAnchorEl] = useState(null);
+  const [moreToolsAnchor, setMoreToolsAnchor] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   
@@ -70,6 +64,14 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  const handleMoreToolsMenu = (event) => {
+    setMoreToolsAnchor(event.currentTarget);
+  };
+
+  const handleMoreToolsClose = () => {
+    setMoreToolsAnchor(null);
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -90,20 +92,34 @@ const Header = () => {
     setDrawerOpen(open);
   };
 
-  const menuItems = [
+  const mainMenuItems = [
     { text: t('navigation.home'), path: '/', icon: <HomeIcon />, badge: null },
-    { text: t('navigation.dashboard'), path: '/dashboard', icon: <DashboardIcon />, authRequired: true, badge: null },
+    { text: t('navigation.legalTools'), path: '/legal-tools', icon: <GavelIcon />, badge: "New" },
+    { text: t('navigation.documentScanner'), path: '/scan-document', icon: <DocumentScannerIcon />, badge: "AI" },
+    { text: t('navigation.pdfGenerator'), path: '/generate-document', icon: <DescriptionIcon />, badge: "New" },
+    { text: t('navigation.aiLegalChat'), path: '/ai-chat', icon: <ChatIcon />, badge: "AI" },
+  ];
+
+  const moreToolsItems = [
+    { text: t('navigation.documentAnalysis'), path: '/document-scan', icon: <DocumentScannerIcon />, description: 'Advanced document analysis' },
+    { text: t('navigation.templates'), path: '/templates', icon: <DescriptionIcon />, description: 'Browse document templates' },
+    { text: t('navigation.safetyCheck'), path: '/safety-check', icon: <SecurityIcon />, description: 'Legal compliance checker' },
+    { text: 'Test Dashboard', path: '/test', icon: <GavelIcon />, description: 'Development testing tools' },
+    { text: t('navigation.contactForm'), path: '/contact', icon: <ContactSupportIcon />, description: 'Get in touch with us' },
+    { text: t('navigation.resources'), path: '/resources', icon: <MenuBookIcon />, description: 'Legal resources and guides' },
+  ];
+
+  const userMenuItems = [
+    { text: t('navigation.dashboard'), path: '/dashboard', icon: <DashboardIcon />, authRequired: true },
     { text: t('navigation.forms'), path: '/forms', icon: <DocumentScannerIcon />, authRequired: true, badge: "New" },
     { text: t('navigation.chat'), path: '/chat', icon: <ForumIcon />, authRequired: true, badge: "AI" },
-    { text: t('navigation.resources'), path: '/resources', icon: <MenuBookIcon />, badge: null },
-    { text: 'Document Analysis', path: '/document-scan', icon: <DocumentScannerIcon />, authRequired: true, badge: "AI" },
   ];
 
   const profileMenuItems = [
     { text: t('navigation.profile'), path: '/profile', icon: <PersonIcon /> },
-    ...(currentUser?.isAdmin ? [{ text: 'Admin Dashboard', path: '/admin', icon: <AdminPanelSettingsIcon /> }] : []),
+    ...(currentUser?.isAdmin ? [{ text: t('navigation.adminDashboard'), path: '/admin', icon: <AdminPanelSettingsIcon /> }] : []),
     { 
-      text: isBetaMode ? 'Disable Beta Mode' : 'Enable Beta Mode', 
+      text: isBetaMode ? t('navigation.disableBetaMode') : t('navigation.enableBetaMode'), 
       onClick: isBetaMode ? disableBetaMode : enableBetaMode, 
       icon: <Chip label={isBetaMode ? 'BETA ON' : 'BETA OFF'} size="small" color={isBetaMode ? 'success' : 'default'} />
     },
@@ -190,13 +206,13 @@ const Header = () => {
 
           {/* Navigation Items */}
           <List sx={{ flex: 1, px: 2 }}>
-            {menuItems.map((item) => (
-              (!item.authRequired || currentUser) && (
-                <ListItem 
-                  button 
-                  component={RouterLink} 
-                  to={item.path} 
-                  key={item.text}
+            {/* Main Menu Items */}
+            {mainMenuItems.map((item) => (
+              <ListItem 
+                button 
+                component={RouterLink} 
+                to={item.path} 
+                key={item.text}
                   sx={{
                     mb: 1,
                     borderRadius: 2,
@@ -229,12 +245,95 @@ const Header = () => {
                     }
                   />
                 </ListItem>
-              )
             ))}
+
+            {/* Divider */}
+            <Box sx={{ my: 2, px: 2 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                MORE TOOLS
+              </Typography>
+            </Box>
+
+            {/* More Tools Items */}
+            {moreToolsItems.map((item) => (
+              <ListItem 
+                button 
+                component={RouterLink} 
+                to={item.path} 
+                key={item.text}
+                sx={{
+                  mb: 1,
+                  borderRadius: 2,
+                  backgroundColor: isActivePath(item.path) ? 'rgba(59,130,246,0.1)' : 'transparent',
+                  '&:hover': {
+                    backgroundColor: 'rgba(59,130,246,0.1)',
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: 'rgba(0,0,0,0.7)', minWidth: 40 }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText 
+                  primary={item.text}
+                  secondary={item.description}
+                  secondaryTypographyProps={{ variant: 'caption' }}
+                />
+              </ListItem>
+            ))}
+
+            {/* User Menu Items (if logged in) */}
+            {currentUser && (
+              <>
+                <Box sx={{ my: 2, px: 2 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                    ACCOUNT
+                  </Typography>
+                </Box>
+                {userMenuItems.map((item) => (
+                  <ListItem 
+                    button 
+                    component={RouterLink} 
+                    to={item.path} 
+                    key={item.text}
+                    sx={{
+                      mb: 1,
+                      borderRadius: 2,
+                      backgroundColor: isActivePath(item.path) ? 'rgba(59,130,246,0.1)' : 'transparent',
+                      '&:hover': {
+                        backgroundColor: 'rgba(59,130,246,0.1)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: 'rgba(0,0,0,0.7)', minWidth: 40 }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary={
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {item.text}
+                          {item.badge && (
+                            <Chip
+                              label={item.badge}
+                              size="small"
+                              color="primary"
+                              sx={{
+                                height: 20,
+                                fontSize: '0.7rem',
+                                fontWeight: 600,
+                              }}
+                            />
+                          )}
+                        </Box>
+                      }
+                    />
+                  </ListItem>
+                ))}
+              </>
+            )}
           </List>
 
           {/* Language Switcher */}
-          <Box sx={{ p: 2, borderTop: '1px solid rgba(0,0,0,0.1)' }}>
+          <Box sx={{ p: 2, borderTop: '1px solid rgba(0,0,0,0.1)' }} onClick={(e) => e.stopPropagation()}>
             <LanguageSwitcher />
           </Box>
         </Box>
@@ -243,7 +342,7 @@ const Header = () => {
   );
 
   return (
-    <HideOnScroll>
+    <>
       <AppBar
         position="fixed"
         sx={{
@@ -284,56 +383,73 @@ const Header = () => {
             {/* Desktop Navigation */}
             {!isMobile && (
               <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                {menuItems.map((item) => (
-                  (!item.authRequired || currentUser) && (
-                    <Button
-                      key={item.text}
-                      component={RouterLink}
-                      to={item.path}
-                      sx={{
-                        color: scrolled ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.7)',
-                        mx: 1,
-                        px: 2,
-                        py: 1,
-                        borderRadius: 2,
-                        position: 'relative',
-                        backgroundColor: isActivePath(item.path) ? 'rgba(59,130,246,0.1)' : 'transparent',
-                        '&:hover': {
-                          backgroundColor: 'rgba(59,130,246,0.1)',
-                        },
-                        '&::after': {
-                          content: '""',
-                          position: 'absolute',
-                          bottom: 0,
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          width: isActivePath(item.path) ? '20px' : '0px',
-                          height: '2px',
-                          backgroundColor: theme.palette.primary.light,
-                          transition: 'width 0.3s ease',
-                        },
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {item.icon}
-                        {item.text}
-                        {item.badge && (
-                          <Chip
-                            label={item.badge}
-                            size="small"
-                            color="primary"
-                            sx={{
-                              height: 20,
-                              fontSize: '0.7rem',
-                              fontWeight: 600,
-                              ml: 0.5,
-                            }}
-                          />
-                        )}
-                      </Box>
-                    </Button>
-                  )
+                {/* Main Menu Items */}
+                {mainMenuItems.map((item) => (
+                  <Button
+                    key={item.text}
+                    component={RouterLink}
+                    to={item.path}
+                    sx={{
+                      color: scrolled ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.7)',
+                      mx: 1,
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                      position: 'relative',
+                      backgroundColor: isActivePath(item.path) ? 'rgba(59,130,246,0.1)' : 'transparent',
+                      '&:hover': {
+                        backgroundColor: 'rgba(59,130,246,0.1)',
+                      },
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: isActivePath(item.path) ? '20px' : '0px',
+                        height: '2px',
+                        backgroundColor: theme.palette.primary.light,
+                        transition: 'width 0.3s ease',
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      {item.icon}
+                      {item.text}
+                      {item.badge && (
+                        <Chip
+                          label={item.badge}
+                          size="small"
+                          color="primary"
+                          sx={{
+                            height: 20,
+                            fontSize: '0.7rem',
+                            fontWeight: 600,
+                            ml: 0.5,
+                          }}
+                        />
+                      )}
+                    </Box>
+                  </Button>
                 ))}
+
+                {/* More Tools Dropdown */}
+                <Button
+                  onClick={handleMoreToolsMenu}
+                  sx={{
+                    color: scrolled ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.7)',
+                    mx: 1,
+                    px: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    '&:hover': {
+                      backgroundColor: 'rgba(59,130,246,0.1)',
+                    },
+                  }}
+                  endIcon={<MoreVertIcon />}
+                >
+                  More Tools
+                </Button>
               </Box>
             )}
 
@@ -365,7 +481,7 @@ const Header = () => {
 
               {/* Language Switcher - Desktop */}
               {!isMobile && (
-                <Box sx={{ ml: 1 }}>
+                <Box sx={{ ml: 1 }} onClick={(e) => e.stopPropagation()}>
                   <LanguageSwitcher />
                 </Box>
               )}
@@ -462,7 +578,7 @@ const Header = () => {
                       },
                     }}
                   >
-                    Login
+                    {t('navigation.login')}
                   </Button>
                   <Button
                     variant="contained"
@@ -477,7 +593,7 @@ const Header = () => {
                       },
                     }}
                   >
-                    Sign Up
+                    {t('navigation.register')}
                   </Button>
                 </Box>
               )}
@@ -485,7 +601,54 @@ const Header = () => {
           </Toolbar>
         </Container>
       </AppBar>
-    </HideOnScroll>
+
+      {/* More Tools Menu */}
+      <Menu
+        anchorEl={moreToolsAnchor}
+        open={Boolean(moreToolsAnchor)}
+        onClose={handleMoreToolsClose}
+        PaperProps={{
+          sx: {
+            mt: 1,
+            minWidth: 280,
+            borderRadius: 2,
+            boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+          }
+        }}
+      >
+        <MenuItem disabled>
+          <ListItemText>
+            <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+              {t('navigation.additionalTools')}
+            </Typography>
+          </ListItemText>
+        </MenuItem>
+        {moreToolsItems.map((item) => (
+          <MenuItem
+            key={item.text}
+            onClick={() => {
+              navigate(item.path);
+              handleMoreToolsClose();
+            }}
+            sx={{
+              py: 1.5,
+              px: 2,
+              '&:hover': {
+                backgroundColor: theme.palette.action.hover,
+              },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 36 }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText 
+              primary={item.text}
+              secondary={item.description}
+            />
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 };
 

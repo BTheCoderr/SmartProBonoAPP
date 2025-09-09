@@ -299,7 +299,7 @@ def admin_list_intakes():
                 "status": "under_review",
                 "submitted_at": "2023-11-09T10:20:30Z",
                 "priority": "medium",
-                "assigned_to": null
+                "assigned_to": None
             }
         ]
         

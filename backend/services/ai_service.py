@@ -1,6 +1,7 @@
 """AI service for legal analysis and document processing"""
 import logging
 import random
+import re
 import requests
 import json
 from datetime import datetime
@@ -188,12 +189,12 @@ Focus on creating practical, usable documents."""
         return fallback_responses.get(task_type, fallback_responses["chat"])
 
     @staticmethod
-    def analyze_document(document, document_type="generic", questions=None):
+    def analyze_document(document_path, document_type="generic", questions=None):
         """
-        Analyze a legal document
+        Analyze a legal document using real text extraction
         
         Args:
-            document: The document to analyze (file or text)
+            document_path (str): Path to the document file
             document_type (str): The type of document
             questions (list, optional): Specific questions to answer about the document
             
@@ -201,96 +202,29 @@ Focus on creating practical, usable documents."""
             dict: The analysis results
         """
         try:
-            # In a real app, this would use OCR/NLP to analyze the document
-            # For demo purposes, we'll return mock analyses
+            # Extract text from the document
+            extracted_text = AIService.extract_text_from_document(document_path)
             
-            # Mock analyses based on document type
-            analyses = {
-                "eviction_notice": {
-                    "document_type": "eviction_notice",
-                    "confidence": 0.92,
-                    "key_details": {
-                        "landlord": "ABC Properties LLC",
-                        "tenant": "Jane Doe",
-                        "property_address": "123 Main St, Apt 4B",
-                        "eviction_grounds": "Non-payment of rent",
-                        "notice_period": "30 days",
-                        "amount_due": "$1,200.00",
-                        "notice_date": "2023-11-01"
-                    },
-                    "warnings": [
-                        "This notice may not provide the legally required time period for your jurisdiction",
-                        "The stated grounds for eviction may be contestable"
-                    ],
-                    "next_steps": [
-                        "Verify the notice period complies with local law",
-                        "Request an itemized statement of amounts due",
-                        "Consider filing a response if you plan to contest"
-                    ]
-                },
-                "lease_agreement": {
-                    "document_type": "lease_agreement",
-                    "confidence": 0.89,
-                    "key_details": {
-                        "landlord": "XYZ Real Estate",
-                        "tenant": "John Smith",
-                        "property_address": "456 Oak Ave",
-                        "lease_term": "12 months",
-                        "start_date": "2023-01-01",
-                        "end_date": "2023-12-31",
-                        "monthly_rent": "$1,500.00",
-                        "security_deposit": "$1,500.00"
-                    },
-                    "concerning_clauses": [
-                        {
-                            "clause": "Tenant waives all rights to jury trial in any dispute",
-                            "issue": "May be unenforceable in some jurisdictions",
-                            "page": 4
-                        },
-                        {
-                            "clause": "Landlord may enter without notice",
-                            "issue": "Likely violates tenant right to privacy/notice requirements",
-                            "page": 7
-                        }
-                    ],
-                    "recommendations": [
-                        "Negotiate removal of concerning clauses",
-                        "Request clarification on maintenance responsibilities",
-                        "Ensure security deposit terms comply with local laws"
-                    ]
-                },
-                "generic": {
-                    "document_type": "unknown_legal_document",
-                    "confidence": 0.75,
-                    "summary": "This appears to be a legal document related to property or contractual matters. It contains formal language typical of legal agreements.",
-                    "parties_mentioned": ["Party A", "Party B"],
-                    "key_dates": ["2023-10-15", "2024-10-15"],
-                    "possible_document_types": ["contract", "agreement", "legal notice"],
-                    "recommendations": [
-                        "Have this document reviewed by an attorney",
-                        "Request clarification on any terms you don't understand"
-                    ]
+            if not extracted_text:
+                return {
+                    "error": "Could not extract text from document",
+                    "document_type": document_type,
+                    "confidence": 0.0
                 }
-            }
             
-            # Return the appropriate analysis or generic if type not found
-            analysis = analyses.get(document_type, analyses["generic"])
+            # Analyze the extracted text
+            analysis = AIService._analyze_extracted_text(extracted_text, document_type)
             
-            # If questions were provided, add answers
+            # Add extracted text to the analysis
+            analysis["extracted_text"] = extracted_text
+            analysis["text_length"] = len(extracted_text)
+            analysis["word_count"] = len(extracted_text.split())
+            
+            # If questions were provided, add answers based on extracted text
             if questions:
-                mock_answers = [
-                    "Based on this document, the deadline appears to be October 15, 2023.",
-                    "Yes, this document does require notarization according to section 12.",
-                    "The penalties for late payment are 5% of the outstanding amount per month.",
-                    "You would need to provide 30 days written notice according to this agreement."
-                ]
-                
                 analysis["answers"] = {}
-                for i, question in enumerate(questions):
-                    if i < len(mock_answers):
-                        analysis["answers"][question] = mock_answers[i]
-                    else:
-                        analysis["answers"][question] = "The document doesn't clearly address this question."
+                for question in questions:
+                    analysis["answers"][question] = AIService._answer_question_from_text(extracted_text, question)
             
             return analysis
             
@@ -300,6 +234,186 @@ Focus on creating practical, usable documents."""
                 "error": "An error occurred while analyzing the document",
                 "created_at": datetime.now().isoformat()
             }
+    
+    @staticmethod
+    def _analyze_extracted_text(text, document_type="generic"):
+        """
+        Analyze extracted text to identify legal document characteristics
+        
+        Args:
+            text (str): The extracted text from the document
+            document_type (str): The type of document
+            
+        Returns:
+            dict: Analysis results
+        """
+        import re
+        from datetime import datetime
+        
+        # Convert to lowercase for analysis
+        text_lower = text.lower()
+        
+        # Basic document analysis
+        analysis = {
+            "document_type": document_type,
+            "confidence": 0.85,
+            "analysis_date": datetime.now().isoformat(),
+            "parties": [],
+            "key_dates": [],
+            "monetary_amounts": [],
+            "legal_terms": [],
+            "potential_issues": [],
+            "recommendations": []
+        }
+        
+        # Extract parties (look for common patterns)
+        party_patterns = [
+            r'(?:between|party|plaintiff|defendant|tenant|landlord|buyer|seller)\s*:?\s*([A-Z][a-zA-Z\s&,\.]+)',
+            r'([A-Z][a-zA-Z\s&,\.]+)\s*(?:vs?\.?|v\.?)\s*([A-Z][a-zA-Z\s&,\.]+)',
+            r'(?:plaintiff|defendant|tenant|landlord|buyer|seller)\s*:?\s*([A-Z][a-zA-Z\s&,\.]+)'
+        ]
+        
+        for pattern in party_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            for match in matches:
+                if isinstance(match, tuple):
+                    analysis["parties"].extend([m.strip() for m in match if m.strip()])
+                else:
+                    if match.strip() and len(match.strip()) > 2:
+                        analysis["parties"].append(match.strip())
+        
+        # Remove duplicates and clean up
+        analysis["parties"] = list(set([p for p in analysis["parties"] if len(p) > 2 and not p.lower() in ['party', 'plaintiff', 'defendant']]))
+        
+        # Extract dates
+        date_patterns = [
+            r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b',
+            r'\b(?:january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?\s+\d{4}\b',
+            r'\b\d{4}-\d{2}-\d{2}\b'
+        ]
+        
+        for pattern in date_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            analysis["key_dates"].extend(matches)
+        
+        # Extract monetary amounts
+        money_patterns = [
+            r'\$[\d,]+\.?\d*',
+            r'\b\d+\.\d{2}\s*(?:dollars?|USD)\b',
+            r'\b(?:amount|total|sum|payment|rent|deposit|fee|cost|price)\s*:?\s*\$?[\d,]+\.?\d*\b'
+        ]
+        
+        for pattern in money_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            analysis["monetary_amounts"].extend(matches)
+        
+        # Identify legal terms and concepts
+        legal_terms = [
+            'agreement', 'contract', 'lease', 'notice', 'complaint', 'petition',
+            'warrant', 'injunction', 'damages', 'liability', 'indemnification',
+            'breach', 'termination', 'renewal', 'assignment', 'subletting',
+            'security deposit', 'rent', 'utilities', 'maintenance', 'repair',
+            'eviction', 'possession', 'quiet enjoyment', 'habitability'
+        ]
+        
+        for term in legal_terms:
+            if term in text_lower:
+                analysis["legal_terms"].append(term)
+        
+        # Analyze document type based on content
+        if 'eviction' in text_lower or 'notice to quit' in text_lower:
+            analysis["document_type"] = "eviction_notice"
+            analysis["confidence"] = 0.9
+        elif 'lease' in text_lower or 'rental agreement' in text_lower:
+            analysis["document_type"] = "lease_agreement"
+            analysis["confidence"] = 0.9
+        elif 'complaint' in text_lower or 'plaintiff' in text_lower:
+            analysis["document_type"] = "legal_complaint"
+            analysis["confidence"] = 0.9
+        elif 'contract' in text_lower or 'agreement' in text_lower:
+            analysis["document_type"] = "contract"
+            analysis["confidence"] = 0.8
+        
+        # Generate potential issues and recommendations
+        analysis["potential_issues"] = AIService._identify_potential_issues(text, analysis["document_type"])
+        analysis["recommendations"] = AIService._generate_recommendations(text, analysis["document_type"])
+        
+        return analysis
+    
+    @staticmethod
+    def _identify_potential_issues(text, doc_type):
+        """Identify potential legal issues in the document"""
+        issues = []
+        text_lower = text.lower()
+        
+        # Check for concerning clauses
+        concerning_patterns = [
+            (r'waive.*right.*jury.*trial', 'Waiver of jury trial rights may be unenforceable'),
+            (r'enter.*without.*notice', 'Entry without notice may violate privacy rights'),
+            (r'automatic.*renewal', 'Automatic renewal clauses can be problematic'),
+            (r'penalty.*late.*payment', 'Late payment penalties should be reasonable'),
+            (r'one.sided.*indemnification', 'One-sided indemnification may be unenforceable')
+        ]
+        
+        for pattern, issue in concerning_patterns:
+            if re.search(pattern, text_lower):
+                issues.append(issue)
+        
+        return issues
+    
+    @staticmethod
+    def _generate_recommendations(text, doc_type):
+        """Generate recommendations based on document analysis"""
+        recommendations = []
+        
+        if doc_type == "eviction_notice":
+            recommendations.extend([
+                "Verify the notice period complies with local law",
+                "Check if the grounds for eviction are valid",
+                "Consider consulting with a tenant rights organization"
+            ])
+        elif doc_type == "lease_agreement":
+            recommendations.extend([
+                "Review all terms carefully before signing",
+                "Ensure security deposit terms comply with local laws",
+                "Consider having the document reviewed by an attorney"
+            ])
+        else:
+            recommendations.extend([
+                "Have this document reviewed by an attorney",
+                "Request clarification on any terms you don't understand",
+                "Ensure all parties understand their obligations"
+            ])
+        
+        return recommendations
+    
+    @staticmethod
+    def _answer_question_from_text(text, question):
+        """Answer a specific question based on the extracted text"""
+        # Simple keyword-based answering
+        text_lower = text.lower()
+        question_lower = question.lower()
+        
+        if 'deadline' in question_lower or 'due date' in question_lower:
+            # Look for dates in the text
+            import re
+            dates = re.findall(r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b', text)
+            if dates:
+                return f"Based on the document, relevant dates found: {', '.join(dates[:3])}"
+        
+        if 'notarization' in question_lower or 'notary' in question_lower:
+            if 'notar' in text_lower:
+                return "Yes, this document appears to require notarization."
+            else:
+                return "The document doesn't clearly mention notarization requirements."
+        
+        if 'penalty' in question_lower or 'late payment' in question_lower:
+            if 'penalty' in text_lower or 'late' in text_lower:
+                return "The document contains penalty provisions. Please review the specific terms."
+            else:
+                return "No specific penalty terms were found in the document."
+        
+        return "The document doesn't clearly address this question. Please review the full text for relevant information."
 
     @staticmethod
     def extract_text_from_document(document_path):
@@ -313,27 +427,44 @@ Focus on creating practical, usable documents."""
             str: The extracted text
         """
         try:
-            # In a real app, this would use OCR to extract text
-            # For demo purposes, we'll return mock text
-            return """AGREEMENT BETWEEN PARTIES
+            import os
+            from PyPDF2 import PdfReader
             
-THIS AGREEMENT made this 15th day of October, 2023
+            # Check if file exists
+            if not os.path.exists(document_path):
+                logger.error(f"Document file not found: {document_path}")
+                return None
             
-BETWEEN:
-Party A
-AND
-Party B
+            # Get file extension
+            file_ext = os.path.splitext(document_path)[1].lower()
             
-WHEREAS the parties wish to enter into an agreement for the purpose of...
-            
-1. TERM
-The term of this agreement shall be for a period of 12 months commencing on...
-            
-2. PAYMENT
-The payment schedule shall be as follows...
-            
-[Document continues with standard legal text]
-            """
+            if file_ext == '.pdf':
+                # Extract text from PDF using PyPDF2
+                reader = PdfReader(document_path)
+                text = ""
+                
+                for page_num, page in enumerate(reader.pages):
+                    try:
+                        page_text = page.extract_text()
+                        if page_text:
+                            text += f"\n--- Page {page_num + 1} ---\n"
+                            text += page_text
+                    except Exception as e:
+                        logger.warning(f"Error extracting text from page {page_num + 1}: {str(e)}")
+                        continue
+                
+                if text.strip():
+                    logger.info(f"Successfully extracted {len(text)} characters from PDF")
+                    return text.strip()
+                else:
+                    logger.warning("No text could be extracted from PDF")
+                    return None
+                    
+            else:
+                # For other file types, return a placeholder
+                logger.warning(f"File type {file_ext} not supported for text extraction")
+                return f"Text extraction not supported for {file_ext} files"
+                
         except Exception as e:
             logger.error(f"Error extracting text from document: {str(e)}")
             return None
