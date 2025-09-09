@@ -112,6 +112,14 @@ export const AuthProvider = ({ children }) => {
   // Check auth status on initial load
   useEffect(() => {
     const checkAuth = async () => {
+      // Skip authentication check in beta mode
+      if (isBetaMode) {
+        // Beta mode enabled - skipping authentication check
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+      
       if (!accessToken) {
         setUser(null);
         setLoading(false);
@@ -153,7 +161,7 @@ export const AuthProvider = ({ children }) => {
     };
     
     checkAuth();
-  }, [accessToken, refreshToken, refreshAccessToken]);
+  }, [accessToken, refreshToken, refreshAccessToken, isBetaMode]);
 
   // Set up axios interceptor for authorization - memoized to prevent recreation on every render
   useEffect(() => {

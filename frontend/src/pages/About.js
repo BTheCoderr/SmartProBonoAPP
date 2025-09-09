@@ -8,39 +8,42 @@ import {
   Speed as SpeedIcon,
   Support as SupportIcon
 } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import { PageLayout, Section, Button, Card as DesignCard } from '../design-system';
 
 const About = () => {
+  const { t } = useTranslation();
+  
   const values = [
     {
       icon: <GavelIcon sx={{ fontSize: 40 }} />,
-      title: 'Justice for All',
-      description: 'We believe everyone deserves access to quality legal representation, regardless of their financial situation.'
+      title: t('about.values.justiceForAll.title'),
+      description: t('about.values.justiceForAll.description')
     },
     {
       icon: <PeopleIcon sx={{ fontSize: 40 }} />,
-      title: 'Community First',
-      description: 'Our platform connects clients with dedicated legal professionals who are committed to serving their communities.'
+      title: t('about.values.communityFirst.title'),
+      description: t('about.values.communityFirst.description')
     },
     {
       icon: <PublicIcon sx={{ fontSize: 40 }} />,
-      title: 'Accessibility',
-      description: 'We break down barriers to legal services through technology, making help available when and where it\'s needed.'
+      title: t('about.values.accessibility.title'),
+      description: t('about.values.accessibility.description')
     },
     {
       icon: <SecurityIcon sx={{ fontSize: 40 }} />,
-      title: 'Privacy & Security',
-      description: 'Your personal information and legal matters are protected with enterprise-grade security and confidentiality.'
+      title: t('about.values.innovation.title'),
+      description: t('about.values.innovation.description')
     },
     {
       icon: <SpeedIcon sx={{ fontSize: 40 }} />,
-      title: 'Efficiency',
-      description: 'Our AI-powered tools help streamline processes, reducing wait times and improving outcomes for everyone.'
+      title: t('about.values.transparency.title'),
+      description: t('about.values.transparency.description')
     },
     {
       icon: <SupportIcon sx={{ fontSize: 40 }} />,
-      title: 'Support',
-      description: 'We provide comprehensive support throughout your legal journey, from initial consultation to case resolution.'
+      title: t('about.values.support.title'),
+      description: t('about.values.support.description')
     }
   ];
 
@@ -51,10 +54,54 @@ const About = () => {
     { number: '95%', label: 'Client Satisfaction' }
   ];
 
+  const features = [
+    {
+      title: 'AI-Powered Document Analysis',
+      description: 'Our advanced AI technology analyzes legal documents, identifies key issues, and provides actionable insights to help you understand your legal situation.',
+      icon: <GavelIcon sx={{ fontSize: 30, color: 'primary.main' }} />
+    },
+    {
+      title: 'Smart Legal Chat',
+      description: 'Get instant answers to your legal questions with our intelligent chat system that provides accurate, helpful guidance 24/7.',
+      icon: <SupportIcon sx={{ fontSize: 30, color: 'success.main' }} />
+    },
+    {
+      title: 'Document Generation',
+      description: 'Create professional legal documents using our comprehensive library of templates, customized to your specific needs.',
+      icon: <PublicIcon sx={{ fontSize: 30, color: 'info.main' }} />
+    },
+    {
+      title: 'Secure & Private',
+      description: 'Your data is protected with enterprise-grade security. All communications and documents are encrypted and confidential.',
+      icon: <SecurityIcon sx={{ fontSize: 30, color: 'warning.main' }} />
+    }
+  ];
+
+  const team = [
+    {
+      name: 'Legal Experts',
+      role: 'Attorneys & Legal Professionals',
+      description: 'Experienced lawyers specializing in various areas of law',
+      avatar: <GavelIcon sx={{ fontSize: 40 }} />
+    },
+    {
+      name: 'Technology Team',
+      role: 'AI & Software Engineers',
+      description: 'Building the future of legal technology with cutting-edge AI',
+      avatar: <SpeedIcon sx={{ fontSize: 40 }} />
+    },
+    {
+      name: 'Support Team',
+      role: 'Customer Success',
+      description: 'Dedicated to helping you succeed with our platform',
+      avatar: <SupportIcon sx={{ fontSize: 40 }} />
+    }
+  ];
+
   return (
     <PageLayout
-      title="About SmartProBono"
-      description="Making legal services accessible to everyone through technology and community"
+      title={t('pages.about.title')}
+      description={t('pages.about.subtitle')}
     >
       {/* Hero Section */}
       <Section
@@ -62,16 +109,16 @@ const About = () => {
         sx={{
           textAlign: 'center',
           py: 8,
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #0F3D5E 0%, #1FB6A6 100%)',
           color: 'white'
         }}
       >
         <Container maxWidth="md">
           <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
-            About SmartProBono
+            {t('pages.about.hero.title')}
           </Typography>
           <Typography variant="h5" sx={{ mb: 4, opacity: 0.9 }}>
-            We're revolutionizing access to legal services by connecting those in need with dedicated legal professionals
+            {t('pages.about.hero.description')}
           </Typography>
           <Button
             variant="contained"
@@ -200,13 +247,82 @@ const About = () => {
         </Container>
       </Section>
 
+      {/* Features Section */}
+      <Section sx={{ py: 8, bgcolor: 'grey.50' }}>
+        <Container maxWidth="lg">
+          <Box sx={{ textAlign: 'center', mb: 6 }}>
+            <Typography variant="h3" component="h2" gutterBottom sx={{ fontWeight: 600, color: '#0F3D5E' }}>
+              Our Technology
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ maxWidth: '600px', mx: 'auto' }}>
+              We leverage cutting-edge AI technology to make legal assistance more accessible, efficient, and effective.
+            </Typography>
+          </Box>
+          <Grid container spacing={4}>
+            {features.map((feature, index) => (
+              <Grid item xs={12} md={6} key={index}>
+                <DesignCard sx={{ height: '100%', p: 3, textAlign: 'center' }}>
+                  <CardContent>
+                    <Box sx={{ mb: 2 }}>
+                      {feature.icon}
+                    </Box>
+                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: '#0F3D5E' }}>
+                      {feature.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {feature.description}
+                    </Typography>
+                  </CardContent>
+                </DesignCard>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Section>
+
+      {/* Team Section */}
+      <Section sx={{ py: 8 }}>
+        <Container maxWidth="lg">
+          <Box sx={{ textAlign: 'center', mb: 6 }}>
+            <Typography variant="h3" component="h2" gutterBottom sx={{ fontWeight: 600, color: '#0F3D5E' }}>
+              Our Team
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ maxWidth: '600px', mx: 'auto' }}>
+              Meet the dedicated professionals who make SmartProBono possible.
+            </Typography>
+          </Box>
+          <Grid container spacing={4}>
+            {team.map((member, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <DesignCard sx={{ height: '100%', p: 3, textAlign: 'center' }}>
+                  <CardContent>
+                    <Avatar sx={{ width: 80, height: 80, mx: 'auto', mb: 2, bgcolor: 'primary.main' }}>
+                      {member.avatar}
+                    </Avatar>
+                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: '#0F3D5E' }}>
+                      {member.name}
+                    </Typography>
+                    <Typography variant="subtitle1" color="primary" gutterBottom>
+                      {member.role}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {member.description}
+                    </Typography>
+                  </CardContent>
+                </DesignCard>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Section>
+
       {/* CTA Section */}
       <Section
         background="gradient"
         sx={{
           py: 8,
           textAlign: 'center',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #0F3D5E 0%, #1FB6A6 100%)',
           color: 'white'
         }}
       >

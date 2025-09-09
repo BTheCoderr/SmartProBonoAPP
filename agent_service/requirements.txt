@@ -1,9 +1,0 @@
-fastapi
-uvicorn[standard]
-pydantic>=2
-langgraph
-langchain
-langchain-ollama
-supabase
-python-dotenv
-httpx

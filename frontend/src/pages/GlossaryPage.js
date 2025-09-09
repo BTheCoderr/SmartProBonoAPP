@@ -29,8 +29,10 @@ import {
   AccountBalance as AccountBalanceIcon
 } from '@mui/icons-material';
 import PageLayout from '../components/PageLayout';
+import { useTranslation } from 'react-i18next';
 
 const GlossaryPage = () => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const legalTerms = [
@@ -248,18 +250,18 @@ const GlossaryPage = () => {
 
   return (
     <PageLayout
-      title="Legal Glossary"
-      description="Comprehensive definitions of legal terms and concepts"
+      title={t('glossary.title')}
+      description={t('glossary.subtitle')}
     >
       <Container maxWidth="lg" sx={{ py: 4 }}>
         {/* Search Section */}
         <Paper sx={{ p: 3, mb: 4 }}>
           <Typography variant="h6" gutterBottom>
-            Search Legal Terms
+            {t('glossary.title')}
           </Typography>
           <TextField
             fullWidth
-            placeholder="Search for legal terms..."
+            placeholder={t('glossary.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             InputProps={{

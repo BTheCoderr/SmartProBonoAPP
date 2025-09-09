@@ -23,79 +23,81 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ArticleIcon from '@mui/icons-material/Article';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 import { Link as LinkIcon } from '@mui/icons-material';
-
-const resourceCategories = [
-  {
-    title: 'Immigration Resources',
-    description: 'Essential documents and guides for immigration processes',
-    resources: [
-      {
-        title: 'Immigration Forms Guide',
-        type: 'pdf',
-        description: 'Step-by-step guide for common immigration forms',
-        link: '/resources/immigration/forms-guide.pdf',
-        icon: <PictureAsPdfIcon />,
-      },
-      {
-        title: 'Document Checklist',
-        type: 'pdf',
-        description: 'Comprehensive checklist of required documents',
-        link: '/resources/immigration/document-checklist.pdf',
-        icon: <PictureAsPdfIcon />,
-      },
-      {
-        title: 'Know Your Rights',
-        type: 'article',
-        description: 'Understanding your rights during immigration proceedings',
-        link: '/rights/immigration',
-        icon: <ArticleIcon />,
-      },
-    ],
-  },
-  {
-    title: 'Legal Guides',
-    description: 'Comprehensive guides on various legal topics',
-    resources: [
-      {
-        title: 'Legal Process Overview',
-        type: 'video',
-        description: 'Video guide explaining the legal process',
-        link: '/resources/guides/legal-process.mp4',
-        icon: <VideoLibraryIcon />,
-      },
-      {
-        title: 'Document Templates',
-        type: 'template',
-        description: 'Common legal document templates',
-        link: '/resources/templates',
-        icon: <DescriptionIcon />,
-      },
-    ],
-  },
-  {
-    title: 'External Resources',
-    description: 'Helpful links to government and non-profit organizations',
-    resources: [
-      {
-        title: 'USCIS Official Website',
-        type: 'link',
-        description: 'U.S. Citizenship and Immigration Services',
-        link: 'https://www.uscis.gov',
-        icon: <LinkIcon />,
-      },
-      {
-        title: 'Immigration Court Information',
-        type: 'link',
-        description: 'Executive Office for Immigration Review',
-        link: 'https://www.justice.gov/eoir',
-        icon: <LinkIcon />,
-      },
-    ],
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const Resources = ({ type = 'standard' }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const resourceCategories = [
+    {
+      title: t('resources.categories.immigration.title'),
+      description: t('resources.categories.immigration.description'),
+      resources: [
+        {
+          title: t('resources.items.immigrationFormsGuide.title'),
+          type: 'pdf',
+          description: t('resources.items.immigrationFormsGuide.description'),
+          link: '/resources/immigration/forms-guide.pdf',
+          icon: <PictureAsPdfIcon />,
+        },
+        {
+          title: t('resources.items.documentChecklist.title'),
+          type: 'pdf',
+          description: t('resources.items.documentChecklist.description'),
+          link: '/resources/immigration/document-checklist.pdf',
+          icon: <PictureAsPdfIcon />,
+        },
+        {
+          title: t('resources.items.knowYourRights.title'),
+          type: 'article',
+          description: t('resources.items.knowYourRights.description'),
+          link: '/rights/immigration',
+          icon: <ArticleIcon />,
+        },
+      ],
+    },
+    {
+      title: t('resources.categories.legalGuides.title'),
+      description: t('resources.categories.legalGuides.description'),
+      resources: [
+        {
+          title: t('resources.items.legalProcessOverview.title'),
+          type: 'video',
+          description: t('resources.items.legalProcessOverview.description'),
+          link: '/resources/guides/legal-process.mp4',
+          icon: <VideoLibraryIcon />,
+        },
+        {
+          title: t('resources.items.documentTemplates.title'),
+          type: 'template',
+          description: t('resources.items.documentTemplates.description'),
+          link: '/resources/templates',
+          icon: <DescriptionIcon />,
+        },
+      ],
+    },
+    {
+      title: t('resources.categories.external.title'),
+      description: t('resources.categories.external.description'),
+      resources: [
+        {
+          title: t('resources.items.uscisWebsite.title'),
+          type: 'link',
+          description: t('resources.items.uscisWebsite.description'),
+          link: 'https://www.uscis.gov',
+          icon: <LinkIcon />,
+        },
+        {
+          title: t('resources.items.immigrationCourt.title'),
+          type: 'link',
+          description: t('resources.items.immigrationCourt.description'),
+          link: 'https://www.justice.gov/eoir',
+          icon: <LinkIcon />,
+        },
+      ],
+    },
+  ];
 
   const handleAccessDocuments = () => {
     navigate('/documents');
@@ -135,16 +137,16 @@ const Resources = ({ type = 'standard' }) => {
 
   return (
     <PageLayout
-      title="Legal Resources"
-      description="Access free legal resources, documents, and educational materials"
+      title={t('resources.title')}
+      description={t('resources.subtitle')}
     >
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Legal Resources
+            {t('resources.title')}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" paragraph>
-            Access our collection of legal resources, guides, and templates to help you understand and navigate your legal journey.
+            {t('resources.description')}
           </Typography>
         </Box>
 
@@ -206,7 +208,7 @@ const Resources = ({ type = 'standard' }) => {
                             },
                           }}
                         >
-                          {resource.type === 'link' ? 'Visit' : 'View'}
+                          {resource.type === 'link' ? t('resources.buttons.visit') : t('resources.buttons.view')}
                         </Button>
                       </ListItem>
                     ))}

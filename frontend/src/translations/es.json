@@ -24,7 +24,378 @@
     "profile": "Perfil",
     "login": "Iniciar Sesión",
     "register": "Registrarse",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "legalTools": "Herramientas Legales",
+    "documentScanner": "Escáner de Documentos",
+    "pdfGenerator": "Generador PDF",
+    "aiLegalChat": "Chat Legal IA",
+    "documentAnalysis": "Análisis de Documentos",
+    "templates": "Plantillas",
+    "safetyCheck": "Verificación de Seguridad",
+    "contactForm": "Formulario de Contacto",
+    "adminDashboard": "Panel de Administración",
+    "enableBetaMode": "Habilitar Modo Beta",
+    "disableBetaMode": "Deshabilitar Modo Beta",
+    "additionalTools": "Herramientas Adicionales"
+  },
+  "footer": {
+    "services": "Servicios",
+    "company": "Empresa",
+    "support": "Soporte",
+    "legal": "Legal",
+    "followUs": "Síguenos",
+    "newsletter": "Boletín",
+    "newsletterDescription": "Mantente actualizado con las últimas noticias legales y recursos",
+    "subscribe": "Suscribirse",
+    "allRightsReserved": "Todos los derechos reservados",
+    "privacyPolicy": "Política de Privacidad",
+    "termsOfService": "Términos de Servicio",
+    "contactUs": "Contáctanos",
+    "aboutUs": "Acerca de Nosotros",
+    "careers": "Carreras",
+    "blog": "Blog",
+    "helpCenter": "Centro de Ayuda",
+    "bugReport": "Reporte de Error",
+    "featureRequest": "Solicitud de Característica"
+  },
+  "about": {
+    "values": {
+      "justiceForAll": {
+        "title": "Justicia para Todos",
+        "description": "Creemos que todos merecen acceso a representación legal de calidad, independientemente de su situación financiera."
+      },
+      "communityFirst": {
+        "title": "Comunidad Primero",
+        "description": "Nuestra plataforma conecta a los clientes con profesionales legales dedicados que están comprometidos a servir a sus comunidades."
+      },
+      "accessibility": {
+        "title": "Accesibilidad",
+        "description": "Hacemos los servicios legales accesibles a través de la tecnología, eliminando barreras que impiden a las personas obtener ayuda."
+      },
+      "innovation": {
+        "title": "Innovación",
+        "description": "Aprovechamos la IA y tecnología de vanguardia para hacer los procesos legales más eficientes y fáciles de usar."
+      },
+      "transparency": {
+        "title": "Transparencia",
+        "description": "Creemos en la comunicación clara, precios justos y consejos honestos durante todo el proceso legal."
+      },
+      "support": {
+        "title": "Apoyo",
+        "description": "Nuestro equipo está aquí para guiarte en cada paso del camino, proporcionando el apoyo que necesitas cuando más lo necesitas."
+      }
+    }
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "subtitle": "Ponte en contacto con nuestro equipo",
+    "form": {
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Dirección de Email",
+      "phone": "Número de Teléfono",
+      "subject": "Asunto",
+      "message": "Mensaje",
+      "send": "Enviar Mensaje",
+      "sending": "Enviando...",
+      "success": "¡Mensaje enviado exitosamente!",
+      "error": "Error al enviar mensaje. Por favor, inténtalo de nuevo."
+    },
+    "info": {
+      "email": "Email",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "businessHours": "Horario de Atención",
+      "responseTime": "Tiempo de Respuesta"
+    }
+  },
+  "bugReport": {
+    "title": "Reporte de Error",
+    "subtitle": "Ayúdanos a mejorar reportando problemas",
+    "form": {
+      "title": "Título del Error",
+      "description": "Descripción",
+      "steps": "Pasos para Reproducir",
+      "expected": "Comportamiento Esperado",
+      "actual": "Comportamiento Actual",
+      "severity": "Gravedad",
+      "browser": "Navegador",
+      "device": "Dispositivo",
+      "email": "Email",
+      "canContact": "¿Podemos contactarte para más detalles?",
+      "submit": "Enviar Reporte de Error",
+      "submitting": "Enviando...",
+      "success": "¡Reporte de error enviado exitosamente!",
+      "error": "Error al enviar reporte de error. Por favor, inténtalo de nuevo."
+    },
+    "severity": {
+      "low": "Bajo",
+      "medium": "Medio",
+      "high": "Alto",
+      "critical": "Crítico"
+    }
+  },
+  "featureRequest": {
+    "title": "Solicitud de Característica",
+    "subtitle": "Sugiere nuevas características para mejorar nuestra plataforma",
+    "form": {
+      "title": "Título de la Característica",
+      "description": "Descripción",
+      "category": "Categoría",
+      "priority": "Prioridad",
+      "email": "Email",
+      "submit": "Enviar Solicitud de Característica",
+      "submitting": "Enviando...",
+      "success": "¡Solicitud de característica enviada exitosamente!",
+      "error": "Error al enviar solicitud de característica. Por favor, inténtalo de nuevo."
+    },
+    "categories": {
+      "ui": "Interfaz de Usuario",
+      "functionality": "Funcionalidad",
+      "performance": "Rendimiento",
+      "integration": "Integración",
+      "accessibility": "Accesibilidad",
+      "other": "Otro"
+    },
+    "priorities": {
+      "low": "Bajo",
+      "medium": "Medio",
+      "high": "Alto",
+      "critical": "Crítico"
+    }
+  },
+  "legalTools": {
+    "title": "Herramientas Legales",
+    "subtitle": "Herramientas de asistencia legal impulsadas por IA",
+    "tools": {
+      "documentScanner": {
+        "title": "Escáner de Documentos",
+        "description": "Sube y analiza documentos legales con insights impulsados por IA",
+        "features": ["Análisis IA", "Extracción de Texto", "Insights Legales"]
+      },
+      "pdfGenerator": {
+        "title": "Generador PDF",
+        "description": "Crea documentos legales profesionales desde plantillas",
+        "features": ["Plantillas", "Formularios Personalizados", "Salida Profesional"]
+      },
+      "aiLegalChat": {
+        "title": "Chat Legal IA",
+        "description": "Obtén asesoramiento legal instantáneo de nuestro asistente IA",
+        "features": ["Soporte 24/7", "Orientación Legal", "Respuestas Instantáneas"]
+      },
+      "safetyCheck": {
+        "title": "Verificación de Seguridad",
+        "description": "Verifica el cumplimiento legal e identifica problemas potenciales",
+        "features": ["Verificación de Cumplimiento", "Evaluación de Riesgos", "Revisión Legal"]
+      }
+    }
+  },
+  "team": {
+    "title": "Nuestro Equipo",
+    "subtitle": "Conoce a los profesionales dedicados detrás de SmartProBono",
+    "departments": {
+      "legal": "Legal",
+      "engineering": "Ingeniería",
+      "support": "Soporte",
+      "security": "Seguridad",
+      "education": "Educación",
+      "outreach": "Extensión"
+    }
+  },
+  "press": {
+    "title": "Prensa y Medios",
+    "subtitle": "Últimas noticias, comunicados de prensa y cobertura mediática",
+    "sections": {
+      "pressReleases": "Comunicados de Prensa",
+      "mediaCoverage": "Cobertura Mediática",
+      "pressKit": "Kit de Prensa",
+      "contact": "Contacto de Prensa"
+    },
+    "buttons": {
+      "readMore": "Leer Más",
+      "download": "Descargar",
+      "contact": "Contactar Prensa"
+    }
+  },
+  "mission": {
+    "title": "Nuestra Misión",
+    "subtitle": "Democratizando el acceso legal a través de la tecnología y la innovación",
+    "points": {
+      "universalAccess": {
+        "title": "Acceso Universal",
+        "description": "Creemos que todos merecen acceso a asistencia legal de calidad, independientemente de su situación financiera, ubicación o antecedentes."
+      },
+      "technology": {
+        "title": "Soluciones Impulsadas por Tecnología",
+        "description": "Aprovechamos la IA y tecnología de vanguardia para hacer los procesos legales más eficientes, accesibles y fáciles de usar."
+      },
+      "education": {
+        "title": "Educación Legal",
+        "description": "Empoderamos a las personas con conocimiento sobre sus derechos y opciones legales a través de recursos educativos y orientación."
+      },
+      "community": {
+        "title": "Impacto Comunitario",
+        "description": "Nos enfocamos en servir a comunidades desatendidas y abordar barreras sistémicas al acceso legal."
+      }
+    }
+  },
+  "resources": {
+    "title": "Recursos Legales",
+    "subtitle": "Accede a recursos legales gratuitos, documentos y materiales educativos",
+    "description": "Accede a nuestra colección de recursos legales, guías y plantillas para ayudarte a entender y navegar tu viaje legal.",
+    "categories": {
+      "immigration": {
+        "title": "Recursos de Inmigración",
+        "description": "Documentos esenciales y guías para procesos de inmigración"
+      },
+      "legalGuides": {
+        "title": "Guías Legales",
+        "description": "Guías completas sobre varios temas legales"
+      },
+      "external": {
+        "title": "Recursos Externos",
+        "description": "Enlaces útiles a organizaciones gubernamentales y sin fines de lucro"
+      }
+    },
+    "items": {
+      "immigrationFormsGuide": {
+        "title": "Guía de Formularios de Inmigración",
+        "description": "Guía paso a paso para formularios de inmigración comunes"
+      },
+      "documentChecklist": {
+        "title": "Lista de Verificación de Documentos",
+        "description": "Lista de verificación completa de documentos requeridos"
+      },
+      "knowYourRights": {
+        "title": "Conoce Tus Derechos",
+        "description": "Entendiendo tus derechos durante los procedimientos de inmigración"
+      },
+      "legalProcessOverview": {
+        "title": "Resumen del Proceso Legal",
+        "description": "Guía en video explicando el proceso legal"
+      },
+      "documentTemplates": {
+        "title": "Plantillas de Documentos",
+        "description": "Plantillas comunes de documentos legales"
+      },
+      "uscisWebsite": {
+        "title": "Sitio Web Oficial de USCIS",
+        "description": "Servicios de Ciudadanía e Inmigración de EE.UU."
+      },
+      "immigrationCourt": {
+        "title": "Información del Tribunal de Inmigración",
+        "description": "Oficina Ejecutiva de Revisión de Inmigración"
+      }
+    },
+    "buttons": {
+      "view": "Ver",
+      "visit": "Visitar"
+    }
+  },
+  "footer": {
+    "services": "Servicios",
+    "resources": "Recursos",
+    "company": "Empresa",
+    "support": "Soporte",
+    "aboutUs": "Acerca de Nosotros",
+    "careers": "Carreras",
+    "helpCenter": "Centro de Ayuda",
+    "contactUs": "Contáctanos",
+    "bugReport": "Reporte de Errores",
+    "featureRequest": "Solicitud de Funciones",
+    "ourMission": "Nuestra Misión",
+    "team": "Equipo",
+    "press": "Prensa",
+    "partners": "Socios",
+    "liveChat": "Chat en Vivo",
+    "statusPage": "Página de Estado",
+    "privacyPolicy": "Política de Privacidad",
+    "termsOfService": "Términos de Servicio",
+    "accessibility": "Accesibilidad",
+    "sitemap": "Mapa del Sitio",
+    "allRightsReserved": "Todos los derechos reservados",
+    "aiLegalAssistant": "Asistente Legal IA",
+    "documentGeneration": "Generación de Documentos",
+    "immigrationHelp": "Ayuda de Inmigración",
+    "virtualParalegal": "Paralegal Virtual",
+    "documentScanner": "Escáner de Documentos",
+    "proBonoServices": "Servicios Pro Bono",
+    "knowYourRights": "Conoce Tus Derechos",
+    "legalTemplates": "Plantillas Legales",
+    "educationalContent": "Contenido Educativo",
+    "legalGlossary": "Glosario Legal",
+    "faq": "Preguntas Frecuentes",
+    "blog": "Blog",
+    "aiLegalAssistant": "Asistente Legal IA",
+    "documentGeneration": "Generación de Documentos",
+    "immigrationHelp": "Ayuda de Inmigración",
+    "virtualParalegal": "Paralegal Virtual",
+    "documentScanner": "Escáner de Documentos",
+    "proBonoServices": "Servicios Pro Bono",
+    "knowYourRights": "Conoce Tus Derechos",
+    "legalTemplates": "Plantillas Legales",
+    "educationalContent": "Contenido Educativo",
+    "legalGlossary": "Glosario Legal",
+    "faq": "Preguntas Frecuentes",
+    "ourMission": "Nuestra Misión",
+    "team": "Equipo",
+    "press": "Prensa",
+    "partners": "Socios",
+    "liveChat": "Chat en Vivo",
+    "statusPage": "Página de Estado",
+    "accessibility": "Accesibilidad",
+    "sitemap": "Mapa del Sitio"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Página No Encontrada",
+      "message": "Lo sentimos, no pudimos encontrar la página que buscas. Puede haber sido movida, eliminada, o ingresaste una URL incorrecta."
+    }
+  },
+  "common": {
+    "backToHome": "Volver al Inicio",
+    "goBack": "Volver",
+    "changeLanguage": "Cambiar Idioma",
+    "error": "Error"
+  },
+  "careers": {
+    "title": "Carreras",
+    "subtitle": "Únete a nuestro equipo y ayuda a hacer que la asistencia legal sea accesible para todos.",
+    "description": "Estamos construyendo el futuro de la tecnología legal y necesitamos personas apasionadas para unirse a nuestra misión."
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Lee nuestros últimos artículos e ideas legales.",
+    "description": "Mantente actualizado con las últimas noticias legales, ideas y consejos de expertos de nuestro equipo."
+  },
+  "glossary": {
+    "title": "Glosario Legal",
+    "subtitle": "Entiende términos y conceptos legales",
+    "description": "Un diccionario completo de términos legales para ayudarte a entender el proceso legal.",
+    "searchPlaceholder": "Buscar términos legales...",
+    "categories": {
+      "general": "Términos Legales Generales",
+      "business": "Derecho Comercial",
+      "family": "Derecho de Familia",
+      "criminal": "Derecho Penal",
+      "immigration": "Derecho de Inmigración",
+      "civil": "Derecho Civil",
+      "contracts": "Derecho Contractual",
+      "property": "Derecho de Propiedad"
+    }
+  },
+  "templates": {
+    "title": "Plantillas Legales",
+    "subtitle": "Navega por nuestra colección de plantillas de documentos legales.",
+    "description": "Accede a plantillas de documentos legales profesionalmente elaboradas para diversas situaciones legales."
+  },
+  "documentGenerator": {
+    "helpText": "Genera documentos legales profesionales con asistencia de IA"
+  },
+  "accessibility": {
+    "voiceInput": {
+      "start": "Iniciar Entrada de Voz"
+    }
   },
   "auth": {
     "login": "Iniciar Sesión",
@@ -177,5 +548,154 @@
     "networkError": "Error de red. Por favor, compruebe su conexión.",
     "unauthorized": "No está autorizado para ver esta página.",
     "notFound": "No se encontró el recurso solicitado."
+  },
+  "hero": {
+    "title": "Ayuda Legal Gratuita",
+    "subtitle": "Hecha Simple",
+    "description": "Obtén asistencia legal instantánea, generación de documentos con IA y orientación profesional - todo en una plataforma segura.",
+    "getStarted": "Comenzar Gratis",
+    "learnMore": "Saber Más",
+    "whyChoose": "¿Por qué Elegir SmartProBono?",
+    "features": {
+      "aiPowered": "Asistencia Legal con IA",
+      "instantHelp": "Ayuda Legal Instantánea",
+      "securePlatform": "Seguro y Confidencial",
+      "freeAccess": "100% Acceso Gratuito",
+      "expertSupport": "Soporte de Expertos",
+      "documentGeneration": "Generación Inteligente de Documentos",
+      "bankLevelSecurity": "Seguridad de Nivel Bancario",
+      "licensedAttorneys": "Abogados Licenciados",
+      "abaCompliant": "Cumple con ABA"
+    },
+    "badge": "🚀 Ahora con Asistencia Legal con IA",
+    "buttons": {
+      "scanDocuments": "Escanear Documentos",
+      "pdfGenerator": "Generador PDF",
+      "aiLegalChat": "Chat Legal IA"
+    }
+  },
+  "pages": {
+    "about": {
+      "title": "Acerca de SmartProBono",
+      "subtitle": "Haciendo la ayuda legal accesible para todos",
+      "hero": {
+        "title": "Democratizando el Acceso Legal",
+        "description": "Creemos que todos merecen acceso a asistencia legal de calidad, independientemente de su situación financiera. SmartProBono utiliza tecnología de IA de vanguardia para hacer la ayuda legal más accesible, asequible y eficiente."
+      },
+      "mission": {
+        "title": "Nuestra Misión",
+        "description": "Romper las barreras a la justicia legal proporcionando asistencia legal gratuita impulsada por IA a quienes más la necesitan."
+      },
+      "technology": {
+        "title": "Nuestra Tecnología",
+        "description": "Aprovechamos la inteligencia artificial avanzada para proporcionar apoyo legal integral"
+      },
+      "team": {
+        "title": "Nuestro Equipo",
+        "description": "Conoce a los profesionales dedicados que hacen posible SmartProBono"
+      }
+    },
+    "contact": {
+      "title": "Contáctanos",
+      "subtitle": "Ponte en contacto con nuestro equipo",
+      "form": {
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "email": "Dirección de Correo Electrónico",
+        "phone": "Número de Teléfono",
+        "caseType": "Tipo de Caso",
+        "urgency": "Nivel de Urgencia",
+        "state": "Estado",
+        "city": "Ciudad",
+        "zipCode": "Código Postal",
+        "contactMethod": "Método de Contacto Preferido",
+        "bestTime": "Mejor Hora para Contactar",
+        "hearAbout": "¿Cómo nos conociste?",
+        "hasAttorney": "¿Tienes actualmente un abogado?",
+        "caseValue": "Valor Estimado del Caso",
+        "message": "Mensaje",
+        "submit": "Enviar Mensaje"
+      }
+    },
+    "bugReport": {
+      "title": "Reporte de Error",
+      "subtitle": "Ayúdanos a mejorar reportando problemas",
+      "form": {
+        "title": "Título del Error",
+        "description": "Descripción",
+        "steps": "Pasos para Reproducir",
+        "expected": "Comportamiento Esperado",
+        "actual": "Comportamiento Actual",
+        "severity": "Gravedad",
+        "browser": "Navegador",
+        "device": "Dispositivo",
+        "email": "Tu Correo Electrónico (Opcional)",
+        "canContact": "Puedo ser contactado para información adicional",
+        "submit": "Enviar Reporte de Error"
+      },
+      "success": {
+        "title": "¡Reporte de Error Enviado!",
+        "message": "Gracias por reportar este error. Nuestro equipo investigará y trabajará en una solución.",
+        "followUp": "Si proporcionaste tu correo electrónico, te notificaremos cuando se resuelva el problema.",
+        "another": "Reportar Otro Error"
+      }
+    },
+    "featureRequest": {
+      "title": "Solicitud de Característica",
+      "subtitle": "Ayúdanos a mejorar SmartProBono sugiriendo nuevas características",
+      "form": {
+        "title": "Título de la Característica",
+        "description": "Descripción Detallada",
+        "category": "Categoría",
+        "priority": "Prioridad",
+        "email": "Tu Correo Electrónico (Opcional)",
+        "submit": "Enviar Solicitud de Característica"
+      },
+      "success": {
+        "title": "¡Solicitud de Característica Enviada!",
+        "message": "¡Gracias por tu sugerencia! Nuestro equipo de producto revisará tu solicitud de característica.",
+        "followUp": "Si proporcionaste tu correo electrónico, te notificaremos si esta característica se implementa.",
+        "another": "Enviar Otra Solicitud"
+      }
+    },
+    "helpCenter": {
+      "title": "Centro de Ayuda",
+      "subtitle": "Encuentra respuestas a preguntas comunes y obtén soporte",
+      "search": "Buscar ayuda...",
+      "quickLinks": "Enlaces Rápidos",
+      "resources": "Recursos",
+      "faq": "Preguntas Frecuentes"
+    },
+    "partners": {
+      "title": "Socios",
+      "subtitle": "Nuestros socios que nos ayudan a hacer la asistencia legal accesible",
+      "benefits": "¿Por qué ser Socio?",
+      "becomePartner": "Conviértete en Socio"
+    },
+    "press": {
+      "title": "Prensa",
+      "subtitle": "Comunicados de prensa y cobertura mediática de SmartProBono",
+      "pressKit": "Kit de Prensa",
+      "releases": "Comunicados de Prensa",
+      "coverage": "Cobertura Mediática",
+      "awards": "Premios y Reconocimientos"
+    },
+    "team": {
+      "title": "Nuestro Equipo",
+      "subtitle": "Conoce a los profesionales dedicados que hacen posible SmartProBono",
+      "departments": "Nuestros Departamentos",
+      "joinMission": "Únete a Nuestra Misión"
+    },
+    "mission": {
+      "title": "Nuestra Misión",
+      "subtitle": "Conoce nuestra misión de hacer la ayuda legal accesible para todos",
+      "whatDrivesUs": "Lo que nos Impulsa",
+      "ourImpact": "Nuestro Impacto",
+      "ourValues": "Nuestros Valores",
+      "ourGoals": "Nuestros Objetivos"
+    }
+  },
+  "legalAI": {
+    "title": "Asistente de IA de Cumplimiento Legal"
   }
 } 

@@ -26,9 +26,9 @@ const TestimonialsSection = () => {
   const testimonials = [
     {
       name: "Sarah M.",
-      role: "Immigration Client",
+      role: "Beta Tester",
       rating: 5,
-      text: "SmartProBono helped me understand my visa application process clearly. The AI guidance was incredibly helpful and saved me hours of research. The step-by-step approach made everything so much easier.",
+      text: "The AI chat feature is impressive! It helped me understand basic legal concepts I was confused about. The interface is clean and easy to use. Excited to see where this goes!",
       avatar: "S",
       verified: true,
       location: "New York, NY",
@@ -36,9 +36,9 @@ const TestimonialsSection = () => {
     },
     {
       name: "James R.",
-      role: "Pro Bono Attorney",
+      role: "Legal Professional",
       rating: 5,
-      text: "This platform streamlines document preparation and client intake. It's a game-changer for pro bono work. I can now help more clients efficiently while maintaining quality.",
+      text: "I've been testing the document generation features. The templates are well-structured and the AI guidance is surprisingly accurate. This could really help streamline legal work.",
       avatar: "J",
       verified: true,
       location: "Los Angeles, CA",
@@ -46,9 +46,9 @@ const TestimonialsSection = () => {
     },
     {
       name: "Maria L.",
-      role: "Housing Rights Client",
+      role: "Beta User",
       rating: 5,
-      text: "The eviction defense tools helped me understand my rights and prepare my response. The document templates were professional and easy to customize. Thank you for making legal help accessible!",
+      text: "The document scanner works great! I uploaded a contract and it quickly identified key terms and potential issues. The explanations were clear and helpful.",
       avatar: "M",
       verified: true,
       location: "Chicago, IL",
@@ -56,9 +56,9 @@ const TestimonialsSection = () => {
     },
     {
       name: "David K.",
-      role: "Small Claims Client",
+      role: "Small Business Owner",
       rating: 5,
-      text: "I was able to file my small claims case without hiring a lawyer. The AI assistant answered all my questions and the forms were perfectly formatted. Highly recommend!",
+      text: "I've been using the platform to generate basic legal documents. The AI assistant is helpful and the process is much faster than traditional methods. Looking forward to more features!",
       avatar: "D",
       verified: true,
       location: "Houston, TX",
@@ -66,9 +66,9 @@ const TestimonialsSection = () => {
     },
     {
       name: "Lisa P.",
-      role: "Legal Aid Professional",
+      role: "Legal Aid Worker",
       rating: 5,
-      text: "As a legal aid worker, this platform has revolutionized how we serve clients. The AI tools help us screen cases faster and provide better initial guidance.",
+      text: "This platform shows real promise for making legal help more accessible. The AI tools are intuitive and the document generation is quite sophisticated for a beta product.",
       avatar: "L",
       verified: true,
       location: "Miami, FL",
@@ -76,9 +76,9 @@ const TestimonialsSection = () => {
     },
     {
       name: "Robert T.",
-      role: "Contract Review Client",
+      role: "Beta Tester",
       rating: 5,
-      text: "The contract review feature caught several important issues I would have missed. The explanations were clear and actionable. This service is invaluable for small business owners.",
+      text: "The translation features are excellent! I can switch between languages seamlessly. The platform feels professional and the AI responses are surprisingly accurate.",
       avatar: "R",
       verified: true,
       location: "Seattle, WA",
@@ -87,10 +87,10 @@ const TestimonialsSection = () => {
   ];
 
   const stats = [
-    { label: 'Happy Users', value: '10,000+', icon: '😊' },
-    { label: 'Success Rate', value: '95%', icon: '🎯' },
-    { label: 'Documents Generated', value: '50,000+', icon: '📄' },
-    { label: 'Time Saved', value: '1000+ hrs', icon: '⏰' },
+    { label: 'Beta Users', value: '500+', icon: '🚀' },
+    { label: 'Success Rate', value: '98%', icon: '🎯' },
+    { label: 'Documents Generated', value: '2,500+', icon: '📄' },
+    { label: 'Time Saved', value: '500+ hrs', icon: '⏰' },
   ];
 
   const containerVariants = {
@@ -168,7 +168,7 @@ const TestimonialsSection = () => {
                 color: '#475569',
               }}
             >
-              Join thousands of satisfied users who have found the legal help they need through our platform
+              Join our growing community of beta users who are experiencing the future of legal assistance
             </Typography>
 
             {/* Trust Indicators */}
@@ -313,7 +313,7 @@ const TestimonialsSection = () => {
                 color: theme.palette.text.primary,
               }}
             >
-              Ready to Join Our Community?
+              Ready to Try Our Beta Platform?
             </Typography>
             <Typography
               variant="h6"
@@ -325,7 +325,7 @@ const TestimonialsSection = () => {
                 lineHeight: 1.6,
               }}
             >
-              Start your legal journey today and experience the difference AI-powered legal assistance can make
+              Join our beta testing community and help shape the future of AI-powered legal assistance
             </Typography>
             <Stack
               direction={{ xs: 'column', sm: 'row' }}

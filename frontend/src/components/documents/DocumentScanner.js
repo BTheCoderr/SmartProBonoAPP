@@ -54,8 +54,13 @@ const DocumentScanner = ({ document, onAnalysisComplete }) => {
     });
   };
 
-  // Mock document scanning function
+  // Real document scanning function
   const scanDocument = async () => {
+    if (!document || !document.file) {
+      setError('Please select a document file first.');
+      return;
+    }
+
     setScanning(true);
     setProgress(0);
     setResult(null);
@@ -65,52 +70,75 @@ const DocumentScanner = ({ document, onAnalysisComplete }) => {
       // Simulate scanning progress
       const progressInterval = setInterval(() => {
         setProgress(prev => {
-          if (prev >= 95) {
+          if (prev >= 90) {
             clearInterval(progressInterval);
-            return 95;
+            return 90;
           }
-          return prev + Math.floor(Math.random() * 10);
+          return prev + Math.floor(Math.random() * 15);
         });
-      }, 500);
+      }, 300);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Prepare form data for file upload
+      const formData = new FormData();
+      formData.append('file', document.file);
+      formData.append('document_type', document.type?.toLowerCase() || 'generic');
+      
+      // Call the real backend API
+      const response = await fetch('http://localhost:3001/api/scanner/analyze', {
+        method: 'POST',
+        body: formData,
+      });
       
       clearInterval(progressInterval);
       setProgress(100);
       
-      // Mock scan result
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Analysis failed');
+      }
+      
+      // Transform backend response to frontend format
+      const analysis = data.analysis;
       const scanResult = {
-        documentType: 'Legal Contract',
-        confidence: 92,
-        pageCount: 5,
-        wordCount: 2458,
+        documentType: analysis.document_type || 'Legal Document',
+        confidence: Math.round((analysis.confidence || 0.85) * 100),
+        pageCount: analysis.page_count || 1,
+        wordCount: analysis.word_count || 0,
         language: 'English',
-        hasSignatures: true,
-        dateIdentified: '2023-06-15',
-        parties: [
-          { name: 'ABC Corporation', type: 'Company', role: 'Provider' },
-          { name: 'John Smith', type: 'Individual', role: 'Client' }
-        ],
-        keyTerms: [
-          { term: 'Payment Terms', description: 'Net 30 days from invoice date', risk: 'low' },
-          { term: 'Termination Clause', description: '30 day written notice required', risk: 'medium' },
-          { term: 'Liability Limitation', description: 'Capped at contract value', risk: 'high' },
-          { term: 'Governing Law', description: 'State of California', risk: 'low' }
-        ],
-        potentialIssues: [
-          { issue: 'Ambiguous renewal terms', severity: 'medium', explanation: 'Section 8.3 contains contradictory statements about automatic renewal' },
-          { issue: 'Unbalanced liability provisions', severity: 'high', explanation: 'One-sided indemnification may be unenforceable' }
-        ],
-        keyExcerpts: [
-          { text: 'Provider shall not be liable for any indirect, special, or consequential damages.', section: 'Liability', page: 3 },
-          { text: 'This Agreement shall automatically renew for successive one-year terms unless terminated by either party.', section: 'Term', page: 2 },
-        ],
-        recommendations: [
-          'Review liability cap and consider negotiating higher limit',
-          'Clarify renewal terms to avoid unintended auto-renewal',
-          'Ensure indemnification provisions are mutual where appropriate'
-        ]
+        hasSignatures: analysis.has_signatures || false,
+        dateIdentified: analysis.analysis_date || new Date().toISOString().split('T')[0],
+        // Enhanced fields from our improved backend
+        clientSummary: analysis.client_summary || '',
+        riskLevel: analysis.risk_level || 'medium',
+        actionItems: analysis.action_items || [],
+        parties: analysis.parties?.map((party, index) => ({
+          name: party,
+          type: 'Unknown',
+          role: index === 0 ? 'Primary' : 'Secondary'
+        })) || [],
+        keyTerms: analysis.legal_terms?.map(term => ({
+          term: term.charAt(0).toUpperCase() + term.slice(1),
+          description: `Found in document: ${term}`,
+          risk: 'medium'
+        })) || [],
+        potentialIssues: analysis.potential_issues?.map((issue, index) => ({
+          issue: issue,
+          severity: 'medium',
+          explanation: 'Identified through document analysis'
+        })) || [],
+        keyExcerpts: analysis.key_dates?.map(date => ({
+          text: `Date found: ${date}`,
+          section: 'Timeline',
+          page: 1
+        })) || [],
+        recommendations: analysis.recommendations || [],
+        extractedText: analysis.extracted_text,
+        monetaryAmounts: analysis.monetary_amounts || []
       };
       
       setResult(scanResult);
@@ -120,7 +148,7 @@ const DocumentScanner = ({ document, onAnalysisComplete }) => {
         onAnalysisComplete(scanResult);
       }
     } catch (err) {
-      setError('Failed to analyze document. Please try again.');
+      setError(`Failed to analyze document: ${err.message}`);
       console.error('Document scanning error:', err);
     } finally {
       setScanning(false);
@@ -145,7 +173,50 @@ const DocumentScanner = ({ document, onAnalysisComplete }) => {
             label={`Confidence: ${result.confidence}%`}
             color={result.confidence > 85 ? 'success' : 'warning'}
           />
+          <Chip 
+            icon={<InfoIcon />} 
+            label={`Risk: ${result.riskLevel?.toUpperCase() || 'MEDIUM'}`}
+            color={result.riskLevel === 'high' ? 'error' : result.riskLevel === 'low' ? 'success' : 'warning'}
+          />
         </Box>
+
+        {/* Client Summary - Most Important Section */}
+        {result.clientSummary && (
+          <Paper elevation={2} sx={{ p: 3, mb: 3, bgcolor: 'primary.50', border: '1px solid', borderColor: 'primary.200' }}>
+            <Typography variant="h6" gutterBottom color="primary" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <InfoIcon />
+              What This Document Means
+            </Typography>
+            <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
+              {result.clientSummary}
+            </Typography>
+          </Paper>
+        )}
+
+        {/* Action Items - Second Most Important */}
+        {result.actionItems && result.actionItems.length > 0 && (
+          <Paper elevation={2} sx={{ p: 3, mb: 3, bgcolor: 'warning.50', border: '1px solid', borderColor: 'warning.200' }}>
+            <Typography variant="h6" gutterBottom color="warning.dark" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <CheckCircleIcon />
+              What You Should Do Next
+            </Typography>
+            <List dense>
+              {result.actionItems.map((item, index) => (
+                <ListItem key={index} sx={{ py: 0.5 }}>
+                  <ListItemIcon sx={{ minWidth: 32 }}>
+                    <Typography variant="body2" color="warning.dark" fontWeight="bold">
+                      {index + 1}.
+                    </Typography>
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={item}
+                    primaryTypographyProps={{ variant: 'body2' }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        )}
         
         {/* Parties */}
         <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
@@ -326,7 +397,7 @@ const DocumentScanner = ({ document, onAnalysisComplete }) => {
         </Box>
         
         <Typography variant="body2" color="text.secondary" paragraph>
-          Our AI-powered document scanner will analyze your document for key legal terms, potential issues, and provide recommendations.
+          Your personal legal assistant is ready! We'll analyze your document to give you the knowledge and confidence to handle it like a pro.
         </Typography>
         
         {document && (

@@ -294,11 +294,12 @@ const ContractsPage = () => {
                   onClick={handleCreateNewContract}
                   sx={{
                     backgroundColor: 'white',
-                    color: '#0D47A1', // Dark blue for better contrast
+                    color: 'white', // Changed to white text
                     fontWeight: 700,
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
                     '&:hover': {
                       backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      color: '#0F3D5E', // Dark blue on hover for contrast
                       boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
                       transform: 'translateY(-2px)',
                     },

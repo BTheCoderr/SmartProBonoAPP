@@ -36,7 +36,7 @@ def app():
     app = create_app(get_prod_test_config())
     
     with app.app_context():
-            db.create_all()
+        db.create_all()
         
         # Set up upload directory
         upload_dir = Path(app.config['UPLOAD_FOLDER'])
@@ -44,9 +44,10 @@ def app():
     
     yield app
     
-        # Cleanup
+    # Cleanup
+    with app.app_context():
         db.session.remove()
-            db.drop_all()
+        db.drop_all()
         
         # Clean up upload directory
         if upload_dir.exists():
@@ -73,47 +74,47 @@ def session(app):
 @pytest.fixture(scope='function')
 def test_user(session):
     """Create a real test user"""
-        user = User(
-            email="test@example.com",
-            role="user",
-            first_name="Test",
-            last_name="User",
-            active=True
-        )
+    user = User(
+        email="test@example.com",
+        role="user",
+        first_name="Test",
+        last_name="User",
+        active=True
+    )
     user.set_password("test_password")
     session.add(user)
     session.commit()
-        return user
+    return user
 
 @pytest.fixture(scope='function')
 def test_admin(session):
     """Create a real admin user"""
-        admin = User(
-            email="admin@example.com",
-            role="admin",
-            first_name="Admin",
-            last_name="User",
-            active=True
-        )
+    admin = User(
+        email="admin@example.com",
+        role="admin",
+        first_name="Admin",
+        last_name="User",
+        active=True
+    )
     admin.set_password("admin_password")
     session.add(admin)
     session.commit()
-        return admin
+    return admin
 
 @pytest.fixture(scope='function')
 def template(session):
     """Create a real template for testing"""
-        template = Template(
-            template_id="test_template_1",
-            name="Test Template",
-            title="Test Form Template",
-            fields={"field1": "text", "field2": "number"},
-            version="1.0",
-            is_active=True
-        )
+    template = Template(
+        template_id="test_template_1",
+        name="Test Template",
+        title="Test Form Template",
+        fields={"field1": "text", "field2": "number"},
+        version="1.0",
+        is_active=True
+    )
     session.add(template)
     session.commit()
-        return template
+    return template
 
 def pytest_configure(config):
     """Configure pytest with custom markers"""

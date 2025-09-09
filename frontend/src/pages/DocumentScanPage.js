@@ -54,7 +54,7 @@ const sampleDocuments = [
   },
   {
     id: 'nda1',
-    name: 'Non-Disclosure Agreement.pdf',
+    name: 'Non-Disclosure-Agreement.pdf',
     description: 'Standard confidentiality agreement',
     type: 'NDA',
     icon: <MenuBookIcon fontSize="large" />
@@ -64,7 +64,7 @@ const sampleDocuments = [
 const DocumentScanPage = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectedDocument, setSelectedDocument] = useState(null);
-  const [, setAnalysisResult] = useState(null);
+  const [analysisResult, setAnalysisResult] = useState(null);
   
   const steps = ['Select Document', 'Analyze Document', 'Review Results'];
   
@@ -100,17 +100,39 @@ const DocumentScanPage = () => {
     }
   };
   
-  const handleSampleSelect = (sample) => {
-    setSelectedDocument(sample);
-    handleNext();
+  const handleSampleSelect = async (sample) => {
+    try {
+      // Load the actual PDF file from the public directory
+      const response = await fetch(`/sample-documents/${sample.name}`);
+      if (!response.ok) {
+        throw new Error('Failed to load sample document');
+      }
+      
+      const blob = await response.blob();
+      const file = new File([blob], sample.name, { type: 'application/pdf' });
+      
+      // Create document object with actual file data
+      const document = {
+        id: sample.id,
+        name: sample.name,
+        type: sample.type,
+        description: sample.description,
+        file: file,
+        isSample: true
+      };
+      
+      setSelectedDocument(document);
+      handleNext();
+    } catch (error) {
+      console.error('Error loading sample document:', error);
+      alert('Failed to load sample document. Please try uploading your own file.');
+    }
   };
   
   const handleAnalysisComplete = (result) => {
     setAnalysisResult(result);
-    // Move to the next step automatically after analysis
-    setTimeout(() => {
-      handleNext();
-    }, 1000);
+    // Don't auto-advance - let user manually proceed to review step
+    // The results are already displayed in the DocumentScanner component
   };
   
   // Step 1: Document Selection
@@ -184,11 +206,22 @@ const DocumentScanPage = () => {
           document={selectedDocument} 
           onAnalysisComplete={handleAnalysisComplete} 
         />
+        {analysisResult && (
+          <Box sx={{ mt: 3, textAlign: 'center' }}>
+            <Button 
+              variant="contained" 
+              onClick={handleNext}
+              size="large"
+            >
+              Proceed to Review
+            </Button>
+          </Box>
+        )}
       </Box>
     );
   };
   
-  // Step 3: Results Review (reuse the results already displayed in DocumentScanner)
+  // Step 3: Results Review
   const renderResultsReview = () => {
     return (
       <Box>
@@ -197,11 +230,43 @@ const DocumentScanPage = () => {
             Analysis Complete
           </Typography>
           <Typography variant="body1" paragraph>
-            The document analysis is complete. You can now review the detailed results or start a new analysis.
+            🎉 Great news! We've analyzed your document and given you the knowledge you need to handle it confidently.
           </Typography>
-          <Button variant="contained" onClick={handleReset}>
-            Analyze Another Document
-          </Button>
+          
+          {/* Summary of what happened */}
+          <Box sx={{ bgcolor: 'success.50', p: 2, borderRadius: 1, mb: 3, border: '1px solid', borderColor: 'success.200' }}>
+            <Typography variant="subtitle2" gutterBottom color="success.dark">
+              🚀 What You Now Know:
+            </Typography>
+            <Typography variant="body2" paragraph>
+              • You understand what type of document this is and who's involved
+            </Typography>
+            <Typography variant="body2" paragraph>
+              • You know the key financial terms, dates, and legal language
+            </Typography>
+            <Typography variant="body2" paragraph>
+              • You've identified any potential issues or concerns
+            </Typography>
+            <Typography variant="body2" paragraph>
+              • You have specific action steps to protect your interests
+            </Typography>
+            <Typography variant="body2">
+              • You're now equipped to make informed decisions about this document
+            </Typography>
+          </Box>
+
+          <Typography variant="body1" paragraph>
+            You now have the knowledge and tools to handle this document like a pro! Review the detailed analysis above to see exactly what you need to do next.
+          </Typography>
+          
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+            <Button variant="outlined" onClick={handleBack}>
+              Back to Analysis
+            </Button>
+            <Button variant="contained" onClick={handleReset}>
+              Analyze Another Document
+            </Button>
+          </Box>
         </Paper>
       </Box>
     );
@@ -213,7 +278,7 @@ const DocumentScanPage = () => {
         Document Analysis
       </Typography>
       <Typography variant="body1" paragraph color="text.secondary">
-        Our AI-powered document scanner helps you quickly understand key terms, identify potential issues, and get recommendations for legal documents.
+        Take control of your legal documents! Our AI-powered scanner acts as your personal legal assistant, helping you understand complex terms, spot potential issues, and make informed decisions - all without needing a lawyer for every document.
       </Typography>
       
       <Paper sx={{ p: 3, mb: 4 }}>

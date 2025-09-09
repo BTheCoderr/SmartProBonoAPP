@@ -156,24 +156,24 @@ const BetaLandingPage = () => {
   const features = [
     {
       icon: <ChatIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />,
-      title: "AI Legal Assistant",
+      title: "AI Legal Chat",
       description: "Get instant answers to your legal questions 24/7",
       color: '#0F3D5E',
       onClick: () => navigate('/legal-chat')
     },
     {
       icon: <DescriptionIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />,
-      title: "Document Generation",
-      description: "Create legal documents automatically based on your needs",
+      title: "Scan Documents",
+      description: "Upload and analyze legal documents with AI-powered insights",
       color: '#4caf50',
-      onClick: () => navigate('/documents')
+      onClick: () => navigate('/scan-document')
     },
     {
       icon: <GavelIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />,
-      title: "Expert Guidance",
-      description: "Connect with pro bono lawyers when needed",
+      title: "PDF Generator",
+      description: "Create professional legal documents in minutes",
       color: '#ff9800',
-      onClick: () => navigate('/expert-help')
+      onClick: () => navigate('/legal-tools')
     }
   ];
 

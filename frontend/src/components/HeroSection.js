@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import ChatIcon from '@mui/icons-material/Chat';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
@@ -22,6 +23,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import SupportIcon from '@mui/icons-material/Support';
 
 const HeroSection = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const { mockLogin, isAuthenticated, currentUser } = useAuth();
@@ -58,28 +60,25 @@ const HeroSection = () => {
     },
   };
 
-  const stats = [
-    { label: 'Users Helped', value: '10K+', icon: '👥' },
-    { label: 'Documents Generated', value: '50K+', icon: '📄' },
-    { label: 'Success Rate', value: '95%', icon: '🎯' },
-  ];
+  // Removed fake statistics - we'll add real ones when we have actual data
+  // const stats = [];
 
   const trustSignals = [
     {
       icon: <SecurityIcon sx={{ fontSize: 24, color: theme.palette.success.main }} />,
-      text: 'Bank-Level Security',
+      text: t('hero.features.bankLevelSecurity'),
     },
     {
       icon: <VerifiedUserIcon sx={{ fontSize: 24, color: theme.palette.primary.main }} />,
-      text: 'Licensed Attorneys',
+      text: t('hero.features.licensedAttorneys'),
     },
     {
       icon: <CheckCircleIcon sx={{ fontSize: 24, color: theme.palette.warning.main }} />,
-      text: 'ABA Compliant',
+      text: t('hero.features.abaCompliant'),
     },
     {
       icon: <SupportIcon sx={{ fontSize: 24, color: theme.palette.info.main }} />,
-      text: 'Expert Support',
+      text: t('hero.features.expertSupport'),
     },
   ];
 
@@ -163,7 +162,7 @@ const HeroSection = () => {
             <motion.div variants={itemVariants}>
               {/* Badge */}
               <Chip
-                label="🚀 Now with AI-Powered Legal Assistance"
+                label={t('hero.badge')}
                 color="secondary"
                 sx={{
                   mb: 3,
@@ -190,7 +189,7 @@ const HeroSection = () => {
                   color: '#ffffff',
                 }}
               >
-                Free Legal Help
+                {t('hero.title')}
                 <br />
                 <Box
                   component="span"
@@ -201,7 +200,7 @@ const HeroSection = () => {
                     backgroundClip: 'text',
                   }}
                 >
-                  Made Simple
+                  {t('hero.subtitle')}
                 </Box>
               </Typography>
 
@@ -220,55 +219,10 @@ const HeroSection = () => {
                   textShadow: '0 2px 12px rgba(0,0,0,0.6)',
                 }}
               >
-                Get instant legal assistance, AI-powered document generation, and professional guidance - all in one secure platform.
+                {t('hero.description')}
               </Typography>
 
-              {/* Stats */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: 3,
-                  mb: 4,
-                  flexWrap: 'wrap',
-                }}
-              >
-                {stats.map((stat, index) => (
-                  <motion.div
-                    key={stat.label}
-                    variants={itemVariants}
-                    initial="hidden"
-                    animate="visible"
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                  >
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography
-                        variant="h4"
-                        sx={{
-                          fontWeight: 800,
-                          fontSize: '1.5rem',
-                          mb: 0.5,
-                          color: '#ffffff',
-                          textShadow: '0 2px 8px rgba(0,0,0,0.6)',
-                        }}
-                      >
-                        {stat.value}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          opacity: 1,
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          color: '#ffffff',
-                          textShadow: '0 1px 6px rgba(0,0,0,0.6)',
-                        }}
-                      >
-                        {stat.label}
-                      </Typography>
-                    </Box>
-                  </motion.div>
-                ))}
-              </Box>
+              {/* Stats section removed - will add real statistics when available */}
 
               {/* CTA Buttons */}
               <Stack
@@ -296,7 +250,7 @@ const HeroSection = () => {
                       },
                     }}
                   >
-                    Get Started Free
+                    {t('hero.getStarted')}
                   </Button>
                 )}
                 
@@ -319,7 +273,29 @@ const HeroSection = () => {
                     },
                   }}
                 >
-                  Scan Documents
+                  {t('hero.buttons.scanDocuments')}
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  size="large"
+                  startIcon={<DocumentScannerIcon />}
+                  onClick={() => navigate('/generate-document')}
+                  sx={{
+                    borderColor: 'rgba(255, 255, 255, 0.8)',
+                    color: 'white',
+                    fontWeight: 600,
+                    py: 1.5,
+                    px: 3,
+                    fontSize: '1rem',
+                    '&:hover': {
+                      borderColor: 'white',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      transform: 'translateY(-2px)',
+                    },
+                  }}
+                >
+                  {t('hero.buttons.pdfGenerator')}
                 </Button>
 
                 <Button
@@ -341,7 +317,7 @@ const HeroSection = () => {
                     },
                   }}
                 >
-                  AI Legal Chat
+                  {t('hero.buttons.aiLegalChat')}
                 </Button>
               </Stack>
 
