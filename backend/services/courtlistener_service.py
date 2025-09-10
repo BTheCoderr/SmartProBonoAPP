@@ -5,6 +5,7 @@ Provides real case law research using the CourtListener API
 
 import requests
 import logging
+import os
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 import json
@@ -22,6 +23,17 @@ class CourtListenerService:
         self.search_url = f"{self.base_url}/search/"
         self.case_url = f"{self.base_url}/cases/"
         self.docket_url = f"{self.base_url}/dockets/"
+        
+        # API Key configuration
+        self.api_key = os.getenv("COURTLISTENER_API_KEY")
+        self.headers = {}
+        if self.api_key:
+            self.headers = {"Authorization": f"Token {self.api_key}"}
+            self.fallback_mode = False
+            logger.info("CourtListener API key found - using real API")
+        else:
+            self.fallback_mode = True
+            logger.warning("COURTLISTENER_API_KEY not set - using fallback mode")
         
         # Rate limiting
         self.last_request_time = None
@@ -54,6 +66,10 @@ class CourtListenerService:
             Search results with case information
         """
         try:
+            # Check if we're in fallback mode
+            if self.fallback_mode:
+                return self._get_fallback_search_results(query, case_type, court, limit)
+            
             self._rate_limit()
             
             # Build search parameters
@@ -79,7 +95,7 @@ class CourtListenerService:
             params['page_size'] = min(limit, 100)  # API max is 100
             
             # Make the request
-            response = requests.get(self.search_url, params=params, timeout=30)
+            response = requests.get(self.search_url, params=params, headers=self.headers, timeout=30)
             response.raise_for_status()
             
             data = response.json()
@@ -290,6 +306,43 @@ class CourtListenerService:
                 'error': f"Recent cases search error: {str(e)}",
                 'cases': []
             }
+    
+    def _get_fallback_search_results(self, query: str, case_type: str = None, 
+                                   court: str = None, limit: int = 20) -> Dict[str, Any]:
+        """
+        Fallback search results when API key is not available.
+        Returns realistic mock data for development/testing.
+        """
+        logger.info(f"Using fallback mode for search: '{query}'")
+        
+        # Generate realistic mock case data
+        mock_cases = []
+        case_types = ['civil', 'criminal', 'immigration', 'family', 'employment']
+        courts = ['Supreme Court', 'Court of Appeals', 'District Court', 'State Court']
+        
+        for i in range(min(limit, 5)):  # Limit to 5 mock cases
+            mock_case = {
+                'case_name': f"Mock Case {i+1}: {query.title()}",
+                'court': courts[i % len(courts)],
+                'date_filed': (datetime.now() - timedelta(days=i*30)).strftime('%Y-%m-%d'),
+                'citation': f"Mock Citation {i+1}",
+                'precedential': i % 2 == 0,
+                'snippet': f"This is a mock case related to '{query}' for testing purposes.",
+                'url': f"https://example.com/mock-case-{i+1}",
+                'case_type': case_type or case_types[i % len(case_types)],
+                'status': 'Mock Status'
+            }
+            mock_cases.append(mock_case)
+        
+        return {
+            'success': True,
+            'query': query,
+            'total_results': len(mock_cases),
+            'cases': mock_cases,
+            'search_timestamp': datetime.now().isoformat(),
+            'fallback_mode': True,
+            'message': 'Using fallback data - CourtListener API key not configured'
+        }
 
 # Global instance
 courtlistener_service = CourtListenerService()
