@@ -11,18 +11,8 @@ from typing import Dict, List, Optional, Any, Union
 import uuid
 from pathlib import Path
 
-# PDF Processing
-try:
-    import fitz  # PyMuPDF
-    PYMUPDF_AVAILABLE = True
-except ImportError:
-    PYMUPDF_AVAILABLE = False
-
-try:
-    from PyPDF2 import PdfReader
-    PYPDF2_AVAILABLE = True
-except ImportError:
-    PYPDF2_AVAILABLE = False
+# PDF Processing - Use the unified PDF processor
+from utils.pdf_processor import pdf_processor
 
 # PDF Generation
 try:
@@ -110,47 +100,21 @@ class UnifiedDocumentService:
             return None
     
     def _extract_pdf_text(self, file_path: str) -> Optional[str]:
-        """Extract text from PDF using the best available method."""
-        text = ""
-        
-        # Try PyMuPDF first (best quality)
-        if PYMUPDF_AVAILABLE:
-            try:
-                doc = fitz.open(file_path)
-                for page_num in range(len(doc)):
-                    page = doc.load_page(page_num)
-                    page_text = page.get_text()
-                    if page_text:
-                        text += f"\n--- Page {page_num + 1} ---\n"
-                        text += page_text
-                doc.close()
-                if text.strip():
-                    logger.info(f"Successfully extracted {len(text)} characters using PyMuPDF")
-                    return text.strip()
-            except Exception as e:
-                logger.warning(f"PyMuPDF failed: {e}")
-        
-        # Fallback to PyPDF2
-        if PYPDF2_AVAILABLE:
-            try:
-                reader = PdfReader(file_path)
-                for page_num, page in enumerate(reader.pages):
-                    try:
-                        page_text = page.extract_text()
-                        if page_text:
-                            text += f"\n--- Page {page_num + 1} ---\n"
-                            text += page_text
-                    except Exception as e:
-                        logger.warning(f"Error extracting page {page_num + 1}: {e}")
-                        continue
-                if text.strip():
-                    logger.info(f"Successfully extracted {len(text)} characters using PyPDF2")
-                    return text.strip()
-            except Exception as e:
-                logger.warning(f"PyPDF2 failed: {e}")
-        
-        logger.warning("No PDF extraction method available")
-        return "No readable text found in this PDF document."
+        """Extract text from PDF using the unified PDF processor."""
+        try:
+            with open(file_path, 'rb') as f:
+                pdf_data = f.read()
+            
+            text = pdf_processor.extract_text(pdf_data)
+            if text.strip():
+                logger.info(f"Successfully extracted {len(text)} characters using {pdf_processor.primary_lib}")
+                return text.strip()
+            else:
+                logger.warning("No text extracted from PDF")
+                return "No readable text found in this PDF document."
+        except Exception as e:
+            logger.error(f"PDF text extraction failed: {e}")
+            return "No readable text found in this PDF document."
     
     def _extract_text_file(self, file_path: str) -> str:
         """Extract text from plain text files."""

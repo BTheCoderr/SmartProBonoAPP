@@ -1,0 +1,35 @@
+# Ignore old requirements files that might contain PyMuPDF
+backend/requirements.txt
+requirements.txt
+
+# Use only our deployment requirements
+!requirements-deploy.txt
+
+# Ignore other files
+.git
+.gitignore
+README.md
+*.md
+.env
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache
+.coverage
+htmlcov/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

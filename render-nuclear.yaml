@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: smartprobono-backend-nuclear
+    env: python
+    buildCommand: |
+      echo "💥 NUCLEAR DEPLOYMENT - PyMuPDF ELIMINATION"
+      echo "============================================="
+      echo "🧹 Removing ALL PyMuPDF traces..."
+      pip uninstall -y PyMuPDF pymupdf4llm fitz || true
+      pip cache purge || true
+      echo "📦 Installing nuclear requirements (NO PyMuPDF)..."
+      pip install -r requirements-nuclear.txt
+      echo "🔍 Verifying PyMuPDF elimination..."
+      python -c "import sys; sys.exit(0 if 'fitz' not in sys.modules else 1)" || (echo "❌ PyMuPDF detected!" && exit 1)
+      echo "✅ NUCLEAR DEPLOYMENT SUCCESSFUL!"
+    startCommand: |
+      echo "🚀 Starting SmartProBono backend (nuclear mode)..."
+      cd backend
+      python app.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: NO_PYMUPDF
+        value: "true"
