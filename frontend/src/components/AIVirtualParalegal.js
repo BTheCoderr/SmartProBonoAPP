@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Typography, Box, Paper, Button, Grid, Card, CardContent, Chip, CircularProgress } from '@mui/material';
-import { PlayArrow, Stop, Refresh, Dashboard, People, Description, Schedule, Warning } from '@mui/icons-material';
+import { PlayArrow, Stop, Refresh, Dashboard, People, Description, Schedule, Warning, Search } from '@mui/icons-material';
 
 const AIVirtualParalegal = () => {
   const [workflowRunning, setWorkflowRunning] = useState(false);
@@ -54,13 +54,72 @@ const AIVirtualParalegal = () => {
     setActivityLog(prev => [`${timestamp}: ${message}`, ...prev.slice(0, 9)]);
   };
 
+  const testCourtListener = async () => {
+    addActivity('Testing CourtListener API integration...');
+    
+    try {
+      // Test case search
+      const searchResponse = await fetch('/api/v1/ai-virtual-paralegal/search-cases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: 'immigration',
+          case_type: 'civil',
+          limit: 5
+        })
+      });
+      
+      if (searchResponse.ok) {
+        const searchResult = await searchResponse.json();
+        if (searchResult.success) {
+          addActivity(`CourtListener search successful: ${searchResult.total_results} cases found`);
+          addActivity(`Found cases: ${searchResult.cases.map(c => c.case_name).join(', ')}`);
+        } else {
+          addActivity(`CourtListener search failed: ${searchResult.error}`);
+        }
+      } else {
+        addActivity(`CourtListener API error: ${searchResponse.status}`);
+      }
+      
+      // Test similar cases
+      const similarResponse = await fetch('/api/v1/ai-virtual-paralegal/similar-cases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          case_data: {
+            title: 'Immigration Case - I-485',
+            type: 'immigration',
+            client_name: 'Test Client'
+          },
+          limit: 3
+        })
+      });
+      
+      if (similarResponse.ok) {
+        const similarResult = await similarResponse.json();
+        if (similarResult.success) {
+          addActivity(`Similar cases found: ${similarResult.similar_cases.length} cases`);
+        } else {
+          addActivity(`Similar cases search failed: ${similarResult.error}`);
+        }
+      }
+      
+    } catch (error) {
+      addActivity(`CourtListener test error: ${error.message}`);
+    }
+  };
+
   const startWorkflow = async () => {
     setLoading(true);
     addActivity('AI Virtual Paralegal workflow started');
     
     try {
       // Call the real backend API
-      const response = await fetch('/api/ai-virtual-paralegal/start-workflow', {
+      const response = await fetch('/api/v1/ai-virtual-paralegal/start', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -215,6 +274,15 @@ const AIVirtualParalegal = () => {
               disabled={loading}
             >
               Refresh
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<Search />}
+              onClick={testCourtListener}
+              disabled={loading}
+              color="secondary"
+            >
+              Test CourtListener
             </Button>
           </Box>
         </Box>
