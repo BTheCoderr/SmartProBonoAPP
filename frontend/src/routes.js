@@ -16,6 +16,8 @@ const AuditDashboard = React.lazy(() => import('./components/AuditDashboard'));
 const DocumentsPage = React.lazy(() => import('./pages/DocumentsPage'));
 const ContractsPage = React.lazy(() => import('./pages/ContractsPage'));
 const VirtualParalegalPage = React.lazy(() => import('./pages/VirtualParalegalPage'));
+const VirtualParalegalCRM = React.lazy(() => import('./components/VirtualParalegalCRM'));
+const AIVirtualParalegal = React.lazy(() => import('./components/AIVirtualParalegalTest'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const ExpungementPage = React.lazy(() => import('./pages/ExpungementPage'));
 const FormsIndexPage = React.lazy(() => import('./pages/FormsIndexPage'));
@@ -95,6 +97,8 @@ const routes = [
   { path: '/documents', element: <DocumentsPage /> },
   { path: '/contracts', element: <ContractsPage /> },
   { path: '/virtual-paralegal', element: <VirtualParalegalPage /> },
+  { path: '/virtual-paralegal/crm', element: <VirtualParalegalCRM /> },
+  { path: '/ai-virtual-paralegal', element: <AIVirtualParalegal /> },
   { path: '/profile', element: <ProfilePage /> },
   { path: '/expungement', element: <ExpungementPage /> },
   { path: '/forms', element: <FormsIndexPage /> },

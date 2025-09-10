@@ -11,6 +11,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from agents.intake_agent import intake
 from agents.courtlistener_agent import search_live
 from agents.vector_agent import search_local
+from agents.merge_agent import merge_results
 from agents.summarizer_agent import summarize
 from agents.compliance_agent import guardrails
 
@@ -35,6 +36,7 @@ class LegalAIPipeline:
             intake_result: Dict[str, Any]
             courtlistener_results: Dict[str, Any]
             vector_results: Dict[str, Any]
+            merged_results: Dict[str, Any]
             analysis: Dict[str, Any]
             final_result: Dict[str, Any]
             errors: Annotated[List[str], add]
@@ -46,17 +48,19 @@ class LegalAIPipeline:
         workflow.add_node("intake", self._intake_node)
         workflow.add_node("courtlistener_search", self._courtlistener_node)
         workflow.add_node("vector_search", self._vector_node)
+        workflow.add_node("merge_results", self._merge_node)
         workflow.add_node("summarize", self._summarize_node)
         workflow.add_node("compliance", self._compliance_node)
         
         # Set entry point
         workflow.set_entry_point("intake")
         
-        # Add edges
+        # Add edges - run searches in parallel, then merge, then summarize
         workflow.add_edge("intake", "courtlistener_search")
         workflow.add_edge("intake", "vector_search")
-        workflow.add_edge("courtlistener_search", "summarize")
-        workflow.add_edge("vector_search", "summarize")
+        workflow.add_edge("courtlistener_search", "merge_results")
+        workflow.add_edge("vector_search", "merge_results")
+        workflow.add_edge("merge_results", "summarize")
         workflow.add_edge("summarize", "compliance")
         workflow.add_edge("compliance", END)
         
@@ -314,37 +318,10 @@ class LegalAIPipeline:
             }
     
     def _courtlistener_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Search live case law using CourtListener - using mock data."""
+        """Search live case law using CourtListener."""
         try:
             intake_result = state.get("intake_result", {})
-            topic = intake_result.get("topic", "legal matter")
-            jurisdiction = intake_result.get("jurisdiction", "ri")
-            
-            # Return mock case data instead of calling API
-            mock_cases = [
-                {
-                    "case_name": f"Sample {topic.title()} Case v. State",
-                    "court": f"{jurisdiction.upper()} Supreme Court",
-                    "date_filed": "2023-01-15",
-                    "snippet": f"This is a mock case related to {topic}. The court considered the legal issues and provided guidance on similar matters.",
-                    "jurisdiction": jurisdiction,
-                    "case_type": "civil" if topic == "civil" else "criminal"
-                },
-                {
-                    "case_name": f"Another {topic.title()} Matter",
-                    "court": f"{jurisdiction.upper()} Court of Appeals", 
-                    "date_filed": "2023-03-20",
-                    "snippet": f"Another mock case involving {topic}. The court's decision established important legal principles.",
-                    "jurisdiction": jurisdiction,
-                    "case_type": "civil" if topic == "civil" else "criminal"
-                }
-            ]
-            
-            courtlistener_results = {
-                "success": True,
-                "cases": mock_cases,
-                "total_count": len(mock_cases)
-            }
+            courtlistener_results = search_live(intake_result)
             
             return {
                 "courtlistener_results": courtlistener_results,
@@ -358,29 +335,10 @@ class LegalAIPipeline:
             }
     
     def _vector_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Search local vector store for case embeddings - using mock data."""
+        """Search local vector store for case embeddings."""
         try:
             intake_result = state.get("intake_result", {})
-            topic = intake_result.get("topic", "legal matter")
-            jurisdiction = intake_result.get("jurisdiction", "ri")
-            
-            # Return mock vector search results
-            mock_vector_cases = [
-                {
-                    "case_name": f"Vector {topic.title()} Case",
-                    "court": f"{jurisdiction.upper()} District Court",
-                    "date_filed": "2023-02-10",
-                    "snippet": f"Vector search found this {topic} case with relevant legal principles and precedents.",
-                    "similarity_score": 0.85,
-                    "case_type": "civil" if topic == "civil" else "criminal"
-                }
-            ]
-            
-            vector_results = {
-                "success": True,
-                "cases": mock_vector_cases,
-                "total_count": len(mock_vector_cases)
-            }
+            vector_results = search_local(intake_result)
             
             return {
                 "vector_results": vector_results,
@@ -393,23 +351,33 @@ class LegalAIPipeline:
                 "errors": state.get("errors", []) + [f"Vector search error: {str(e)}"]
             }
     
-    def _summarize_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze and summarize case law - using enhanced fallback analysis."""
+    def _merge_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        """Merge results from multiple search sources."""
         try:
-            # Get context from previous nodes
-            intake_result = state.get("intake_result", {})
-            courtlistener_results = state.get("courtlistener_results", {})
-            vector_results = state.get("vector_results", {})
+            merged_state = merge_results(state)
+            return {
+                "merged_results": merged_state.get("merged_results", {}),
+                "errors": merged_state.get("errors", state.get("errors", []))
+            }
+        except Exception as e:
+            logger.error(f"Error in merge node: {e}")
+            return {
+                "merged_results": {"success": False, "cases": []},
+                "errors": state.get("errors", []) + [f"Merge error: {str(e)}"]
+            }
+    
+    def _summarize_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        """Analyze and summarize case law using the summarizer agent."""
+        try:
+            # Use merged results for summarization
+            context = {
+                **state.get("intake_result", {}),
+                "merged_results": state.get("merged_results", {}),
+                "courtlistener_results": state.get("courtlistener_results", {}),
+                "vector_results": state.get("vector_results", {})
+            }
             
-            # Extract key information
-            user_input = intake_result.get("original_input", "")
-            topic = intake_result.get("topic", "legal matter")
-            jurisdiction = intake_result.get("jurisdiction", "ri")
-            case_type = intake_result.get("case_type", "general")
-            urgency = intake_result.get("urgency", "medium")
-            
-            # Create enhanced analysis based on the specific query
-            analysis = self._create_enhanced_analysis(user_input, topic, jurisdiction, case_type, urgency, courtlistener_results, vector_results)
+            analysis = summarize(context)
             
             return {
                 "analysis": analysis,

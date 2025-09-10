@@ -418,7 +418,7 @@ Focus on creating practical, usable documents."""
     @staticmethod
     def extract_text_from_document(document_path):
         """
-        Extract text from a document
+        Extract text from a document with improved error handling
         
         Args:
             document_path (str): Path to the document
@@ -429,6 +429,7 @@ Focus on creating practical, usable documents."""
         try:
             import os
             from PyPDF2 import PdfReader
+            import fitz  # PyMuPDF for better text extraction
             
             # Check if file exists
             if not os.path.exists(document_path):
@@ -439,26 +440,43 @@ Focus on creating practical, usable documents."""
             file_ext = os.path.splitext(document_path)[1].lower()
             
             if file_ext == '.pdf':
-                # Extract text from PDF using PyPDF2
-                reader = PdfReader(document_path)
                 text = ""
                 
-                for page_num, page in enumerate(reader.pages):
-                    try:
-                        page_text = page.extract_text()
+                # Try PyMuPDF first (better text extraction)
+                try:
+                    doc = fitz.open(document_path)
+                    for page_num in range(len(doc)):
+                        page = doc.load_page(page_num)
+                        page_text = page.get_text()
                         if page_text:
                             text += f"\n--- Page {page_num + 1} ---\n"
                             text += page_text
-                    except Exception as e:
-                        logger.warning(f"Error extracting text from page {page_num + 1}: {str(e)}")
-                        continue
+                    doc.close()
+                except Exception as e:
+                    logger.warning(f"PyMuPDF failed, trying PyPDF2: {str(e)}")
+                    # Fallback to PyPDF2
+                    reader = PdfReader(document_path)
+                    for page_num, page in enumerate(reader.pages):
+                        try:
+                            page_text = page.extract_text()
+                            if page_text:
+                                text += f"\n--- Page {page_num + 1} ---\n"
+                                text += page_text
+                        except Exception as e:
+                            logger.warning(f"Error extracting text from page {page_num + 1}: {str(e)}")
+                            continue
                 
                 if text.strip():
                     logger.info(f"Successfully extracted {len(text)} characters from PDF")
                     return text.strip()
                 else:
                     logger.warning("No text could be extracted from PDF")
-                    return None
+                    return "No readable text found in this PDF document."
+                    
+            elif file_ext in ['.txt', '.md']:
+                # Handle text files
+                with open(document_path, 'r', encoding='utf-8') as f:
+                    return f.read()
                     
             else:
                 # For other file types, return a placeholder

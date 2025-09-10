@@ -1,1 +1,1 @@
-web: python3 app_standalone.py
+web: gunicorn backend.production_app:app --bind 0.0.0.0:$PORT --workers 2

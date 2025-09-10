@@ -34,6 +34,7 @@ Jinja2==3.1.2
 reportlab==4.1.0
 pdfkit==1.0.0
 PyPDF2==3.0.1
+PyMuPDF==1.23.8
 
 # Utilities
 requests==2.31.0

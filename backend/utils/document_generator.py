@@ -65,7 +65,7 @@ class DocumentGenerator:
             raise ValueError(f"Failed to render template: {str(e)}")
 
     def generate_pdf(self, html_content, output_path=None):
-        """Generate PDF from HTML content"""
+        """Generate PDF from HTML content with fallback methods"""
         try:
             output_path = output_path or os.path.join(
                 current_app.config.get('DOCUMENT_UPLOAD_FOLDER', '/tmp'),
@@ -75,19 +75,52 @@ class DocumentGenerator:
             # Ensure directory exists
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             
-            # Convert HTML to PDF
-            options = {
-                'page-size': 'Letter',
-                'margin-top': '0.75in',
-                'margin-right': '0.75in',
-                'margin-bottom': '0.75in',
-                'margin-left': '0.75in',
-                'encoding': 'UTF-8',
-                'no-outline': None
-            }
-            
-            pdfkit.from_string(html_content, output_path, options=options)
-            return output_path
+            # Try multiple PDF generation methods
+            try:
+                # Method 1: Try pdfkit first
+                options = {
+                    'page-size': 'Letter',
+                    'margin-top': '0.75in',
+                    'margin-right': '0.75in',
+                    'margin-bottom': '0.75in',
+                    'margin-left': '0.75in',
+                    'encoding': 'UTF-8',
+                    'no-outline': None
+                }
+                pdfkit.from_string(html_content, output_path, options=options)
+                return output_path
+            except Exception as e1:
+                logger.warning(f"pdfkit failed, trying weasyprint: {str(e1)}")
+                try:
+                    # Method 2: Try weasyprint
+                    from weasyprint import HTML, CSS
+                    HTML(string=html_content).write_pdf(output_path)
+                    return output_path
+                except Exception as e2:
+                    logger.warning(f"weasyprint failed, trying reportlab: {str(e2)}")
+                    # Method 3: Fallback to reportlab (basic PDF)
+                    from reportlab.pdfgen import canvas
+                    from reportlab.lib.pagesizes import letter
+                    from reportlab.lib.styles import getSampleStyleSheet
+                    from reportlab.platypus import SimpleDocTemplate, Paragraph
+                    from reportlab.lib.units import inch
+                    
+                    doc = SimpleDocTemplate(output_path, pagesize=letter)
+                    styles = getSampleStyleSheet()
+                    story = []
+                    
+                    # Convert HTML to plain text for reportlab
+                    import re
+                    text_content = re.sub(r'<[^>]+>', '', html_content)
+                    lines = text_content.split('\n')
+                    
+                    for line in lines[:50]:  # Limit to first 50 lines
+                        if line.strip():
+                            p = Paragraph(line.strip(), styles['Normal'])
+                            story.append(p)
+                    
+                    doc.build(story)
+                    return output_path
         except Exception as e:
             logger.error(f"Error generating PDF: {str(e)}")
             raise ValueError(f"Failed to generate PDF: {str(e)}")

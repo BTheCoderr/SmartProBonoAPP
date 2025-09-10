@@ -1,278 +1,174 @@
 """
-Vector Agent - Searches local case embeddings using ChromaDB.
-Provides fast access to pre-embedded case law and legal documents.
+Vector search agent for semantic case law search using ChromaDB.
+This agent searches the embedded case law database for relevant cases.
 """
+
 import logging
 from typing import Dict, List, Any, Optional
-from dataclasses import dataclass
 import chromadb
 from chromadb.config import Settings
 
 logger = logging.getLogger(__name__)
 
-@dataclass
-class VectorSearchResult:
-    """Structured result from vector search."""
-    documents: List[str]
-    metadatas: List[Dict[str, Any]]
-    distances: List[float]
-    ids: List[str]
-    query: str
-    collection_name: str
-
-class VectorAgent:
-    """Agent responsible for searching local case embeddings."""
+class VectorSearchAgent:
+    """Agent for semantic search of embedded case law."""
     
-    def __init__(self, persist_directory: str = "./vectorstore/chroma_data"):
-        """
-        Initialize vector agent with ChromaDB client.
-        
-        Args:
-            persist_directory: Directory to persist ChromaDB data
-        """
-        self.persist_directory = persist_directory
-        self.client = chromadb.PersistentClient(
-            path=persist_directory,
-            settings=Settings(
-                anonymized_telemetry=False,
-                allow_reset=True
-            )
-        )
-        self.collection_name = "harvard_cases"
-        self._ensure_collection_exists()
+    def __init__(self, collection_name: str = "legal_cases"):
+        self.collection_name = collection_name
+        self.chroma_client = chromadb.Client(Settings(
+            persist_directory="./vectorstore/chroma_data"
+        ))
+        self.collection = None
+        self._initialize_collection()
     
-    def _ensure_collection_exists(self):
-        """Ensure the collection exists, create if not."""
+    def _initialize_collection(self):
+        """Initialize the ChromaDB collection."""
         try:
-            # Try to get existing collection
-            self.collection = self.client.get_collection(self.collection_name)
-            logger.info(f"Using existing collection: {self.collection_name}")
-        except Exception:
-            # Create new collection if it doesn't exist
-            self.collection = self.client.create_collection(
-                name=self.collection_name,
-                metadata={"description": "Harvard Case Law Embeddings"}
-            )
-            logger.info(f"Created new collection: {self.collection_name}")
-    
-    def build_search_query(self, context: Dict[str, Any]) -> str:
-        """
-        Build search query from context for vector search.
-        
-        Args:
-            context: Intake context with legal information
-            
-        Returns:
-            Search query string
-        """
-        topic = context.get("topic", "")
-        keywords = context.get("keywords", [])
-        case_type = context.get("case_type", "")
-        suggested_charges = context.get("suggested_charges", [])
-        
-        # Build query components
-        query_parts = []
-        
-        # Add topic
-        if topic and topic != "general":
-            query_parts.append(topic)
-        
-        # Add keywords
-        query_parts.extend(keywords)
-        
-        # Add case type
-        if case_type and case_type != "general":
-            query_parts.append(case_type)
-        
-        # Add suggested charges
-        if suggested_charges:
-            charge_text = " ".join(suggested_charges[:2])  # First 2 charges
-            query_parts.append(charge_text)
-        
-        # Join and clean
-        query = " ".join(query_parts)
-        query = " ".join(list(dict.fromkeys(query.split())))
-        
-        logger.info(f"Built vector search query: '{query}'")
-        return query
+            self.collection = self.chroma_client.get_collection(self.collection_name)
+            logger.info(f"Connected to existing collection: {self.collection_name}")
+        except Exception as e:
+            logger.warning(f"Collection {self.collection_name} not found: {e}")
+            try:
+                # Create the collection if it doesn't exist
+                self.collection = self.chroma_client.create_collection(
+                    name=self.collection_name,
+                    metadata={"description": "Legal cases for semantic search"}
+                )
+                logger.info(f"Created new collection: {self.collection_name}")
+            except Exception as create_error:
+                logger.error(f"Failed to create collection: {create_error}")
+                self.collection = None
     
     def search_cases(
         self, 
-        context: Dict[str, Any], 
-        n_results: int = 5,
-        where_filter: Optional[Dict[str, Any]] = None
-    ) -> VectorSearchResult:
+        query: str, 
+        jurisdiction: Optional[str] = None,
+        case_type: Optional[str] = None,
+        limit: int = 5
+    ) -> Dict[str, Any]:
         """
-        Search for cases using vector similarity.
+        Search for relevant cases using semantic similarity.
         
         Args:
-            context: Intake context with legal information
-            n_results: Number of results to return
-            where_filter: Metadata filter for search
+            query: Search query
+            jurisdiction: Filter by jurisdiction (ri, ma, etc.)
+            case_type: Filter by case type (criminal, civil, etc.)
+            limit: Maximum number of results
             
         Returns:
-            VectorSearchResult with found cases
+            Dictionary with search results
         """
+        if not self.collection:
+            logger.warning("No collection available, returning empty results")
+            return {
+                "success": False,
+                "cases": [],
+                "error": "Vector database not initialized"
+            }
+        
         try:
-            # Build search query
-            query = self.build_search_query(context)
+            # Build where clause for filtering
+            where_clause = {}
+            if jurisdiction:
+                where_clause["jurisdiction"] = jurisdiction
+            if case_type:
+                where_clause["case_type"] = case_type
             
-            # Prepare where filter
-            if not where_filter:
-                jurisdiction = context.get("jurisdiction", "ri")
-                where_filter = {"jurisdiction": jurisdiction}
-            
-            # Perform vector search
+            # Perform semantic search
             results = self.collection.query(
                 query_texts=[query],
-                n_results=n_results,
-                where=where_filter,
-                include=["documents", "metadatas", "distances"]
+                n_results=limit,
+                where=where_clause if where_clause else None
             )
             
-            # Extract results
-            documents = results["documents"][0] if results["documents"] else []
-            metadatas = results["metadatas"][0] if results["metadatas"] else []
-            distances = results["distances"][0] if results["distances"] else []
-            ids = results["ids"][0] if results["ids"] else []
+            # Format results
+            cases = []
+            if results['documents'] and results['documents'][0]:
+                for i, doc in enumerate(results['documents'][0]):
+                    case = {
+                        "case_name": results['metadatas'][0][i].get('case_name', 'Unknown'),
+                        "court": results['metadatas'][0][i].get('court', 'Unknown Court'),
+                        "date": results['metadatas'][0][i].get('date', 'Unknown Date'),
+                        "jurisdiction": results['metadatas'][0][i].get('jurisdiction', 'Unknown'),
+                        "case_type": results['metadatas'][0][i].get('case_type', 'Unknown'),
+                        "text": doc,
+                        "similarity_score": results['distances'][0][i] if results['distances'] else 0.0,
+                        "topics": results['metadatas'][0][i].get('topics', [])
+                    }
+                    cases.append(case)
             
-            result = VectorSearchResult(
-                documents=documents,
-                metadatas=metadatas,
-                distances=distances,
-                ids=ids,
-                query=query,
-                collection_name=self.collection_name
-            )
+            logger.info(f"Found {len(cases)} cases for query: {query}")
             
-            logger.info(f"Found {len(documents)} vector results for query: {query}")
-            return result
+            return {
+                "success": True,
+                "cases": cases,
+                "query": query,
+                "jurisdiction": jurisdiction,
+                "total_results": len(cases)
+            }
             
         except Exception as e:
             logger.error(f"Error in vector search: {e}")
-            return VectorSearchResult(
-                documents=[],
-                metadatas=[],
-                distances=[],
-                ids=[],
-                query=context.get("original_input", ""),
-                collection_name=self.collection_name
-            )
+            return {
+                "success": False,
+                "cases": [],
+                "error": str(e)
+            }
     
-    def add_cases(self, cases: List[Dict[str, Any]]) -> bool:
+    def get_case_by_id(self, case_id: str) -> Optional[Dict[str, Any]]:
         """
-        Add cases to the vector store.
+        Get a specific case by ID.
         
         Args:
-            cases: List of case dictionaries with text and metadata
+            case_id: Case identifier
             
         Returns:
-            True if successful, False otherwise
+            Case data or None if not found
         """
+        if not self.collection:
+            return None
+            
         try:
-            documents = []
-            metadatas = []
-            ids = []
-            
-            for i, case in enumerate(cases):
-                documents.append(case.get("text", ""))
-                metadatas.append(case.get("metadata", {}))
-                ids.append(f"case_{i}_{hash(case.get('text', ''))}")
-            
-            self.collection.add(
-                documents=documents,
-                metadatas=metadatas,
-                ids=ids
-            )
-            
-            logger.info(f"Added {len(cases)} cases to vector store")
-            return True
-            
+            results = self.collection.get(ids=[case_id])
+            if results['documents']:
+                return {
+                    "id": case_id,
+                    "text": results['documents'][0],
+                    "metadata": results['metadatas'][0] if results['metadatas'] else {}
+                }
         except Exception as e:
-            logger.error(f"Error adding cases to vector store: {e}")
-            return False
-    
-    def get_collection_stats(self) -> Dict[str, Any]:
-        """Get statistics about the collection."""
-        try:
-            count = self.collection.count()
-            return {
-                "collection_name": self.collection_name,
-                "total_cases": count,
-                "persist_directory": self.persist_directory
-            }
-        except Exception as e:
-            logger.error(f"Error getting collection stats: {e}")
-            return {"error": str(e)}
+            logger.error(f"Error getting case by ID: {e}")
+        
+        return None
 
-def search_local(context: Dict[str, Any]) -> Dict[str, Any]:
+def search_local(intake_result: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Main function for LangGraph - searches local vector store.
+    Search local vector database for relevant cases.
+    This function is called by the LangGraph pipeline.
     
     Args:
-        context: Intake context from previous agent
+        intake_result: Results from the intake agent
         
     Returns:
-        Dictionary with search results
+        Search results from vector database
     """
-    agent = VectorAgent()
-    result = agent.search_cases(context, n_results=5)
+    agent = VectorSearchAgent()
     
-    # Convert to serializable format
-    cases_data = []
-    for i, (doc, metadata, distance) in enumerate(zip(
-        result.documents, 
-        result.metadatas, 
-        result.distances
-    )):
-        cases_data.append({
-            "text": doc,
-            "metadata": metadata,
-            "similarity_score": 1 - distance,  # Convert distance to similarity
-            "id": result.ids[i] if i < len(result.ids) else f"case_{i}"
-        })
+    # Extract search terms from intake result
+    query = intake_result.get('query', '')
+    jurisdiction = intake_result.get('jurisdiction', 'ri')
+    case_type = intake_result.get('case_type')
     
-    return {
-        "source": "vector_store",
-        "cases": cases_data,
-        "total_found": len(cases_data),
-        "search_query": result.query,
-        "collection_name": result.collection_name,
-        "success": len(cases_data) > 0
-    }
-
-# Example usage and testing
-if __name__ == "__main__":
-    # Test the vector agent
-    test_context = {
-        "topic": "criminal",
-        "jurisdiction": "ri",
-        "case_type": "criminal",
-        "keywords": ["gun", "possession"],
-        "urgency": "high",
-        "original_input": "I was charged with gun possession in Rhode Island",
-        "suggested_charges": ["Unlawful possession of firearm"]
-    }
+    if not query:
+        return {
+            "success": False,
+            "cases": [],
+            "error": "No query provided"
+        }
     
-    agent = VectorAgent()
-    
-    # Get collection stats
-    stats = agent.get_collection_stats()
-    print(f"Collection Stats: {stats}")
-    
-    # Search for cases
-    result = agent.search_cases(test_context, n_results=3)
-    
-    print(f"Search Query: {result.query}")
-    print(f"Found {len(result.documents)} cases:")
-    print()
-    
-    for i, (doc, metadata, distance) in enumerate(zip(
-        result.documents, 
-        result.metadatas, 
-        result.distances
-    )):
-        print(f"{i+1}. Similarity: {1-distance:.3f}")
-        print(f"   Metadata: {metadata}")
-        print(f"   Text: {doc[:200]}...")
-        print()
+    return agent.search_cases(
+        query=query,
+        jurisdiction=jurisdiction,
+        case_type=case_type,
+        limit=5
+    )
