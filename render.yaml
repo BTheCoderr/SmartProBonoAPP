@@ -1,25 +1,26 @@
 services:
   - type: web
-    name: smartProBonoAPP-Advanced
+    name: smartprobono-backend
     env: python
-    plan: starter
-    branch: main
-    autoDeploy: true
-    rootDir: .
     buildCommand: |
-      pip install --upgrade pip && pip install -r requirements.txt
+      echo "🚀 Starting SmartProBono FORCE deployment..."
+      echo "🧹 Removing any PyMuPDF installations..."
+      pip uninstall -y PyMuPDF pymupdf4llm || true
+      echo "📦 Installing deployment requirements..."
+      pip install -r requirements-deploy.txt
+      echo "🔍 Verifying PyMuPDF is not installed..."
+      python -c "import sys; sys.exit(0 if 'fitz' not in sys.modules else 1)" || pip uninstall -y PyMuPDF pymupdf4llm
+      echo "✅ Dependencies installed successfully without PyMuPDF"
     startCommand: |
-      gunicorn backend.production_app:app --bind 0.0.0.0:$PORT --workers 2
+      echo "🚀 Starting SmartProBono backend..."
+      cd backend
+      python app.py
     envVars:
-      - key: PYTHON_ENV
-        value: production
-      - key: PORT
-        value: "10000"
-      - key: SUPABASE_URL
-        value: https://ewtcvsohdgkthuyajyyk.supabase.co
-      - key: SUPABASE_SERVICE_KEY
-        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3dGN2c29oZGdrdGh1eWFqeXlrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjQxMDQ2NCwiZXhwIjoyMDcxOTg2NDY0fQ._9KbvHJ6JohciGAqwHlQGerGr2xkHEr36OmSB5oQjng
-      - key: OPENAI_API_KEY
-        value: your_openai_key_here
-      - key: ANTHROPIC_API_KEY
-        value: your_anthropic_key_here
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: PIP_NO_CACHE_DIR
+        value: 1
+      - key: PIP_DISABLE_PIP_VERSION_CHECK
+        value: 1
+    healthCheckPath: /api/v1/health
+    plan: starter

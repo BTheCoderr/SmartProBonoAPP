@@ -1,0 +1,34 @@
+# NUCLEAR DOCKERFILE - PyMuPDF COMPLETELY ELIMINATED
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies (minimal, no PyMuPDF build tools)
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy nuclear requirements (NO PyMuPDF)
+COPY requirements-nuclear.txt .
+
+# Install Python dependencies - NUCLEAR OPTION
+RUN pip install --no-cache-dir -r requirements-nuclear.txt
+
+# Verify PyMuPDF is not installed
+RUN python -c "import sys; sys.exit(0 if 'fitz' not in sys.modules else 1)" || \
+    (echo "❌ PyMuPDF detected! Nuclear deployment failed!" && exit 1)
+
+# Copy application code
+COPY backend/ .
+
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=production
+ENV PYTHONUNBUFFERED=1
+
+# Expose port
+EXPOSE 5000
+
+# Run the application
+CMD ["gunicorn", "--workers=4", "--bind=0.0.0.0:5000", "app:app"]

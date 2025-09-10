@@ -18,8 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
-COPY requirements.txt .
+# Copy requirements first for better caching - Use deployment requirements without PyMuPDF
+COPY ../requirements-deploy.txt requirements.txt .
 
 # Install Python packages
 RUN pip uninstall -y bson pymongo flask-pymongo && \

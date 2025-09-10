@@ -24,7 +24,11 @@ langchain==0.3.7
 chromadb==0.4.24
 anthropic==0.34.2
 pydantic==2.5.0
-PyMuPDF==1.23.8
+# PDF processing - Skip PyMuPDF in deployment environments
+# Use alternatives that don't require compilation
+pypdf==4.0.1
+pdfplumber==0.10.3
+PyPDF2==3.0.1
 
 # Additional dependencies for production
 Werkzeug>=2.3.7
