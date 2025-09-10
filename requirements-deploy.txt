@@ -29,7 +29,7 @@ anthropic==0.34.2
 langchain==0.2.16
 langgraph==0.2.16
 chromadb==0.4.24
-pydantic==2.5.0
+pydantic>=2.7.4,<3.0.0
 
 # Utilities
 bcrypt==4.0.1
