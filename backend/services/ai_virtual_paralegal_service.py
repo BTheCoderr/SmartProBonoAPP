@@ -126,62 +126,99 @@ class AIVirtualParalegalService:
             self._log("info", "Using fallback analysis mode", "Case Analyzer")
         
     async def _research_case_law(self):
-        """Research relevant case law for active cases."""
-        self._log("info", "Starting case law research", "Research Agent")
+        """Research relevant case law for active cases using CourtListener API."""
+        self._log("info", "Starting case law research with CourtListener API", "Research Agent")
         
         try:
-            # Import the real AI service
+            # Import the real services
             from .unified_ai_service import unified_ai_service
+            from .courtlistener_service import courtlistener_service
             
             # Get pending cases to research
             pending_cases = await self._get_pending_cases()
             
             research_results = []
+            total_cases_found = 0
+            
             for case in pending_cases:
-                # Create research prompt for case law
-                research_prompt = f"""
-                Research relevant case law for the following legal case:
+                self._log("info", f"Researching case law for: {case.get('title', 'Unknown')}", "Research Agent")
                 
-                Case Title: {case.get('title', 'Unknown')}
-                Case Type: {case.get('type', 'Unknown')}
-                Client Name: {case.get('client_name', 'Unknown')}
-                
-                Please research and provide:
-                1. Relevant case law precedents
-                2. Similar cases and their outcomes
-                3. Key legal principles that apply
-                4. Recent developments in this area of law
-                5. Potential legal arguments and counter-arguments
-                6. Relevant statutes and regulations
-                
-                Focus on cases that are most relevant to the client's situation and provide specific case citations where possible.
-                """
-                
-                # Use real AI to research case law
-                ai_response = unified_ai_service.generate_legal_response(
-                    message=research_prompt,
-                    task_type="research",
-                    model="claude-3-5-sonnet"
+                # Step 1: Search CourtListener API for similar cases
+                courtlistener_results = courtlistener_service.search_similar_cases(
+                    case_data=case,
+                    limit=10
                 )
                 
-                if ai_response.get('success'):
-                    research_result = {
-                        "case_id": case.get('id'),
-                        "case_title": case.get('title'),
-                        "research": ai_response.get('response', ''),
-                        "ai_model_used": ai_response.get('model_used', 'unknown'),
-                        "timestamp": datetime.now().isoformat()
-                    }
-                    research_results.append(research_result)
-                    self._log("success", f"Researched case law for: {case.get('title', 'Unknown')} using {research_result['ai_model_used']}", "Research Agent")
+                if courtlistener_results.get('success'):
+                    similar_cases = courtlistener_results.get('similar_cases', [])
+                    total_cases_found += len(similar_cases)
+                    
+                    self._log("success", f"Found {len(similar_cases)} similar cases from CourtListener API", "Research Agent")
+                    
+                    # Step 2: Use AI to analyze the found cases
+                    if similar_cases:
+                        # Create a detailed research prompt with real case data
+                        case_summaries = []
+                        for similar_case in similar_cases[:5]:  # Use top 5 most relevant
+                            case_summaries.append(f"""
+                            Case: {similar_case.get('case_name', 'Unknown')}
+                            Court: {similar_case.get('court', 'Unknown')}
+                            Date: {similar_case.get('date_filed', 'Unknown')}
+                            Citation: {similar_case.get('citation', 'N/A')}
+                            Precedential: {similar_case.get('precedential', False)}
+                            Snippet: {similar_case.get('snippet', 'N/A')}
+                            """)
+                        
+                        research_prompt = f"""
+                        Analyze the following real case law data from CourtListener API for this legal case:
+                        
+                        TARGET CASE:
+                        Title: {case.get('title', 'Unknown')}
+                        Type: {case.get('type', 'Unknown')}
+                        Client: {case.get('client_name', 'Unknown')}
+                        
+                        SIMILAR CASES FOUND:
+                        {chr(10).join(case_summaries)}
+                        
+                        Please provide:
+                        1. Analysis of how these cases relate to the target case
+                        2. Key legal principles that apply
+                        3. Potential precedents and their relevance
+                        4. Legal arguments that could be used
+                        5. Recent developments in this area of law
+                        6. Recommendations for the client's case
+                        
+                        Focus on the most relevant cases and provide specific citations and legal analysis.
+                        """
+                        
+                        # Use AI to analyze the real case data
+                        ai_response = unified_ai_service.generate_legal_response(
+                            message=research_prompt,
+                            task_type="research",
+                            model="claude-3-5-sonnet"
+                        )
+                        
+                        if ai_response.get('success'):
+                            research_result = {
+                                "case_id": case.get('id'),
+                                "case_title": case.get('title'),
+                                "ai_analysis": ai_response.get('response', ''),
+                                "similar_cases_found": len(similar_cases),
+                                "courtlistener_cases": similar_cases[:3],  # Store top 3 for reference
+                                "ai_model_used": ai_response.get('model_used', 'unknown'),
+                                "timestamp": datetime.now().isoformat()
+                            }
+                            research_results.append(research_result)
+                            self._log("success", f"AI analysis completed for: {case.get('title', 'Unknown')} using {research_result['ai_model_used']}", "Research Agent")
+                        else:
+                            self._log("warning", f"AI analysis failed for: {case.get('title', 'Unknown')}", "Research Agent")
+                    else:
+                        self._log("warning", f"No similar cases found for: {case.get('title', 'Unknown')}", "Research Agent")
                 else:
-                    self._log("warning", f"Case law research failed for: {case.get('title', 'Unknown')}", "Research Agent")
+                    self._log("warning", f"CourtListener API search failed for: {case.get('title', 'Unknown')}", "Research Agent")
             
-            # Simulate additional research from external APIs
-            await asyncio.sleep(1)  # Simulate API calls to CourtListener, etc.
-            
-            self._log("success", f"Researched {len(research_results)} cases - found relevant case law and precedents", "Research Agent")
-            self._log("info", "Completed comprehensive case law research using AI analysis", "Research Agent")
+            self._log("success", f"Completed case law research: {len(research_results)} cases analyzed, {total_cases_found} similar cases found from CourtListener API", "Research Agent")
+            self._log("info", "Real case law research completed using CourtListener API and AI analysis", "Research Agent")
             
         except Exception as e:
             self._log("error", f"Case law research failed: {str(e)}", "Research Agent")
