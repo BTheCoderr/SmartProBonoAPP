@@ -40,6 +40,10 @@ pypdf==4.0.1
 pdfplumber==0.10.3
 PyPDF2==3.0.1
 
+# Data processing - Python 3.13.4 compatible versions
+pandas>=2.2.0,<3.0.0
+numpy>=1.26.0,<2.0.0
+
 # Utilities
 requests==2.31.0
 bcrypt==4.0.1
@@ -47,7 +51,6 @@ python-dateutil==2.8.2
 pywebpush==2.0.0
 cryptography>=41.0.0
 cloudinary==1.36.0
-numpy==1.26.4
 
 # Monitoring
 structlog==23.2.0
