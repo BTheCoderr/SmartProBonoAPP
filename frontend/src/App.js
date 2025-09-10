@@ -25,6 +25,8 @@ import Resources from './pages/Resources';
 import RightsPage from './pages/RightsPage';
 import Services from './pages/Services';
 import VirtualParalegalPage from './pages/VirtualParalegalPage';
+import AIVirtualParalegal from './components/AIVirtualParalegal';
+import SimpleTest from './components/SimpleTest';
 import DocumentsPage from './pages/DocumentsPage';
 import ExpertHelpPage from './pages/ExpertHelpPage';
 import About from './pages/About';
@@ -282,6 +284,18 @@ function AppContent() {
                   <VirtualParalegalPage />
                 </ProtectedRoute>
               } 
+            />
+            
+            {/* AI Virtual Paralegal - Autonomous AI system */}
+            <Route 
+              path="/ai-virtual-paralegal" 
+              element={<AIVirtualParalegal />}
+            />
+            
+            {/* Test route */}
+            <Route 
+              path="/test-ai" 
+              element={<SimpleTest />}
             />
             
             {/* Additional MVP routes */}

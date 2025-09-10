@@ -157,9 +157,11 @@ Focus on being helpful, accurate, and practical while maintaining appropriate le
             
             # Use fallback response (no API calls needed)
             analysis_text = self._get_fallback_analysis(cases, context)
+            logger.info(f"Generated fallback analysis: {analysis_text[:200]}...")
             
             # Extract structured information (simplified parsing)
             sections = self._parse_analysis(analysis_text)
+            logger.info(f"Parsed sections: {list(sections.keys())}")
             
             summary = LegalSummary(
                 case_summary=sections.get("case_summary", "Analysis not available"),
@@ -205,15 +207,28 @@ Focus on being helpful, accurate, and practical while maintaining appropriate le
         for line in lines:
             line = line.strip()
             
-            # Check for section headers
-            if line.startswith('**') and line.endswith('**'):
+            # Check for section headers (both **SECTION** and **SECTION**: formats)
+            if line.startswith('**') and (line.endswith('**') or line.endswith('**:')):
                 # Save previous section
                 if current_section and current_content:
                     sections[current_section] = current_content
                 
                 # Start new section
-                current_section = line.strip('*').lower().replace(' ', '_')
+                current_section = line.strip('*:').lower().replace(' ', '_').replace(':', '')
                 current_content = []
+            
+            elif line.startswith('**') and '**:' in line:
+                # Handle inline content like "**CASE SUMMARY**: content here"
+                section_part = line.split('**:')[0] + '**'
+                content_part = line.split('**:')[1].strip()
+                
+                # Save previous section
+                if current_section and current_content:
+                    sections[current_section] = current_content
+                
+                # Start new section with inline content
+                current_section = section_part.strip('*:').lower().replace(' ', '_').replace(':', '')
+                current_content = [content_part] if content_part else []
             
             elif current_section and line:
                 current_content.append(line)
@@ -296,12 +311,16 @@ def summarize(context: Dict[str, Any]) -> Dict[str, Any]:
     try:
         agent = SummarizerAgent()
         
-        # Extract cases from context
+        # Extract cases from merged results (preferred) or individual sources
         cases = []
-        if "courtlistener_results" in context:
-            cases.extend(context["courtlistener_results"].get("cases", []))
-        if "vector_results" in context:
-            cases.extend(context["vector_results"].get("cases", []))
+        if "merged_results" in context and context["merged_results"].get("cases"):
+            cases = context["merged_results"].get("cases", [])
+        else:
+            # Fallback to individual sources
+            if "courtlistener_results" in context:
+                cases.extend(context["courtlistener_results"].get("cases", []))
+            if "vector_results" in context:
+                cases.extend(context["vector_results"].get("cases", []))
         
         # Analyze cases
         summary = agent.analyze_cases(cases, context)

@@ -36,12 +36,26 @@ const ImprovedLegalAIChat = () => {
   }, [messages]);
 
   const formatAIResponse = (data) => {
-    const analysis = data.analysis || {};
+    // Access the nested analysis from the multi-agent system
+    const analysis = data.analysis?.analysis || data.analysis || {};
     let response = '';
 
     // Add case summary
     if (analysis.case_summary) {
-      response += `**Case Analysis:**\n${analysis.case_summary}\n\n`;
+      const summary = Array.isArray(analysis.case_summary) ? analysis.case_summary[0] : analysis.case_summary;
+      response += `**Case Analysis:**\n${summary}\n\n`;
+    }
+
+    // Add court decision
+    if (analysis.court_decision) {
+      const decision = Array.isArray(analysis.court_decision) ? analysis.court_decision[0] : analysis.court_decision;
+      response += `**Court Decision:**\n${decision}\n\n`;
+    }
+
+    // Add relevance
+    if (analysis.relevance) {
+      const relevance = Array.isArray(analysis.relevance) ? analysis.relevance[0] : analysis.relevance;
+      response += `**Relevance to Your Case:**\n${relevance}\n\n`;
     }
 
     // Add key facts
@@ -62,6 +76,18 @@ const ImprovedLegalAIChat = () => {
       response += '\n';
     }
 
+    // Add court decision
+    if (analysis.court_decision) {
+      const decision = Array.isArray(analysis.court_decision) ? analysis.court_decision[0] : analysis.court_decision;
+      response += `**Court Decision:**\n${decision}\n\n`;
+    }
+
+    // Add relevance
+    if (analysis.relevance) {
+      const relevance = Array.isArray(analysis.relevance) ? analysis.relevance[0] : analysis.relevance;
+      response += `**Relevance:**\n${relevance}\n\n`;
+    }
+
     // Add practical advice
     if (analysis.practical_advice && analysis.practical_advice.length > 0) {
       response += `**Practical Advice:**\n`;
@@ -71,9 +97,13 @@ const ImprovedLegalAIChat = () => {
       response += '\n';
     }
 
-    // Add court decision
-    if (analysis.court_decision) {
-      response += `**Court Decision:**\n${analysis.court_decision}\n\n`;
+    // Add similar cases
+    if (analysis.similar_cases && analysis.similar_cases.length > 0) {
+      response += `**Similar Cases:**\n`;
+      analysis.similar_cases.forEach(case_item => {
+        response += `• ${case_item}\n`;
+      });
+      response += '\n';
     }
 
     // Add relevance
@@ -101,8 +131,8 @@ const ImprovedLegalAIChat = () => {
     setError(null);
 
     try {
-      // Call the integrated legal AI backend
-      const response = await fetch('http://localhost:3001/api/legal/legal-analysis', {
+      // Call the new unified legal AI backend
+      const response = await fetch('http://localhost:3001/api/v1/legal/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +164,18 @@ const ImprovedLegalAIChat = () => {
 
         setMessages(prev => [...prev, aiMessage]);
       } else {
-        throw new Error(data.error || 'Analysis failed');
+        // Even if the main analysis fails, show the disclaimers and warnings
+        const fallbackMessage = {
+          id: Date.now() + 1,
+          text: formatAIResponse(data),
+          sender: 'assistant',
+          timestamp: new Date().toLocaleTimeString(),
+          analysis: data.analysis || {},
+          disclaimers: data.disclaimers || [],
+          warnings: data.warnings || [],
+          recommendations: data.recommendations || []
+        };
+        setMessages(prev => [...prev, fallbackMessage]);
       }
     } catch (err) {
       console.error('Error calling legal AI backend:', err);

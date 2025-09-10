@@ -50,7 +50,7 @@ const EnhancedDocumentScanner = ({ document, onAnalysisComplete }) => {
       formData.append('file', document.file);
       formData.append('document_type', document.type || 'generic');
 
-      const response = await fetch('http://localhost:3001/api/scanner/analyze-safe', {
+      const response = await fetch('http://localhost:3001/api/v1/documents/analyze', {
         method: 'POST',
         body: formData,
       });

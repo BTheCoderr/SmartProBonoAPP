@@ -43,7 +43,7 @@ const SafetyCheckPage = () => {
       formData.append('file', blob, 'safety-check.txt');
       formData.append('document_type', 'safety_check');
 
-      const response = await fetch('http://localhost:3001/api/scanner/analyze-safe', {
+      const response = await fetch('http://localhost:3001/api/v1/documents/analyze', {
         method: 'POST',
         body: formData
       });

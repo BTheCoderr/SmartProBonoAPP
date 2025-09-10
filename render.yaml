@@ -7,9 +7,9 @@ services:
     autoDeploy: true
     rootDir: .
     buildCommand: |
-      pip install --upgrade pip && pip install -r requirements_minimal.txt
+      pip install --upgrade pip && pip install -r requirements.txt
     startCommand: |
-      python working_backend.py
+      gunicorn backend.production_app:app --bind 0.0.0.0:$PORT --workers 2
     envVars:
       - key: PYTHON_ENV
         value: production

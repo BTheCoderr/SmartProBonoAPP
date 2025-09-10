@@ -24,11 +24,12 @@ class CaseResult:
 class CourtListenerClient:
     """Client for interacting with CourtListener API."""
     
-    def __init__(self, base_url: str = "https://www.courtlistener.com/api/rest/v3/opinions/"):
+    def __init__(self, base_url: str = "https://www.courtlistener.com/api/rest/v4/opinions/"):
         self.base_url = base_url
         self.session = requests.Session()
         self.session.headers.update({
-            'User-Agent': 'SmartProBono-LegalAI/1.0 (Legal Research Assistant)'
+            'User-Agent': 'SmartProBono-LegalAI/1.0 (Legal Research Assistant)',
+            'Accept': 'application/json'
         })
     
     def search_cases(

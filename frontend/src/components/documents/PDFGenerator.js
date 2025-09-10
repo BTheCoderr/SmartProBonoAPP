@@ -19,15 +19,13 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemIcon,
-  Divider
+  ListItemIcon
 } from '@mui/material';
 import {
   Description as DocumentIcon,
   Download as DownloadIcon,
   Add as AddIcon,
-  CheckCircle as CheckIcon,
-  Info as InfoIcon
+  CheckCircle as CheckIcon
 } from '@mui/icons-material';
 
 const PDFGenerator = () => {
