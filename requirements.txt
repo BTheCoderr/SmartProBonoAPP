@@ -1,34 +1,36 @@
 # Core Flask dependencies
 Flask==2.3.3
 Flask-CORS==4.0.0
+Flask-SocketIO==5.3.6
+gunicorn==21.2.0
 
-# PDF processing
+# Database
+pymongo==3.12.3
+flask-pymongo==2.3.0
+supabase==2.3.0
+
+# PDF processing - Skip PyMuPDF in deployment environments
+# Use alternatives that don't require compilation
+pypdf==4.0.1
+pdfplumber==0.10.3
 PyPDF2==3.0.1
 reportlab==4.0.7
 
-# Email service
+# Data processing
+pandas==2.0.3
+numpy>=1.26.0,<2.0.0
 requests==2.31.0
 
-# Environment management
+# Utilities
 python-dotenv==1.0.0
-
-# Optional: Performance monitoring
 psutil==5.9.6
-
-# Production WSGI server
-gunicorn==21.2.0
 
 # Legal AI dependencies - Compatible versions
 langgraph==0.2.16
 langchain==0.2.16
 chromadb==0.4.24
 anthropic==0.34.2
-pydantic==2.5.0
-# PDF processing - Skip PyMuPDF in deployment environments
-# Use alternatives that don't require compilation
-pypdf==4.0.1
-pdfplumber==0.10.3
-PyPDF2==3.0.1
+pydantic>=2.7.4,<3.0.0
 
 # Additional dependencies for production
 Werkzeug>=2.3.7
