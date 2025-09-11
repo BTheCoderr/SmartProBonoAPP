@@ -81,3 +81,11 @@ def register_blueprints(app):
         print("✅ AI Virtual Paralegal routes registered")
     except ImportError as e:
         print(f"⚠️ AI Virtual Paralegal routes not available: {e}")
+    
+    # ENHANCED API - Django REST Framework-like features
+    try:
+        from .enhanced_api import enhanced_api_bp
+        app.register_blueprint(enhanced_api_bp)
+        print("✅ Enhanced API routes registered (DRF-like features)")
+    except ImportError as e:
+        print(f"⚠️ Enhanced API routes not available: {e}")
