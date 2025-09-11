@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-WSGI entry point for SmartProBono backend
+Fallback app.py for deployment
 """
 import sys
 import os
@@ -14,16 +14,12 @@ backend_path = os.path.join(project_root, 'backend')
 sys.path.insert(0, backend_path)
 
 try:
-    # Try importing from backend.app first
+    # Import the Flask app from backend
     from backend.app import app
 except ImportError:
-    try:
-        # Fallback: try importing directly from app
-        from app import app
-    except ImportError:
-        # Last resort: create app directly
-        from backend import create_app
-        app = create_app()
+    # Fallback: create app directly
+    from backend import create_app
+    app = create_app()
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
