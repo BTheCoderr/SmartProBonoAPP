@@ -27,6 +27,8 @@ import Services from './pages/Services';
 import VirtualParalegalPage from './pages/VirtualParalegalPage';
 import AIVirtualParalegal from './components/AIVirtualParalegal';
 import SimpleTest from './components/SimpleTest';
+import ClientPortal from './pages/ClientPortal';
+import BondsmanDashboard from './pages/BondsmanDashboard';
 import DocumentsPage from './pages/DocumentsPage';
 import ExpertHelpPage from './pages/ExpertHelpPage';
 import About from './pages/About';
@@ -290,6 +292,18 @@ function AppContent() {
             <Route 
               path="/ai-virtual-paralegal" 
               element={<AIVirtualParalegal />}
+            />
+            
+            {/* Client Portal - For clients to view their cases */}
+            <Route 
+              path="/client-portal" 
+              element={<ClientPortal />}
+            />
+            
+            {/* Bondsman Dashboard - For bail bond management */}
+            <Route 
+              path="/bondsman-dashboard" 
+              element={<BondsmanDashboard />}
             />
             
             {/* Test route */}

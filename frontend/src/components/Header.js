@@ -3,7 +3,7 @@ import {
   AppBar, Toolbar, Typography, Button, IconButton, 
   Menu, MenuItem, Box, Avatar, Tooltip, 
   useMediaQuery, useTheme, Drawer, List, ListItem, 
-  ListItemIcon, ListItemText, Badge, Chip, Container
+  ListItemIcon, ListItemText, Chip, Container
 } from '@mui/material';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -15,7 +15,6 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
 import DescriptionIcon from '@mui/icons-material/Description';
 import GavelIcon from '@mui/icons-material/Gavel';
@@ -27,6 +26,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 import Logo from './Logo';
+import RealTimeNotification from './RealTimeNotification';
 
 // HideOnScroll component removed - not currently used
 
@@ -467,15 +467,8 @@ const Header = () => {
 
               {/* Notifications */}
               {currentUser && (
-                <Tooltip title="Notifications">
-                  <IconButton
-                    sx={{ color: 'white' }}
-                    onClick={() => navigate('/notifications')}
-                  >
-                    <Badge badgeContent={3} color="error">
-                      <NotificationsIcon />
-                    </Badge>
-                  </IconButton>
+                <Tooltip title="Real-time Notifications">
+                  <RealTimeNotification />
                 </Tooltip>
               )}
 
