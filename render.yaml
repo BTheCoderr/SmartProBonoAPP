@@ -2,9 +2,11 @@ services:
   - type: web
     name: smartprobono-backend
     env: python
+    pythonVersion: 3.11.9
     buildCommand: |
       echo "🚀 Starting SmartProBono deployment..."
       echo "🐍 Using Python 3.11.9 for compatibility"
+      python --version
       echo "🧹 Removing any PyMuPDF installations..."
       pip uninstall -y PyMuPDF pymupdf4llm || true
       echo "📦 Installing deployment requirements..."
@@ -14,8 +16,7 @@ services:
       echo "✅ Dependencies installed successfully without PyMuPDF"
     startCommand: |
       echo "🚀 Starting SmartProBono backend..."
-      cd backend
-      python app.py
+      gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
