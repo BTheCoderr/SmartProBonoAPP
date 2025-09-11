@@ -19,10 +19,11 @@ class CourtListenerService:
     """
     
     def __init__(self):
-        self.base_url = "https://www.courtlistener.com/api/rest/v3"
+        self.base_url = "https://www.courtlistener.com/api/rest/v4"
         self.search_url = f"{self.base_url}/search/"
-        self.case_url = f"{self.base_url}/cases/"
-        self.docket_url = f"{self.base_url}/dockets/"
+        self.opinions_url = f"{self.base_url}/opinions/"
+        self.clusters_url = f"{self.base_url}/clusters/"
+        self.dockets_url = f"{self.base_url}/dockets/"
         
         # API Key configuration
         self.api_key = os.getenv("COURTLISTENER_API_KEY")
@@ -72,7 +73,7 @@ class CourtListenerService:
             
             self._rate_limit()
             
-            # Build search parameters
+            # Build search parameters for v4.3 API
             params = {
                 'q': query,
                 'format': 'json',
@@ -94,10 +95,15 @@ class CourtListenerService:
             # Add pagination
             params['page_size'] = min(limit, 100)  # API max is 100
             
-            # Make the request
+            # Make the request with proper authentication
             response = requests.get(self.search_url, params=params, headers=self.headers, timeout=30)
-            response.raise_for_status()
             
+            # Handle authentication errors
+            if response.status_code == 401:
+                logger.warning("CourtListener API authentication failed - falling back to mock data")
+                return self._get_fallback_search_results(query, case_type, court, limit)
+            
+            response.raise_for_status()
             data = response.json()
             
             # Process results
@@ -339,6 +345,46 @@ class CourtListenerService:
             'query': query,
             'total_results': len(mock_cases),
             'cases': mock_cases,
+            'search_timestamp': datetime.now().isoformat(),
+            'fallback_mode': True,
+            'message': 'Using fallback data - CourtListener API key not configured'
+        }
+    
+    def _get_fallback_recent_cases(self, days: int, case_type: str = None, limit: int = 20) -> Dict[str, Any]:
+        """
+        Fallback recent cases when API key is not available.
+        """
+        logger.info(f"Using fallback mode for recent cases: {days} days")
+        
+        # Generate realistic mock recent case data
+        mock_cases = []
+        case_types = ['civil', 'criminal', 'immigration', 'family', 'employment']
+        courts = ['Supreme Court', 'Court of Appeals', 'District Court', 'State Court']
+        
+        for i in range(min(limit, 5)):  # Limit to 5 mock cases
+            mock_case = {
+                'case_name': f"Recent Mock Case {i+1}",
+                'court': courts[i % len(courts)],
+                'date_filed': (datetime.now() - timedelta(days=i*2)).strftime('%Y-%m-%d'),
+                'citation': f"Recent Citation {i+1}",
+                'precedential': i % 2 == 0,
+                'snippet': f"This is a recent mock case from the last {days} days for testing purposes.",
+                'url': f"https://example.com/recent-mock-case-{i+1}",
+                'case_type': case_type or case_types[i % len(case_types)],
+                'status': 'Recent Filed'
+            }
+            mock_cases.append(mock_case)
+        
+        return {
+            'success': True,
+            'search_type': 'recent_cases',
+            'total_results': len(mock_cases),
+            'cases': mock_cases,
+            'date_range': {
+                'start': (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d'),
+                'end': datetime.now().strftime('%Y-%m-%d'),
+                'days': days
+            },
             'search_timestamp': datetime.now().isoformat(),
             'fallback_mode': True,
             'message': 'Using fallback data - CourtListener API key not configured'
