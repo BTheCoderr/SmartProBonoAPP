@@ -26,8 +26,8 @@ langgraph==0.2.16
 chromadb==0.4.24
 pydantic>=2.7.4,<3.0.0
 
-# Data processing
-pandas==2.0.3
+# Data processing - Python 3.13 compatible
+pandas>=2.2.0,<3.0.0
 numpy>=1.26.0,<2.0.0
 requests==2.31.0
 

@@ -3,7 +3,8 @@ services:
     name: smartprobono-backend
     env: python
     buildCommand: |
-      echo "🚀 Starting SmartProBono FORCE deployment..."
+      echo "🚀 Starting SmartProBono deployment..."
+      echo "🐍 Using Python 3.11.9 for compatibility"
       echo "🧹 Removing any PyMuPDF installations..."
       pip uninstall -y PyMuPDF pymupdf4llm || true
       echo "📦 Installing deployment requirements..."
@@ -17,7 +18,7 @@ services:
       python app.py
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.11.9
       - key: PIP_NO_CACHE_DIR
         value: 1
       - key: PIP_DISABLE_PIP_VERSION_CHECK
