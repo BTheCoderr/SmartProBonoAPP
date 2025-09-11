@@ -3,7 +3,6 @@ import { PageLayout, Section } from '../design-system';
 import HeroSection from '../components/HeroSection';
 import FeaturesSection from '../components/FeaturesSection';
 import TestimonialsSection from '../components/TestimonialsSection';
-import Footer from '../components/Footer';
 
 function HomePage() {
   return (
@@ -19,7 +18,6 @@ function HomePage() {
       <Section variant="default" background="light">
         <TestimonialsSection />
       </Section>
-      <Footer />
     </PageLayout>
   );
 }
