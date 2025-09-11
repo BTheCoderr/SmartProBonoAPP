@@ -49,6 +49,13 @@ try:
 except ImportError as e:
     logger.warning(f"⚠️ AI Virtual Paralegal routes not available: {e}")
 
+try:
+    from backend.routes.crm_api import bp as crm_api_bp
+    app.register_blueprint(crm_api_bp)
+    logger.info("✅ CRM API routes registered")
+except ImportError as e:
+    logger.warning(f"⚠️ CRM API routes not available: {e}")
+
 # Health check endpoint
 @app.route('/api/v1/health')
 def health():
