@@ -305,6 +305,18 @@ class VirtualParalegalAPI {
     });
   }
 
+  // ==================== CLIENT INTAKE API ====================
+
+  /**
+   * Create client intake
+   */
+  async createClientIntake(intakeData) {
+    return this.request('/api/v1/crm/client/intake', {
+      method: 'POST',
+      body: JSON.stringify(intakeData),
+    });
+  }
+
   // ==================== ANALYTICS API ====================
 
   /**

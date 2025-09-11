@@ -82,6 +82,13 @@ def register_blueprints(app):
     except ImportError as e:
         print(f"⚠️ AI Virtual Paralegal routes not available: {e}")
     
+    try:
+        from .crm_api import bp as crm_api_bp
+        app.register_blueprint(crm_api_bp)
+        print("✅ CRM API routes registered")
+    except ImportError as e:
+        print(f"⚠️ CRM API routes not available: {e}")
+    
     # ENHANCED API - Django REST Framework-like features
     try:
         from .enhanced_api import enhanced_api_bp

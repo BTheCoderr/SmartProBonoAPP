@@ -28,6 +28,7 @@ import VirtualParalegalPage from './pages/VirtualParalegalPage';
 import AIVirtualParalegal from './components/AIVirtualParalegal';
 import SimpleTest from './components/SimpleTest';
 import ClientPortal from './pages/ClientPortal';
+import LawyerDashboard from './pages/LawyerDashboard';
 import BondsmanDashboard from './pages/BondsmanDashboard';
 import DocumentsPage from './pages/DocumentsPage';
 import ExpertHelpPage from './pages/ExpertHelpPage';
@@ -298,6 +299,12 @@ function AppContent() {
             <Route 
               path="/client-portal" 
               element={<ClientPortal />}
+            />
+            
+            {/* Lawyer Dashboard - For lawyers to manage cases */}
+            <Route 
+              path="/lawyer-dashboard" 
+              element={<LawyerDashboard />}
             />
             
             {/* Bondsman Dashboard - For bail bond management */}
