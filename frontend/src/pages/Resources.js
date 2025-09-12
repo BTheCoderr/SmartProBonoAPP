@@ -78,6 +78,46 @@ const Resources = ({ type = 'standard' }) => {
       ],
     },
     {
+      title: t('resources.categories.familyLaw.title'),
+      description: t('resources.categories.familyLaw.description'),
+      resources: [
+        {
+          title: 'Divorce Process Guide',
+          type: 'pdf',
+          description: 'Step-by-step guide for filing divorce papers',
+          link: '/resources/family-law/divorce-guide.pdf',
+          icon: <PictureAsPdfIcon />,
+        },
+        {
+          title: 'Child Custody Forms',
+          type: 'template',
+          description: 'Templates for child custody agreements',
+          link: '/resources/family-law/custody-forms',
+          icon: <DescriptionIcon />,
+        },
+      ],
+    },
+    {
+      title: t('resources.categories.criminalDefense.title'),
+      description: t('resources.categories.criminalDefense.description'),
+      resources: [
+        {
+          title: 'Know Your Rights - Criminal',
+          type: 'article',
+          description: 'Understanding your rights during police encounters',
+          link: '/rights/criminal',
+          icon: <ArticleIcon />,
+        },
+        {
+          title: 'Court Process Overview',
+          type: 'video',
+          description: 'Understanding the criminal court process',
+          link: '/resources/criminal-defense/court-process.mp4',
+          icon: <VideoLibraryIcon />,
+        },
+      ],
+    },
+    {
       title: t('resources.categories.external.title'),
       description: t('resources.categories.external.description'),
       resources: [

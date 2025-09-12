@@ -50,36 +50,84 @@ const GlossaryPage = () => {
           definition: 'A request to a higher court to review and change the decision of a lower court.'
         },
         {
+          term: 'Arraignment',
+          definition: 'A court proceeding where the defendant is formally charged and enters a plea.'
+        },
+        {
+          term: 'Bail',
+          definition: 'Money or property given to the court to ensure a defendant appears for trial.'
+        },
+        {
           term: 'Burden of Proof',
-          definition: 'The obligation to prove one\'s assertion in a legal proceeding.'
+          definition: 'The obligation to prove allegations in a legal proceeding.'
+        },
+        {
+          term: 'Contempt of Court',
+          definition: 'Disrespectful or disobedient behavior toward a court of law.'
+        },
+        {
+          term: 'Deposition',
+          definition: 'Out-of-court testimony given under oath for discovery purposes.'
+        },
+        {
+          term: 'Discovery',
+          definition: 'The pre-trial process where parties exchange information and evidence.'
         },
         {
           term: 'Due Process',
-          definition: 'The legal requirement that the state must respect all legal rights owed to a person.'
+          definition: 'Fair treatment through the normal judicial system.'
+        },
+        {
+          term: 'Evidence',
+          definition: 'Information presented in court to prove or disprove facts.'
+        },
+        {
+          term: 'Habeas Corpus',
+          definition: 'A writ requiring a person under arrest to be brought before a judge.'
         },
         {
           term: 'Injunction',
-          definition: 'A court order requiring a person to do or cease doing a specific action.'
+          definition: 'A court order requiring a party to do or refrain from doing something.'
         },
         {
           term: 'Jurisdiction',
-          definition: 'The authority of a court to hear and decide cases within a particular geographic area or over certain types of legal cases.'
+          definition: 'The authority of a court to hear and decide cases.'
         },
         {
           term: 'Liability',
-          definition: 'Legal responsibility for one\'s actions or omissions that result in harm to another person.'
+          definition: 'Legal responsibility for one\'s actions or omissions.'
         },
         {
           term: 'Litigation',
-          definition: 'The process of taking legal action through the court system.'
+          definition: 'The process of taking legal action through the courts.'
+        },
+        {
+          term: 'Motion',
+          definition: 'A formal request made to a court for a specific ruling or order.'
+        },
+        {
+          term: 'Plea',
+          definition: 'A defendant\'s formal answer to criminal charges.'
         },
         {
           term: 'Precedent',
-          definition: 'A legal principle established in a previous case that is binding on or persuasive for a court when deciding subsequent cases with similar issues.'
+          definition: 'A legal decision that serves as a rule for future similar cases.'
         },
         {
-          term: 'Statute of Limitations',
-          definition: 'A law that sets the maximum time after an event within which legal proceedings may be initiated.'
+          term: 'Pro Se',
+          definition: 'Representing oneself in court without an attorney.'
+        },
+        {
+          term: 'Subpoena',
+          definition: 'A writ ordering a person to attend court as a witness.'
+        },
+        {
+          term: 'Verdict',
+          definition: 'The decision reached by a jury or judge in a legal proceeding.'
+        },
+        {
+          term: 'Writ',
+          definition: 'A formal written order issued by a court.'
         }
       ]
     },

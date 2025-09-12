@@ -14,6 +14,7 @@ import {
   Chip,
   Divider
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import {
   Gavel as GavelIcon,
   Public as PublicIcon,
@@ -28,6 +29,7 @@ import { useTranslation } from 'react-i18next';
 
 const OurMissionPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const missionPoints = [
     {
       icon: <PublicIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
@@ -234,6 +236,7 @@ const OurMissionPage = () => {
               <Chip
                 label="Get Legal Help"
                 clickable
+                onClick={() => navigate('/get-legal-help')}
                 sx={{ 
                   bgcolor: 'white', 
                   color: '#0F3D5E',
@@ -243,6 +246,7 @@ const OurMissionPage = () => {
               <Chip
                 label="Become a Volunteer"
                 clickable
+                onClick={() => navigate('/volunteer')}
                 sx={{ 
                   borderColor: 'white', 
                   color: 'white',

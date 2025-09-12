@@ -17,12 +17,19 @@ const LegalAIChatPage = () => {
   };
   
   const complianceTopics = [
-    { name: 'GDPR Compliance', color: 'primary', icon: '🛡️' },
-    { name: 'SOC 2 Automation', color: 'secondary', icon: '🔒' },
-    { name: 'Privacy Policies', color: 'success', icon: '📋' },
-    { name: 'Terms of Service', color: 'warning', icon: '📄' },
-    { name: 'Data Processing', color: 'info', icon: '⚙️' },
-    { name: 'User Agreements', color: 'error', icon: '✍️' }
+    { name: 'Immigration Law', color: 'primary', icon: '🛂', description: 'I-485, N-400, I-130 applications' },
+    { name: 'Family Law', color: 'secondary', icon: '👨‍👩‍👧‍👦', description: 'Divorce, custody, support cases' },
+    { name: 'Criminal Defense', color: 'success', icon: '⚖️', description: 'DUI, misdemeanor, felony cases' },
+    { name: 'Personal Injury', color: 'warning', icon: '🏥', description: 'Car accidents, medical malpractice' },
+    { name: 'Civil Rights', color: 'info', icon: '✊', description: 'Discrimination, employment issues' },
+    { name: 'Business Law', color: 'error', icon: '🏢', description: 'Contracts, corporate matters' }
+  ];
+
+  const quickActions = [
+    { title: 'Document Analysis', description: 'Upload and analyze legal documents', icon: '📄' },
+    { title: 'Case Research', description: 'Research similar cases and precedents', icon: '🔍' },
+    { title: 'Form Generation', description: 'Generate legal forms and applications', icon: '📝' },
+    { title: 'Deadline Tracking', description: 'Track important legal deadlines', icon: '⏰' }
   ];
   
   return (
@@ -43,8 +50,8 @@ const LegalAIChatPage = () => {
           </Typography>
           {loading && <CircularProgress sx={{ mb: 2 }} />}
           <Typography variant="h6" color="text.secondary" paragraph sx={{ maxWidth: 800, mx: 'auto' }}>
-            Get instant compliance guidance, generate legal documents, and ensure your startup meets all regulatory requirements. 
-            Our AI agents specialize in startup legal needs from GDPR to SOC 2.
+            Get instant legal guidance, analyze documents, and connect with legal professionals. 
+            Our AI-powered platform specializes in immigration, family law, criminal defense, and personal injury cases.
           </Typography>
           
           {/* Compliance Topics */}
@@ -65,6 +72,42 @@ const LegalAIChatPage = () => {
               />
             ))}
           </Box>
+        </Box>
+
+        {/* Quick Actions */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h5" gutterBottom align="center">
+            Quick Actions
+          </Typography>
+          <Grid container spacing={2}>
+            {quickActions.map((action, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Paper 
+                  sx={{ 
+                    p: 2, 
+                    textAlign: 'center', 
+                    height: '100%',
+                    cursor: 'pointer',
+                    '&:hover': { 
+                      backgroundColor: 'primary.50',
+                      transform: 'translateY(-2px)',
+                      transition: 'all 0.2s'
+                    }
+                  }}
+                >
+                  <Typography variant="h4" sx={{ mb: 1 }}>
+                    {action.icon}
+                  </Typography>
+                  <Typography variant="h6" gutterBottom>
+                    {action.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {action.description}
+                  </Typography>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
         </Box>
 
         {/* Features Grid */}

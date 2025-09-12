@@ -110,7 +110,6 @@ const Header = () => {
     { text: 'Client Portal', path: '/client-portal', icon: <PersonIcon />, description: 'Client case management and tracking' },
     { text: 'Bondsman Dashboard', path: '/bondsman-dashboard', icon: <SecurityIcon />, description: 'Bail bond management system' },
     { text: 'AI Virtual Paralegal', path: '/ai-virtual-paralegal', icon: <GavelIcon />, description: 'Autonomous AI legal assistant' },
-    { text: 'Test Dashboard', path: '/test', icon: <GavelIcon />, description: 'Development testing tools' },
     { text: t('navigation.contactForm'), path: '/contact', icon: <ContactSupportIcon />, description: 'Get in touch with us' },
     { text: t('navigation.resources'), path: '/resources', icon: <MenuBookIcon />, description: 'Legal resources and guides' },
   ];
