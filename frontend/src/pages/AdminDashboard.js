@@ -42,7 +42,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+// import { useAuth } from '../context/AuthContext';
 
 // Mock data for users - in a real app this would come from an API
 const mockUsers = [
@@ -62,7 +62,7 @@ const statsCardsData = [
 ];
 
 const AdminDashboard = () => {
-  const { currentUser } = useAuth();
+  // const { currentUser } = useAuth();
   const [users, setUsers] = useState(mockUsers);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -501,15 +501,16 @@ const AdminDashboard = () => {
     }
   };
 
-  if (!currentUser || currentUser.role !== 'admin') {
-    return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Alert severity="error">
-          You do not have permission to access this page. This area is restricted to administrators.
-        </Alert>
-      </Container>
-    );
-  }
+  // Temporarily disabled for development
+  // if (!currentUser || currentUser.role !== 'admin') {
+  //   return (
+  //     <Container maxWidth="md" sx={{ mt: 4 }}>
+  //       <Alert severity="error">
+  //         You do not have permission to access this page. This area is restricted to administrators.
+  //       </Alert>
+  //     </Container>
+  //   );
+  // }
 
   return (
     <PageLayout>

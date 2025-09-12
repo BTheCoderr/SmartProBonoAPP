@@ -67,6 +67,13 @@ const BondsmanDashboard = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [paymentForm, setPaymentForm] = useState({
+    clientId: '',
+    amount: '',
+    paymentMethod: 'cash',
+    notes: ''
+  });
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
 
   // Mock data - in real app, this would come from API
   useEffect(() => {
@@ -443,11 +450,102 @@ const BondsmanDashboard = () => {
     </Box>
   );
 
+  const handlePaymentSubmit = (e) => {
+    e.preventDefault();
+    const newPayment = {
+      id: payments.length + 1,
+      clientName: clients.find(c => c.id === paymentForm.clientId)?.name || 'Unknown',
+      amount: parseFloat(paymentForm.amount),
+      paymentDate: new Date().toLocaleDateString(),
+      paymentMethod: paymentForm.paymentMethod,
+      status: 'Completed',
+      notes: paymentForm.notes
+    };
+    setPayments([...payments, newPayment]);
+    setPaymentForm({ clientId: '', amount: '', paymentMethod: 'cash', notes: '' });
+    setShowPaymentForm(false);
+  };
+
   const renderPaymentsTab = () => (
     <Box>
-      <Typography variant="h6" gutterBottom>
-        Payment Tracking
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h6">
+          Payment Tracking
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setShowPaymentForm(true)}
+        >
+          Add Payment
+        </Button>
+      </Box>
+
+      {/* Payment Form Dialog */}
+      <Dialog open={showPaymentForm} onClose={() => setShowPaymentForm(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Record New Payment</DialogTitle>
+        <form onSubmit={handlePaymentSubmit}>
+          <DialogContent>
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Client</InputLabel>
+              <Select
+                value={paymentForm.clientId}
+                onChange={(e) => setPaymentForm({...paymentForm, clientId: e.target.value})}
+                required
+              >
+                {clients.map((client) => (
+                  <MenuItem key={client.id} value={client.id}>
+                    {client.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Amount"
+              type="number"
+              value={paymentForm.amount}
+              onChange={(e) => setPaymentForm({...paymentForm, amount: e.target.value})}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              }}
+              required
+            />
+            
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Payment Method</InputLabel>
+              <Select
+                value={paymentForm.paymentMethod}
+                onChange={(e) => setPaymentForm({...paymentForm, paymentMethod: e.target.value})}
+              >
+                <MenuItem value="cash">Cash</MenuItem>
+                <MenuItem value="check">Check</MenuItem>
+                <MenuItem value="credit_card">Credit Card</MenuItem>
+                <MenuItem value="bank_transfer">Bank Transfer</MenuItem>
+                <MenuItem value="stripe">Stripe (Online)</MenuItem>
+              </Select>
+            </FormControl>
+            
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Notes"
+              multiline
+              rows={3}
+              value={paymentForm.notes}
+              onChange={(e) => setPaymentForm({...paymentForm, notes: e.target.value})}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowPaymentForm(false)}>Cancel</Button>
+            <Button type="submit" variant="contained">Record Payment</Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+
+      {/* Payment History Table */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -458,6 +556,7 @@ const BondsmanDashboard = () => {
               <TableCell>Method</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Notes</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -466,7 +565,13 @@ const BondsmanDashboard = () => {
                 <TableCell>{payment.clientName}</TableCell>
                 <TableCell>${payment.amount.toLocaleString()}</TableCell>
                 <TableCell>{payment.paymentDate}</TableCell>
-                <TableCell>{payment.paymentMethod}</TableCell>
+                <TableCell>
+                  <Chip 
+                    label={payment.paymentMethod} 
+                    color={payment.paymentMethod === 'Cash' ? 'success' : 'primary'} 
+                    size="small" 
+                  />
+                </TableCell>
                 <TableCell>
                   <Chip 
                     label={payment.status} 
@@ -475,11 +580,68 @@ const BondsmanDashboard = () => {
                   />
                 </TableCell>
                 <TableCell>{payment.notes}</TableCell>
+                <TableCell>
+                  <IconButton size="small">
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Payment Summary Cards */}
+      <Grid container spacing={2} sx={{ mt: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Total Payments
+              </Typography>
+              <Typography variant="h5">
+                ${payments.reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                This Month
+              </Typography>
+              <Typography variant="h5">
+                ${payments.filter(p => new Date(p.paymentDate).getMonth() === new Date().getMonth()).reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Pending Payments
+              </Typography>
+              <Typography variant="h5">
+                {payments.filter(p => p.status === 'Pending').length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Average Payment
+              </Typography>
+              <Typography variant="h5">
+                ${payments.length > 0 ? Math.round(payments.reduce((sum, p) => sum + p.amount, 0) / payments.length).toLocaleString() : '0'}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
     </Box>
   );
 

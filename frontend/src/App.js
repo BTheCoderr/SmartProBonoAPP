@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { Toaster } from 'react-hot-toast';
 import { I18nextProvider } from 'react-i18next';
@@ -7,16 +7,15 @@ import { SnackbarProvider } from 'notistack';
 import ReactGA from 'react-ga4';
 import ErrorBoundary from './components/ErrorBoundary';
 import theme from './theme';
-import TestPage from './pages/TestPage';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { AnalyticsProvider } from './contexts/AnalyticsContext';
 import i18n from './i18n';
 
 // Components
-import LegalAIChat from './components/LegalAIChat';
+// import LegalAIChat from './components/LegalAIChat';
 import PremiumRouteGuard from './components/PremiumRouteGuard';
 import LegalAnalytics from './components/LegalAnalytics';
-import FeedbackAnalytics from './components/FeedbackAnalytics';
+// import FeedbackAnalytics from './components/FeedbackAnalytics';
 
 // Pages
 import ContractsPage from './pages/ContractsPage';
@@ -25,8 +24,7 @@ import Resources from './pages/Resources';
 import RightsPage from './pages/RightsPage';
 import Services from './pages/Services';
 import VirtualParalegalPage from './pages/VirtualParalegalPage';
-import AIVirtualParalegal from './components/AIVirtualParalegal';
-import SimpleTest from './components/SimpleTest';
+import AIVirtualParalegal from './components/EnhancedAIVirtualParalegal';
 import ClientPortal from './pages/ClientPortal';
 import LawyerDashboard from './pages/LawyerDashboard';
 import BondsmanDashboard from './pages/BondsmanDashboard';
@@ -34,6 +32,12 @@ import DocumentsPage from './pages/DocumentsPage';
 import ExpertHelpPage from './pages/ExpertHelpPage';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+import AccessibilityPage from './pages/AccessibilityPage';
+import SitemapPage from './pages/SitemapPage';
+import VolunteerFormPage from './pages/VolunteerFormPage';
+import LegalHelpFormPage from './pages/LegalHelpFormPage';
 
 // Core layout components
 import Header from './components/Header';
@@ -42,7 +46,7 @@ import ScrollToTop from './components/ScrollToTop';
 
 // Page components
 import HomePage from './pages/HomePage';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/EnhancedDashboard';
 import FormsDashboard from './pages/FormsDashboard';
 import LegalAIChatPage from './pages/LegalAIChatPage';
 import ProfilePage from './pages/ProfilePage';
@@ -62,7 +66,7 @@ import PressPage from './pages/PressPage';
 import CareersPage from './pages/CareersPage';
 import TeamPage from './pages/TeamPage';
 import OurMissionPage from './pages/OurMissionPage';
-import GlossaryPage from './pages/GlossaryPage';
+import GlossaryPage from './pages/ComprehensiveGlossaryPage';
 import FAQPage from './pages/FAQPage';
 import BlogPage from './pages/BlogPage';
 import LiveChatPage from './pages/LiveChatPage';
@@ -146,29 +150,6 @@ const ResourcesLayout = () => (
   </div>
 );
 
-const LegalChatLayout = () => (
-  <div style={{ height: '100vh', overflow: 'auto' }}>
-    <Routes>
-      <Route index element={<LegalAIChat />} />
-      <Route 
-        path="premium" 
-        element={
-          <PremiumRouteGuard isPremium={false}>
-            <LegalAIChat premium={true} />
-          </PremiumRouteGuard>
-        } 
-      />
-      <Route 
-        path="feedback" 
-        element={
-          <PremiumRouteGuard isPremium={false}>
-            <FeedbackAnalytics />
-          </PremiumRouteGuard>
-        } 
-      />
-    </Routes>
-  </div>
-);
 
 const LoadingFallback = () => (
   <div>Loading...</div>
@@ -190,10 +171,10 @@ const PageTracker = () => {
 };
 
 function AppContent() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   
   // Use user to conditionally show content or features
-  const showPremiumFeatures = user && user.isPremium;
+  // const showPremiumFeatures = user && user.isPremium;
   
   // Authentication status for conditional rendering
 
@@ -208,7 +189,6 @@ function AppContent() {
         <React.Suspense fallback={<LoadingFallback />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/test" element={<TestPage />} />
             
             <Route 
               path="/dashboard" 
@@ -273,7 +253,6 @@ function AppContent() {
             {/* MVP Critical Routes - Ensure these are accessible without authentication */}
             <Route path="/legal-tools" element={<LegalToolsPage />} />
             <Route path="/legal-chat" element={<LegalAIChatPage />} />
-            <Route path="/ai-chat" element={<Navigate to="/legal-chat" replace />} />
             <Route path="/generate-document" element={<PDFGenerator />} />
             <Route path="/safety-check" element={<SafetyCheckPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
@@ -313,11 +292,6 @@ function AppContent() {
               element={<BondsmanDashboard />}
             />
             
-            {/* Test route */}
-            <Route 
-              path="/test-ai" 
-              element={<SimpleTest />}
-            />
             
             {/* Additional MVP routes */}
             <Route path="/about" element={<About />} />
@@ -336,16 +310,21 @@ function AppContent() {
             <Route path="/team" element={<TeamPage />} />
             <Route path="/mission" element={<OurMissionPage />} />
             <Route path="/rights" element={<RightsPage />} />
+            
+            {/* Legal and Policy Pages */}
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
+            <Route path="/accessibility" element={<AccessibilityPage />} />
+            <Route path="/sitemap" element={<SitemapPage />} />
+            
+            {/* Action Pages */}
+            <Route path="/volunteer" element={<VolunteerFormPage />} />
+            <Route path="/get-legal-help" element={<LegalHelpFormPage />} />
             <Route path="/rights/immigration" element={<ImmigrationRightsPage />} />
             <Route path="/glossary" element={<GlossaryPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/blog" element={<BlogPage />} />
             
-            {/* Conditionally render premium features */}
-            <Route 
-              path="/legal-chat/premium" 
-              element={showPremiumFeatures ? <LegalChatLayout /> : <Navigate to="/subscription" />} 
-            />
             
             <Route path="/resources" element={<Resources />} />
             <Route path="/login" element={<LoginPage />} />
@@ -353,14 +332,6 @@ function AppContent() {
             <Route path="/unauthorized" element={<UnauthorizedPage />} />
             <Route 
               path="/scan-document" 
-              element={
-                <ProtectedRoute>
-                  <DocumentScanPage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/document-scan" 
               element={
                 <ProtectedRoute>
                   <DocumentScanPage />

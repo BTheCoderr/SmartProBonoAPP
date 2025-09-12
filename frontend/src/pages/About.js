@@ -48,10 +48,10 @@ const About = () => {
   ];
 
   const stats = [
-    { number: '10,000+', label: 'Cases Resolved' },
-    { number: '500+', label: 'Legal Professionals' },
-    { number: '50+', label: 'Cities Served' },
-    { number: '95%', label: 'Client Satisfaction' }
+    { number: 'Growing', label: 'Community of Users' },
+    { number: 'Expanding', label: 'Legal Professionals' },
+    { number: 'Nationwide', label: 'Coverage' },
+    { number: 'Dedicated', label: 'Support Team' }
   ];
 
   const features = [
@@ -153,9 +153,9 @@ const About = () => {
                 resources to empower individuals in their legal journey.
               </Typography>
               <Box sx={{ mt: 3 }}>
-                <Chip label="Non-Profit Organization" color="primary" sx={{ mr: 1, mb: 1 }} />
-                <Chip label="Community Focused" color="secondary" sx={{ mr: 1, mb: 1 }} />
-                <Chip label="Technology Driven" color="success" />
+                <Chip label="Community Focused" color="primary" sx={{ mr: 1, mb: 1 }} />
+                <Chip label="Technology Driven" color="secondary" sx={{ mr: 1, mb: 1 }} />
+                <Chip label="Accessible Legal Help" color="success" />
               </Box>
             </Grid>
             <Grid item xs={12} md={6}>

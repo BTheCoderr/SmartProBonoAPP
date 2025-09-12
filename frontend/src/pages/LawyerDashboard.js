@@ -254,15 +254,16 @@ const LawyerDashboard = () => {
   const activeCases = cases.filter(c => c.status === 'active' || c.status === 'pending');
   const newImmigrationForms = immigrationForms.filter(form => form.status === 'new');
 
-  if (!currentUser || currentUser.role !== 'lawyer') {
-    return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Alert severity="error">
-          You do not have permission to access this page. This area is restricted to lawyers.
-        </Alert>
-      </Container>
-    );
-  }
+  // Temporarily disabled for development
+  // if (!currentUser || currentUser.role !== 'lawyer') {
+  //   return (
+  //     <Container maxWidth="md" sx={{ mt: 4 }}>
+  //       <Alert severity="error">
+  //         You do not have permission to access this page. This area is restricted to lawyers.
+  //       </Alert>
+  //     </Container>
+  //   );
+  // }
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

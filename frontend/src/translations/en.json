@@ -255,6 +255,26 @@
       "external": {
         "title": "External Resources",
         "description": "Helpful links to government and non-profit organizations"
+      },
+      "familyLaw": {
+        "title": "Family Law",
+        "description": "Resources for divorce, custody, and family matters"
+      },
+      "criminalDefense": {
+        "title": "Criminal Defense",
+        "description": "Legal resources for criminal cases and defense"
+      },
+      "personalInjury": {
+        "title": "Personal Injury",
+        "description": "Resources for accident and injury cases"
+      },
+      "businessLaw": {
+        "title": "Business Law",
+        "description": "Legal resources for business and corporate matters"
+      },
+      "civilRights": {
+        "title": "Civil Rights",
+        "description": "Resources for civil rights and discrimination cases"
       }
     },
     "items": {
@@ -274,10 +294,6 @@
         "title": "Legal Process Overview",
         "description": "Video guide explaining the legal process"
       },
-      "documentTemplates": {
-        "title": "Document Templates",
-        "description": "Common legal document templates"
-      },
       "uscisWebsite": {
         "title": "USCIS Official Website",
         "description": "U.S. Citizenship and Immigration Services"
@@ -285,11 +301,24 @@
       "immigrationCourt": {
         "title": "Immigration Court Information",
         "description": "Executive Office for Immigration Review"
+      },
+      "legalProcessOverview": {
+        "title": "Legal Process Overview",
+        "description": "Understanding the general legal process and what to expect"
+      },
+      "documentTemplates": {
+        "title": "Document Templates",
+        "description": "Ready-to-use legal document templates and forms"
+      },
+      "knowYourRights": {
+        "title": "Know Your Rights",
+        "description": "Understanding your legal rights in various situations"
       }
     },
     "buttons": {
       "view": "View",
-      "visit": "Visit"
+      "visit": "Visit",
+      "viewAll": "View All"
     }
   },
   "footer": {
@@ -559,29 +588,6 @@
     "suggestedQuestions": "Suggested Questions",
     "modelSelection": "Select AI Model",
     "feedback": "Was this response helpful?"
-  },
-  "resources": {
-    "title": "Legal Resources",
-    "description": "Access free legal resources, documents, and educational materials",
-    "categories": {
-      "immigration": "Immigration Resources",
-      "housing": "Housing & Tenants Rights",
-      "expungement": "Expungement & Record Clearing",
-      "familyLaw": "Family Law",
-      "consumerRights": "Consumer Rights"
-    },
-    "types": {
-      "pdf": "PDF",
-      "article": "Article",
-      "video": "Video",
-      "link": "External Link",
-      "template": "Template"
-    },
-    "actions": {
-      "view": "View",
-      "download": "Download",
-      "visit": "Visit"
-    }
   },
   "profile": {
     "title": "Profile",
