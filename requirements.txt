@@ -13,6 +13,8 @@ gunicorn==21.2.0
 pymongo==3.12.3
 flask-pymongo==2.3.0
 supabase==2.3.0
+redis==5.0.1
+psycopg2-binary==2.9.9
 
 # PDF processing - Skip PyMuPDF in deployment environments
 # Use alternatives that don't require compilation
