@@ -8,6 +8,8 @@ import json
 class Document(db.Model):
     """Document model for storing legal documents."""
     __tablename__ = 'documents'
+    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)

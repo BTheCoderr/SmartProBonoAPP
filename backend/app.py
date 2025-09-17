@@ -20,4 +20,4 @@ with app.app_context():
 
 if __name__ == '__main__':
     logger.info("Starting application in development mode")
-    app.run(host='0.0.0.0', port=3001, debug=True) 
+    app.run(host='127.0.0.1', port=3001, debug=False)  # Fixed: localhost only, debug off

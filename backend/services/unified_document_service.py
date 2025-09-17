@@ -65,9 +65,10 @@ class UnifiedDocumentService:
         
         # Initialize Jinja2 if available
         if JINJA2_AVAILABLE:
-            self.jinja_env = jinja2.Environment(
-                loader=jinja2.FileSystemLoader(self.templates_dir)
-            )
+              self.jinja_env = jinja2.Environment(
+                  loader=jinja2.FileSystemLoader(self.templates_dir),
+                  autoescape=jinja2.select_autoescape(['html', 'xml'])  # Fix XSS vulnerability
+              )
         else:
             self.jinja_env = None
     

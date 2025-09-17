@@ -8,6 +8,8 @@ import json
 class Case(db.Model):
     """Case model for storing legal cases."""
     __tablename__ = 'cases'
+    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)

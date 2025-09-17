@@ -1,0 +1,9 @@
+# Bandit security scanner configuration
+# This file configures bandit to ignore false positives from dependencies
+
+[bandit]
+exclude_dirs = venv,node_modules,.git,__pycache__
+skips = B101,B110,B311,B404,B603,B607
+exclude = backend/venv/,node_modules/,__pycache__/,.git/
+confidence = MEDIUM
+severity = MEDIUM

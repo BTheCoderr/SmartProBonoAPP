@@ -11,8 +11,8 @@ import { Box, CircularProgress, Typography } from '@mui/material';
  * @param {string|Array} props.requiredRole - Role or roles required to access the route
  * @returns {JSX.Element} The protected route component
  */
-const ProtectedRoute = ({ requiredRole }) => {
-  const { user, isAuthenticated, loading } = useAuth();
+const ProtectedRoute = ({ requiredRole, children }) => {
+  const { user, isAuthenticated, loading, isBetaMode } = useAuth();
   const location = useLocation();
 
   // Show loading spinner while checking authentication
@@ -36,6 +36,11 @@ const ProtectedRoute = ({ requiredRole }) => {
     );
   }
 
+  // In beta mode, allow access without authentication
+  if (isBetaMode) {
+    return children;
+  }
+
   // Check if user is authenticated
   if (!isAuthenticated) {
     // Redirect to login with return path
@@ -54,7 +59,7 @@ const ProtectedRoute = ({ requiredRole }) => {
   }
 
   // User is authenticated and has the required role (if specified)
-  return <Outlet />;
+  return children;
 };
 
 export default ProtectedRoute; 

@@ -97,7 +97,7 @@ const routes = [
   { path: '/documents', element: <DocumentsPage /> },
   { path: '/contracts', element: <ContractsPage /> },
   { path: '/virtual-paralegal', element: <VirtualParalegalPage /> },
-  { path: '/virtual-paralegal/crm', element: <VirtualParalegalCRM /> },
+  { path: '/lawyer-crm', element: <VirtualParalegalCRM /> },
   { path: '/ai-virtual-paralegal', element: <AIVirtualParalegal /> },
   { path: '/profile', element: <ProfilePage /> },
   { path: '/expungement', element: <ExpungementPage /> },

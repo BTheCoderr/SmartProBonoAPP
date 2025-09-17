@@ -39,7 +39,7 @@ class ResendEmailService:
                 "Content-Type": "application/json"
             }
             
-            response = requests.post(self.base_url, json=payload, headers=headers)
+            response = requests.post(self.base_url, json=payload, headers=headers, timeout=30)
             
             if response.status_code == 200:
                 logger.info(f"Contact form email sent successfully via Resend")
@@ -75,7 +75,7 @@ class ResendEmailService:
                 "Content-Type": "application/json"
             }
             
-            response = requests.post(self.base_url, json=payload, headers=headers)
+            response = requests.post(self.base_url, json=payload, headers=headers, timeout=30)
             
             if response.status_code == 200:
                 logger.info(f"Auto-reply sent successfully via Resend to {recipient_email}")

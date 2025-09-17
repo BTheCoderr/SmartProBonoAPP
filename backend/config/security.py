@@ -43,7 +43,7 @@ EXEMPT_ROUTES = [
 ]
 
 API_KEY_HEADER = 'X-API-Key'
-JWT_SECRET_KEY = 'your-secret-key'  # Change in production
+JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'your-secret-key')  # Use env var in production
 
 # Security headers
 SECURITY_HEADERS = {

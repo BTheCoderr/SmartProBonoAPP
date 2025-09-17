@@ -5,8 +5,8 @@ Handles all client, lawyer, and bondsman operations with full database integrati
 from datetime import datetime, timedelta
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import and_, or_, desc, asc
-from backend.database import db
-from backend.models import (
+from database import db
+from models import (
     User, Case, Document, Payment, BailBond, CourtDate, 
     ClientIntake, Task, Notification
 )
@@ -122,6 +122,10 @@ class CRMService:
         except Exception as e:
             logger.error(f"Error getting clients: {e}")
             raise e
+    
+    def get_lawyer_clients(self, lawyer_id):
+        """Get clients assigned to a specific lawyer (alias for get_all_clients)."""
+        return self.get_all_clients(lawyer_id)
     
     def create_case(self, case_data):
         """Create a new case."""

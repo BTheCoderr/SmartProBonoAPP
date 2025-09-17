@@ -28,6 +28,7 @@ class AuditSeverity(enum.Enum):
 class AuditLog(db.Model):
     """General system audit trail"""
     __tablename__ = 'audit_logs'
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     event_type = db.Column(db.Enum(AuditEventType), nullable=False)
@@ -86,6 +87,7 @@ class AuditLog(db.Model):
 class UserActivity(db.Model):
     """User interaction tracking"""
     __tablename__ = 'user_activities'
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -112,6 +114,7 @@ class UserActivity(db.Model):
 class SecurityEvent(db.Model):
     """Security-related events"""
     __tablename__ = 'security_events'
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     event_type = db.Column(db.String(100), nullable=False)  # failed_login, suspicious_activity, etc.
@@ -133,6 +136,7 @@ class SecurityEvent(db.Model):
 class PerformanceMetric(db.Model):
     """System performance data"""
     __tablename__ = 'performance_metrics'
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     metric_type = db.Column(db.String(100), nullable=False)  # response_time, memory_usage, etc.
@@ -152,6 +156,7 @@ class PerformanceMetric(db.Model):
 class ComplianceRecord(db.Model):
     """Regulatory compliance tracking"""
     __tablename__ = 'compliance_records'
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     record_type = db.Column(db.String(100), nullable=False)  # gdpr_request, data_retention, etc.
@@ -175,6 +180,7 @@ class ComplianceRecord(db.Model):
 class APIAudit(db.Model):
     """API usage auditing"""
     __tablename__ = 'api_audits'
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     endpoint = db.Column(db.String(255), nullable=False)
@@ -199,6 +205,7 @@ class APIAudit(db.Model):
 class DocumentAudit(db.Model):
     """Document access and modification tracking"""
     __tablename__ = 'document_audits'
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     document_id = db.Column(db.Integer, db.ForeignKey('documents.id'), nullable=False)
