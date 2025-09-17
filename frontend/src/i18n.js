@@ -36,7 +36,7 @@ if (!i18n.isInitialized) {
         }
       },
       fallbackLng: 'en',
-      debug: false, // Disable debug to reduce console noise
+      debug: true, // Enable debug to see translation loading
       
       // User's language preference from local storage
       detection: {
@@ -52,7 +52,7 @@ if (!i18n.isInitialized) {
       returnObjects: true,
       
       react: {
-        useSuspense: true,
+        useSuspense: false,
       }
     });
 }

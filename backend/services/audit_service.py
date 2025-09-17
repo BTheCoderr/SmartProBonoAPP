@@ -394,15 +394,43 @@ class AuditService:
     
     def _send_security_alert(self, security_event: SecurityEvent):
         """Send security alert notification."""
-        # Implement alerting mechanism (email, Slack, etc.)
         logger.critical(f"SECURITY ALERT: {security_event.event_type} - {security_event.reason}")
-        # TODO: Implement actual alerting (email, webhook, etc.)
+        
+        try:
+            # Send email alert
+            self._send_email_alert(security_event)
+            
+            # Send Slack alert if configured
+            self._send_slack_alert(security_event)
+            
+            # Send webhook alert if configured
+            self._send_webhook_alert(security_event)
+            
+            # Send WebSocket notification if available
+            self._send_websocket_alert(security_event)
+            
+        except Exception as e:
+            logger.error(f"Error sending security alert: {e}")
     
     def _send_performance_alert(self, metric: PerformanceMetric):
         """Send performance alert notification."""
-        # Implement performance alerting
         logger.warning(f"PERFORMANCE ALERT: {metric.metric_type} exceeded threshold")
-        # TODO: Implement actual alerting
+        
+        try:
+            # Send email alert
+            self._send_email_performance_alert(metric)
+            
+            # Send Slack alert if configured
+            self._send_slack_performance_alert(metric)
+            
+            # Send webhook alert if configured
+            self._send_webhook_performance_alert(metric)
+            
+            # Send WebSocket notification if available
+            self._send_websocket_performance_alert(metric)
+            
+        except Exception as e:
+            logger.error(f"Error sending performance alert: {e}")
     
     def get_audit_logs(
         self,
@@ -464,6 +492,317 @@ class AuditService:
             query = query.filter(UserActivity.created_at <= end_date)
         
         return query.order_by(UserActivity.created_at.desc()).limit(limit).all()
+    
+    def _send_email_alert(self, security_event: SecurityEvent):
+        """Send security alert via email."""
+        try:
+            import requests
+            import os
+            
+            # Get email configuration
+            email_api_key = os.environ.get('RESEND_API_KEY')
+            if not email_api_key:
+                logger.warning("RESEND_API_KEY not configured, skipping email alert")
+                return
+            
+            # Prepare email content
+            subject = f"🚨 SECURITY ALERT: {security_event.event_type}"
+            
+            html_content = f"""
+            <h2>🚨 Security Alert</h2>
+            <p><strong>Event Type:</strong> {security_event.event_type}</p>
+            <p><strong>Severity:</strong> {security_event.severity}</p>
+            <p><strong>Reason:</strong> {security_event.reason}</p>
+            <p><strong>Timestamp:</strong> {security_event.timestamp}</p>
+            <p><strong>User ID:</strong> {security_event.user_id or 'N/A'}</p>
+            <p><strong>IP Address:</strong> {security_event.ip_address or 'N/A'}</p>
+            <p><strong>User Agent:</strong> {security_event.user_agent or 'N/A'}</p>
+            
+            <h3>Details:</h3>
+            <p>{security_event.details or 'No additional details available'}</p>
+            
+            <p><em>This is an automated security alert from SmartProBono.</em></p>
+            """
+            
+            # Send email
+            response = requests.post(
+                'https://api.resend.com/emails',
+                headers={'Authorization': f'Bearer {email_api_key}'},
+                json={
+                    'from': 'SmartProBono Security <security@smartprobono.org>',
+                    'to': ['security@smartprobono.org', 'admin@smartprobono.org'],
+                    'subject': subject,
+                    'html': html_content
+                }
+            , timeout=30)
+            
+            if response.status_code == 200:
+                logger.info("Security alert email sent successfully")
+            else:
+                logger.error(f"Failed to send security alert email: {response.status_code}")
+                
+        except Exception as e:
+            logger.error(f"Error sending security alert email: {e}")
+    
+    def _send_slack_alert(self, security_event: SecurityEvent):
+        """Send security alert to Slack."""
+        try:
+            import requests
+            import os
+            
+            slack_webhook_url = os.environ.get('SLACK_WEBHOOK_URL')
+            if not slack_webhook_url:
+                logger.warning("SLACK_WEBHOOK_URL not configured, skipping Slack alert")
+                return
+            
+            # Prepare Slack message
+            color = "danger" if security_event.severity == "critical" else "warning"
+            
+            slack_message = {
+                "attachments": [
+                    {
+                        "color": color,
+                        "title": f"🚨 Security Alert: {security_event.event_type}",
+                        "fields": [
+                            {"title": "Severity", "value": security_event.severity, "short": True},
+                            {"title": "Reason", "value": security_event.reason, "short": False},
+                            {"title": "Timestamp", "value": security_event.timestamp, "short": True},
+                            {"title": "User ID", "value": str(security_event.user_id or "N/A"), "short": True},
+                            {"title": "IP Address", "value": security_event.ip_address or "N/A", "short": True}
+                        ],
+                        "footer": "SmartProBono Security System",
+                        "ts": int(security_event.timestamp.timestamp())
+                    }
+                ]
+            }
+            
+            # Send to Slack
+            response = requests.post(slack_webhook_url, json=slack_message, timeout=30)
+            
+            if response.status_code == 200:
+                logger.info("Security alert sent to Slack successfully")
+            else:
+                logger.error(f"Failed to send security alert to Slack: {response.status_code}")
+                
+        except Exception as e:
+            logger.error(f"Error sending security alert to Slack: {e}")
+    
+    def _send_webhook_alert(self, security_event: SecurityEvent):
+        """Send security alert via webhook."""
+        try:
+            import requests
+            import os
+            
+            webhook_url = os.environ.get('SECURITY_WEBHOOK_URL')
+            if not webhook_url:
+                logger.warning("SECURITY_WEBHOOK_URL not configured, skipping webhook alert")
+                return
+            
+            # Prepare webhook payload
+            payload = {
+                "event_type": "security_alert",
+                "timestamp": security_event.timestamp.isoformat(),
+                "data": {
+                    "event_type": security_event.event_type,
+                    "severity": security_event.severity,
+                    "reason": security_event.reason,
+                    "user_id": security_event.user_id,
+                    "ip_address": security_event.ip_address,
+                    "user_agent": security_event.user_agent,
+                    "details": security_event.details
+                }
+            }
+            
+            # Send webhook
+            response = requests.post(webhook_url, json=payload, timeout=10)
+            
+            if response.status_code in [200, 201, 202]:
+                logger.info("Security alert sent via webhook successfully")
+            else:
+                logger.error(f"Failed to send security alert via webhook: {response.status_code}")
+                
+        except Exception as e:
+            logger.error(f"Error sending security alert via webhook: {e}")
+    
+    def _send_websocket_alert(self, security_event: SecurityEvent):
+        """Send security alert via WebSocket."""
+        try:
+            # Import WebSocket functions
+            from websocket_server import send_notification
+            
+            # Send real-time notification
+            import asyncio
+            import threading
+            
+            def send_async():
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                loop.run_until_complete(send_notification(
+                    "security_alert",
+                    {
+                        "event_type": security_event.event_type,
+                        "severity": security_event.severity,
+                        "reason": security_event.reason,
+                        "timestamp": security_event.timestamp.isoformat(),
+                        "user_id": security_event.user_id
+                    }
+                ))
+                loop.close()
+            
+            thread = threading.Thread(target=send_async)
+            thread.start()
+            
+            logger.info("Security alert sent via WebSocket")
+            
+        except Exception as e:
+            logger.error(f"Error sending security alert via WebSocket: {e}")
+    
+    def _send_email_performance_alert(self, metric: PerformanceMetric):
+        """Send performance alert via email."""
+        try:
+            import requests
+            import os
+            
+            email_api_key = os.environ.get('RESEND_API_KEY')
+            if not email_api_key:
+                logger.warning("RESEND_API_KEY not configured, skipping performance email alert")
+                return
+            
+            subject = f"⚠️ PERFORMANCE ALERT: {metric.metric_type}"
+            
+            html_content = f"""
+            <h2>⚠️ Performance Alert</h2>
+            <p><strong>Metric Type:</strong> {metric.metric_type}</p>
+            <p><strong>Current Value:</strong> {metric.value}</p>
+            <p><strong>Threshold:</strong> {metric.threshold}</p>
+            <p><strong>Timestamp:</strong> {metric.timestamp}</p>
+            <p><strong>Description:</strong> {metric.description or 'Performance metric exceeded threshold'}</p>
+            
+            <h3>Details:</h3>
+            <p>This alert indicates that the system performance has degraded and may require attention.</p>
+            
+            <p><em>This is an automated performance alert from SmartProBono.</em></p>
+            """
+            
+            response = requests.post(
+                'https://api.resend.com/emails',
+                headers={'Authorization': f'Bearer {email_api_key}'},
+                json={
+                    'from': 'SmartProBono Performance <performance@smartprobono.org>',
+                    'to': ['performance@smartprobono.org', 'admin@smartprobono.org'],
+                    'subject': subject,
+                    'html': html_content
+                }
+            , timeout=30)
+            
+            if response.status_code == 200:
+                logger.info("Performance alert email sent successfully")
+            else:
+                logger.error(f"Failed to send performance alert email: {response.status_code}")
+                
+        except Exception as e:
+            logger.error(f"Error sending performance alert email: {e}")
+    
+    def _send_slack_performance_alert(self, metric: PerformanceMetric):
+        """Send performance alert to Slack."""
+        try:
+            import requests
+            import os
+            
+            slack_webhook_url = os.environ.get('SLACK_WEBHOOK_URL')
+            if not slack_webhook_url:
+                logger.warning("SLACK_WEBHOOK_URL not configured, skipping performance Slack alert")
+                return
+            
+            slack_message = {
+                "attachments": [
+                    {
+                        "color": "warning",
+                        "title": f"⚠️ Performance Alert: {metric.metric_type}",
+                        "fields": [
+                            {"title": "Current Value", "value": str(metric.value), "short": True},
+                            {"title": "Threshold", "value": str(metric.threshold), "short": True},
+                            {"title": "Timestamp", "value": metric.timestamp, "short": True},
+                            {"title": "Description", "value": metric.description or "Performance metric exceeded threshold", "short": False}
+                        ],
+                        "footer": "SmartProBono Performance Monitor",
+                        "ts": int(metric.timestamp.timestamp())
+                    }
+                ]
+            }
+            
+            response = requests.post(slack_webhook_url, json=slack_message, timeout=30)
+            
+            if response.status_code == 200:
+                logger.info("Performance alert sent to Slack successfully")
+            else:
+                logger.error(f"Failed to send performance alert to Slack: {response.status_code}")
+                
+        except Exception as e:
+            logger.error(f"Error sending performance alert to Slack: {e}")
+    
+    def _send_webhook_performance_alert(self, metric: PerformanceMetric):
+        """Send performance alert via webhook."""
+        try:
+            import requests
+            import os
+            
+            webhook_url = os.environ.get('PERFORMANCE_WEBHOOK_URL')
+            if not webhook_url:
+                logger.warning("PERFORMANCE_WEBHOOK_URL not configured, skipping performance webhook alert")
+                return
+            
+            payload = {
+                "event_type": "performance_alert",
+                "timestamp": metric.timestamp.isoformat(),
+                "data": {
+                    "metric_type": metric.metric_type,
+                    "value": metric.value,
+                    "threshold": metric.threshold,
+                    "description": metric.description
+                }
+            }
+            
+            response = requests.post(webhook_url, json=payload, timeout=10)
+            
+            if response.status_code in [200, 201, 202]:
+                logger.info("Performance alert sent via webhook successfully")
+            else:
+                logger.error(f"Failed to send performance alert via webhook: {response.status_code}")
+                
+        except Exception as e:
+            logger.error(f"Error sending performance alert via webhook: {e}")
+    
+    def _send_websocket_performance_alert(self, metric: PerformanceMetric):
+        """Send performance alert via WebSocket."""
+        try:
+            from websocket_server import send_notification
+            
+            import asyncio
+            import threading
+            
+            def send_async():
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                loop.run_until_complete(send_notification(
+                    "performance_alert",
+                    {
+                        "metric_type": metric.metric_type,
+                        "value": metric.value,
+                        "threshold": metric.threshold,
+                        "timestamp": metric.timestamp.isoformat(),
+                        "description": metric.description
+                    }
+                ))
+                loop.close()
+            
+            thread = threading.Thread(target=send_async)
+            thread.start()
+            
+            logger.info("Performance alert sent via WebSocket")
+            
+        except Exception as e:
+            logger.error(f"Error sending performance alert via WebSocket: {e}")
 
 # Global audit service instance
 audit_service = AuditService()

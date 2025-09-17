@@ -46,6 +46,7 @@ import {
   Warning as WarningIcon,
   CheckCircle as CheckIcon
 } from '@mui/icons-material';
+import CRMService from '../services/CRMService';
 
 const VirtualParalegalCRM = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -58,8 +59,24 @@ const VirtualParalegalCRM = () => {
   const [dialogType, setDialogType] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // Mock data for demonstration
+  // Test CRM connection
+  const testCRMConnection = async () => {
+    try {
+      setLoading(true);
+      const healthCheck = await CRMService.healthCheck();
+      console.log('✅ CRM Service connected:', healthCheck);
+      setError(null);
+    } catch (error) {
+      console.error('❌ CRM Service connection failed:', error);
+      setError('CRM Service not available. Using demo data.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load data and test CRM connection
   useEffect(() => {
+    testCRMConnection();
     setClients([
       {
         id: 1,
@@ -492,6 +509,26 @@ const VirtualParalegalCRM = () => {
         <Typography variant="body1" color="text.secondary">
           Manage your clients, cases, and tasks efficiently
         </Typography>
+        
+        {/* Connection Status */}
+        {loading && (
+          <Alert severity="info" sx={{ mt: 2 }}>
+            <CircularProgress size={20} sx={{ mr: 1 }} />
+            Testing CRM connection...
+          </Alert>
+        )}
+        
+        {error && (
+          <Alert severity="warning" sx={{ mt: 2 }}>
+            {error}
+          </Alert>
+        )}
+        
+        {!loading && !error && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            ✅ CRM Service Connected
+          </Alert>
+        )}
       </Box>
 
       <Paper sx={{ width: '100%' }}>

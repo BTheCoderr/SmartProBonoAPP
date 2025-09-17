@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Combined server with both contact form and document scanner functionality.
+Now includes full CRM system integration.
 """
 import sys
 import os
@@ -13,6 +14,20 @@ import tempfile
 from datetime import datetime
 from simple_ai_service import analyze_document, extract_text_from_document, analyze_with_safety
 from config import config
+import asyncio
+import threading
+
+# Import CRM system components
+from database import init_db
+from register_crm_only import register_crm_blueprints
+
+# Import WebSocket support
+try:
+    from websocket_server import start_websocket_server, send_notification, send_case_update
+    WEBSOCKET_AVAILABLE = True
+except ImportError:
+    print("WebSocket support not available. Install with: pip install websockets")
+    WEBSOCKET_AVAILABLE = False
 
 app = Flask(__name__)
 
@@ -20,11 +35,59 @@ app = Flask(__name__)
 config_name = os.environ.get('FLASK_ENV', 'development')
 app.config.from_object(config[config_name])
 
-# Initialize CORS with enhanced settings
+# Ensure database URL is properly set
+if not app.config.get('SQLALCHEMY_DATABASE_URI'):
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///smartprobono_dev.db'
+
+# Initialize database
+init_db(app)
+
+# Register CRM blueprints only
+register_crm_blueprints(app)
+
+# Register Analytics API routes
+try:
+    from routes.analytics_api import bp as analytics_bp
+    app.register_blueprint(analytics_bp, url_prefix='/api')
+    print("✅ Analytics API routes registered")
+except ImportError as e:
+    print(f"⚠️ Analytics API routes not available: {e}")
+
+# Register Document Collaboration API routes
+try:
+    from routes.document_collaboration_api import bp as doc_collab_bp
+    app.register_blueprint(doc_collab_bp, url_prefix='/api')
+    print("✅ Document Collaboration API routes registered")
+except ImportError as e:
+    print(f"⚠️ Document Collaboration API routes not available: {e}")
+
+# Register Voice API routes
+try:
+    from routes.voice_api import voice_bp
+    app.register_blueprint(voice_bp, url_prefix='/api')
+    print("✅ Voice API routes registered")
+except ImportError as e:
+    print(f"⚠️ Voice API routes not available: {e}")
+
+# Register Court Filing API routes
+try:
+    from routes.court_filing_api import court_filing_bp
+    app.register_blueprint(court_filing_bp, url_prefix='/api')
+    print("✅ Court Filing API routes registered")
+except ImportError as e:
+    print(f"⚠️ Court Filing API routes not available: {e}")
+
+# Initialize CORS with enhanced settings for development
 CORS(app, 
-     origins=app.config.get('CORS_ORIGINS', ['http://localhost:3000', 'http://localhost:3002']),
+     origins=app.config.get('CORS_ORIGINS', [
+         'http://localhost:3000', 
+         'http://localhost:3002', 
+         'http://127.0.0.1:3000', 
+         'http://127.0.0.1:3002',
+         'null'  # Allow file:// protocol for testing
+     ]),
      methods=app.config.get('CORS_METHODS', ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']),
-     allow_headers=app.config.get('CORS_ALLOW_HEADERS', ['Content-Type', 'Authorization']),
+     allow_headers=app.config.get('CORS_ALLOW_HEADERS', ['Content-Type', 'Authorization', 'X-Requested-With']),
      expose_headers=app.config.get('CORS_EXPOSE_HEADERS', ['Content-Range', 'X-Total-Count']),
      supports_credentials=app.config.get('CORS_SUPPORTS_CREDENTIALS', True))
 
@@ -66,7 +129,8 @@ def send_contact_form_email(data):
                 'to': ['support@smartprobono.org'],
                 'subject': subject,
                 'html': html_content
-            }
+            },
+            timeout=30  # Add timeout for security
         )
         
         return response.status_code == 200
@@ -96,7 +160,7 @@ def send_auto_reply(recipient_email, recipient_name):
                 'subject': subject,
                 'html': html_content
             }
-        )
+        , timeout=30)
         
         return response.status_code == 200
         
@@ -141,7 +205,7 @@ def send_bug_report_email(data):
                 'subject': subject,
                 'html': html_content
             }
-        )
+        , timeout=30)
         
         print(f"🐛 DEBUG: Resend response status: {response.status_code}")
         print(f"🐛 DEBUG: Resend response content: {response.text}")
@@ -173,7 +237,7 @@ def send_bug_report_auto_reply(recipient_email, bug_title):
                 'subject': subject,
                 'html': html_content
             }
-        )
+        , timeout=30)
         
         return response.status_code == 200
         
@@ -206,7 +270,7 @@ def send_feature_request_email(data):
                 'subject': subject,
                 'html': html_content
             }
-        )
+        , timeout=30)
         
         return response.status_code == 200
         
@@ -236,7 +300,7 @@ def send_feature_request_auto_reply(recipient_email, feature_title):
                 'subject': subject,
                 'html': html_content
             }
-        )
+        , timeout=30)
         
         return response.status_code == 200
         
@@ -309,7 +373,7 @@ def submit_contact_form():
                 'Content-Type': 'application/json'
             },
             json=payload
-        )
+        , timeout=30)
 
         if response.status_code == 200:
             print("✅ Contact form email sent successfully to bferrell514@gmail.com")
@@ -654,7 +718,8 @@ def health_check():
             'scanner': 'running',
             'generator': 'running',
             'contact': 'running',
-            'safety': 'enabled'
+            'safety': 'enabled',
+            'websocket': 'available' if WEBSOCKET_AVAILABLE else 'unavailable'
         },
         'version': '2.0.0',
         'features': [
@@ -662,15 +727,172 @@ def health_check():
             'PDF Generation', 
             'Contact Form',
             'Safety & Compliance',
-            'UPL Prevention'
+            'UPL Prevention',
+            'Real-Time Features' if WEBSOCKET_AVAILABLE else 'Real-Time Features (Disabled)'
         ],
         'message': 'SmartProBono enhanced system is running'
     }), 200
 
+# ===== WEBSOCKET INTEGRATION ENDPOINTS =====
+
+@app.route('/api/notifications/send', methods=['POST'])
+def send_notification_endpoint():
+    """Send a notification via WebSocket"""
+    if not WEBSOCKET_AVAILABLE:
+        return jsonify({
+            'error': 'WebSocket support not available',
+            'success': False
+        }), 503
+    
+    try:
+        data = request.get_json()
+        
+        if not data or 'type' not in data:
+            return jsonify({
+                'error': 'Missing required field: type',
+                'success': False
+            }), 400
+        
+        notification_type = data['type']
+        notification_data = data.get('data', {})
+        recipient_id = data.get('recipient_id')
+        room_id = data.get('room_id')
+        
+        # Send notification asynchronously
+        def send_async():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(send_notification(
+                notification_type, 
+                notification_data, 
+                recipient_id, 
+                room_id
+            ))
+            loop.close()
+        
+        thread = threading.Thread(target=send_async)
+        thread.start()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Notification sent',
+            'type': notification_type
+        }), 200
+        
+    except Exception as e:
+        print(f"Error sending notification: {str(e)}")
+        return jsonify({
+            'error': f'Failed to send notification: {str(e)}',
+            'success': False
+        }), 500
+
+@app.route('/api/case-updates/send', methods=['POST'])
+def send_case_update_endpoint():
+    """Send a case update via WebSocket"""
+    if not WEBSOCKET_AVAILABLE:
+        return jsonify({
+            'error': 'WebSocket support not available',
+            'success': False
+        }), 503
+    
+    try:
+        data = request.get_json()
+        
+        if not data or 'case_id' not in data:
+            return jsonify({
+                'error': 'Missing required field: case_id',
+                'success': False
+            }), 400
+        
+        case_id = data['case_id']
+        update_data = data.get('update', {})
+        user_id = data.get('user_id')
+        
+        # Send case update asynchronously
+        def send_async():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(send_case_update(case_id, update_data, user_id))
+            loop.close()
+        
+        thread = threading.Thread(target=send_async)
+        thread.start()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Case update sent',
+            'case_id': case_id
+        }), 200
+        
+    except Exception as e:
+        print(f"Error sending case update: {str(e)}")
+        return jsonify({
+            'error': f'Failed to send case update: {str(e)}',
+            'success': False
+        }), 500
+
+@app.route('/api/websocket/status', methods=['GET'])
+def websocket_status():
+    """Get WebSocket server status"""
+    return jsonify({
+        'websocket_available': WEBSOCKET_AVAILABLE,
+        'websocket_url': 'ws://localhost:8765' if WEBSOCKET_AVAILABLE else None,
+        'message': 'WebSocket server is running' if WEBSOCKET_AVAILABLE else 'WebSocket server not available'
+    }), 200
+
 if __name__ == '__main__':
-    print("🚀 Starting combined server...")
+    print("🚀 Starting SmartProBono Combined Server...")
+    print("=" * 50)
     print("📧 Contact form ready - sending to bferrell514@gmail.com")
     print("📄 Document scanner ready - analyzing PDFs with real text extraction")
     print("🐛 Bug reports: Connected to email")
     print("💡 Feature requests: Connected to email")
-    app.run(host='0.0.0.0', port=3001, debug=True)
+    print("=" * 50)
+    print("🎯 CRM SYSTEM NOW CONNECTED!")
+    print("👥 Client Portal: /api/v1/crm/client/*")
+    print("⚖️ Lawyer Dashboard: /api/v1/crm/lawyer/*")
+    print("💰 Bondsman Dashboard: /api/v1/crm/bondsman/*")
+    print("📅 Court Dates: /api/v1/crm/court-dates")
+    print("🔔 Notifications: /api/v1/crm/notifications")
+    print("=" * 50)
+    
+    # Start WebSocket server if available
+    if WEBSOCKET_AVAILABLE:
+        print("🔌 REAL-TIME FEATURES ENABLED!")
+        print("📡 WebSocket server: ws://localhost:8765")
+        print("💬 Live chat: Available")
+        print("🔔 Real-time notifications: Available")
+        print("📄 Document collaboration: Available")
+        
+        # Start WebSocket server in a separate thread
+        def start_websocket():
+            asyncio.run(start_websocket_server())
+        
+        ws_thread = threading.Thread(target=start_websocket, daemon=True)
+        ws_thread.start()
+        print("✅ WebSocket server started in background")
+    else:
+        print("⚠️ WebSocket support not available - install with: pip install websockets")
+    
+    print("🎤 VOICE FEATURES ENABLED!")
+    print("🗣️ Speech-to-text: /api/voice/speech-to-text")
+    print("🔊 Text-to-speech: /api/voice/text-to-speech")
+    print("🤖 Voice commands: /api/voice/command")
+    print("📊 Voice analysis: /api/voice/analyze")
+    print("📁 Audio upload: /api/voice/upload-audio")
+    print("💾 Audio download: /api/voice/download-audio")
+    
+    print("⚖️ COURT FILING ASSISTANCE ENABLED!")
+    print("📋 Court rules: /api/court-filing/rules")
+    print("📄 Filing templates: /api/court-filing/templates")
+    print("📝 Document generation: /api/court-filing/generate")
+    print("📁 Create filing: /api/court-filing/filings")
+    print("💰 Calculate fees: /api/court-filing/fees")
+    print("⏰ Filing deadlines: /api/court-filing/deadlines")
+    print("✅ Validate filing: /api/court-filing/validate")
+    
+    print("=" * 50)
+    print("🌐 Server running on: http://localhost:3001")
+    print("🔗 Test CRM: python test_crm_connection.py")
+    print("🔗 Test WebSocket: ws://localhost:8765")
+    app.run(host='127.0.0.1', port=3001, debug=False)  # Fixed: localhost only, debug off

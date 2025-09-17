@@ -9,6 +9,8 @@ import json
 class ClientIntake(db.Model):
     """Client intake model for storing intake information."""
     __tablename__ = 'client_intakes'
+    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # Can be null for anonymous intakes
@@ -66,14 +68,14 @@ class ClientIntake(db.Model):
     _documents = db.Column('documents', db.Text, nullable=True)  # JSON array of document IDs
     
     @property
-    def metadata(self):
+    def intake_metadata(self):
         """Get intake metadata as a dictionary."""
         if not self._metadata:
             return {}
         return json.loads(self._metadata)
         
-    @metadata.setter
-    def metadata(self, value):
+    @intake_metadata.setter
+    def intake_metadata(self, value):
         """Set intake metadata from a dictionary."""
         if isinstance(value, dict):
             self._metadata = json.dumps(value)
@@ -150,7 +152,7 @@ class ClientIntake(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'notes': self.notes,
-            'metadata': self.metadata,
+            'metadata': self.intake_metadata,
             'documents': self.documents
         }
 
@@ -161,6 +163,8 @@ class ClientIntake(db.Model):
 class Task(db.Model):
     """Task model for managing legal tasks and assignments."""
     __tablename__ = 'tasks'
+    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     case_id = db.Column(db.Integer, db.ForeignKey('cases.id'), nullable=True)
@@ -190,14 +194,14 @@ class Task(db.Model):
     _metadata = db.Column('metadata', db.Text, nullable=True)
     
     @property
-    def metadata(self):
+    def task_metadata(self):
         """Get task metadata as a dictionary."""
         if not self._metadata:
             return {}
         return json.loads(self._metadata)
         
-    @metadata.setter
-    def metadata(self, value):
+    @task_metadata.setter
+    def task_metadata(self, value):
         """Set task metadata from a dictionary."""
         if isinstance(value, dict):
             self._metadata = json.dumps(value)
@@ -230,7 +234,7 @@ class Task(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'notes': self.notes,
-            'metadata': self.metadata,
+            'metadata': self.task_metadata,
             'is_overdue': self.is_overdue()
         }
 

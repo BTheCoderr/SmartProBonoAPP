@@ -5,6 +5,8 @@ from database import db
 class Notification(db.Model):
     """Notification model class."""
     __tablename__ = 'notifications'
+    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

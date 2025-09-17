@@ -1,0 +1,26 @@
+# Voice Processing Dependencies
+# Install with: pip install -r requirements-voice.txt
+
+# Speech Recognition
+SpeechRecognition==3.10.0
+pyaudio==0.2.11
+
+# Text-to-Speech
+pyttsx3==2.90
+
+# Audio Processing
+pydub==0.25.1
+wave==0.0.2
+
+# Additional audio libraries
+librosa==0.10.1
+soundfile==0.12.1
+
+# Voice AI Integration
+openai-whisper==20231117
+torch==2.1.0
+torchaudio==2.1.0
+
+# Optional: Advanced voice features
+webrtcvad==2.0.10
+noisereduce==3.0.0

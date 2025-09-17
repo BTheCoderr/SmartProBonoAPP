@@ -12,4 +12,8 @@ def init_db(app):
     """Initialize database connections."""
     db.init_app(app)
     mongo.init_app(app)
-    migrate.init_app(app, db) 
+    migrate.init_app(app, db)
+
+def get_db_session():
+    """Get database session for analytics and other services."""
+    return db.session 

@@ -26,7 +26,7 @@ except ImportError:
 # Use correct server based on availability
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5002))
-    host = os.environ.get('HOST', '0.0.0.0')
+    host = os.environ.get('HOST', '127.0.0.1')  # Use localhost by default for security
     
     if has_websockets:
         logger.info(f"Starting SocketIO server on {host}:{port}")

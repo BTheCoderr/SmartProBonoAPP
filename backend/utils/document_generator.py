@@ -5,6 +5,7 @@ This module provides functions to generate documents from templates.
 It supports HTML templates with Jinja2 and conversion to PDF.
 """
 import os
+import tempfile
 import uuid
 from datetime import datetime
 import jinja2
@@ -24,7 +25,8 @@ class DocumentGenerator:
             os.path.dirname(os.path.dirname(__file__)), 'templates'
         )
         self.env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(self.templates_dir)
+            loader=jinja2.FileSystemLoader(self.templates_dir),
+            autoescape=jinja2.select_autoescape(['html', 'xml'])  # Fix XSS vulnerability
         )
         
     def list_templates(self):
@@ -68,7 +70,7 @@ class DocumentGenerator:
         """Generate PDF from HTML content with fallback methods"""
         try:
             output_path = output_path or os.path.join(
-                current_app.config.get('DOCUMENT_UPLOAD_FOLDER', '/tmp'),
+                current_app.config.get('DOCUMENT_UPLOAD_FOLDER', tempfile.gettempdir()),
                 f"document_{uuid.uuid4()}.pdf"
             )
             

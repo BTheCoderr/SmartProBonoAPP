@@ -9,6 +9,10 @@ from backend.services.ai_service import analyze_eligibility
 
 bp = Blueprint('immigration', __name__)
 
+# In-memory storage for demo purposes - in production, use a database
+immigration_cases = []
+case_counter = 1
+
 @bp.route('/forms', methods=['GET'])
 def get_immigration_forms():
     """Get available immigration forms"""
@@ -211,5 +215,177 @@ def track_submission(submission_id):
         }
         
         return jsonify(submission_status)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ===== IMMIGRATION CASE MANAGEMENT API =====
+
+@bp.route('/cases', methods=['GET'])
+def get_immigration_cases():
+    """Get all immigration cases"""
+    try:
+        return jsonify(immigration_cases)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/cases', methods=['POST'])
+def create_immigration_case():
+    """Create a new immigration case"""
+    try:
+        global case_counter
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        # Validate required fields
+        required_fields = ['clientName', 'caseType']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+        
+        # Create new case
+        new_case = {
+            "id": case_counter,
+            "clientName": data.get('clientName'),
+            "caseType": data.get('caseType'),
+            "status": data.get('status', 'New'),
+            "priority": data.get('priority', 'Medium'),
+            "dueDate": data.get('dueDate'),
+            "description": data.get('description', ''),
+            "documents": data.get('documents', []),
+            "createdAt": datetime.now().isoformat(),
+            "updatedAt": datetime.now().isoformat()
+        }
+        
+        immigration_cases.append(new_case)
+        case_counter += 1
+        
+        return jsonify({
+            "success": True,
+            "case": new_case,
+            "message": "Case created successfully"
+        }), 201
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/cases/<int:case_id>', methods=['PUT'])
+def update_immigration_case(case_id):
+    """Update an existing immigration case"""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        # Find the case
+        case_index = None
+        for i, case in enumerate(immigration_cases):
+            if case['id'] == case_id:
+                case_index = i
+                break
+        
+        if case_index is None:
+            return jsonify({"error": "Case not found"}), 404
+        
+        # Update the case
+        immigration_cases[case_index].update({
+            "clientName": data.get('clientName', immigration_cases[case_index]['clientName']),
+            "caseType": data.get('caseType', immigration_cases[case_index]['caseType']),
+            "status": data.get('status', immigration_cases[case_index]['status']),
+            "priority": data.get('priority', immigration_cases[case_index]['priority']),
+            "dueDate": data.get('dueDate', immigration_cases[case_index]['dueDate']),
+            "description": data.get('description', immigration_cases[case_index]['description']),
+            "documents": data.get('documents', immigration_cases[case_index]['documents']),
+            "updatedAt": datetime.now().isoformat()
+        })
+        
+        return jsonify({
+            "success": True,
+            "case": immigration_cases[case_index],
+            "message": "Case updated successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/cases/<int:case_id>', methods=['DELETE'])
+def delete_immigration_case(case_id):
+    """Delete an immigration case"""
+    try:
+        # Find the case
+        case_index = None
+        for i, case in enumerate(immigration_cases):
+            if case['id'] == case_id:
+                case_index = i
+                break
+        
+        if case_index is None:
+            return jsonify({"error": "Case not found"}), 404
+        
+        # Remove the case
+        deleted_case = immigration_cases.pop(case_index)
+        
+        return jsonify({
+            "success": True,
+            "message": "Case deleted successfully",
+            "deletedCase": deleted_case
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/cases/<int:case_id>', methods=['GET'])
+def get_immigration_case(case_id):
+    """Get a specific immigration case"""
+    try:
+        # Find the case
+        case = None
+        for c in immigration_cases:
+            if c['id'] == case_id:
+                case = c
+                break
+        
+        if case is None:
+            return jsonify({"error": "Case not found"}), 404
+        
+        return jsonify(case)
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@bp.route('/cases/stats', methods=['GET'])
+def get_immigration_case_stats():
+    """Get immigration case statistics"""
+    try:
+        total_cases = len(immigration_cases)
+        
+        # Count by status
+        status_counts = {}
+        for case in immigration_cases:
+            status = case.get('status', 'Unknown')
+            status_counts[status] = status_counts.get(status, 0) + 1
+        
+        # Count by priority
+        priority_counts = {}
+        for case in immigration_cases:
+            priority = case.get('priority', 'Unknown')
+            priority_counts[priority] = priority_counts.get(priority, 0) + 1
+        
+        # Count by case type
+        case_type_counts = {}
+        for case in immigration_cases:
+            case_type = case.get('caseType', 'Unknown')
+            case_type_counts[case_type] = case_type_counts.get(case_type, 0) + 1
+        
+        return jsonify({
+            "totalCases": total_cases,
+            "statusBreakdown": status_counts,
+            "priorityBreakdown": priority_counts,
+            "caseTypeBreakdown": case_type_counts,
+            "lastUpdated": datetime.now().isoformat()
+        })
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 500 

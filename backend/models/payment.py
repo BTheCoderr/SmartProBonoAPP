@@ -9,6 +9,8 @@ import json
 class Payment(db.Model):
     """Payment model for storing payment information."""
     __tablename__ = 'payments'
+    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -37,14 +39,14 @@ class Payment(db.Model):
     _metadata = db.Column('metadata', db.Text, nullable=True)  # JSON for additional data
     
     @property
-    def metadata(self):
+    def payment_metadata(self):
         """Get payment metadata as a dictionary."""
         if not self._metadata:
             return {}
         return json.loads(self._metadata)
         
-    @metadata.setter
-    def metadata(self, value):
+    @payment_metadata.setter
+    def payment_metadata(self, value):
         """Set payment metadata from a dictionary."""
         if isinstance(value, dict):
             self._metadata = json.dumps(value)
@@ -70,7 +72,7 @@ class Payment(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'notes': self.notes,
-            'metadata': self.metadata
+            'metadata': self.payment_metadata
         }
 
     def __repr__(self):
@@ -80,6 +82,8 @@ class Payment(db.Model):
 class BailBond(db.Model):
     """Bail bond model for bondsman management."""
     __tablename__ = 'bail_bonds'
+    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -117,14 +121,14 @@ class BailBond(db.Model):
     payments = db.relationship('Payment', backref='bail_bond', lazy=True)
     
     @property
-    def metadata(self):
+    def bond_metadata(self):
         """Get bond metadata as a dictionary."""
         if not self._metadata:
             return {}
         return json.loads(self._metadata)
         
-    @metadata.setter
-    def metadata(self, value):
+    @bond_metadata.setter
+    def bond_metadata(self, value):
         """Set bond metadata from a dictionary."""
         if isinstance(value, dict):
             self._metadata = json.dumps(value)
@@ -152,7 +156,7 @@ class BailBond(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'notes': self.notes,
-            'metadata': self.metadata,
+            'metadata': self.bond_metadata,
             'payment_count': len(self.payments) if self.payments else 0
         }
 
@@ -163,6 +167,8 @@ class BailBond(db.Model):
 class CourtDate(db.Model):
     """Court date model for tracking hearings and appointments."""
     __tablename__ = 'court_dates'
+    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     case_id = db.Column(db.Integer, db.ForeignKey('cases.id'), nullable=True)
@@ -196,14 +202,14 @@ class CourtDate(db.Model):
     _metadata = db.Column('metadata', db.Text, nullable=True)
     
     @property
-    def metadata(self):
+    def court_metadata(self):
         """Get court date metadata as a dictionary."""
         if not self._metadata:
             return {}
         return json.loads(self._metadata)
         
-    @metadata.setter
-    def metadata(self, value):
+    @court_metadata.setter
+    def court_metadata(self, value):
         """Set court date metadata from a dictionary."""
         if isinstance(value, dict):
             self._metadata = json.dumps(value)
@@ -230,7 +236,7 @@ class CourtDate(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'notes': self.notes,
-            'metadata': self.metadata
+            'metadata': self.court_metadata
         }
 
     def __repr__(self):

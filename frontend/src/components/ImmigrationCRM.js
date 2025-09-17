@@ -81,11 +81,14 @@ const ImmigrationCRM = () => {
   const fetchCases = async () => {
     setLoading(true);
     try {
-      // TODO: Replace with actual API call
-      const response = await fetch('/api/immigration/cases');
+      const response = await fetch('http://localhost:3001/api/immigration/cases');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setCases(data);
     } catch (err) {
+      console.error('Error fetching cases:', err);
       setError('Failed to fetch cases');
     } finally {
       setLoading(false);
@@ -110,7 +113,11 @@ const ImmigrationCRM = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/immigration/cases', {
+      const url = selectedCase 
+        ? `http://localhost:3001/api/immigration/cases/${selectedCase.id}`
+        : 'http://localhost:3001/api/immigration/cases';
+      
+      const response = await fetch(url, {
         method: selectedCase ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -119,12 +126,14 @@ const ImmigrationCRM = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save case');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save case');
       }
 
       fetchCases();
       handleCloseDialog();
     } catch (err) {
+      console.error('Error saving case:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -168,16 +177,18 @@ const ImmigrationCRM = () => {
     if (!window.confirm('Are you sure you want to delete this case?')) return;
 
     try {
-      const response = await fetch(`/api/immigration/cases/${caseId}`, {
+      const response = await fetch(`http://localhost:3001/api/immigration/cases/${caseId}`, {
         method: 'DELETE'
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete case');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete case');
       }
 
       fetchCases();
     } catch (err) {
+      console.error('Error deleting case:', err);
       setError(err.message);
     }
   };

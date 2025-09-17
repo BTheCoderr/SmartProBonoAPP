@@ -7,6 +7,11 @@ load_dotenv()
 
 def init_db(app):
     """Initialize database with the Flask app"""
+    # Check if database is already initialized
+    if hasattr(app, 'extensions') and 'sqlalchemy' in app.extensions:
+        app.logger.info("Database already initialized, skipping...")
+        return
+    
     # Set PostgreSQL as default database
     if not app.config.get('SQLALCHEMY_DATABASE_URI'):
         db_url = os.environ.get('DATABASE_URL')

@@ -37,14 +37,9 @@ const PDFGenerator = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [error, setError] = useState(null);
 
-  // Load templates on component mount
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
   const loadTemplates = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/generator/templates');
+      const response = await fetch('http://localhost:5001/api/v1/documents/templates');
       const data = await response.json();
       
       if (data.success) {
@@ -57,6 +52,11 @@ const PDFGenerator = () => {
       console.error('Error loading templates:', err);
     }
   };
+
+  // Load templates on component mount
+  useEffect(() => {
+    loadTemplates();
+  }, []);
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
@@ -79,7 +79,7 @@ const PDFGenerator = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/generator/create', {
+      const response = await fetch('http://localhost:5001/api/v1/documents/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

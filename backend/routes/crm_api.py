@@ -5,11 +5,31 @@ Provides complete API endpoints for Client Portal, Lawyer Dashboard, and Bondsma
 from flask import Blueprint, request, jsonify
 from datetime import datetime, timedelta
 import logging
-from backend.services.crm_service import crm_service
-from backend.services.auth_service import require_auth, get_current_user
+from services.crm_service import crm_service
+from services.auth_service import require_auth, get_current_user
 
 bp = Blueprint('crm_api', __name__, url_prefix='/api/v1/crm')
 logger = logging.getLogger(__name__)
+
+# ==================== HEALTH CHECK ====================
+
+@bp.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint for CRM system"""
+    try:
+        return jsonify({
+            'success': True,
+            'message': 'CRM system is healthy',
+            'status': 'operational',
+            'timestamp': datetime.utcnow().isoformat()
+        }), 200
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'CRM system health check failed',
+            'error': str(e)
+        }), 500
 
 # ==================== CLIENT PORTAL API ====================
 

@@ -9,6 +9,7 @@ from models.user import User
 from models.template import Template
 from datetime import datetime
 import os
+import tempfile
 from pathlib import Path
 import shutil
 
@@ -26,7 +27,7 @@ def get_prod_test_config():
         'MAIL_USE_TLS': os.environ.get('MAIL_USE_TLS', True),
         'MAIL_USERNAME': os.environ.get('MAIL_USERNAME'),
         'MAIL_PASSWORD': os.environ.get('MAIL_PASSWORD'),
-        'UPLOAD_FOLDER': os.environ.get('UPLOAD_FOLDER', '/tmp/smartprobono_test_uploads'),
+        'UPLOAD_FOLDER': os.environ.get('UPLOAD_FOLDER', os.path.join(tempfile.gettempdir(), 'smartprobono_test_uploads')),
         'MAX_CONTENT_LENGTH': 16 * 1024 * 1024  # 16MB max file size
     }
 
