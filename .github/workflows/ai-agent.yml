@@ -1,0 +1,86 @@
+name: SmartProBono AI Development Agent
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  run-agent:
+    if: contains(github.event.label.name, 'ai-build')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          
+      - name: Install dependencies
+        run: |
+          cd apps/agent
+          pnpm install
+          
+      - name: Start infrastructure
+        run: |
+          cd infra
+          docker compose up -d
+          sleep 10
+          
+      - name: Run AI Agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MODEL_NAME: claude-3-5-sonnet-20240620
+          GITHUB_REPO: ${{ github.repository }}
+          ALLOWLIST_PATHS: frontend/src,frontend/package.json,backend,render.yaml,README.md
+          ISSUE_TRIGGER_LABEL: ai-build
+          GIT_AUTHOR_NAME: SmartProBono-AI
+          GIT_AUTHOR_EMAIL: ai-bot@smartprobono.dev
+          MAX_TOKENS: 6000
+          AGENT_COST_LIMIT_USD: 15
+          AGENT_TIME_LIMIT_MIN: 45
+        run: |
+          cd apps/agent
+          pnpm dev "${{ github.event.issue.title }} — ${{ github.event.issue.body }}"
+          
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "🤖 AI Build: ${{ github.event.issue.title }}"
+          branch: ai/spb-${{ github.run_id }}
+          commit-message: "AI development for #${{ github.event.issue.number }}"
+          body: |
+            ## 🤖 AI-Generated Changes
+            
+            This PR was automatically created by the SmartProBono AI Development Agent.
+            
+            **Original Issue:** #${{ github.event.issue.number }}
+            **Goal:** ${{ github.event.issue.title }}
+            
+            ### 🔍 Review Checklist:
+            - [ ] Code changes look correct
+            - [ ] Tests are passing
+            - [ ] No security issues
+            - [ ] Follows SmartProBono patterns
+            
+            **⚠️ Human review required before merge**
+          labels: |
+            ai-generated
+            needs-review

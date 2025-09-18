@@ -1,0 +1,58 @@
+name: 🤖 AI Feature Request
+description: Let the AI agent build this feature for you
+title: "[AI] "
+labels: [ai-build, enhancement]
+body:
+  - type: input
+    id: goal
+    attributes:
+      label: Feature Goal
+      description: Clear, specific goal for the AI agent
+      placeholder: "Add a client search feature to the lawyer dashboard with fuzzy matching"
+    validations:
+      required: true
+      
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know the feature is complete?
+      value: |
+        - [ ] Add search input field to lawyer dashboard
+        - [ ] Implement fuzzy search API endpoint in backend
+        - [ ] Filter client list based on search terms
+        - [ ] Add unit tests for search functionality
+        - [ ] Ensure responsive design on mobile
+      render: markdown
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Low (nice to have)
+        - Medium (should have)
+        - High (must have)
+        - Critical (blocking)
+    validations:
+      required: true
+      
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any specific requirements, constraints, or examples
+      placeholder: "Should work similar to the existing case search, but for clients..."
+      
+  - type: checkboxes
+    id: areas
+    attributes:
+      label: Areas to modify
+      options:
+        - label: Frontend (React components)
+        - label: Backend (Python API)
+        - label: Database (models/migrations)
+        - label: Tests (unit/integration)
+        - label: Documentation

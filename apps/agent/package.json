@@ -1,0 +1,29 @@
+{
+  "name": "smartprobono-ai-agent",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "ts-node --esm src/cli/run.ts",
+    "build": "tsc",
+    "start": "node dist/cli/run.js"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.2.0",
+    "@langchain/anthropic": "^0.2.0",
+    "@langchain/openai": "^0.2.0",
+    "langgraph": "^0.1.0",
+    "zod": "^3.23.8",
+    "simple-git": "^3.22.0",
+    "execa": "^9.3.0",
+    "fs-extra": "^11.2.0",
+    "dotenv": "^16.4.5",
+    "glob": "^10.3.0",
+    "minimatch": "^9.0.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
+    "@types/node": "^20.0.0",
+    "@types/fs-extra": "^11.0.0"
+  }
+}
