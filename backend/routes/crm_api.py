@@ -464,3 +464,188 @@ def get_dashboard_analytics():
     except Exception as e:
         logger.error(f"Error getting dashboard analytics: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
+
+# ==================== DEMO ENDPOINTS (NO AUTH REQUIRED) ====================
+
+@bp.route('/demo/bondsman/dashboard', methods=['GET'])
+def get_bondsman_demo_dashboard():
+    """Demo bondsman dashboard data for sales presentations."""
+    try:
+        demo_data = {
+            'success': True,
+            'dashboard_data': {
+                'stats': {
+                    'total_bonds': 47,
+                    'active_bonds': 32,
+                    'total_revenue': 125000,
+                    'pending_payments': 8500,
+                    'upcoming_court_dates': 12
+                },
+                'recent_bonds': [
+                    {
+                        'id': 1,
+                        'client_name': 'John Smith',
+                        'bond_amount': 5000,
+                        'premium': 500,
+                        'status': 'active',
+                        'court_date': '2025-09-25',
+                        'case_type': 'DUI',
+                        'created_at': '2025-09-15'
+                    },
+                    {
+                        'id': 2,
+                        'client_name': 'Sarah Johnson',
+                        'bond_amount': 10000,
+                        'premium': 1000,
+                        'status': 'active',
+                        'court_date': '2025-09-30',
+                        'case_type': 'Theft',
+                        'created_at': '2025-09-16'
+                    },
+                    {
+                        'id': 3,
+                        'client_name': 'Mike Rodriguez',
+                        'bond_amount': 2500,
+                        'premium': 250,
+                        'status': 'completed',
+                        'court_date': '2025-09-20',
+                        'case_type': 'Assault',
+                        'created_at': '2025-09-10'
+                    }
+                ],
+                'upcoming_court_dates': [
+                    {
+                        'id': 1,
+                        'client_name': 'John Smith',
+                        'date': '2025-09-25',
+                        'time': '09:00 AM',
+                        'courthouse': 'Downtown Municipal Court',
+                        'case_type': 'DUI',
+                        'bond_amount': 5000
+                    },
+                    {
+                        'id': 2,
+                        'client_name': 'Sarah Johnson',
+                        'date': '2025-09-30',
+                        'time': '02:00 PM',
+                        'courthouse': 'County Superior Court',
+                        'case_type': 'Theft',
+                        'bond_amount': 10000
+                    }
+                ],
+                'pending_payments': [
+                    {
+                        'id': 1,
+                        'client_name': 'John Smith',
+                        'amount_due': 2500,
+                        'due_date': '2025-09-28',
+                        'payment_type': 'Premium Balance',
+                        'status': 'overdue'
+                    },
+                    {
+                        'id': 2,
+                        'client_name': 'Maria Garcia',
+                        'amount_due': 6000,
+                        'due_date': '2025-10-05',
+                        'payment_type': 'Bond Collateral',
+                        'status': 'pending'
+                    }
+                ]
+            }
+        }
+        
+        return jsonify(demo_data), 200
+        
+    except Exception as e:
+        logger.error(f"Error getting bondsman demo dashboard: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/demo/lawyer/dashboard', methods=['GET'])
+def get_lawyer_demo_dashboard():
+    """Demo lawyer dashboard data for sales presentations."""
+    try:
+        demo_data = {
+            'success': True,
+            'dashboard_data': {
+                'stats': {
+                    'total_cases': 23,
+                    'active_cases': 18,
+                    'total_clients': 45,
+                    'billable_hours': 156.5,
+                    'upcoming_deadlines': 7
+                },
+                'recent_cases': [
+                    {
+                        'id': 1,
+                        'client_name': 'Jennifer Williams',
+                        'case_type': 'Family Law - Divorce',
+                        'status': 'active',
+                        'priority': 'high',
+                        'next_deadline': '2025-09-28',
+                        'created_at': '2025-08-15'
+                    },
+                    {
+                        'id': 2,
+                        'client_name': 'Robert Chen',
+                        'case_type': 'Personal Injury',
+                        'status': 'discovery',
+                        'priority': 'medium',
+                        'next_deadline': '2025-10-10',
+                        'created_at': '2025-09-01'
+                    },
+                    {
+                        'id': 3,
+                        'client_name': 'Lisa Thompson',
+                        'case_type': 'Employment Law',
+                        'status': 'negotiation',
+                        'priority': 'high',
+                        'next_deadline': '2025-09-25',
+                        'created_at': '2025-07-20'
+                    }
+                ],
+                'upcoming_deadlines': [
+                    {
+                        'id': 1,
+                        'case_id': 3,
+                        'client_name': 'Lisa Thompson',
+                        'deadline_type': 'Settlement Response',
+                        'date': '2025-09-25',
+                        'priority': 'critical'
+                    },
+                    {
+                        'id': 2,
+                        'case_id': 1,
+                        'client_name': 'Jennifer Williams',
+                        'deadline_type': 'Discovery Filing',
+                        'date': '2025-09-28',
+                        'priority': 'high'
+                    }
+                ],
+                'recent_clients': [
+                    {
+                        'id': 1,
+                        'name': 'Jennifer Williams',
+                        'email': 'jennifer.williams@email.com',
+                        'phone': '(555) 123-4567',
+                        'case_type': 'Family Law',
+                        'status': 'active',
+                        'last_contact': '2025-09-16'
+                    },
+                    {
+                        'id': 2,
+                        'name': 'Robert Chen',
+                        'email': 'robert.chen@email.com',
+                        'phone': '(555) 987-6543',
+                        'case_type': 'Personal Injury',
+                        'status': 'active',
+                        'last_contact': '2025-09-14'
+                    }
+                ]
+            }
+        }
+        
+        return jsonify(demo_data), 200
+        
+    except Exception as e:
+        logger.error(f"Error getting lawyer demo dashboard: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500

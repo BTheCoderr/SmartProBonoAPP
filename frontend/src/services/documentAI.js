@@ -17,9 +17,14 @@ class DocumentAIService {
     if (typeof window !== 'undefined' && window.supabase) {
       this.supabase = window.supabase;
     }
-    // Log the environment variables for debugging
-    console.log('SUPABASE_URL:', SUPABASE_URL);
-    console.log('SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? 'Set' : 'Not set');
+    // Environment variables configured for Supabase integration
+    // Only log in development if needed for debugging
+    if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_DEBUG_SUPABASE) {
+      console.log('Supabase configuration:', {
+        url: SUPABASE_URL ? 'Set' : 'Not set',
+        key: SUPABASE_ANON_KEY ? 'Set' : 'Not set'
+      });
+    }
   }
 
   // Upload a document to local worker
