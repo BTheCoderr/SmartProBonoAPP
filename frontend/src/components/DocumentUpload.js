@@ -42,22 +42,26 @@ const DocumentUpload = ({ onUploaded, onError }) => {
 
     try {
       // For now, we'll use a mock user ID - you'll need to integrate with your auth system
-      const mockUserId = 'mock-user-id';
+      // Upload directly to backend API
       
-      // Import the service dynamically to avoid issues during build
-      const { default: documentAIService } = await import('../services/documentAI');
-      
-      // Upload document
+      // Upload document to backend API
       setUploadStatus('uploading');
-      const uploadResult = await documentAIService.uploadDocument(selectedFile, mockUserId);
-      setUploadStatus('uploaded');
-
-      // Process document
-      setUploadStatus('processing');
-      await documentAIService.processDocument(uploadResult.id);
       
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      
+      const response = await fetch('http://localhost:3001/api/scanner/analyze', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`);
+      }
+      
+      const result = await response.json();
       setUploadStatus('success');
-      onUploaded?.(uploadResult.id);
+      onUploaded?.(result);
       
       // Reset after success
       setTimeout(() => {

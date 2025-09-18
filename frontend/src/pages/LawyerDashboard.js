@@ -272,7 +272,7 @@ const LawyerDashboard = () => {
           Lawyer Dashboard
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          Welcome back, {currentUser.first_name || currentUser.username}! Here's an overview of your cases.
+          Welcome back, {currentUser?.first_name || currentUser?.username || 'Legal Professional'}! Here's an overview of your cases.
         </Typography>
       </Box>
 
