@@ -5,8 +5,9 @@ import sys
 import os
 from datetime import datetime
 import logging
-from backend.services.auth_service import require_auth, get_current_user
-from backend.services.ai_service import generate_legal_response, analyze_document
+from services.auth_service import require_auth, get_current_user
+from services.ai_service import generate_legal_response, analyze_document
+from services.enhanced_ai_service import EnhancedAIService
 
 # Add the legal_ai_backend to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'legal_ai_backend'))
@@ -20,6 +21,9 @@ except ImportError as e:
 
 bp = Blueprint('legal_ai', __name__)
 logger = logging.getLogger(__name__)
+
+# Initialize enhanced AI service
+enhanced_ai_service = EnhancedAIService()
 
 @bp.route('/chat', methods=['POST'])
 def chat():
@@ -304,4 +308,51 @@ def legal_analysis():
         return jsonify({"error": str(e)}), 400
     except Exception as e:
         logger.error(f"Error in legal analysis: {str(e)}")
-        return jsonify({"error": "An error occurred while processing your legal analysis request"}), 500 
+        return jsonify({"error": "An error occurred while processing your legal analysis request"}), 500
+
+@bp.route('/enhanced-chat', methods=['POST'])
+def enhanced_chat():
+    """Enhanced legal AI chat with SmartProBono agent capabilities"""
+    try:
+        data = request.json
+        if not data or not data.get('message'):
+            raise BadRequest("Missing message")
+            
+        message = data['message']
+        task_type = data.get('task_type', 'chat')
+        conversation_id = data.get('conversation_id')
+        history = data.get('history', [])
+        model = data.get('model', 'default')
+        
+        logger.info(f"Received enhanced legal chat message: {message}, task_type: {task_type}")
+        
+        # Get user context
+        user_id = None
+        user_role = "client"
+        try:
+            user = get_current_user()
+            if user:
+                user_id = user.get('id')
+                user_role = user.get('role', 'client')
+        except:
+            # User not authenticated - still allow chat as guest
+            pass
+        
+        # Use enhanced AI service
+        response = enhanced_ai_service.generate_legal_response(
+            message=message,
+            task_type=task_type,
+            conversation_id=conversation_id,
+            history=history,
+            model=model,
+            user_id=user_id,
+            user_role=user_role
+        )
+        
+        return jsonify(response)
+        
+    except BadRequest as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error in enhanced legal AI chat: {e}")
+        return jsonify({"error": "Failed to generate response"}), 500 

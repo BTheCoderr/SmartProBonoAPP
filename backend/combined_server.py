@@ -31,6 +31,9 @@ except ImportError:
 
 app = Flask(__name__)
 
+# Enable debug mode
+app.config['DEBUG'] = True
+
 # Load configuration
 config_name = os.environ.get('FLASK_ENV', 'development')
 app.config.from_object(config[config_name])
@@ -64,7 +67,7 @@ except ImportError as e:
 # Register Voice API routes
 try:
     from routes.voice_api import voice_bp
-    app.register_blueprint(voice_bp, url_prefix='/api')
+    app.register_blueprint(voice_bp)  # Blueprint already has /api/voice prefix
     print("✅ Voice API routes registered")
 except ImportError as e:
     print(f"⚠️ Voice API routes not available: {e}")
@@ -72,10 +75,18 @@ except ImportError as e:
 # Register Court Filing API routes
 try:
     from routes.court_filing_api import court_filing_bp
-    app.register_blueprint(court_filing_bp, url_prefix='/api')
+    app.register_blueprint(court_filing_bp)  # Blueprint already has /api/court-filing prefix
     print("✅ Court Filing API routes registered")
 except ImportError as e:
     print(f"⚠️ Court Filing API routes not available: {e}")
+
+# Register Enhanced API v2 routes
+try:
+    from routes.enhanced_api import enhanced_api_bp
+    app.register_blueprint(enhanced_api_bp)  # Blueprint already has /api/v2 prefix
+    print("✅ Enhanced API v2 routes registered")
+except ImportError as e:
+    print(f"⚠️ Enhanced API v2 routes not available: {e}")
 
 # Initialize CORS with enhanced settings for development
 CORS(app, 
@@ -895,4 +906,4 @@ if __name__ == '__main__':
     print("🌐 Server running on: http://localhost:3001")
     print("🔗 Test CRM: python test_crm_connection.py")
     print("🔗 Test WebSocket: ws://localhost:8765")
-    app.run(host='127.0.0.1', port=3001, debug=False)  # Fixed: localhost only, debug off
+    app.run(host='127.0.0.1', port=3001, debug=True)  # Debug mode enabled

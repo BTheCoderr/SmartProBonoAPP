@@ -524,3 +524,50 @@ def _extract_resource_id(kwargs: Dict[str, Any], args: tuple) -> Optional[str]:
         return str(args[0])
     
     return None
+
+def audit_log(action: str = "ACCESS", event_type: AuditEventType = AuditEventType.USER_ACTIVITY):
+    """
+    Simple audit logging decorator.
+    
+    Args:
+        action: Action being performed
+        event_type: Type of audit event
+    """
+    def decorator(f: Callable) -> Callable:
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            try:
+                # Log the action
+                audit_service.log_audit_event(
+                    event_type=event_type,
+                    action=action,
+                    description=f"Executing {f.__name__}",
+                    metadata={
+                        "function_name": f.__name__,
+                        "module": f.__module__
+                    }
+                )
+                
+                # Execute the function
+                result = f(*args, **kwargs)
+                
+                return result
+                
+            except Exception as e:
+                # Log the error
+                audit_service.log_audit_event(
+                    event_type=event_type,
+                    action=f"{action}_ERROR",
+                    description=f"Error in {f.__name__}: {str(e)}",
+                    error_message=str(e),
+                    severity=AuditSeverity.HIGH,
+                    metadata={
+                        "function_name": f.__name__,
+                        "module": f.__module__,
+                        "error": str(e)
+                    }
+                )
+                raise
+        
+        return decorated_function
+    return decorator

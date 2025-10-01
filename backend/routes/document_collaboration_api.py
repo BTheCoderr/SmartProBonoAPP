@@ -6,7 +6,7 @@ Provides endpoints for real-time document collaboration
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 try:
-    from backend.database import get_db_session
+    from database import get_db_session
 except ImportError:
     from database import get_db_session
 import logging

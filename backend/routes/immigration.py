@@ -3,9 +3,9 @@ from werkzeug.exceptions import BadRequest
 import os
 import json
 from datetime import datetime
-from backend.services.auth_service import require_auth, get_current_user
-from backend.services.document_service import generate_document
-from backend.services.ai_service import analyze_eligibility
+from services.auth_service import require_auth, get_current_user
+from services.document_service import generate_document
+from services.ai_service import analyze_eligibility
 
 bp = Blueprint('immigration', __name__)
 

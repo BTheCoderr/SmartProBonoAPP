@@ -5,7 +5,7 @@ Handles document generation endpoints
 
 from flask import Blueprint, request, jsonify, send_file
 import os
-from backend.services.document_generation_service import DocumentGenerationService
+from services.document_generation_service import DocumentGenerationService
 
 bp = Blueprint('document_generation_api', __name__)
 

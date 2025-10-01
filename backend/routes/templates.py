@@ -4,8 +4,8 @@ import json
 import os
 from datetime import datetime
 import logging
-from backend.services.auth_service import require_auth, get_current_user
-from backend.services.document_service import generate_document, generate_pdf
+from services.auth_service import require_auth, get_current_user
+from services.document_service import generate_document, generate_pdf
 import uuid
 from utils.document_generator import list_templates
 

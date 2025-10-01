@@ -3,8 +3,8 @@ from werkzeug.exceptions import BadRequest
 import json
 from datetime import datetime
 import logging
-from backend.services.auth_service import require_auth, get_current_user
-from backend.services.ai_service import analyze_case, generate_case_summary
+from services.auth_service import require_auth, get_current_user
+from services.ai_service import analyze_case, generate_case_summary
 
 bp = Blueprint('intake', __name__)
 logger = logging.getLogger(__name__)
