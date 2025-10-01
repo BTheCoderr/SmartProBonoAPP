@@ -6,8 +6,8 @@ from flask import Blueprint, request, jsonify, send_file, current_app
 from werkzeug.utils import secure_filename
 import os
 import logging
-from backend.services.document_management_service import document_management_service
-from backend.services.auth_service import require_auth, get_current_user
+from services.document_management_service import document_management_service
+from services.auth_service import require_auth, get_current_user
 
 bp = Blueprint('document_management_api', __name__, url_prefix='/api/v1/documents')
 logger = logging.getLogger(__name__)

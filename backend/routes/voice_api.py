@@ -9,7 +9,7 @@ import base64
 import io
 import logging
 from datetime import datetime
-from services.voice_service import voice_service
+from services.simple_voice_service import voice_service
 
 logger = logging.getLogger(__name__)
 

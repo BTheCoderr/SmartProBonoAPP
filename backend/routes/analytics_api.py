@@ -5,12 +5,8 @@ Provides endpoints for advanced analytics and reporting
 
 from flask import Blueprint, request, jsonify
 from datetime import datetime, timedelta
-try:
-    from backend.services.analytics_service import create_analytics_service, TimeRange
-    from backend.database import get_db_session
-except ImportError:
-    from services.analytics_service import create_analytics_service, TimeRange
-    from database import get_db_session
+from services.analytics_service import create_analytics_service, TimeRange
+from database import get_db_session
 import logging
 
 logger = logging.getLogger(__name__)
@@ -341,25 +337,26 @@ def get_dashboard_data():
         
         # Create dashboard data
         dashboard_data = {
-            'time_range': time_range,
-            'key_metrics': {
-                'total_users': business_analytics.get('total_users', 0),
-                'new_users': business_analytics.get('new_users', 0),
-                'total_activities': user_analytics.get('total_activities', 0),
-                'system_health': performance_analytics.get('overall_health_score', 0),
-                'security_score': security_analytics.get('security_score', 0),
-                'critical_events': security_analytics.get('critical_events', 0)
+            "time_range": time_range,
+            "key_metrics": {
+                "total_users": user_analytics.get('total_users', 0),
+                "new_users": user_analytics.get('new_users', 0),
+                "total_activities": user_analytics.get('total_activities', 0),
+                "system_health": performance_analytics.get('system_health', 0),
+                "security_score": security_analytics.get('security_score', 0),
+                "critical_events": security_analytics.get('critical_events', 0)
             },
-            'charts': {
-                'user_activity': user_analytics.get('hourly_distribution', {}),
-                'activity_types': user_analytics.get('activity_types', {}),
-                'performance_metrics': performance_analytics.get('metrics_by_type', {}),
-                'security_events': security_analytics.get('events_by_severity', {})
+            "charts": {
+                "user_activity": user_analytics.get('activity_chart', {}),
+                "activity_types": user_analytics.get('activity_types', {}),
+                "performance_metrics": performance_analytics.get('performance_chart', {}),
+                "security_events": security_analytics.get('security_chart', {})
             },
-            'alerts': {
-                'performance_issues': performance_analytics.get('performance_issues', []),
-                'security_events': security_analytics.get('events_by_type', {}),
-                'system_health': performance_analytics.get('overall_health_score', 0) < 80
+            "analytics": {
+                "user": user_analytics,
+                "performance": performance_analytics,
+                "business": business_analytics,
+                "security": security_analytics
             }
         }
         
@@ -372,6 +369,55 @@ def get_dashboard_data():
         logger.error(f"Error getting dashboard data: {e}")
         return jsonify({
             'error': f'Failed to get dashboard data: {str(e)}',
+            'success': False
+        }), 500
+
+@bp.route('/analytics/metrics', methods=['GET'])
+def get_metrics():
+    """Get all available metrics"""
+    try:
+        # Get query parameters
+        time_range = request.args.get('time_range', 'day')
+        metric_type = request.args.get('type', 'all')
+        
+        # Validate time range
+        try:
+            time_range_enum = TimeRange(time_range)
+        except ValueError:
+            return jsonify({
+                'error': 'Invalid time_range. Must be one of: hour, day, week, month, quarter, year',
+                'success': False
+            }), 400
+        
+        # Get database session
+        db_session = get_db_session()
+        analytics_service = create_analytics_service(db_session)
+        
+        metrics = {}
+        
+        if metric_type in ['all', 'user']:
+            metrics['user'] = analytics_service.get_user_analytics(time_range_enum)
+        
+        if metric_type in ['all', 'performance']:
+            metrics['performance'] = analytics_service.get_system_performance_analytics(time_range_enum)
+        
+        if metric_type in ['all', 'business']:
+            metrics['business'] = analytics_service.get_business_analytics(time_range_enum)
+        
+        if metric_type in ['all', 'security']:
+            metrics['security'] = analytics_service.get_security_analytics(time_range_enum)
+        
+        return jsonify({
+            'success': True,
+            'metrics': metrics,
+            'time_range': time_range,
+            'metric_type': metric_type
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting metrics: {e}")
+        return jsonify({
+            'error': f'Failed to get metrics: {str(e)}',
             'success': False
         }), 500
 

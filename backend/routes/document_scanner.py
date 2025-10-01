@@ -5,8 +5,8 @@ import json
 from datetime import datetime
 import logging
 import tempfile
-from backend.services.auth_service import require_auth, get_current_user
-from backend.services.ai_service import analyze_document, extract_text_from_document
+from services.auth_service import require_auth, get_current_user
+from services.ai_service import analyze_document, extract_text_from_document
 
 bp = Blueprint('document_scanner', __name__)
 logger = logging.getLogger(__name__)

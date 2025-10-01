@@ -4,7 +4,7 @@ Provides better structure, serialization, and pagination
 """
 
 from flask import Blueprint, request, jsonify
-from ..api_enhancements import (
+from .api_enhancements import (
     APIResponse, Serializer, Paginator, APIView, 
     api_view, require_auth, IsAuthenticated, IsAdminUser,
     CaseSerializer, UserSerializer, DocumentSerializer
@@ -72,12 +72,12 @@ class EnhancedCaseViewSet(APIView):
                 cases = [c for c in cases if c['status'] == status]
             
             # Create paginator
-            paginator = Paginator(cases, page=page, per_page=per_page)
+            paginator = Paginator(cases, page_size=per_page, page=page)
             return paginator.get_paginated_response(CaseSerializer)
             
         except Exception as e:
-            logger.error(f"Error listing cases: {e}")
-            return APIResponse.error("Failed to retrieve cases", 500)
+            logger.error(f"Error listing cases: {e}", exc_info=True)
+            return APIResponse.error(f"Failed to retrieve cases: {str(e)}", 500)
     
     def retrieve(self, case_id):
         """Get specific case by ID"""
@@ -207,7 +207,7 @@ class EnhancedUserViewSet(APIView):
                 }
             ]
             
-            paginator = Paginator(users, page=page, per_page=per_page)
+            paginator = Paginator(users, page_size=per_page, page=page)
             return paginator.get_paginated_response(UserSerializer)
             
         except Exception as e:
@@ -252,7 +252,7 @@ class EnhancedDocumentViewSet(APIView):
             if case_id:
                 documents = [d for d in documents if d.get('case_id') == int(case_id)]
             
-            paginator = Paginator(documents, page=page, per_page=per_page)
+            paginator = Paginator(documents, page_size=per_page, page=page)
             return paginator.get_paginated_response(DocumentSerializer)
             
         except Exception as e:

@@ -7,7 +7,7 @@ from flask import Blueprint, request, jsonify, send_file
 from werkzeug.utils import secure_filename
 import logging
 from datetime import datetime, timedelta
-from services.court_filing_service import (
+from services.simple_court_filing_service import (
     court_filing_service, 
     CourtFiling, 
     FilingStatus, 
@@ -101,16 +101,14 @@ def get_filing_templates():
             "success": True,
             "templates": [
                 {
-                    "id": template.id,
+                    "id": template.template_id,
                     "name": template.name,
-                    "document_type": template.document_type.value,
+                    "document_type": template.document_type if isinstance(template.document_type, str) else template.document_type.value,
                     "jurisdiction": template.jurisdiction,
-                    "court": template.court,
+                    "description": template.description,
                     "required_fields": template.required_fields,
                     "optional_fields": template.optional_fields,
-                    "instructions": template.instructions,
-                    "created_at": template.created_at.isoformat(),
-                    "updated_at": template.updated_at.isoformat()
+                    "file_path": template.file_path
                 }
                 for template in templates
             ],
