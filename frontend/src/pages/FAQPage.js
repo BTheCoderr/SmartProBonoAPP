@@ -184,7 +184,7 @@ const FAQPage = () => {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Get help from our support team
                   </Typography>
-                  <Chip label="support@smartprobono.org" color="primary" />
+                  <Chip label="bferrell@smartprobono.org" color="primary" />
                 </Box>
               </Card>
             </Grid>

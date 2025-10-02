@@ -94,22 +94,18 @@ const Header = () => {
 
   const mainMenuItems = [
     { text: t('navigation.home'), path: '/', icon: <HomeIcon />, badge: null },
-    { text: t('navigation.legalTools'), path: '/legal-tools', icon: <GavelIcon />, badge: "New" },
-    { text: t('navigation.documentScanner'), path: '/scan-document', icon: <DocumentScannerIcon />, badge: "AI" },
-    { text: t('navigation.pdfGenerator'), path: '/generate-document', icon: <DescriptionIcon />, badge: "New" },
-    { text: t('navigation.aiLegalChat'), path: '/ai-chat', icon: <ChatIcon />, badge: "AI" },
-    { text: 'AI Virtual Paralegal', path: '/ai-virtual-paralegal', icon: <GavelIcon />, badge: "AI" },
-    { text: 'Client Portal', path: '/client-portal', icon: <PersonIcon />, badge: "CRM" },
-    { text: 'Bondsman Dashboard', path: '/bondsman-dashboard', icon: <SecurityIcon />, badge: "CRM" },
+    { text: t('navigation.legalTools'), path: '/legal-tools', icon: <GavelIcon />, badge: null },
+    { text: t('navigation.documentScanner'), path: '/scan-document', icon: <DocumentScannerIcon />, badge: null },
+    { text: t('navigation.pdfGenerator'), path: '/generate-document', icon: <DescriptionIcon />, badge: null },
+    { text: t('navigation.aiLegalChat'), path: '/legal-chat', icon: <ChatIcon />, badge: null },
   ];
 
   const moreToolsItems = [
-    { text: t('navigation.documentAnalysis'), path: '/document-scan', icon: <DocumentScannerIcon />, description: 'Advanced document analysis' },
-    { text: t('navigation.templates'), path: '/templates', icon: <DescriptionIcon />, description: 'Browse document templates' },
-    { text: t('navigation.safetyCheck'), path: '/safety-check', icon: <SecurityIcon />, description: 'Legal compliance checker' },
+    { text: 'AI Virtual Paralegal', path: '/ai-virtual-paralegal', icon: <GavelIcon />, description: 'Autonomous AI legal assistant' },
     { text: 'Client Portal', path: '/client-portal', icon: <PersonIcon />, description: 'Client case management and tracking' },
     { text: 'Bondsman Dashboard', path: '/bondsman-dashboard', icon: <SecurityIcon />, description: 'Bail bond management system' },
-    { text: 'AI Virtual Paralegal', path: '/ai-virtual-paralegal', icon: <GavelIcon />, description: 'Autonomous AI legal assistant' },
+    { text: t('navigation.templates'), path: '/templates', icon: <DescriptionIcon />, description: 'Browse document templates' },
+    { text: t('navigation.safetyCheck'), path: '/safety-check', icon: <SecurityIcon />, description: 'Legal compliance checker' },
     { text: t('navigation.contactForm'), path: '/contact', icon: <ContactSupportIcon />, description: 'Get in touch with us' },
     { text: t('navigation.resources'), path: '/resources', icon: <MenuBookIcon />, description: 'Legal resources and guides' },
   ];

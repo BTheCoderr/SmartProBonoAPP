@@ -35,3 +35,19 @@ def register_crm_blueprints(app):
         print("✅ Unified API routes registered")
     except ImportError as e:
         print(f"⚠️ Unified API routes not available: {e}")
+    
+    # SmartProBono AI Agent
+    try:
+        from routes.smartprobono_agent import bp as smartprobono_agent_bp
+        app.register_blueprint(smartprobono_agent_bp, url_prefix='/api')
+        print("✅ SmartProBono AI Agent routes registered")
+    except ImportError as e:
+        print(f"⚠️ SmartProBono AI Agent routes not available: {e}")
+    
+    # Voice AI
+    try:
+        from routes.voice_ai import bp as voice_ai_bp
+        app.register_blueprint(voice_ai_bp, url_prefix='/api')
+        print("✅ Voice AI routes registered")
+    except ImportError as e:
+        print(f"⚠️ Voice AI routes not available: {e}")

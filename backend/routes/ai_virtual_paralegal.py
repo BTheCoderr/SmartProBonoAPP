@@ -235,11 +235,11 @@ def get_dashboard():
             ],
             'recent_activity': recent_logs,
             'statistics': {
-                'cases_processed_today': 12,
-                'documents_generated': 8,
-                'tasks_scheduled': 15,
-                'clients_updated': 5,
-                'courtlistener_searches': 24
+                'cases_processed_today': 0,
+                'documents_generated': 0,
+                'tasks_scheduled': 0,
+                'clients_updated': 0,
+                'courtlistener_searches': 0
             }
         }
         

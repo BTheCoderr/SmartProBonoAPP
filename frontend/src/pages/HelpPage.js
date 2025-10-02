@@ -215,7 +215,7 @@ const HelpPage = () => {
                     Email Support:
                   </Typography>
                   <Typography variant="body2" color="primary">
-                    support@smartprobono.org
+                    bferrell@smartprobono.org
                   </Typography>
                 </Box>
                 <Box sx={{ mb: 2 }}>

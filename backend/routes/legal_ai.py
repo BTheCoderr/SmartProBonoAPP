@@ -5,9 +5,9 @@ import sys
 import os
 from datetime import datetime
 import logging
-from services.auth_service import require_auth, get_current_user
-from services.ai_service import generate_legal_response, analyze_document
-from services.enhanced_ai_service import EnhancedAIService
+from ..services.auth_service import require_auth, get_current_user
+from ..services.ai_service import generate_legal_response, analyze_document
+from ..services.enhanced_ai_service import EnhancedAIService
 
 # Add the legal_ai_backend to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'legal_ai_backend'))
@@ -68,6 +68,60 @@ def chat():
     except Exception as e:
         logger.error(f"Error in legal chat: {str(e)}")
         return jsonify({"error": "An error occurred while processing your request"}), 500
+
+@bp.route('/analyze', methods=['POST'])
+def analyze_legal_question():
+    """Endpoint for analyzing legal questions (text-based)"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        question = data.get('question', '') or data.get('query', '')
+        context = data.get('context', '')
+        case_type = data.get('case_type', 'general')
+        
+        if not question:
+            return jsonify({"error": "Question or query is required"}), 400
+        
+        # Use enhanced AI service for analysis
+        try:
+            if LEGAL_AI_AVAILABLE:
+                # Use the advanced legal AI if available
+                result = run_pipeline({
+                    "question": question,
+                    "context": context,
+                    "case_type": case_type
+                })
+                response = {
+                    "success": True,
+                    "analysis": result.get("analysis", "Analysis completed"),
+                    "recommendations": result.get("recommendations", []),
+                    "case_law": result.get("case_law", []),
+                    "confidence": result.get("confidence", 0.8)
+                }
+            else:
+                # Fallback to basic AI service
+                response = enhanced_ai_service.analyze_legal_question(question, context, case_type)
+        except Exception as e:
+            logger.warning(f"Advanced AI failed, using fallback: {e}")
+            # Fallback response
+            response = {
+                "success": True,
+                "analysis": f"Based on your question: '{question}', I recommend consulting with a qualified attorney for specific legal advice. This is a general response and should not be considered as legal counsel.",
+                "recommendations": [
+                    "Consult with a licensed attorney",
+                    "Gather all relevant documents",
+                    "Consider your specific jurisdiction's laws"
+                ],
+                "case_law": [],
+                "confidence": 0.6
+            }
+        
+        return jsonify(response)
+    except Exception as e:
+        logger.error(f"Error analyzing legal question: {str(e)}")
+        return jsonify({"error": "An error occurred while analyzing your question"}), 500
 
 @bp.route('/analyze-document', methods=['POST'])
 def analyze_document_route():

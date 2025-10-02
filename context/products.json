@@ -1,0 +1,123 @@
+{
+  "products": [
+    {
+      "name": "SmartProBono Legal Platform",
+      "description": "AI-powered legal assistance platform connecting pro bono lawyers with clients",
+      "key_benefits": [
+        "Increases case resolution efficiency by 60%",
+        "Reduces legal costs for clients by 40%",
+        "Streamlines document processing with AI",
+        "Provides real-time legal assistance",
+        "Connects lawyers with pro bono opportunities"
+      ],
+      "price_range": "$199-599/month",
+      "target_customers": "Law Firms, Solo Practitioners, Legal Aid Organizations"
+    },
+    {
+      "name": "AI Virtual Paralegal",
+      "description": "Intelligent legal assistant for document analysis and case management",
+      "key_benefits": [
+        "Automated document review and analysis",
+        "Case timeline management",
+        "Legal research assistance",
+        "Client communication automation",
+        "Court filing assistance"
+      ],
+      "price_range": "$99-299/month",
+      "target_customers": "Legal Professionals, Law Firms"
+    },
+    {
+      "name": "Pro Bono Matching System",
+      "description": "AI-powered system to match lawyers with pro bono cases",
+      "key_benefits": [
+        "Intelligent case-lawyer matching",
+        "Skillset-based recommendations",
+        "Geographic proximity optimization",
+        "Case priority assessment",
+        "Automated follow-up systems"
+      ],
+      "price_range": "$149-399/month",
+      "target_customers": "Legal Aid Organizations, Bar Associations"
+    }
+  ],
+  "pricing": {
+    "starter": {
+      "price": 199,
+      "features": [
+        "Basic AI legal assistant",
+        "Document processing",
+        "Case management",
+        "Email support",
+        "Up to 10 cases per month"
+      ]
+    },
+    "professional": {
+      "price": 399,
+      "features": [
+        "Advanced AI legal analysis",
+        "Multi-agent voice system",
+        "Real-time client communication",
+        "Priority support",
+        "Up to 50 cases per month",
+        "Integration with court systems"
+      ]
+    },
+    "enterprise": {
+      "price": 599,
+      "features": [
+        "Full AI legal platform",
+        "Custom voice agents",
+        "White-label solution",
+        "API access",
+        "Unlimited cases",
+        "Dedicated account manager",
+        "Custom integrations",
+        "Advanced analytics"
+      ]
+    }
+  },
+  "objection_handlers": {
+    "too_expensive": "I understand cost is important for legal organizations. Let's look at the ROI - most clients see 3x return in the first 6 months through increased efficiency and reduced operational costs. The time savings alone typically pay for the platform within 3 months.",
+    "need_time_to_think": "I appreciate you want to make a thoughtful decision. What specific concerns can I address right now? Would you like to see a demo of the AI capabilities or discuss how other firms in your practice area are using the platform?",
+    "happy_with_current_solution": "That's great that you have a system that works! What would need to change for you to consider switching? Many of our clients initially felt the same way, but found that our AI capabilities significantly enhanced their existing workflows rather than replacing them.",
+    "concerned_about_ai": "I completely understand the concern about AI in legal practice. Our platform is designed to augment human expertise, not replace it. All AI-generated content is reviewed by legal professionals, and we maintain strict compliance with legal ethics standards. Would you like to speak with our technical specialist about our AI safety measures?",
+    "integration_concerns": "Integration is definitely important. Our platform is designed to work with existing legal software. We have pre-built integrations with most major case management systems, and our API allows for custom integrations. Let me connect you with our technical specialist who can discuss your specific integration needs."
+  },
+  "technical_specifications": {
+    "ai_models": [
+      "Ollama Legal Models (llama3.2, mistral, qwen, gemma, phi)",
+      "Gemini API for complex legal reasoning",
+      "Cerebras for real-time voice interactions"
+    ],
+    "security": [
+      "End-to-end encryption",
+      "SOC 2 Type II compliant",
+      "HIPAA compliant for healthcare legal cases",
+      "Regular security audits",
+      "Client-attorney privilege protection"
+    ],
+    "integrations": [
+      "Clio case management",
+      "MyCase",
+      "PracticePanther",
+      "Court filing systems",
+      "Document management systems",
+      "Calendar and scheduling systems"
+    ],
+    "voice_capabilities": [
+      "Real-time speech-to-text",
+      "Natural language processing",
+      "Multi-agent routing",
+      "Voice activity detection",
+      "LiveKit real-time communication"
+    ]
+  },
+  "use_cases": {
+    "family_law": "Automated divorce document preparation, custody agreement analysis, and client intake for family law cases.",
+    "criminal_defense": "Case timeline management, evidence organization, and client communication for criminal defense attorneys.",
+    "personal_injury": "Medical record analysis, settlement calculation, and client status updates for PI cases.",
+    "estate_planning": "Will and trust document generation, beneficiary analysis, and estate administration assistance.",
+    "business_law": "Contract review, compliance monitoring, and business formation assistance.",
+    "immigration": "Form preparation, case status tracking, and client communication for immigration cases."
+  }
+}

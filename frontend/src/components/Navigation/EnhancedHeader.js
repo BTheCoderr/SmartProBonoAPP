@@ -60,7 +60,7 @@ const EnhancedHeader = () => {
     { label: 'Legal Tools', icon: <LegalIcon />, path: '/legal-tools' },
     { label: 'Document Scanner', icon: <ScannerIcon />, path: '/scan-document' },
     { label: 'PDF Generator', icon: <DocumentIcon />, path: '/generate-document' },
-    { label: 'AI Chat', icon: <ChatIcon />, path: '/ai-chat' }
+    { label: 'AI Legal Chat', icon: <ChatIcon />, path: '/legal-chat' }
   ];
 
   const toolsMenuItems = [
