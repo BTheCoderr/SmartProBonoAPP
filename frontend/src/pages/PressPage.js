@@ -311,7 +311,7 @@ const PressPage = () => {
                 startIcon={<EmailIcon />}
                 sx={{ borderRadius: 2 }}
               >
-                press@smartprobono.org
+                bferrell@smartprobono.org
               </Button>
               <Button
                 variant="outlined"

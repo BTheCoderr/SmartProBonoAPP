@@ -27,6 +27,73 @@ export const legalRightsApi = {
   },
 };
 
+// CourtListener API - Production Integration
+export const courtlistenerApi = {
+  searchCaseLaw: async (searchParams) => {
+    try {
+      const {
+        search: searchTerm,
+        jurisdiction = 'federal',
+        page = 1,
+        page_size = 20
+      } = searchParams;
+
+      if (!searchTerm) {
+        throw new Error('Search term is required');
+      }
+
+      console.log(`🔍 SmartProBono: Searching case law for "${searchTerm}"`);
+      
+      const response = await api.get('/api/caselaw', {
+        params: {
+          search: searchTerm,
+          jurisdiction,
+          page,
+          page_size
+        }
+      });
+
+      console.log(`📊 CourtListener: Found ${response.data.total_results} cases`);
+      return response.data;
+    } catch (error) {
+      console.error('Error searching case law:', error);
+      throw error;
+    }
+  },
+
+  // Quick search methods for common SmartProBono cases
+  searchProbationViolations: async (page_size = 10) => {
+    return courtlistenerApi.searchCaseLaw({
+      search: 'probation violation',
+      page_size
+    });
+  },
+
+  searchLandlordTenant: async (page_size = 10) => {
+    return courtlistenerApi.searchCaseLaw({
+      search: 'landlord tenant',
+      page_size
+    });
+  },
+
+  searchImmigrationBond: async (page_size = 10) => {
+    return courtlistenerApi.searchCaseLaw({
+      search: 'immigration bond',
+      page_size
+    });
+  },
+
+  getHealth: async () => {
+    try {
+      const response = await api.get('/api/courtlistener/health');
+      return response.data;
+    } catch (error) {
+      console.error('Error checking CourtListener health:', error);
+      throw error;
+    }
+  }
+};
+
 // Legal Chat API
 export const legalChatApi = {
   sendMessage: async (params, taskType) => {

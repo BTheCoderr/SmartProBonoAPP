@@ -15,7 +15,7 @@ from sqlalchemy import func, and_, or_, desc, asc
 
 # Import models
 try:
-    from backend.models.audit import PerformanceMetric, UserActivity
+    from models.audit import PerformanceMetric, UserActivity
 except ImportError:
     try:
         from models.audit import PerformanceMetric, UserActivity
@@ -269,7 +269,7 @@ class AdvancedAnalyticsService:
             start_date = self._get_start_date(end_date, time_range)
             
             # Get user registrations
-            from backend.models.user import User
+            from models.user import User
             new_users = self.db.query(User).filter(
                 and_(
                     User.created_at >= start_date,
@@ -325,7 +325,7 @@ class AdvancedAnalyticsService:
             start_date = self._get_start_date(end_date, time_range)
             
             # Get security events
-            from backend.models.audit import SecurityEvent
+            from models.audit import SecurityEvent
             security_events = self.db.query(SecurityEvent).filter(
                 and_(
                     SecurityEvent.timestamp >= start_date,

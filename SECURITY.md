@@ -107,7 +107,7 @@ In case of a security incident:
 ## 📞 Contact Information
 
 - **Security Email**: security@smartprobono.org
-- **General Support**: info@smartprobono.org
+- **General Support**: bferrell@smartprobono.org
 - **Emergency Contact**: Available 24/7 for critical issues
 
 ## 🔄 Security Updates

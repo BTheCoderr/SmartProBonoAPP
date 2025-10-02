@@ -88,13 +88,33 @@ try:
 except ImportError as e:
     print(f"⚠️ Enhanced API v2 routes not available: {e}")
 
+# Register Legal AI routes
+try:
+    from routes.legal_ai import bp as legal_ai_bp
+    app.register_blueprint(legal_ai_bp, url_prefix='/api/v1/legal')
+    print("✅ Legal AI routes registered")
+except ImportError as e:
+    print(f"⚠️ Legal AI routes not available: {e}")
+
+# Register CourtListener routes
+try:
+    from routes.courtlistener_api import courtlistener_bp
+    app.register_blueprint(courtlistener_bp, url_prefix='/api/courtlistener')
+    print("✅ CourtListener API routes registered")
+except ImportError as e:
+    print(f"⚠️ CourtListener API routes not available: {e}")
+
 # Initialize CORS with enhanced settings for development
 CORS(app, 
      origins=app.config.get('CORS_ORIGINS', [
          'http://localhost:3000', 
+         'http://localhost:3001', 
          'http://localhost:3002', 
          'http://127.0.0.1:3000', 
+         'http://127.0.0.1:3001', 
          'http://127.0.0.1:3002',
+         'https://smartprobono.org',
+         'https://www.smartprobono.org',
          'null'  # Allow file:// protocol for testing
      ]),
      methods=app.config.get('CORS_METHODS', ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']),
@@ -137,7 +157,7 @@ def send_contact_form_email(data):
             headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
             json={
                 'from': 'SmartProBono <noreply@smartprobono.org>',
-                'to': ['support@smartprobono.org'],
+                'to': ['bferrell@smartprobono.org'],
                 'subject': subject,
                 'html': html_content
             },
@@ -212,7 +232,7 @@ def send_bug_report_email(data):
             headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
             json={
                 'from': 'SmartProBono <onboarding@resend.dev>',
-                'to': ['bferrell514@gmail.com'],
+                'to': ['bferrell@smartprobono.org'],
                 'subject': subject,
                 'html': html_content
             }
@@ -277,7 +297,7 @@ def send_feature_request_email(data):
             headers={'Authorization': f'Bearer {RESEND_API_KEY}'},
             json={
                 'from': 'SmartProBono <onboarding@resend.dev>',
-                'to': ['bferrell514@gmail.com'],
+                'to': ['bferrell@smartprobono.org'],
                 'subject': subject,
                 'html': html_content
             }
@@ -337,7 +357,7 @@ def submit_contact_form():
         # Send contact form email via Resend
         payload = {
             'from': 'SmartProBono <onboarding@resend.dev>',
-            'to': ['bferrell514@gmail.com'],
+            'to': ['bferrell@smartprobono.org'],
             'subject': f'New Contact Form Submission from {data["firstName"]} {data["lastName"]}',
             'html': f'''
             <h2>New Contact Form Submission</h2>
@@ -387,7 +407,7 @@ def submit_contact_form():
         , timeout=30)
 
         if response.status_code == 200:
-            print("✅ Contact form email sent successfully to bferrell514@gmail.com")
+            print("✅ Contact form email sent successfully to bferrell@smartprobono.org")
             return jsonify({
                 'success': True,
                 'message': 'Contact form submitted successfully. We will get back to you within 24 hours.'
@@ -413,6 +433,46 @@ def contact_health_check():
         'status': 'healthy',
         'service': 'contact',
         'message': 'Contact service is running'
+    }), 200
+
+@app.route('/api/onboarding', methods=['GET'])
+def onboarding_data():
+    """Get onboarding data for the frontend."""
+    return jsonify({
+        'success': True,
+        'onboarding': {
+            'steps': [
+                {
+                    'id': 1,
+                    'title': 'Welcome to SmartProBono',
+                    'description': 'Your AI-powered legal assistant is ready to help',
+                    'icon': 'shield',
+                    'completed': False
+                },
+                {
+                    'id': 2,
+                    'title': 'Choose Your Legal Need',
+                    'description': 'Select from document analysis, generation, or legal chat',
+                    'icon': 'document',
+                    'completed': False
+                },
+                {
+                    'id': 3,
+                    'title': 'Get Started',
+                    'description': 'Begin using our legal tools and AI assistance',
+                    'icon': 'play',
+                    'completed': False
+                }
+            ],
+            'features': [
+                'AI Legal Chat',
+                'Document Scanner',
+                'PDF Generator',
+                'Court Filing Assistant',
+                'CRM System'
+            ],
+            'welcome_message': 'Welcome to SmartProBono! We\'re here to make legal help accessible, affordable, and easy to understand for everyone.'
+        }
     }), 200
 
 @app.route('/api/bug-report/submit', methods=['POST'])
@@ -854,7 +914,7 @@ def websocket_status():
 if __name__ == '__main__':
     print("🚀 Starting SmartProBono Combined Server...")
     print("=" * 50)
-    print("📧 Contact form ready - sending to bferrell514@gmail.com")
+    print("📧 Contact form ready - sending to bferrell@smartprobono.org")
     print("📄 Document scanner ready - analyzing PDFs with real text extraction")
     print("🐛 Bug reports: Connected to email")
     print("💡 Feature requests: Connected to email")

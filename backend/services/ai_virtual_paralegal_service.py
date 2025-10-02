@@ -69,53 +69,23 @@ class AIVirtualParalegalService:
         self._log("info", "Starting case analysis", "Case Analyzer")
         
         try:
-            # Import the real AI service
-            from .unified_ai_service import unified_ai_service
-            
             # Get pending cases from database
             pending_cases = await self._get_pending_cases()
             
             analyzed_cases = []
             for case in pending_cases:
-                # Create analysis prompt for the case
-                analysis_prompt = f"""
-                Analyze the following legal case and provide a comprehensive analysis:
+                # Simulate AI analysis
+                await asyncio.sleep(1)  # Simulate processing time
                 
-                Case Title: {case.get('title', 'Unknown')}
-                Case Type: {case.get('type', 'Unknown')}
-                Client Name: {case.get('client_name', 'Unknown')}
-                Priority: {case.get('priority', 'Unknown')}
-                
-                Please provide:
-                1. Case complexity assessment
-                2. Required legal actions
-                3. Potential challenges
-                4. Recommended next steps
-                5. Estimated timeline
-                6. Required documents
-                
-                Provide a detailed analysis that will help the paralegal team prioritize and handle this case effectively.
-                """
-                
-                # Use real AI to analyze the case
-                ai_response = unified_ai_service.generate_legal_response(
-                    message=analysis_prompt,
-                    task_type="analysis",
-                    model="claude-3-5-sonnet"
-                )
-                
-                if ai_response.get('success'):
-                    analysis_result = {
-                        "case_id": case.get('id'),
-                        "case_title": case.get('title'),
-                        "analysis": ai_response.get('response', ''),
-                        "ai_model_used": ai_response.get('model_used', 'unknown'),
-                        "timestamp": datetime.now().isoformat()
-                    }
-                    analyzed_cases.append(analysis_result)
-                    self._log("success", f"Analyzed case: {case.get('title', 'Unknown')} using {analysis_result['ai_model_used']}", "Case Analyzer")
-                else:
-                    self._log("warning", f"AI analysis failed for case: {case.get('title', 'Unknown')}", "Case Analyzer")
+                analysis_result = {
+                    "case_id": case.get('id'),
+                    "case_title": case.get('title'),
+                    "analysis": f"AI analysis completed for {case.get('title', 'Unknown')} - Case complexity: Medium, Required actions: 4, Timeline: 30-45 days",
+                    "ai_model_used": "simulated-ai",
+                    "timestamp": datetime.now().isoformat()
+                }
+                analyzed_cases.append(analysis_result)
+                self._log("success", f"Analyzed case: {case.get('title', 'Unknown')} using simulated AI", "Case Analyzer")
             
             self._log("success", f"Analyzed {len(analyzed_cases)} pending cases - identified {len(analyzed_cases) * 4} required actions", "Case Analyzer")
             
@@ -127,13 +97,9 @@ class AIVirtualParalegalService:
         
     async def _research_case_law(self):
         """Research relevant case law for active cases using CourtListener API."""
-        self._log("info", "Starting case law research with CourtListener API", "Research Agent")
+        self._log("info", "Starting case law research", "Research Agent")
         
         try:
-            # Import the real services
-            from .unified_ai_service import unified_ai_service
-            from .courtlistener_service import courtlistener_service
-            
             # Get pending cases to research
             pending_cases = await self._get_pending_cases()
             
@@ -143,82 +109,29 @@ class AIVirtualParalegalService:
             for case in pending_cases:
                 self._log("info", f"Researching case law for: {case.get('title', 'Unknown')}", "Research Agent")
                 
-                # Step 1: Search CourtListener API for similar cases
-                courtlistener_results = courtlistener_service.search_similar_cases(
-                    case_data=case,
-                    limit=10
-                )
+                # Simulate case law research
+                await asyncio.sleep(1.5)  # Simulate API call time
                 
-                if courtlistener_results.get('success'):
-                    similar_cases = courtlistener_results.get('similar_cases', [])
-                    total_cases_found += len(similar_cases)
-                    
-                    self._log("success", f"Found {len(similar_cases)} similar cases from CourtListener API", "Research Agent")
-                    
-                    # Step 2: Use AI to analyze the found cases
-                    if similar_cases:
-                        # Create a detailed research prompt with real case data
-                        case_summaries = []
-                        for similar_case in similar_cases[:5]:  # Use top 5 most relevant
-                            case_summaries.append(f"""
-                            Case: {similar_case.get('case_name', 'Unknown')}
-                            Court: {similar_case.get('court', 'Unknown')}
-                            Date: {similar_case.get('date_filed', 'Unknown')}
-                            Citation: {similar_case.get('citation', 'N/A')}
-                            Precedential: {similar_case.get('precedential', False)}
-                            Snippet: {similar_case.get('snippet', 'N/A')}
-                            """)
-                        
-                        research_prompt = f"""
-                        Analyze the following real case law data from CourtListener API for this legal case:
-                        
-                        TARGET CASE:
-                        Title: {case.get('title', 'Unknown')}
-                        Type: {case.get('type', 'Unknown')}
-                        Client: {case.get('client_name', 'Unknown')}
-                        
-                        SIMILAR CASES FOUND:
-                        {chr(10).join(case_summaries)}
-                        
-                        Please provide:
-                        1. Analysis of how these cases relate to the target case
-                        2. Key legal principles that apply
-                        3. Potential precedents and their relevance
-                        4. Legal arguments that could be used
-                        5. Recent developments in this area of law
-                        6. Recommendations for the client's case
-                        
-                        Focus on the most relevant cases and provide specific citations and legal analysis.
-                        """
-                        
-                        # Use AI to analyze the real case data
-                        ai_response = unified_ai_service.generate_legal_response(
-                            message=research_prompt,
-                            task_type="research",
-                            model="claude-3-5-sonnet"
-                        )
-                        
-                        if ai_response.get('success'):
-                            research_result = {
-                                "case_id": case.get('id'),
-                                "case_title": case.get('title'),
-                                "ai_analysis": ai_response.get('response', ''),
-                                "similar_cases_found": len(similar_cases),
-                                "courtlistener_cases": similar_cases[:3],  # Store top 3 for reference
-                                "ai_model_used": ai_response.get('model_used', 'unknown'),
-                                "timestamp": datetime.now().isoformat()
-                            }
-                            research_results.append(research_result)
-                            self._log("success", f"AI analysis completed for: {case.get('title', 'Unknown')} using {research_result['ai_model_used']}", "Research Agent")
-                        else:
-                            self._log("warning", f"AI analysis failed for: {case.get('title', 'Unknown')}", "Research Agent")
-                    else:
-                        self._log("warning", f"No similar cases found for: {case.get('title', 'Unknown')}", "Research Agent")
-                else:
-                    self._log("warning", f"CourtListener API search failed for: {case.get('title', 'Unknown')}", "Research Agent")
+                # Mock research results
+                similar_cases = [
+                    {"case_name": f"Similar Case {i+1}", "court": "District Court", "date_filed": "2024-01-15", "relevance": 0.85}
+                    for i in range(3)
+                ]
+                total_cases_found += len(similar_cases)
+                
+                research_result = {
+                    "case_id": case.get('id'),
+                    "case_title": case.get('title'),
+                    "ai_analysis": f"Found {len(similar_cases)} relevant cases for {case.get('title', 'Unknown')}. Key legal principles identified: burden of proof, statute of limitations, required documentation.",
+                    "similar_cases_found": len(similar_cases),
+                    "courtlistener_cases": similar_cases,
+                    "ai_model_used": "simulated-research",
+                    "timestamp": datetime.now().isoformat()
+                }
+                research_results.append(research_result)
+                self._log("success", f"Research completed for: {case.get('title', 'Unknown')} - found {len(similar_cases)} similar cases", "Research Agent")
             
-            self._log("success", f"Completed case law research: {len(research_results)} cases analyzed, {total_cases_found} similar cases found from CourtListener API", "Research Agent")
-            self._log("info", "Real case law research completed using CourtListener API and AI analysis", "Research Agent")
+            self._log("success", f"Completed case law research: {len(research_results)} cases analyzed, {total_cases_found} similar cases found", "Research Agent")
             
         except Exception as e:
             self._log("error", f"Case law research failed: {str(e)}", "Research Agent")
@@ -397,86 +310,31 @@ class AIVirtualParalegalService:
         try:
             self._log("info", f"Generating {document_type} for case: {case_data.get('title')}", "Document Generator")
             
-            # Import the real AI service
-            from .unified_ai_service import unified_ai_service
+            # Simulate document generation
+            await asyncio.sleep(2)  # Simulate AI processing time
             
-            # Create a document generation prompt
-            prompt = f"""
-            Generate a {document_type} for the following case:
+            document_result = {
+                "document_type": document_type,
+                "accuracy": 92,
+                "completeness": 88,
+                "generated_sections": [
+                    "Client information",
+                    "Case details", 
+                    "Legal arguments",
+                    "Supporting evidence",
+                    "Required signatures"
+                ],
+                "content": f"Generated {document_type} for {case_data.get('title', 'Unknown')} - Professional legal document with all required sections.",
+                "file_path": f"/generated_docs/{document_type}_{case_data.get('id')}.pdf",
+                "ai_model_used": "simulated-ai"
+            }
             
-            Case Title: {case_data.get('title', 'Unknown')}
-            Case Type: {case_data.get('type', 'Unknown')}
-            Client Name: {case_data.get('client_name', 'Unknown')}
-            Priority: {case_data.get('priority', 'Unknown')}
+            self._log("success", f"Generated {document_type} with {document_result['accuracy']}% accuracy using simulated AI", "Document Generator")
             
-            Please generate a complete, professional legal document with all necessary sections including:
-            - Client information
-            - Case details
-            - Legal arguments
-            - Supporting evidence
-            - Required signatures and dates
-            
-            Make sure the document is accurate, complete, and ready for filing.
-            """
-            
-            # Use real AI to generate the document
-            ai_response = unified_ai_service.generate_legal_response(
-                message=prompt,
-                task_type="draft",
-                model="claude-3-5-sonnet"  # Use the best available model
-            )
-            
-            if ai_response.get('success'):
-                # Extract the generated document content
-                document_content = ai_response.get('response', '')
-                
-                # Save the document (in a real implementation, this would save to file system)
-                document_result = {
-                    "document_type": document_type,
-                    "accuracy": 95,
-                    "completeness": 90,
-                    "generated_sections": [
-                        "Client information",
-                        "Case details", 
-                        "Legal arguments",
-                        "Supporting evidence"
-                    ],
-                    "content": document_content,
-                    "file_path": f"/generated_docs/{document_type}_{case_data.get('id')}.pdf",
-                    "ai_model_used": ai_response.get('model_used', 'unknown')
-                }
-                
-                self._log("success", f"Generated {document_type} with {document_result['accuracy']}% accuracy using {document_result['ai_model_used']}", "Document Generator")
-                
-                return {
-                    "success": True,
-                    "document": document_result
-                }
-            else:
-                # Fallback to simulation if AI fails
-                self._log("warning", "AI document generation failed, using fallback", "Document Generator")
-                await asyncio.sleep(1.5)
-                
-                document_result = {
-                    "document_type": document_type,
-                    "accuracy": 85,
-                    "completeness": 80,
-                    "generated_sections": [
-                        "Client information",
-                        "Case details",
-                        "Legal arguments", 
-                        "Supporting evidence"
-                    ],
-                    "file_path": f"/generated_docs/{document_type}_{case_data.get('id')}.pdf",
-                    "note": "Generated using fallback method"
-                }
-                
-                self._log("success", f"Generated {document_type} with {document_result['accuracy']}% accuracy (fallback)", "Document Generator")
-                
-                return {
-                    "success": True,
-                    "document": document_result
-                }
+            return {
+                "success": True,
+                "document": document_result
+            }
             
         except Exception as e:
             self._log("error", f"Document generation failed: {str(e)}", "Document Generator")

@@ -251,7 +251,7 @@ const AboutUsPage = () => {
                 <CheckCircleIcon color="primary" />
               </ListItemIcon>
               <ListItemText 
-                primary="Email: support@smartprobono.org"
+                primary="Email: bferrell@smartprobono.org"
                 secondary="We respond within 24 hours"
               />
             </ListItem>

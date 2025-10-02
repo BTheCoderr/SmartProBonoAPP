@@ -27,7 +27,7 @@ class ResendEmailService:
             # Create email payload
             payload = {
                 "from": self.from_email,
-                "to": ["bferrell514@gmail.com"],
+                "to": ["bferrell@smartprobono.org"],
                 "subject": f"New Contact Form Submission from {form_data.get('firstName', '')} {form_data.get('lastName', '')}",
                 "html": self._create_contact_email_html(form_data),
                 "text": self._create_contact_email_text(form_data)

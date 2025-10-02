@@ -14,12 +14,21 @@ class EmailService:
     """Service for sending emails."""
     
     def __init__(self):
-        self.smtp_server = current_app.config.get('MAIL_SERVER', 'smtp.gmail.com')
-        self.smtp_port = current_app.config.get('MAIL_PORT', 587)
-        self.use_tls = current_app.config.get('MAIL_USE_TLS', True)
-        self.username = current_app.config.get('MAIL_USERNAME')
-        self.password = current_app.config.get('MAIL_PASSWORD')
-        self.default_sender = current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@smartprobono.org')
+        try:
+            self.smtp_server = current_app.config.get('MAIL_SERVER', 'smtp.gmail.com')
+            self.smtp_port = current_app.config.get('MAIL_PORT', 587)
+            self.use_tls = current_app.config.get('MAIL_USE_TLS', True)
+            self.username = current_app.config.get('MAIL_USERNAME')
+            self.password = current_app.config.get('MAIL_PASSWORD')
+            self.default_sender = current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@smartprobono.org')
+        except RuntimeError:
+            # Working outside of application context - use defaults
+            self.smtp_server = 'smtp.gmail.com'
+            self.smtp_port = 587
+            self.use_tls = True
+            self.username = None
+            self.password = None
+            self.default_sender = 'noreply@smartprobono.org'
     
     def send_contact_form_email(self, form_data: Dict[str, Any]) -> bool:
         """Send contact form email."""
@@ -27,7 +36,7 @@ class EmailService:
             # Create message
             msg = MIMEMultipart()
             msg['From'] = self.default_sender
-            msg['To'] = 'bferrell514@gmail.com'  # Your Gmail (will forward to professional email)
+            msg['To'] = 'bferrell@smartprobono.org'  # Your professional email
             msg['Subject'] = f"New Contact Form Submission from {form_data.get('firstName', '')} {form_data.get('lastName', '')}"
             
             # Create email body
@@ -111,5 +120,12 @@ Phone: (401) 217-9799
             logger.error(f"Error sending auto-reply: {str(e)}")
             return False
 
-# Global email service instance
-email_service = EmailService()
+# Global email service instance - will be initialized when app context is available
+email_service = None
+
+def get_email_service():
+    """Get email service instance, creating it if needed"""
+    global email_service
+    if email_service is None:
+        email_service = EmailService()
+    return email_service
