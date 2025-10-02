@@ -35,6 +35,7 @@ import EventIcon from '@mui/icons-material/Event';
 import FlightIcon from '@mui/icons-material/Flight';
 import PersonIcon from '@mui/icons-material/Person';
 import { useAuth } from '../context/AuthContext';
+import CourtListenerSearch from '../components/CourtListenerSearch';
 
 import { immigrationApi } from '../services/api';
 
@@ -314,6 +315,13 @@ const LawyerDashboard = () => {
                 label="Calendar" 
                 id="dashboard-tab-2" 
                 aria-controls="dashboard-tabpanel-2" 
+              />
+              <Tab 
+                icon={<FolderIcon />} 
+                iconPosition="start" 
+                label="Case Law Research" 
+                id="dashboard-tab-3" 
+                aria-controls="dashboard-tabpanel-3" 
               />
             </Tabs>
           </Box>
@@ -656,6 +664,33 @@ const LawyerDashboard = () => {
                   ))
                 )}
               </List>
+            </Paper>
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={3}>
+            {/* Case Law Research Tab Content */}
+            <Paper elevation={2} sx={{ p: 3, mb: 4 }}>
+              <Typography variant="h5" component="h2" gutterBottom>
+                <FolderIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                Case Law Research
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                Search millions of court cases to find relevant precedents and legal research for your cases.
+              </Typography>
+              
+              <CourtListenerSearch 
+                showQuickSearches={true}
+                maxResults={10}
+                onCaseSelect={(caseData) => {
+                  console.log('Case selected for research:', caseData);
+                  // You can add logic here to save the case to the client's file
+                  setNotification({
+                    open: true,
+                    message: `Case "${caseData.case_name}" added to research notes`,
+                    severity: 'success'
+                  });
+                }}
+              />
             </Paper>
           </TabPanel>
         </Box>

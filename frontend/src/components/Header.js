@@ -98,6 +98,7 @@ const Header = () => {
     { text: t('navigation.documentScanner'), path: '/scan-document', icon: <DocumentScannerIcon />, badge: null },
     { text: t('navigation.pdfGenerator'), path: '/generate-document', icon: <DescriptionIcon />, badge: null },
     { text: t('navigation.aiLegalChat'), path: '/legal-chat', icon: <ChatIcon />, badge: null },
+    { text: 'Case Law Research', path: '/caselaw', icon: <SearchIcon />, badge: 'New' },
   ];
 
   const moreToolsItems = [

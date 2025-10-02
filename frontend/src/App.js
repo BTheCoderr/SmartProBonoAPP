@@ -84,6 +84,7 @@ import ImmigrationResourcesPage from './pages/ImmigrationResourcesPage';
 import ImmigrationRightsPage from './pages/ImmigrationRightsPage';
 import ExternalResourcesPage from './pages/ExternalResourcesPage';
 import LegalGuidesPage from './pages/LegalGuidesPage';
+import CaseLawPage from './pages/CaseLawPage';
 
 // Protected route wrapper - DISABLED FOR DEVELOPMENT
 const ProtectedRoute = ({ children }) => {
@@ -257,6 +258,7 @@ function AppContent() {
             <Route path="/safety-check" element={<SafetyCheckPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/expert-help" element={<ExpertHelpPage />} />
+            <Route path="/caselaw" element={<CaseLawPage />} />
             
             {/* Virtual Paralegal - Top level route */}
             <Route 
