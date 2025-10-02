@@ -44,16 +44,16 @@ export const courtlistenerApi = {
 
       console.log(`🔍 SmartProBono: Searching case law for "${searchTerm}"`);
       
-      const response = await api.get('/api/caselaw', {
+      const response = await api.get('/api/courtlistener/search', {
         params: {
-          search: searchTerm,
+          q: searchTerm,  // Flask backend expects 'q' parameter
           jurisdiction,
           page,
           page_size
         }
       });
 
-      console.log(`📊 CourtListener: Found ${response.data.total_results} cases`);
+      console.log(`📊 CourtListener: Found ${response.data.totalResults} cases`);
       return response.data;
     } catch (error) {
       console.error('Error searching case law:', error);

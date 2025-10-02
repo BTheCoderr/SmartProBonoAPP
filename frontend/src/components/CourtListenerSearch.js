@@ -135,20 +135,20 @@ const CourtListenerSearch = ({
           <div className="results-header">
             <h3>📊 Search Results</h3>
             <p>
-              Found <strong>{results.total_results.toLocaleString()}</strong> cases for "{results.search_term}"
-              {results.has_more && ' (showing first ' + maxResults + ')'}
+              Found <strong>{results.totalResults.toLocaleString()}</strong> cases for "{results.searchTerm}"
+              {results.hasMore && ' (showing first ' + maxResults + ')'}
             </p>
           </div>
 
           <div className="cases-list">
-            {results.results.map((caseData, index) => (
-              <div key={caseData.case_id || index} className="case-item">
+            {results.data.rawResults.map((caseData, index) => (
+              <div key={caseData.id || index} className="case-item">
                 <div className="case-header">
-                  <h4 className="case-title">{caseData.case_name}</h4>
+                  <h4 className="case-title">{caseData.caseName}</h4>
                   <div className="case-meta">
                     <span className="court">{caseData.court}</span>
-                    {caseData.date_filed && (
-                      <span className="date">Filed: {new Date(caseData.date_filed).toLocaleDateString()}</span>
+                    {caseData.dateFiled && (
+                      <span className="date">Filed: {new Date(caseData.dateFiled).toLocaleDateString()}</span>
                     )}
                   </div>
                 </div>
@@ -161,22 +161,29 @@ const CourtListenerSearch = ({
 
                 <div className="case-actions">
                   <button
-                    onClick={() => handleCaseClick(caseData)}
+                    onClick={() => handleCaseClick({
+                      case_name: caseData.caseName,
+                      court: caseData.court,
+                      date_filed: caseData.dateFiled,
+                      absolute_url: `https://www.courtlistener.com${caseData.absolute_url}`,
+                      citation: caseData.citation?.[0],
+                      snippet: caseData.snippet
+                    })}
                     className="view-case-button"
                   >
                     🔗 View on CourtListener
                   </button>
-                  {caseData.citation && (
-                    <span className="citation">{caseData.citation}</span>
+                  {caseData.citation && caseData.citation[0] && (
+                    <span className="citation">{caseData.citation[0]}</span>
                   )}
                 </div>
               </div>
             ))}
           </div>
 
-          {results.has_more && (
+          {results.hasMore && (
             <div className="load-more">
-              <p>Showing first {maxResults} of {results.total_results.toLocaleString()} results</p>
+              <p>Showing first {maxResults} of {results.totalResults.toLocaleString()} results</p>
               <button
                 onClick={() => handleSearch(searchTerm)}
                 className="load-more-button"

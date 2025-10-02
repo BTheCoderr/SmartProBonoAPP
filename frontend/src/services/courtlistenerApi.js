@@ -5,7 +5,8 @@
 
 class CourtListenerApiService {
   constructor() {
-    this.baseUrl = '/api/caselaw';
+    // Call Flask backend directly (not Next.js API)
+    this.baseUrl = 'http://localhost:3001/api/courtlistener';
   }
 
   /**
@@ -33,13 +34,13 @@ class CourtListenerApiService {
       console.log(`🔍 SmartProBono: Searching case law for "${search}"`);
 
       const searchParams = new URLSearchParams({
-        search,
+        q: search,  // Flask backend expects 'q' parameter
         jurisdiction,
         page_size: page_size.toString(),
         page: page.toString()
       });
 
-      const response = await fetch(`${this.baseUrl}?${searchParams.toString()}`, {
+      const response = await fetch(`${this.baseUrl}/search?${searchParams.toString()}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +58,7 @@ class CourtListenerApiService {
         throw new Error(data.error || 'Search failed');
       }
 
-      console.log(`📊 CourtListener: Found ${data.total_results} cases`);
+      console.log(`📊 CourtListener: Found ${data.totalResults} cases`);
       return data;
 
     } catch (error) {
