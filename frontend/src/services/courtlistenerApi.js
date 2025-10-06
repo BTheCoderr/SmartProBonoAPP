@@ -5,8 +5,13 @@
 
 class CourtListenerApiService {
   constructor() {
-    // Call Flask backend directly (not Next.js API)
-    this.baseUrl = 'http://localhost:3001/api/courtlistener';
+    // Use appropriate backend URL based on environment
+    if (process.env.NODE_ENV === 'development') {
+      this.baseUrl = 'http://localhost:3001/api/courtlistener';
+    } else {
+      // For production, use the main domain (backend needs to be deployed)
+      this.baseUrl = 'https://smartprobono.org/api/courtlistener';
+    }
   }
 
   /**
@@ -48,6 +53,10 @@ class CourtListenerApiService {
       });
 
       if (!response.ok) {
+        // If production backend is not available, show helpful message
+        if (response.status === 404 && process.env.NODE_ENV === 'production') {
+          throw new Error('CourtListener integration is not yet deployed to production. Please contact support or try again later.');
+        }
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
