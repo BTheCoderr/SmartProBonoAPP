@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-WSGI entry point for SmartProBono backend
+WSGI entry point for SmartProBono - Production
+Uses combined_server.py which has all AI features and doesn't require database
 """
 import sys
 import os
@@ -13,17 +14,13 @@ sys.path.insert(0, project_root)
 backend_path = os.path.join(project_root, 'backend')
 sys.path.insert(0, backend_path)
 
-try:
-    # Try importing from backend.app first
-    from backend.app import app
-except ImportError:
-    try:
-        # Fallback: try importing directly from app
-        from app import app
-    except ImportError:
-        # Last resort: create app directly
-        from backend import create_app
-        app = create_app()
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
+# Import from combined_server which has all features
+from backend.combined_server import app
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get('PORT', 3001))
+    app.run(host='0.0.0.0', port=port)
