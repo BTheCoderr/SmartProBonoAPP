@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-10-08T19:57:02.211162",
+  "summary": {
+    "total_tests": 6,
+    "passed": 4,
+    "failed": 2
+  },
+  "results": [
+    {
+      "test": "Backend Health",
+      "success": true,
+      "details": "Status: healthy",
+      "timestamp": "19:56:56"
+    },
+    {
+      "test": "Chat API",
+      "success": true,
+      "details": "Model: openai",
+      "timestamp": "19:56:57"
+    },
+    {
+      "test": "Legal AI Chat",
+      "success": false,
+      "details": "HTTP 404",
+      "timestamp": "19:56:58"
+    },
+    {
+      "test": "Voice Chat",
+      "success": false,
+      "details": "HTTP 404",
+      "timestamp": "19:56:59"
+    },
+    {
+      "test": "Frontend Access",
+      "success": true,
+      "details": "React app loaded",
+      "timestamp": "19:57:00"
+    },
+    {
+      "test": "Response Time",
+      "success": true,
+      "details": "0.01s",
+      "timestamp": "19:57:01"
+    }
+  ]
+}

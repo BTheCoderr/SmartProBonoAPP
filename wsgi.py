@@ -19,8 +19,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import from combined_server which has all features
-from backend.combined_server import app
+from backend.combined_server import app as application
+
+# For Gunicorn compatibility
+app = application
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 3001))
-    app.run(host='0.0.0.0', port=port)
+    # This block is for local development, not for Gunicorn
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

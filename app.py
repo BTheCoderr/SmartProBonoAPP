@@ -21,6 +21,9 @@ load_dotenv()
 # Import from combined_server which has all features
 from backend.combined_server import app
 
+# For WSGI compatibility
+application = app
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=port)
