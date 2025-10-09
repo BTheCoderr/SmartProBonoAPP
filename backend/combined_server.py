@@ -7,6 +7,10 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Load environment variables FIRST
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
@@ -103,6 +107,22 @@ try:
     print("✅ CourtListener API routes registered")
 except ImportError as e:
     print(f"⚠️ CourtListener API routes not available: {e}")
+
+# Register Multi-Agent routes
+try:
+    from routes.multi_agent_routes import bp as multi_agent_bp
+    app.register_blueprint(multi_agent_bp)  # Blueprint already has /api/multi-agent prefix
+    print("✅ Multi-Agent System routes registered (FREE models: Ollama + Gemini)")
+except ImportError as e:
+    print(f"⚠️ Multi-Agent routes not available: {e}")
+
+# Register Orchestrated AI routes (Multi-model collaboration)
+try:
+    from routes.orchestrated_routes import bp as orchestrated_bp
+    app.register_blueprint(orchestrated_bp)  # Blueprint already has /api/orchestrated prefix
+    print("✅ Orchestrated AI routes registered (4-5 models per response)")
+except ImportError as e:
+    print(f"⚠️ Orchestrated AI routes not available: {e}")
 
 # Initialize CORS with enhanced settings for development
 CORS(app, 
