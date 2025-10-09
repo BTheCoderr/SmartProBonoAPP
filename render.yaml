@@ -6,7 +6,7 @@ services:
     region: oregon
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn -w 4 -b 0.0.0.0:$PORT wsgi:app
+    startCommand: gunicorn --timeout 120 --workers 2 --worker-class sync -b 0.0.0.0:$PORT wsgi:app
     healthCheckPath: /api/health
     envVars:
       - key: FLASK_ENV
@@ -14,7 +14,9 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: DATABASE_URL
-        sync: false
+        value: sqlite:///./smartprobono.db
+      - key: SQLALCHEMY_DATABASE_URI
+        value: sqlite:///./smartprobono.db
       - key: SECRET_KEY
         generateValue: true
       - key: JWT_SECRET_KEY
