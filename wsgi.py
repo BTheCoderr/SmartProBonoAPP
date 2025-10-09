@@ -18,8 +18,8 @@ sys.path.insert(0, backend_path)
 from dotenv import load_dotenv
 load_dotenv()
 
-# Import from combined_server which has all features
-from backend.combined_server import app as application
+# Import from simple_server for production deployment
+from simple_server import app as application
 
 # For Gunicorn compatibility
 app = application
