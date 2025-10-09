@@ -264,15 +264,33 @@ def ai_chat():
         except:
             pass  # User not authenticated
         
-        # Generate response using unified service
-        response = unified_ai_service.generate_legal_response(
-            message=message,
-            task_type=task_type,
-            conversation_id=conversation_id,
-            history=history,
-            model=model,
-            user_id=user_id
-        )
+        # Use Simple Free AI service for all operations
+        try:
+            # Import the service directly without going through __init__.py
+            import sys
+            import os
+            sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'services'))
+            from simple_free_ai import simple_free_ai
+            
+            # Generate response using simple free AI service
+            response = simple_free_ai.generate_response(
+                message=message,
+                task_type=task_type,
+                conversation_id=conversation_id,
+                user_id=user_id,
+                model=model
+            )
+        except Exception as e:
+            logger.error(f"Simple Free AI service error: {e}")
+            # Fallback to unified service
+            response = unified_ai_service.generate_legal_response(
+                message=message,
+                task_type=task_type,
+                conversation_id=conversation_id,
+                history=history,
+                model=model,
+                user_id=user_id
+            )
         
         return jsonify(response)
         
