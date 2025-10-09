@@ -1,28 +1,37 @@
 services:
+  # Backend API Service
   - type: web
     name: smartprobono-backend
     env: python
-    pythonVersion: 3.11.9
-    buildCommand: |
-      echo "🚀 Starting SmartProBono deployment..."
-      echo "🐍 Using Python 3.11.9 for compatibility"
-      python --version
-      echo "🧹 Removing any PyMuPDF installations..."
-      pip uninstall -y PyMuPDF pymupdf4llm || true
-      echo "📦 Installing deployment requirements..."
-      pip install -r requirements-deploy.txt
-      echo "🔍 Verifying PyMuPDF is not installed..."
-      python -c "import sys; sys.exit(0 if 'fitz' not in sys.modules else 1)" || pip uninstall -y PyMuPDF pymupdf4llm
-      echo "✅ Dependencies installed successfully without PyMuPDF"
-    startCommand: |
-      echo "🚀 Starting SmartProBono backend..."
-      gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 4 -b 0.0.0.0:$PORT wsgi:app
+    healthCheckPath: /api/health
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
-      - key: PIP_NO_CACHE_DIR
-        value: 1
-      - key: PIP_DISABLE_PIP_VERSION_CHECK
-        value: 1
-    healthCheckPath: /api/v1/health
-    plan: starter
+      - key: FLASK_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+    
+  # Frontend Static Site
+  - type: web
+    name: smartprobono-frontend
+    env: static
+    region: oregon
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/build
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
