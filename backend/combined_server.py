@@ -21,10 +21,6 @@ from config import config
 import asyncio
 import threading
 
-# Import CRM system components
-from database import init_db
-from register_crm_only import register_crm_blueprints
-
 # Import WebSocket support
 try:
     from websocket_server import start_websocket_server, send_notification, send_case_update
@@ -46,11 +42,21 @@ app.config.from_object(config[config_name])
 if not app.config.get('SQLALCHEMY_DATABASE_URI'):
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///smartprobono_dev.db'
 
-# Initialize database
-init_db(app)
+# Initialize database only when needed (lazy loading)
+def init_database_if_needed():
+    """Initialize database only when needed"""
+    try:
+        from database import init_db
+        from register_crm_only import register_crm_blueprints
+        init_db(app)
+        register_crm_blueprints(app)
+        return True
+    except Exception as e:
+        print(f"Database initialization skipped: {e}")
+        return False
 
-# Register CRM blueprints only
-register_crm_blueprints(app)
+# Register CRM blueprints only when database is available
+# register_crm_blueprints(app)  # Moved to lazy loading
 
 # Register Analytics API routes
 try:

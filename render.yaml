@@ -6,7 +6,7 @@ services:
     region: oregon
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --timeout 120 --workers 2 --worker-class sync -b 0.0.0.0:$PORT wsgi:app
+    startCommand: gunicorn --timeout 120 --workers 1 --worker-class sync -b 0.0.0.0:$PORT wsgi:app
     healthCheckPath: /api/health
     envVars:
       - key: FLASK_ENV
@@ -21,6 +21,10 @@ services:
         generateValue: true
       - key: JWT_SECRET_KEY
         generateValue: true
+      - key: PYTHONPATH
+        value: /opt/render/project/src:/opt/render/project/src/backend
+      - key: PYTHONUNBUFFERED
+        value: "1"
     
   # Frontend Static Site
   - type: web
