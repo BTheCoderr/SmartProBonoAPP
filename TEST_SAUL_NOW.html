@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Saul Legal AI</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .status.success {
+            background: #d5f4e6;
+            color: #27ae60;
+            border-left: 4px solid #27ae60;
+        }
+        .status.error {
+            background: #fadbd8;
+            color: #e74c3c;
+            border-left: 4px solid #e74c3c;
+        }
+        .status.info {
+            background: #d6eaf8;
+            color: #3498db;
+            border-left: 4px solid #3498db;
+        }
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .response h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .response-text {
+            line-height: 1.6;
+            color: #333;
+        }
+        .meta {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 14px;
+            color: #666;
+        }
+        .quick-tests {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quick-tests button {
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Test Saul Legal AI</h1>
+        
+        <div id="status" class="status info">
+            ⏳ Click "Check Backend" to verify connection...
+        </div>
+
+        <div class="quick-tests">
+            <button onclick="checkBackend()">🔍 Check Backend</button>
+            <button onclick="checkSaulModel()">🤖 Check Saul Model</button>
+        </div>
+
+        <h3>Ask a Legal Question:</h3>
+        <textarea id="question" rows="4" placeholder="e.g., What is a breach of contract?
+or: How do I file a grievance for work?
+or: What are tenant rights?">What is a breach of contract?</textarea>
+
+        <button id="askBtn" onclick="askQuestion()">💬 Ask Saul</button>
+
+        <div id="response" style="display:none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+
+        async function checkBackend() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = '⏳ Checking backend connection...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/v1/ai/saul/info`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `✅ Backend Connected!<br>Model: ${data.model_info.model_name}<br>Device: ${data.model_info.device}`;
+                } else {
+                    throw new Error('Backend not responding correctly');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ Backend Error: ${error.message}. Is the server running on port 3001?`;
+            }
+        }
+
+        async function checkSaulModel() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = '⏳ Checking Saul model status...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/v1/ai/saul/info`);
+                const data = await response.json();
+                
+                const isLoaded = data.model_info.is_loaded;
+                const modelName = data.model_info.model_name;
+                
+                statusDiv.className = isLoaded ? 'status success' : 'status info';
+                statusDiv.innerHTML = `${isLoaded ? '✅' : '⏳'} Saul Model Status<br>Model: ${modelName}<br>Loaded: ${isLoaded ? 'Yes' : 'Will load on first request'}<br>Status: ${data.health_status.status}`;
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function askQuestion() {
+            const question = document.getElementById('question').value.trim();
+            const button = document.getElementById('askBtn');
+            const responseDiv = document.getElementById('response');
+            const statusDiv = document.getElementById('status');
+
+            if (!question) {
+                alert('Please enter a question!');
+                return;
+            }
+
+            // Disable button and show loading
+            button.disabled = true;
+            button.textContent = '⏳ Asking Saul... (this may take 10-20 seconds)';
+            statusDiv.className = 'status info';
+            statusDiv.textContent = '⏳ Waiting for Saul to respond... Please wait 10-20 seconds.';
+            responseDiv.style.display = 'none';
+
+            try {
+                const startTime = Date.now();
+                
+                const response = await fetch(`${API_BASE}/api/v1/ai/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: question,
+                        task_type: 'legal',
+                        max_tokens: 150
+                    })
+                });
+
+                const data = await response.json();
+                const endTime = Date.now();
+                const duration = ((endTime - startTime) / 1000).toFixed(1);
+
+                if (data.success) {
+                    // Check if we got Saul or fallback
+                    const modelUsed = data.model_used || data.model;
+                    const isSaul = modelUsed === 'saul';
+
+                    statusDiv.className = isSaul ? 'status success' : 'status error';
+                    statusDiv.innerHTML = isSaul 
+                        ? `✅ SUCCESS! Saul responded in ${duration}s<br>Model: ${data.model_info?.model_name || modelUsed}<br>Status: loaded`
+                        : `⚠️ WARNING: Got fallback response from ${modelUsed} instead of Saul. Check your frontend code!`;
+
+                    responseDiv.innerHTML = `
+                        <h3>Response from ${modelUsed}:</h3>
+                        <div class="response-text">${data.text}</div>
+                        <div class="meta">
+                            <strong>Model:</strong> ${data.model || 'unknown'}<br>
+                            <strong>Model Used:</strong> ${modelUsed}<br>
+                            <strong>Response Time:</strong> ${duration} seconds<br>
+                            <strong>Task Type:</strong> ${data.task_type}<br>
+                            ${data.model_info ? `<strong>Base Model:</strong> ${data.model_info.base_model}<br>` : ''}
+                        </div>
+                    `;
+                    responseDiv.style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Request failed');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ Error: ${error.message}`;
+                responseDiv.innerHTML = `
+                    <h3>Error:</h3>
+                    <div class="response-text">${error.message}</div>
+                `;
+                responseDiv.style.display = 'block';
+            } finally {
+                button.disabled = false;
+                button.textContent = '💬 Ask Saul';
+            }
+        }
+
+        // Auto-check backend on load
+        window.addEventListener('load', () => {
+            setTimeout(checkBackend, 500);
+        });
+    </script>
+</body>
+</html>
+

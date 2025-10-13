@@ -264,26 +264,16 @@ def ai_chat():
         except:
             pass  # User not authenticated
         
-        # Use Simple Free AI service for all operations
+        # Use Saul Enhanced AI service for legal operations, with intelligent fallbacks
         try:
-            # Import the service directly without going through __init__.py
+            # Import the Saul Enhanced AI service
             import sys
             import os
             sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'services'))
-            from simple_free_ai import simple_free_ai
+            from saul_enhanced_ai_service import saul_enhanced_ai
             
-            # Generate response using simple free AI service
-            response = simple_free_ai.generate_response(
-                message=message,
-                task_type=task_type,
-                conversation_id=conversation_id,
-                user_id=user_id,
-                model=model
-            )
-        except Exception as e:
-            logger.error(f"Simple Free AI service error: {e}")
-            # Fallback to unified service
-            response = unified_ai_service.generate_legal_response(
+            # Generate response using Saul Enhanced AI service
+            response = saul_enhanced_ai.generate_legal_response(
                 message=message,
                 task_type=task_type,
                 conversation_id=conversation_id,
@@ -291,6 +281,33 @@ def ai_chat():
                 model=model,
                 user_id=user_id
             )
+        except Exception as e:
+            logger.error(f"Saul Enhanced AI service error: {e}")
+            # Fallback to simple free AI service
+            try:
+                import sys
+                import os
+                sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'services'))
+                from simple_free_ai import simple_free_ai
+                
+                response = simple_free_ai.generate_response(
+                    message=message,
+                    task_type=task_type,
+                    conversation_id=conversation_id,
+                    user_id=user_id,
+                    model=model
+                )
+            except Exception as fallback_error:
+                logger.error(f"Fallback AI service error: {fallback_error}")
+                # Final fallback to unified service
+                response = unified_ai_service.generate_legal_response(
+                    message=message,
+                    task_type=task_type,
+                    conversation_id=conversation_id,
+                    history=history,
+                    model=model,
+                    user_id=user_id
+                )
         
         return jsonify(response)
         
@@ -299,6 +316,116 @@ def ai_chat():
     except Exception as e:
         logger.error(f"Error in AI chat: {e}")
         return jsonify({"error": "An error occurred while processing your request"}), 500
+
+@bp.route('/ai/saul/chat', methods=['POST'])
+def saul_chat():
+    """
+    Direct Saul Legal AI chat endpoint.
+    
+    Expected payload:
+    - message: User message
+    - task_type: Type of task (chat, research, draft, analysis)
+    - conversation_id: Conversation ID (optional)
+    - history: Previous conversation history (optional)
+    - max_tokens: Maximum tokens to generate (optional, default: 200)
+    - temperature: Temperature for generation (optional, default: 0.7)
+    
+    Returns:
+    - success: Boolean
+    - response: AI response
+    - model: Model used (Saul)
+    - conversation_id: Conversation ID
+    """
+    try:
+        data = request.json
+        if not data or not data.get('message'):
+            raise BadRequest("Message is required")
+        
+        message = data['message']
+        task_type = data.get('task_type', 'chat')
+        conversation_id = data.get('conversation_id')
+        history = data.get('history', [])
+        max_tokens = data.get('max_tokens', 200)
+        temperature = data.get('temperature', 0.7)
+        
+        # Get user ID if authenticated
+        user_id = None
+        try:
+            user = get_current_user()
+            if user:
+                user_id = user.get('id')
+        except:
+            pass  # User not authenticated
+        
+        # Import Saul service
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'services'))
+        from saul_legal_ai_service import saul_legal_ai
+        
+        # Generate response using Saul service
+        response = saul_legal_ai.generate_response(
+            message=message,
+            task_type=task_type,
+            conversation_id=conversation_id,
+            user_id=user_id,
+            max_tokens=max_tokens,
+            temperature=temperature
+        )
+        
+        return jsonify(response)
+        
+    except BadRequest as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error in Saul chat: {e}")
+        return jsonify({"error": "An error occurred while processing your request"}), 500
+
+@bp.route('/ai/saul/info', methods=['GET'])
+def saul_info():
+    """Get information about the Saul Legal AI model"""
+    try:
+        # Import Saul service
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'services'))
+        from saul_legal_ai_service import saul_legal_ai
+        
+        info = saul_legal_ai.get_model_info()
+        health = saul_legal_ai.health_check()
+        
+        return jsonify({
+            "model_info": info,
+            "health_status": health,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting Saul info: {e}")
+        return jsonify({"error": "Failed to get Saul model information"}), 500
+
+@bp.route('/ai/models/available', methods=['GET'])
+def available_models():
+    """Get information about all available AI models"""
+    try:
+        # Import Saul Enhanced service
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'services'))
+        from saul_enhanced_ai_service import saul_enhanced_ai
+        
+        models = saul_enhanced_ai.get_available_models()
+        health = saul_enhanced_ai.health_check()
+        
+        return jsonify({
+            "available_models": models,
+            "health_status": health,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting available models: {e}")
+        return jsonify({"error": "Failed to get model information"}), 500
 
 @bp.route('/ai/analyze-text', methods=['POST'])
 def analyze_text():

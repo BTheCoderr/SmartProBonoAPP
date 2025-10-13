@@ -73,10 +73,11 @@ const UnifiedLegalAssistant = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: chatMessage,
-          task_type: 'chat',
+          task_type: 'legal',  // Changed from 'chat' to 'legal' to use Saul AI
           conversation_id: conversationId,
           history: chatHistory,
-          model: 'auto'
+          model: 'auto',
+          max_tokens: 200  // Added for better responses
         })
       });
 

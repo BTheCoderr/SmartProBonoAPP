@@ -66,7 +66,7 @@ const LegalAIChat = ({ premium = false }) => {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [pdfGenerating, setPdfGenerating] = useState(false);
   const [savingConversation, setSavingConversation] = useState(false);
-  const [taskType, setTaskType] = useState('chat');
+  const [taskType, setTaskType] = useState('legal');
   const messagesEndRef = useRef(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [contractFormOpen, setContractFormOpen] = useState(false);
@@ -130,7 +130,7 @@ const LegalAIChat = ({ premium = false }) => {
       // Pass the currently selected model to the API
       const response = await sendMessage({
         message: input, 
-        task_type: currentModel // Use the currentModel as the task_type parameter
+        task_type: 'legal' // Always use legal task type to route to Saul AI
       });
       
       // Extract the response data
