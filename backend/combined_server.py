@@ -98,6 +98,22 @@ try:
 except ImportError as e:
     print(f"⚠️ Enhanced API v2 routes not available: {e}")
 
+# Register Unified API routes (includes Saul integration)
+try:
+    from routes.unified_api import bp as unified_api_bp
+    app.register_blueprint(unified_api_bp)  # Blueprint already has /api/v1 prefix
+    print("✅ Unified API routes registered (includes Saul Legal AI)")
+except ImportError as e:
+    print(f"⚠️ Unified API routes not available: {e}")
+
+# Register Model Management routes (custom training, model switching)
+try:
+    from routes.model_management import bp as model_mgmt_bp
+    app.register_blueprint(model_mgmt_bp)  # Blueprint already has /api/v1/models prefix
+    print("✅ Model Management routes registered (training, switching, config)")
+except ImportError as e:
+    print(f"⚠️ Model Management routes not available: {e}")
+
 # Register Legal AI routes
 try:
     from routes.legal_ai import bp as legal_ai_bp
