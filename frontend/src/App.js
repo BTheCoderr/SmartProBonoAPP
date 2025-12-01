@@ -298,7 +298,6 @@ function AppContent() {
             {/* Additional MVP routes */}
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
-            <Route path="/resources" element={<Resources />} />
             <Route path="/contact" element={<Contact />} />
             
             {/* Footer links - NO LOGIN REQUIRED */}
@@ -327,8 +326,7 @@ function AppContent() {
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/blog" element={<BlogPage />} />
             
-            
-            <Route path="/resources" element={<Resources />} />
+            {/* Auth Pages */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/unauthorized" element={<UnauthorizedPage />} />
