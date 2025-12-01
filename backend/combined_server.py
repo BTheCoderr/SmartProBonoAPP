@@ -146,6 +146,22 @@ try:
 except ImportError as e:
     print(f"⚠️ Orchestrated AI routes not available: {e}")
 
+# Register Document Scanner routes
+try:
+    from routes.document_scanner import bp as document_scanner_bp
+    app.register_blueprint(document_scanner_bp, url_prefix='/api/scanner')
+    print("✅ Document Scanner routes registered")
+except ImportError as e:
+    print(f"⚠️ Document Scanner routes not available: {e}")
+
+# Register Documents routes (for /api/documents endpoints)
+try:
+    from routes.documents import bp as documents_bp
+    app.register_blueprint(documents_bp, url_prefix='/api/documents')
+    print("✅ Documents routes registered")
+except ImportError as e:
+    print(f"⚠️ Documents routes not available: {e}")
+
 # Initialize CORS with enhanced settings for development
 CORS(app, 
      origins=app.config.get('CORS_ORIGINS', [
@@ -801,10 +817,9 @@ def analyze_document_safe():
             # Analyze with safety features
             analysis = analyze_with_safety(text, document_type)
             
-            # Add metadata
+            # Add metadata - get file size from saved file, not from file object
             analysis['file_name'] = file.filename
-            analysis['file_size'] = len(file.read())
-            file.seek(0)  # Reset file pointer
+            analysis['file_size'] = os.path.getsize(temp_path)  # Get size from saved file
             analysis['analysis_timestamp'] = datetime.now().isoformat()
             analysis['safety_checked'] = True
             

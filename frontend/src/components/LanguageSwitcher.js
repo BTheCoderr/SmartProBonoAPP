@@ -56,15 +56,28 @@ const LanguageSwitcher = ({ variant = 'icon' }) => {
   if (variant === 'icon') {
     return (
       <>
-        <Tooltip title={t('common.changeLanguage')}>
+        <Tooltip title={`${t('common.changeLanguage', 'Change Language')} - ${getCurrentLanguageLabel()}`}>
           <IconButton
             onClick={handleClick}
             color="inherit"
             aria-controls={open ? 'language-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minWidth: 40,
+              minHeight: 40
+            }}
           >
-            <TranslateIcon />
+            <Typography component="span" sx={{ fontSize: '1.2rem', lineHeight: 1 }}>
+              {getCurrentLanguageFlag()}
+            </Typography>
+            <Typography component="span" sx={{ fontSize: '0.6rem', lineHeight: 1, mt: 0.2 }}>
+              {getCurrentLanguageLabel().substring(0, 2).toUpperCase()}
+            </Typography>
           </IconButton>
         </Tooltip>
         <Popover
