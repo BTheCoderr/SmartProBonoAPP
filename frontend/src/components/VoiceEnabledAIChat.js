@@ -255,30 +255,11 @@ const VoiceEnabledAIChat = () => {
   };
 
   const formatAIResponse = (data) => {
-    const analysis = data.analysis || {};
-    let response = '';
-
-    if (analysis.case_summary) {
-      response += `Case Analysis: ${analysis.case_summary}\n\n`;
-    }
-
-    if (analysis.key_facts && analysis.key_facts.length > 0) {
-      response += `Key Facts:\n${analysis.key_facts.map(fact => `• ${fact}`).join('\n')}\n\n`;
-    }
-
-    if (analysis.practical_advice && analysis.practical_advice.length > 0) {
-      response += `Practical Advice:\n${analysis.practical_advice.map(advice => `• ${advice}`).join('\n')}\n\n`;
-    }
-
-    if (data.recommendations && data.recommendations.length > 0) {
-      response += `Recommendations:\n${data.recommendations.map(rec => `• ${rec}`).join('\n')}\n\n`;
-    }
-
-    if (data.disclaimers && data.disclaimers.length > 0) {
-      response += `Important: ${data.disclaimers.join(' ')}`;
-    }
-
-    return response || 'I understand your question. Let me provide some guidance based on the information you\'ve shared.';
+    // Just return the text directly - no verbose formatting
+    if (data.text) return data.text;
+    if (data.response) return data.response;
+    if (data.analysis?.text) return data.analysis.text;
+    return data.message || 'I understand your question. How can I help you?';
   };
 
   const getAvailableVoices = () => {

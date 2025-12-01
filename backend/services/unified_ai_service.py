@@ -23,11 +23,13 @@ class UnifiedAIService:
     """
     
     def __init__(self):
+        self.groq_api_key = os.getenv('GROQ_API_KEY')
         self.anthropic_api_key = os.getenv('ANTHROPIC_API_KEY')
         self.openai_api_key = os.getenv('OPENAI_API_KEY')
         self.ollama_url = "http://localhost:11434/api/generate"
         
-        # Check which services are available
+        # Check which services are available - Groq first priority
+        self.groq_available = bool(self.groq_api_key)
         self.claude_available = bool(self.anthropic_api_key)
         self.openai_available = bool(self.openai_api_key)
         self.ollama_available = self._check_ollama_availability()
@@ -62,9 +64,11 @@ class UnifiedAIService:
         try:
             response_id = f"resp_{random.randint(1000, 9999)}_{int(datetime.now().timestamp())}"
             
-            # Auto-select best available model
+            # Auto-select best available model - Groq first priority
             if model == "auto":
-                if self.claude_available:
+                if self.groq_available:
+                    model = "groq"
+                elif self.claude_available:
                     model = "claude"
                 elif self.openai_available:
                     model = "openai"
@@ -73,8 +77,10 @@ class UnifiedAIService:
                 else:
                     model = "fallback"
             
-            # Generate response based on selected model
-            if model == "claude" and self.claude_available:
+            # Generate response based on selected model - Groq first
+            if model == "groq" and self.groq_available:
+                response_text = self._call_groq(message, task_type, history)
+            elif model == "claude" and self.claude_available:
                 response_text = self._call_claude(message, task_type, history)
             elif model == "openai" and self.openai_available:
                 response_text = self._call_openai(message, task_type, history)
@@ -107,6 +113,48 @@ class UnifiedAIService:
                 "success": False,
                 "error": str(e)
             }
+    
+    def _call_groq(self, message: str, task_type: str, history: Optional[List[Dict]] = None) -> str:
+        """Call Groq API for fast response generation."""
+        try:
+            from groq import Groq
+            
+            client = Groq(api_key=self.groq_api_key)
+            
+            # Build conversation context
+            messages = []
+            if history:
+                for msg in history[-5:]:
+                    role = "user" if msg.get('sender') == 'user' else "assistant"
+                    messages.append({
+                        "role": role,
+                        "content": msg.get('text', '')
+                    })
+            
+            messages.append({"role": "user", "content": message})
+            
+            # Get system prompt
+            system_prompt = self._get_system_prompt(task_type)
+            
+            response = client.chat.completions.create(
+                model="llama-3.1-8b-instant",  # Fast model like SmartProBono Lite
+                messages=[{"role": "system", "content": system_prompt}] + messages,
+                max_tokens=1000,
+                temperature=0.7
+            )
+            
+            return response.choices[0].message.content
+            
+        except Exception as e:
+            logger.error(f"Groq API error: {e}")
+            # Fallback to next available service
+            if self.claude_available:
+                return self._call_claude(message, task_type, history)
+            elif self.openai_available:
+                return self._call_openai(message, task_type, history)
+            elif self.ollama_available:
+                return self._call_ollama(message, task_type, history)
+            return self._get_fallback_response(message, task_type)
     
     def _call_claude(self, message: str, task_type: str, history: Optional[List[Dict]] = None) -> str:
         """Call Claude API for response generation."""
@@ -275,15 +323,26 @@ Be thorough and professional in your analysis."""
         return prompts.get(task_type, prompts["chat"])
     
     def _get_fallback_response(self, message: str, task_type: str) -> str:
-        """Fallback responses when all AI services are unavailable."""
+        """Simple, conversational fallback responses."""
+        
+        # Detect simple greetings
+        greetings = ['hi', 'hello', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening']
+        message_lower = message.lower().strip()
+        
+        if any(greeting in message_lower for greeting in greetings) and len(message.split()) <= 3:
+            return "Hi! I'm your AI legal assistant. I can help you with:\n\n• Answering legal questions\n• Analyzing documents\n• Drafting legal letters\n• Understanding your rights\n\nYou can upload a document, ask me a question, or tell me what you're working on. What can I help you with today?"
+        
+        # Simple conversational responses based on task type
         fallback_responses = {
-            "chat": f"I understand you're asking about: {message}\n\nI'm currently experiencing technical difficulties with my AI services. For immediate legal assistance, please:\n\n1. Contact a qualified attorney\n2. Visit your local legal aid office\n3. Check online legal resources\n\nI apologize for the inconvenience and will be back online soon.",
+            "chat": "I understand. Let me help you with that. Could you tell me more about your situation? For example:\n\n• What type of legal issue are you facing?\n• Do you have any documents related to this?\n• What's your main concern?\n\nThe more details you provide, the better I can assist you.",
             
-            "research": f"Research request: {message}\n\nI'm currently unable to access my research databases. For legal research assistance, please:\n\n1. Consult with a legal professional\n2. Visit your local law library\n3. Use online legal databases\n4. Contact legal aid organizations\n\nI'll be back online shortly to help with your research needs.",
+            "legal": "I can help with that legal question. To give you the most accurate information, could you provide:\n\n• Your location (state/city)\n• Key details about your situation\n• Any relevant dates or deadlines\n\nWhat specific aspect would you like help with?",
             
-            "draft": f"Document drafting request: {message}\n\nI'm currently unable to access my document generation tools. For document assistance, please:\n\n1. Use standard legal document templates\n2. Consult with a legal professional\n3. Visit legal aid document resources\n4. Check online legal form libraries\n\nI'll be back online soon to help with your document needs.",
+            "research": f"I'd be happy to help research that for you. To get started, could you tell me:\n\n• What specific legal topic interests you?\n• Is this related to a current situation?\n• Are you looking for case law, statutes, or general information?\n\nLet me know and I'll help you find what you need.",
             
-            "analysis": f"Document analysis request: {message}\n\nI'm currently unable to access my analysis tools. For document analysis, please:\n\n1. Have a legal professional review the document\n2. Use online legal analysis tools\n3. Consult legal aid services\n4. Check document review services\n\nI'll be back online shortly to help with your analysis needs."
+            "draft": "I can help you draft that document. What type of document do you need?\n\nCommon options:\n• Custody modification letter\n• Demand letter\n• Response to eviction\n• Employment grievance\n• Contract review request\n\nTell me which one, or describe what you need, and I'll guide you through it.",
+            
+            "analysis": "I can analyze that for you. Please share:\n\n• Upload the document (PDF, DOCX, or TXT)\n• Or paste the text here\n• Let me know what type of document it is\n\nI'll review it and provide a clear summary and recommendations."
         }
         
         return fallback_responses.get(task_type, fallback_responses["chat"])

@@ -18,8 +18,8 @@ sys.path.insert(0, backend_path)
 from dotenv import load_dotenv
 load_dotenv()
 
-# Import from simple_server for production deployment
-from simple_server import app
+# Import from combined_server for production deployment (has all routes)
+from backend.combined_server import app
 
 # For WSGI compatibility
 application = app

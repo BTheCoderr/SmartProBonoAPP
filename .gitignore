@@ -44,3 +44,4 @@ REDIS_PASSWORD=smartprobono_redis_2024_secure
 
 # JWT configuration (needed for authentication)
 JWT_SECRET_KEY=smartprobono_jwt_secret_key_2024_secure
+.env.backup

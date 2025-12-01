@@ -56,6 +56,11 @@ class SaulEnhancedAIService:
             Dict containing the AI response
         """
         try:
+            # Handle simple greetings with conversational responses (don't use AI models)
+            greeting_response = self._handle_greeting(message)
+            if greeting_response:
+                return greeting_response
+            
             # Determine which model to use
             selected_model = self._select_model(model, task_type, user_role)
             
@@ -72,20 +77,25 @@ class SaulEnhancedAIService:
                 "temperature": self._get_temperature(task_type)
             }
             
-            # Try Saul model first if selected
-            if selected_model == "saul":
-                try:
-                    response = self.saul_service.generate_response(message, **context)
-                    if response.get("success", False):
-                        response["model_used"] = "saul"
-                        response["model_info"] = self.saul_service.get_model_info()
-                        return response
-                    else:
-                        logger.warning("Saul model failed, falling back to Ollama")
-                        # Fall through to fallback
-                except Exception as e:
-                    logger.error(f"Saul model error: {str(e)}")
-                    # Fall through to fallback
+            # For conversational legal questions, use a guided approach like SmartProBono Lite
+            conversational_response = self._handle_conversational_legal(message, task_type, history)
+            if conversational_response:
+                return conversational_response
+            
+            # Saul commented out - requires too much CPU/GPU power
+            # if selected_model == "saul":
+            #     try:
+            #         response = self.saul_service.generate_response(message, **context)
+            #         if response.get("success", False):
+            #             response["model_used"] = "saul"
+            #             response["model_info"] = self.saul_service.get_model_info()
+            #             return response
+            #         else:
+            #             logger.warning("Saul model failed, falling back to Ollama")
+            #             # Fall through to fallback
+            #     except Exception as e:
+            #         logger.error(f"Saul model error: {str(e)}")
+            #         # Fall through to fallback
             
             # Use fallback service
             response = self.fallback_service.generate_response(message, **context)
@@ -98,27 +108,120 @@ class SaulEnhancedAIService:
             logger.error(f"Error in Saul Enhanced AI Service: {str(e)}")
             return self._get_error_response(message, task_type, str(e))
     
+    def _handle_greeting(self, message: str) -> Optional[Dict[str, Any]]:
+        """Detect and handle simple greetings with conversational responses"""
+        greetings = ['hi', 'hello', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening', 'howdy', 'sup', 'yo']
+        message_lower = message.lower().strip()
+        
+        # Check if this is a simple greeting (3 words or less, contains greeting word)
+        if len(message.split()) <= 3 and any(greeting in message_lower for greeting in greetings):
+            return {
+                "id": f"greeting_{int(datetime.now().timestamp())}",
+                "created_at": datetime.now().isoformat(),
+                "success": True,
+                "text": "Hi! I'm your AI legal assistant. I can help you with:\n\n• Answering legal questions\n• Analyzing documents\n• Drafting legal letters\n• Understanding your rights\n• Court filing procedures\n\nYou can upload a document, ask me a question, or tell me what legal issue you're working on. What can I help you with today?",
+                "model_used": "greeting_handler",
+                "task_type": "greeting",
+                "conversation_id": None,
+                "user_id": None,
+                "model_info": {
+                    "model_name": "Conversational Handler",
+                    "description": "Simple greeting response system"
+                }
+            }
+        return None
+    
+    def _handle_conversational_legal(self, message: str, task_type: str, history: Optional[List]) -> Optional[Dict[str, Any]]:
+        """Handle legal questions with conversational, guided responses like SmartProBono Lite"""
+        message_lower = message.lower()
+        
+        # Detect custody-related questions
+        if any(word in message_lower for word in ['custody', 'child custody', 'visitation', 'parenting time']):
+            return {
+                "id": f"conv_{int(datetime.now().timestamp())}",
+                "created_at": datetime.now().isoformat(),
+                "success": True,
+                "text": "I can help you with child custody matters. To better assist you, I'll need some information:\n\n1. What is your current relationship with the other parent (married, divorced, separated, never married)?\n\n2. What is the current custody arrangement for your child, if any?\n\n3. What changes are you hoping to make to the custody arrangement?\n\nThis information will help me guide you through the process and assist with drafting a Custody Modification Letter if needed.",
+                "model_used": "conversational_handler",
+                "task_type": "custody_inquiry",
+                "conversation_id": None,
+                "user_id": None,
+                "model_info": {
+                    "model_name": "Conversational Legal Assistant",
+                    "description": "Guided legal assistance system"
+                }
+            }
+        
+        # Detect eviction/housing questions
+        if any(word in message_lower for word in ['evict', 'eviction', 'tenant', 'landlord', 'rent', 'lease']):
+            return {
+                "id": f"conv_{int(datetime.now().timestamp())}",
+                "created_at": datetime.now().isoformat(),
+                "success": True,
+                "text": "I can help with housing and tenant rights issues. To provide the best guidance, please tell me:\n\n1. Are you facing eviction, or do you have another landlord/tenant issue?\n\n2. What state are you in? (Tenant rights vary by state)\n\n3. Do you have a written lease agreement?\n\n4. What's the main issue you're dealing with?\n\nOnce I have this information, I can provide specific guidance and help draft any necessary documents.",
+                "model_used": "conversational_handler",
+                "task_type": "housing_inquiry",
+                "conversation_id": None,
+                "user_id": None,
+                "model_info": {
+                    "model_name": "Conversational Legal Assistant",
+                    "description": "Guided legal assistance system"
+                }
+            }
+        
+        # Detect employment/workplace questions
+        if any(word in message_lower for word in ['work', 'job', 'employ', 'fired', 'discrimination', 'harassment', 'grievance']):
+            return {
+                "id": f"conv_{int(datetime.now().timestamp())}",
+                "created_at": datetime.now().isoformat(),
+                "success": True,
+                "text": "I can assist with employment-related legal matters. To help you effectively, please share:\n\n1. What is the nature of your workplace issue (termination, discrimination, harassment, wage dispute, etc.)?\n\n2. Are you currently employed or were you recently terminated?\n\n3. Have you reported this issue to your employer or HR?\n\n4. What outcome are you seeking?\n\nWith this information, I can guide you on your rights and help draft appropriate letters or complaints.",
+                "model_used": "conversational_handler",
+                "task_type": "employment_inquiry",
+                "conversation_id": None,
+                "user_id": None,
+                "model_info": {
+                    "model_name": "Conversational Legal Assistant",
+                    "description": "Guided legal assistance system"
+                }
+            }
+        
+        # If no specific pattern matches but it's a question, give general guidance
+        if '?' in message or any(word in message_lower for word in ['how', 'what', 'when', 'where', 'who', 'can i', 'should i', 'help', 'need']):
+            return {
+                "id": f"conv_{int(datetime.now().timestamp())}",
+                "created_at": datetime.now().isoformat(),
+                "success": True,
+                "text": f"I understand you're asking about: \"{message}\"\n\nTo provide you with the most helpful guidance, could you tell me a bit more about:\n\n• What type of legal issue is this (family law, housing, employment, etc.)?\n• What state are you in?\n• What's your main goal or concern?\n• Do you have any documents related to this matter?\n\nThe more details you provide, the better I can assist you with specific advice and document preparation.",
+                "model_used": "conversational_handler",
+                "task_type": "general_inquiry",
+                "conversation_id": None,
+                "user_id": None,
+                "model_info": {
+                    "model_name": "Conversational Legal Assistant",
+                    "description": "Guided legal assistance system"
+                }
+            }
+        
+        return None
+    
     def _select_model(self, requested_model: str, task_type: str, user_role: str) -> str:
         """Intelligently select the best model for the request"""
         
-        # Force Saul for legal professionals when available
-        if user_role in ["lawyer", "attorney", "paralegal"] and requested_model in ["auto", "saul"]:
-            return "saul"
+        # Saul commented out - use Groq/Gemini/Ollama instead
+        # if user_role in ["lawyer", "attorney", "paralegal"] and requested_model in ["auto", "saul"]:
+        #     return "saul"
         
-        # Use Saul for ALL legal-specific tasks
-        legal_tasks = ["legal", "research", "analysis", "document_review", "case_law", "legal_advice", "draft", "document_drafting"]
-        if task_type in legal_tasks and requested_model in ["auto", "saul"]:
-            return "saul"
-        
-        # Respect explicit model requests
-        if requested_model in ["saul", "legal", "default", "ollama"]:
+        # Respect explicit model requests (except saul)
+        if requested_model in ["legal", "default", "ollama", "groq"]:
             return requested_model
         
-        # Default to Saul for ALL legal tasks, Ollama for general chat only
-        if task_type in legal_tasks or task_type != "chat":
-            return "saul"
+        # Default to legal-optimized models for legal tasks
+        legal_tasks = ["legal", "research", "analysis", "document_review", "case_law", "legal_advice", "draft", "document_drafting"]
+        if task_type in legal_tasks:
+            return "legal"  # Will use Groq/Gemini/Ollama
         else:
-            return "legal"  # Use legal-optimized Ollama model for general chat
+            return "legal"  # Use legal-optimized models for general chat too
     
     def _get_max_tokens(self, task_type: str) -> int:
         """Get appropriate max tokens for task type"""
