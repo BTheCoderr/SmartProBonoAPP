@@ -172,26 +172,11 @@ const MobileOptimizedChat = () => {
   };
 
   const formatAIResponse = (data) => {
-    const analysis = data.analysis || {};
-    let response = '';
-
-    if (analysis.case_summary) {
-      response += `Analysis: ${analysis.case_summary}\n\n`;
-    }
-
-    if (analysis.key_facts && analysis.key_facts.length > 0) {
-      response += `Key Facts:\n${analysis.key_facts.map(fact => `• ${fact}`).join('\n')}\n\n`;
-    }
-
-    if (analysis.practical_advice && analysis.practical_advice.length > 0) {
-      response += `Advice:\n${analysis.practical_advice.map(advice => `• ${advice}`).join('\n')}\n\n`;
-    }
-
-    if (data.disclaimers && data.disclaimers.length > 0) {
-      response += `Important: ${data.disclaimers.join(' ')}`;
-    }
-
-    return response || 'I understand your question. How can I help you?';
+    // Just return the text directly - no verbose formatting
+    if (data.text) return data.text;
+    if (data.response) return data.response;
+    if (data.analysis?.text) return data.analysis.text;
+    return data.message || 'I understand your question. How can I help you?';
   };
 
   const startVoiceInput = () => {

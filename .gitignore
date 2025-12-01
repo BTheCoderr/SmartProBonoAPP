@@ -44,3 +44,4 @@ REDIS_PASSWORD=***REMOVED***
 
 # JWT configuration (needed for authentication)
 JWT_SECRET_KEY=***REMOVED***
+.env.backup
