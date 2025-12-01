@@ -36,82 +36,18 @@ const ImprovedLegalAIChat = () => {
   }, [messages]);
 
   const formatAIResponse = (data) => {
-    // Access the nested analysis from the multi-agent system
-    const analysis = data.analysis?.analysis || data.analysis || {};
-    let response = '';
-
-    // Add case summary
-    if (analysis.case_summary) {
-      const summary = Array.isArray(analysis.case_summary) ? analysis.case_summary[0] : analysis.case_summary;
-      response += `**Case Analysis:**\n${summary}\n\n`;
+    // Just return the text directly - no verbose formatting
+    if (data.text) {
+      return data.text;
     }
-
-    // Add court decision
-    if (analysis.court_decision) {
-      const decision = Array.isArray(analysis.court_decision) ? analysis.court_decision[0] : analysis.court_decision;
-      response += `**Court Decision:**\n${decision}\n\n`;
+    if (data.response) {
+      return data.response;
     }
-
-    // Add relevance
-    if (analysis.relevance) {
-      const relevance = Array.isArray(analysis.relevance) ? analysis.relevance[0] : analysis.relevance;
-      response += `**Relevance to Your Case:**\n${relevance}\n\n`;
+    if (data.analysis?.text) {
+      return data.analysis.text;
     }
-
-    // Add key facts
-    if (analysis.key_facts && analysis.key_facts.length > 0) {
-      response += `**Key Facts:**\n`;
-      analysis.key_facts.forEach(fact => {
-        response += `• ${fact}\n`;
-      });
-      response += '\n';
-    }
-
-    // Add legal rules
-    if (analysis.legal_rules && analysis.legal_rules.length > 0) {
-      response += `**Legal Rules:**\n`;
-      analysis.legal_rules.forEach(rule => {
-        response += `• ${rule}\n`;
-      });
-      response += '\n';
-    }
-
-    // Add court decision
-    if (analysis.court_decision) {
-      const decision = Array.isArray(analysis.court_decision) ? analysis.court_decision[0] : analysis.court_decision;
-      response += `**Court Decision:**\n${decision}\n\n`;
-    }
-
-    // Add relevance
-    if (analysis.relevance) {
-      const relevance = Array.isArray(analysis.relevance) ? analysis.relevance[0] : analysis.relevance;
-      response += `**Relevance:**\n${relevance}\n\n`;
-    }
-
-    // Add practical advice
-    if (analysis.practical_advice && analysis.practical_advice.length > 0) {
-      response += `**Practical Advice:**\n`;
-      analysis.practical_advice.forEach(advice => {
-        response += `• ${advice}\n`;
-      });
-      response += '\n';
-    }
-
-    // Add similar cases
-    if (analysis.similar_cases && analysis.similar_cases.length > 0) {
-      response += `**Similar Cases:**\n`;
-      analysis.similar_cases.forEach(case_item => {
-        response += `• ${case_item}\n`;
-      });
-      response += '\n';
-    }
-
-    // Add relevance
-    if (analysis.relevance) {
-      response += `**Relevance to Your Case:**\n${analysis.relevance}\n\n`;
-    }
-
-    return response || "I've analyzed your legal situation. Please consult with a qualified attorney for specific advice.";
+    // Fallback - return simple message
+    return data.message || "I understand. How can I help you today?";
   };
 
   const handleSubmit = async (e) => {
@@ -221,7 +157,13 @@ const ImprovedLegalAIChat = () => {
         </Alert>
       )}
 
-      <Paper sx={{ height: '500px', display: 'flex', flexDirection: 'column' }}>
+      <Paper sx={{ 
+        height: { xs: 'calc(100vh - 300px)', md: 'calc(100vh - 250px)' },
+        minHeight: '600px',
+        maxHeight: '90vh',
+        display: 'flex', 
+        flexDirection: 'column' 
+      }}>
         <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>
           <List>
             {messages.map((message) => (
