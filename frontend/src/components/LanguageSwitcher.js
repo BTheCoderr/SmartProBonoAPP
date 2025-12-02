@@ -8,9 +8,7 @@ import {
   Popover
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import TranslateIcon from '@mui/icons-material/Translate';
 import CheckIcon from '@mui/icons-material/Check';
-
 import LanguageIcon from '@mui/icons-material/Language';
 
 const languages = [

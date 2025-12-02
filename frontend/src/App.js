@@ -11,80 +11,80 @@ import { AuthProvider } from './context/AuthContext';
 import { AnalyticsProvider } from './contexts/AnalyticsContext';
 import i18n from './i18n';
 
-// Components
+// Components - Commented out (not needed for minimal startup)
 // import LegalAIChat from './components/LegalAIChat';
-import PremiumRouteGuard from './components/PremiumRouteGuard';
-import LegalAnalytics from './components/LegalAnalytics';
+// import PremiumRouteGuard from './components/PremiumRouteGuard';
+// import LegalAnalytics from './components/LegalAnalytics';
 // import FeedbackAnalytics from './components/FeedbackAnalytics';
 
-// Pages
-import ContractsPage from './pages/ContractsPage';
-import Immigration from './pages/Immigration';
-import Resources from './pages/Resources';
-import RightsPage from './pages/RightsPage';
-import Services from './pages/Services';
-import VirtualParalegalPage from './pages/VirtualParalegalPage';
-import AIVirtualParalegal from './components/EnhancedAIVirtualParalegal';
-import ClientPortal from './pages/ClientPortal';
-import LawyerDashboard from './pages/LawyerDashboard';
-import BondsmanDashboard from './pages/BondsmanDashboard';
-import DocumentsPage from './pages/DocumentsPage';
-import ExpertHelpPage from './pages/ExpertHelpPage';
+// Pages - Essential (Active)
 import About from './pages/About';
 import Contact from './pages/Contact';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
-import AccessibilityPage from './pages/AccessibilityPage';
-import SitemapPage from './pages/SitemapPage';
-import VolunteerFormPage from './pages/VolunteerFormPage';
-import LegalHelpFormPage from './pages/LegalHelpFormPage';
+
+// Pages - Optional (Commented out but available for re-enabling)
+// import ContractsPage from './pages/ContractsPage';
+// import Immigration from './pages/Immigration';
+// import Resources from './pages/Resources';
+// import RightsPage from './pages/RightsPage';
+// import Services from './pages/Services';
+// import VirtualParalegalPage from './pages/VirtualParalegalPage';
+// import AIVirtualParalegal from './components/EnhancedAIVirtualParalegal';
+// import ClientPortal from './pages/ClientPortal';
+// import LawyerDashboard from './pages/LawyerDashboard';
+// import BondsmanDashboard from './pages/BondsmanDashboard';
+// import DocumentsPage from './pages/DocumentsPage';
+// import ExpertHelpPage from './pages/ExpertHelpPage';
+// import AccessibilityPage from './pages/AccessibilityPage';
+// import SitemapPage from './pages/SitemapPage';
+// import VolunteerFormPage from './pages/VolunteerFormPage';
+// import LegalHelpFormPage from './pages/LegalHelpFormPage';
 
 // Core layout components
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
-// Page components
+// Page components - Essential (Active)
 import HomePage from './pages/HomePage';
 import Dashboard from './pages/EnhancedDashboard';
-import FormsDashboard from './pages/FormsDashboard';
 import LegalAIChatPage from './pages/LegalAIChatPage';
-import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import AdminDashboard from './pages/AdminDashboard';
 import NotFoundPage from './pages/NotFoundPage';
-import UnauthorizedPage from './pages/UnauthorizedPage';
-
-// Footer link pages
-import StatusPage from './pages/StatusPage';
-import HelpPage from './pages/HelpPage';
-import BugReportPage from './pages/BugReportPage';
-import FeatureRequestPage from './pages/FeatureRequestPage';
-import PartnersPage from './pages/PartnersPage';
-import PressPage from './pages/PressPage';
-import CareersPage from './pages/CareersPage';
-import TeamPage from './pages/TeamPage';
-import OurMissionPage from './pages/OurMissionPage';
-import GlossaryPage from './pages/ComprehensiveGlossaryPage';
-import FAQPage from './pages/FAQPage';
-import BlogPage from './pages/BlogPage';
-import LiveChatPage from './pages/LiveChatPage';
-
-// New components
-import DocumentGenerator from './components/DocumentGenerator';
-import PDFGenerator from './components/documents/PDFGenerator';
-import ExpungementWizard from './components/ExpungementWizard';
-import LanguageSwitcher from './components/LanguageSwitcher';
 import DocumentScanPage from './pages/DocumentScanPage';
-import DocumentChecklistPage from './pages/DocumentChecklistPage';
-import SafetyCheckPage from './pages/SafetyCheckPage';
-import LegalToolsPage from './pages/LegalToolsPage';
-import ImmigrationResourcesPage from './pages/ImmigrationResourcesPage';
-import ImmigrationRightsPage from './pages/ImmigrationRightsPage';
-import ExternalResourcesPage from './pages/ExternalResourcesPage';
-import LegalGuidesPage from './pages/LegalGuidesPage';
-import CaseLawPage from './pages/CaseLawPage';
+import LanguageSwitcher from './components/LanguageSwitcher';
+
+// Page components - Optional (Commented out but available for re-enabling)
+// import FormsDashboard from './pages/FormsDashboard';
+// import ProfilePage from './pages/ProfilePage';
+// import AdminDashboard from './pages/AdminDashboard';
+// import UnauthorizedPage from './pages/UnauthorizedPage';
+// import StatusPage from './pages/StatusPage';
+// import HelpPage from './pages/HelpPage';
+// import BugReportPage from './pages/BugReportPage';
+// import FeatureRequestPage from './pages/FeatureRequestPage';
+// import PartnersPage from './pages/PartnersPage';
+// import PressPage from './pages/PressPage';
+// import CareersPage from './pages/CareersPage';
+// import TeamPage from './pages/TeamPage';
+// import OurMissionPage from './pages/OurMissionPage';
+// import GlossaryPage from './pages/ComprehensiveGlossaryPage';
+// import FAQPage from './pages/FAQPage';
+// import BlogPage from './pages/BlogPage';
+// import LiveChatPage from './pages/LiveChatPage';
+// import DocumentGenerator from './components/DocumentGenerator';
+// import PDFGenerator from './components/documents/PDFGenerator';
+// import ExpungementWizard from './components/ExpungementWizard';
+// import DocumentChecklistPage from './pages/DocumentChecklistPage';
+// import SafetyCheckPage from './pages/SafetyCheckPage';
+// import LegalToolsPage from './pages/LegalToolsPage';
+// import ImmigrationResourcesPage from './pages/ImmigrationResourcesPage';
+// import ImmigrationRightsPage from './pages/ImmigrationRightsPage';
+// import ExternalResourcesPage from './pages/ExternalResourcesPage';
+// import LegalGuidesPage from './pages/LegalGuidesPage';
+// import CaseLawPage from './pages/CaseLawPage';
 
 // Protected route wrapper - DISABLED FOR DEVELOPMENT
 const ProtectedRoute = ({ children }) => {
@@ -93,14 +93,17 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// Admin route wrapper - DISABLED FOR DEVELOPMENT
+// Admin route wrapper - DISABLED FOR DEVELOPMENT (commented out - not used in minimal startup)
+/*
 const AdminRoute = ({ children }) => {
   // During development, always allow access without authentication
   console.log('Admin route accessed - authentication disabled for development');
   return children;
 };
+*/
 
-// Layout components for nested routes
+// Layout components for nested routes - Commented out (available for re-enabling)
+/*
 const ServicesLayout = () => (
   <div style={{ height: '100vh', overflow: 'auto' }}>
     <Routes>
@@ -150,6 +153,7 @@ const ResourcesLayout = () => (
     </Routes>
   </div>
 );
+*/
 
 
 const LoadingFallback = () => (
@@ -189,8 +193,31 @@ function AppContent() {
       <main style={{ minHeight: 'calc(100vh - 64px - 50px)', paddingTop: '20px', paddingBottom: '40px' }}>
         <React.Suspense fallback={<LoadingFallback />}>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            {/* ============================================ */}
+            {/* ESSENTIAL ROUTES - Minimal Startup (8-10 pages) */}
+            {/* ============================================ */}
             
+            {/* Core Pages */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            
+            {/* Core Features */}
+            <Route path="/legal-chat" element={<LegalAIChatPage />} />
+            <Route 
+              path="/scan-document" 
+              element={
+                <ProtectedRoute>
+                  <DocumentScanPage />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Auth */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            
+            {/* Dashboard */}
             <Route 
               path="/dashboard" 
               element={
@@ -200,6 +227,19 @@ function AppContent() {
               } 
             />
             
+            {/* Legal Requirements */}
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
+            
+            {/* Error Handling */}
+            <Route path="*" element={<NotFoundPage />} />
+            
+            {/* ============================================ */}
+            {/* OPTIONAL ROUTES - Commented out but available */}
+            {/* Uncomment routes below to enable additional features */}
+            {/* ============================================ */}
+            
+            {/* 
             <Route 
               path="/forms" 
               element={
@@ -227,7 +267,7 @@ function AppContent() {
               } 
             />
             
-            <Route path="/chat" element={<LiveChatPage />} /> {/* NO LOGIN REQUIRED */}
+            <Route path="/chat" element={<LiveChatPage />} />
             
             <Route 
               path="/profile" 
@@ -247,20 +287,16 @@ function AppContent() {
               } 
             />
 
-            {/* Using the layout components */}
             <Route path="/services/*" element={<ServicesLayout />} />
             <Route path="/resources/*" element={<ResourcesLayout />} />
             
-            {/* MVP Critical Routes - Ensure these are accessible without authentication */}
             <Route path="/legal-tools" element={<LegalToolsPage />} />
-            <Route path="/legal-chat" element={<LegalAIChatPage />} />
             <Route path="/generate-document" element={<PDFGenerator />} />
             <Route path="/safety-check" element={<SafetyCheckPage />} />
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/expert-help" element={<ExpertHelpPage />} />
             <Route path="/caselaw" element={<CaseLawPage />} />
             
-            {/* Virtual Paralegal - Top level route */}
             <Route 
               path="/virtual-paralegal" 
               element={
@@ -270,37 +306,27 @@ function AppContent() {
               } 
             />
             
-            {/* AI Virtual Paralegal - Autonomous AI system */}
             <Route 
               path="/ai-virtual-paralegal" 
               element={<AIVirtualParalegal />}
             />
             
-            {/* Client Portal - For clients to view their cases */}
             <Route 
               path="/client-portal" 
               element={<ClientPortal />}
             />
             
-            {/* Lawyer Dashboard - For lawyers to manage cases */}
             <Route 
               path="/lawyer-dashboard" 
               element={<LawyerDashboard />}
             />
             
-            {/* Bondsman Dashboard - For bail bond management */}
             <Route 
               path="/bondsman-dashboard" 
               element={<BondsmanDashboard />}
             />
             
-            
-            {/* Additional MVP routes */}
-            <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
-            <Route path="/contact" element={<Contact />} />
-            
-            {/* Footer links - NO LOGIN REQUIRED */}
             <Route path="/status" element={<StatusPage />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/bug-report" element={<BugReportPage />} />
@@ -311,34 +337,16 @@ function AppContent() {
             <Route path="/team" element={<TeamPage />} />
             <Route path="/mission" element={<OurMissionPage />} />
             <Route path="/rights" element={<RightsPage />} />
-            
-            {/* Legal and Policy Pages */}
-            <Route path="/privacy" element={<PrivacyPolicyPage />} />
-            <Route path="/terms" element={<TermsOfServicePage />} />
             <Route path="/accessibility" element={<AccessibilityPage />} />
             <Route path="/sitemap" element={<SitemapPage />} />
-            
-            {/* Action Pages */}
             <Route path="/volunteer" element={<VolunteerFormPage />} />
             <Route path="/get-legal-help" element={<LegalHelpFormPage />} />
             <Route path="/rights/immigration" element={<ImmigrationRightsPage />} />
             <Route path="/glossary" element={<GlossaryPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/blog" element={<BlogPage />} />
-            
-            {/* Auth Pages */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
             <Route path="/unauthorized" element={<UnauthorizedPage />} />
-            <Route 
-              path="/scan-document" 
-              element={
-                <ProtectedRoute>
-                  <DocumentScanPage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="*" element={<NotFoundPage />} />
+            */}
           </Routes>
         </React.Suspense>
       </main>
