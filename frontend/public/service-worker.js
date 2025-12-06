@@ -1,4 +1,4 @@
-const VERSION = '1.0.0';
+const VERSION = '1.0.1'; // Updated to force service worker refresh
 const CACHE_NAME = `smartprobono-v${VERSION}`;
 
 const STATIC_ASSETS = [
@@ -88,12 +88,14 @@ self.addEventListener('fetch', event => {
           if (response.ok) {
             const clonedResponse = response.clone();
             caches.open(API_CACHE_NAME)
-              .then(cache => cache.put(event.request, clonedResponse))
-              .catch(err => {
-                // Silently ignore caching errors for non-cacheable requests
-                if (!err.message?.includes('chrome-extension') && !err.message?.includes('unsupported')) {
-                  console.error('[ServiceWorker] Error caching API response:', err);
+              .then(cache => {
+                // Only cache if request is cacheable
+                if (url.protocol.startsWith('http')) {
+                  return cache.put(event.request, clonedResponse);
                 }
+              })
+              .catch(() => {
+                // Silently ignore all caching errors
               });
           }
           return response;
@@ -136,12 +138,15 @@ self.addEventListener('fetch', event => {
             if (response.ok && !url.pathname.startsWith('/api/')) {
               const clonedResponse = response.clone();
               caches.open(CACHE_NAME)
-                .then(cache => cache.put(event.request, clonedResponse))
-                .catch(err => {
-                  // Silently ignore caching errors for non-cacheable requests
-                  if (!err.message?.includes('chrome-extension') && !err.message?.includes('unsupported')) {
-                    console.error('[ServiceWorker] Error caching response:', err);
+                .then(cache => {
+                  // Only cache if request is cacheable (not chrome-extension, etc.)
+                  if (url.protocol.startsWith('http')) {
+                    return cache.put(event.request, clonedResponse);
                   }
+                })
+                .catch(err => {
+                  // Silently ignore all caching errors (expected for non-cacheable requests)
+                  // No console logging to reduce noise
                 });
             }
             return response;

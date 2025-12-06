@@ -36,7 +36,16 @@ if (!i18n.isInitialized) {
         }
       },
       fallbackLng: 'en',
-      debug: true, // Enable debug to see translation loading
+      debug: false, // Disable debug to reduce console noise
+      
+      // Suppress missing key warnings in production
+      missingKeyHandler: (lng, ns, key) => {
+        // Only log missing keys in development
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`Missing translation key: ${key}`);
+        }
+        return key; // Return key as fallback
+      },
       
       // User's language preference from local storage
       detection: {
