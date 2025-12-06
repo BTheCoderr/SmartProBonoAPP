@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }) => {
       
       // Set a timeout to prevent infinite loading
       const timeoutId = setTimeout(() => {
-        console.warn('Auth check timeout - proceeding without authentication');
+        // Silently proceed without authentication on timeout (expected behavior)
         setUser(null);
         setLoading(false);
       }, 5000); // 5 second timeout
@@ -143,14 +143,18 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.user);
       } catch (error) {
         clearTimeout(timeoutId);
-        console.error('Auth check error:', error);
         
-        // If it's a network error or timeout, just proceed without auth
+        // If it's a network error or timeout, silently proceed without auth (expected behavior)
         if (!error.response || error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
-          console.warn('Network error during auth check - proceeding without authentication');
+          // This is expected - API might not be available, proceed without auth
           setUser(null);
           setLoading(false);
           return;
+        }
+        
+        // Only log unexpected errors (non-network/timeout errors)
+        if (error.response && error.response.status !== 401) {
+          console.error('Auth check error:', error);
         }
         
         // Try to refresh token if access token is expired
