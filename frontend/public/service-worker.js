@@ -75,6 +75,11 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // Skip non-http/https requests (chrome-extension, chrome, etc.)
+  if (!url.protocol.startsWith('http')) {
+    return;
+  }
+
   // Handle API requests
   if (API_ROUTES.some(route => url.pathname.startsWith(route))) {
     event.respondWith(
@@ -84,7 +89,12 @@ self.addEventListener('fetch', event => {
             const clonedResponse = response.clone();
             caches.open(API_CACHE_NAME)
               .then(cache => cache.put(event.request, clonedResponse))
-              .catch(err => console.error('[ServiceWorker] Error caching API response:', err));
+              .catch(err => {
+                // Silently ignore caching errors for non-cacheable requests
+                if (!err.message?.includes('chrome-extension') && !err.message?.includes('unsupported')) {
+                  console.error('[ServiceWorker] Error caching API response:', err);
+                }
+              });
           }
           return response;
         })
@@ -127,7 +137,12 @@ self.addEventListener('fetch', event => {
               const clonedResponse = response.clone();
               caches.open(CACHE_NAME)
                 .then(cache => cache.put(event.request, clonedResponse))
-                .catch(err => console.error('[ServiceWorker] Error caching response:', err));
+                .catch(err => {
+                  // Silently ignore caching errors for non-cacheable requests
+                  if (!err.message?.includes('chrome-extension') && !err.message?.includes('unsupported')) {
+                    console.error('[ServiceWorker] Error caching response:', err);
+                  }
+                });
             }
             return response;
           })

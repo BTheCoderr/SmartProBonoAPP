@@ -126,14 +126,32 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       
+      // Set a timeout to prevent infinite loading
+      const timeoutId = setTimeout(() => {
+        console.warn('Auth check timeout - proceeding without authentication');
+        setUser(null);
+        setLoading(false);
+      }, 5000); // 5 second timeout
+      
       try {
         const response = await axios.get(`${API_URL}/api/auth/me`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bearer ${accessToken}` },
+          timeout: 5000 // 5 second timeout for the request
         });
         
+        clearTimeout(timeoutId);
         setUser(response.data.user);
       } catch (error) {
+        clearTimeout(timeoutId);
         console.error('Auth check error:', error);
+        
+        // If it's a network error or timeout, just proceed without auth
+        if (!error.response || error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+          console.warn('Network error during auth check - proceeding without authentication');
+          setUser(null);
+          setLoading(false);
+          return;
+        }
         
         // Try to refresh token if access token is expired
         if (error.response?.status === 401 && refreshToken) {
@@ -142,7 +160,8 @@ export const AuthProvider = ({ children }) => {
             // Try again with new token
             try {
               const retryResponse = await axios.get(`${API_URL}/api/auth/me`, {
-                headers: { Authorization: `Bearer ${newToken}` }
+                headers: { Authorization: `Bearer ${newToken}` },
+                timeout: 5000
               });
               setUser(retryResponse.data.user);
             } catch (retryError) {
@@ -156,6 +175,7 @@ export const AuthProvider = ({ children }) => {
           setUser(null);
         }
       } finally {
+        clearTimeout(timeoutId);
         setLoading(false);
       }
     };
