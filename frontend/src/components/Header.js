@@ -366,8 +366,21 @@ const Header = () => {
             {renderMobileDrawer()}
 
             {/* Logo */}
-            <Box sx={{ display: 'flex', alignItems: 'center', mr: { xs: 1, sm: 3 } }}>
-              <Logo />
+            <Box 
+              component={RouterLink}
+              to="/"
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                mr: { xs: 2, sm: 4 },
+                textDecoration: 'none',
+                cursor: 'pointer',
+                '&:hover': {
+                  opacity: 0.8,
+                }
+              }}
+            >
+              <Logo size="large" variant="dark" />
               {isBetaMode && (
                 <Chip 
                   label="BETA" 
@@ -380,7 +393,7 @@ const Header = () => {
                     '& .MuiChip-label': {
                       px: 1
                     }
-                  }} 
+                  }}
                 />
               )}
             </Box>
