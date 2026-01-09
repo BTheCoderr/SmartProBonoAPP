@@ -156,52 +156,53 @@ const FeaturesSection = () => {
   return (
     <Box sx={{ 
       py: { xs: 8, md: 12 }, 
-      bgcolor: 'white',
-      borderRadius: { xs: 0, md: 4 },
-      mx: { xs: 0, md: 2 },
-      boxShadow: { xs: 'none', md: '0 4px 20px rgba(0,0,0,0.08)' }
+      bgcolor: '#FAFBFC',
+      borderTop: '1px solid',
+      borderColor: 'divider',
     }}>
       <Container maxWidth="lg">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
         >
           <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
             <Chip
               label={t('features.badge')}
-              color="primary"
               sx={{
                 mb: 2,
-                fontSize: '0.875rem',
+                fontSize: '0.75rem',
                 fontWeight: 600,
-                py: 1,
+                height: 28,
+                backgroundColor: theme.palette.primary.main,
+                color: 'white',
               }}
             />
             <Typography
               variant="h2"
               gutterBottom
               sx={{
-                fontWeight: 800,
-                fontSize: { xs: '2.5rem', md: '3rem' },
+                fontWeight: 700,
+                fontSize: { xs: '2.25rem', md: '2.75rem' },
                 lineHeight: 1.2,
                 mb: 2,
-                color: '#1e293b',
+                color: '#0F172A',
+                letterSpacing: '-0.02em',
               }}
             >
               {t('features.title')}
             </Typography>
             <Typography
-              variant="h5"
+              variant="h6"
               sx={{
-                maxWidth: '700px',
+                maxWidth: '600px',
                 mx: 'auto',
-                lineHeight: 1.6,
-                fontSize: { xs: '1.1rem', md: '1.25rem' },
+                lineHeight: 1.7,
+                fontSize: { xs: '1rem', md: '1.125rem' },
                 fontWeight: 400,
-                color: '#475569',
+                color: '#64748B',
               }}
             >
               {t('features.subtitle')}
@@ -227,15 +228,14 @@ const FeaturesSection = () => {
                       flexDirection: 'column',
                       position: 'relative',
                       overflow: 'hidden',
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                      background: '#ffffff',
                       border: `1px solid ${theme.palette.divider}`,
+                      borderRadius: 2,
+                      transition: 'all 0.2s ease',
                       '&:hover': {
-                        '& .feature-icon': {
-                          transform: 'scale(1.1) rotate(5deg)',
-                        },
-                        '& .feature-badge': {
-                          transform: 'scale(1.05)',
-                        },
+                        borderColor: theme.palette.primary.main,
+                        boxShadow: '0 4px 12px rgba(15, 61, 94, 0.08)',
+                        transform: 'translateY(-2px)',
                       },
                     }}
                   >
@@ -264,45 +264,39 @@ const FeaturesSection = () => {
                       </Box>
                     )}
 
-                    {/* Icon Background */}
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: -20,
-                        right: -20,
-                        width: 120,
-                        height: 120,
-                        borderRadius: '50%',
-                        background: feature.gradient,
-                        opacity: 0.1,
-                        zIndex: 0,
-                      }}
-                    />
 
                     <CardContent sx={{ flexGrow: 1, p: 3, position: 'relative', zIndex: 1 }}>
                       {/* Icon */}
                       <Box
-                        className="feature-icon"
                         sx={{
                           mb: 2,
-                          transition: 'transform 0.3s ease',
                           display: 'flex',
                           justifyContent: 'center',
                         }}
                       >
-                        {feature.icon}
+                        <Box
+                          sx={{
+                            p: 2,
+                            borderRadius: 2,
+                            backgroundColor: '#F8FAFC',
+                            display: 'inline-flex',
+                          }}
+                        >
+                          {feature.icon}
+                        </Box>
                       </Box>
 
                       {/* Title */}
                       <Typography
-                        variant="h5"
+                        variant="h6"
                         gutterBottom
                         sx={{
-                          fontWeight: 700,
-                          fontSize: '1.25rem',
+                          fontWeight: 600,
+                          fontSize: '1.125rem',
                           lineHeight: 1.3,
-                          mb: 2,
+                          mb: 1.5,
                           textAlign: 'center',
+                          color: '#0F172A',
                         }}
                       >
                         {feature.title}
@@ -310,12 +304,12 @@ const FeaturesSection = () => {
 
                       {/* Description */}
                       <Typography
-                        color="text.secondary"
                         sx={{
                           mb: 3,
                           lineHeight: 1.6,
                           textAlign: 'center',
-                          fontSize: '0.95rem',
+                          fontSize: '0.9375rem',
+                          color: '#64748B',
                         }}
                       >
                         {feature.description}
@@ -346,20 +340,21 @@ const FeaturesSection = () => {
                     <CardActions sx={{ justifyContent: 'center', p: 3, pt: 0 }}>
                       <Button
                         onClick={() => navigate(feature.path)}
-                        variant="contained"
-                        size="large"
+                        variant="outlined"
+                        size="medium"
                         fullWidth
                         sx={{
-                          background: feature.gradient,
-                          color: 'white',
+                          borderColor: theme.palette.divider,
+                          color: 'text.primary',
                           fontWeight: 600,
-                          py: 1.5,
+                          py: 1.25,
                           px: 3,
                           fontSize: '0.875rem',
+                          borderRadius: 2,
+                          textTransform: 'none',
                           '&:hover': {
-                            background: feature.gradient,
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)',
+                            borderColor: theme.palette.primary.main,
+                            backgroundColor: 'rgba(15, 61, 94, 0.04)',
                           },
                         }}
                       >
@@ -375,47 +370,30 @@ const FeaturesSection = () => {
 
         {/* Bottom CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Box
             sx={{
               textAlign: 'center',
               mt: { xs: 8, md: 10 },
-              p: 4,
-              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-              borderRadius: 4,
-              color: 'white',
-              position: 'relative',
-              overflow: 'hidden',
+              p: 5,
+              background: '#ffffff',
+              borderRadius: 3,
+              border: '1px solid',
+              borderColor: 'divider',
             }}
           >
-            {/* Background Pattern */}
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                opacity: 0.1,
-                background: `
-                  radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 20%, rgba(255,255,255,0.3) 0%, transparent 50%)
-                `,
-              }}
-            />
-
             <Typography
               variant="h4"
               gutterBottom
               sx={{
                 fontWeight: 700,
                 mb: 2,
-                position: 'relative',
-                zIndex: 1,
+                color: '#0F172A',
+                fontSize: { xs: '1.75rem', md: '2rem' },
               }}
             >
               Ready to Get Started?
@@ -423,12 +401,12 @@ const FeaturesSection = () => {
             <Typography
               variant="h6"
               sx={{
-                mb: 3,
-                opacity: 0.9,
+                mb: 4,
                 maxWidth: '600px',
                 mx: 'auto',
-                position: 'relative',
-                zIndex: 1,
+                color: '#64748B',
+                fontSize: { xs: '1rem', md: '1.125rem' },
+                fontWeight: 400,
               }}
             >
               Join thousands of users who have already found the legal help they need
@@ -437,23 +415,24 @@ const FeaturesSection = () => {
               direction={{ xs: 'column', sm: 'row' }}
               spacing={2}
               justifyContent="center"
-              sx={{ position: 'relative', zIndex: 1 }}
             >
               <Button
                 variant="contained"
                 size="large"
                 onClick={() => navigate('/onboarding')}
                 sx={{
-                  backgroundColor: 'white',
-                  color: theme.palette.primary.main,
-                  fontWeight: 700,
+                  backgroundColor: theme.palette.primary.main,
+                  color: 'white',
+                  fontWeight: 600,
                   py: 1.5,
                   px: 4,
                   fontSize: '1rem',
+                  borderRadius: 2,
+                  textTransform: 'none',
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)',
+                    backgroundColor: theme.palette.primary.dark,
+                    transform: 'translateY(-1px)',
+                    boxShadow: '0 4px 12px rgba(15, 61, 94, 0.3)',
                   },
                 }}
               >
@@ -464,16 +443,17 @@ const FeaturesSection = () => {
                 size="large"
                 onClick={() => navigate('/legal-chat')}
                 sx={{
-                  borderColor: 'rgba(255, 255, 255, 0.8)',
-                  color: 'white',
+                  borderColor: theme.palette.divider,
+                  color: 'text.primary',
                   fontWeight: 600,
                   py: 1.5,
                   px: 4,
                   fontSize: '1rem',
+                  borderRadius: 2,
+                  textTransform: 'none',
                   '&:hover': {
-                    borderColor: 'white',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    transform: 'translateY(-2px)',
+                    borderColor: theme.palette.primary.main,
+                    backgroundColor: 'rgba(15, 61, 94, 0.04)',
                   },
                 }}
               >

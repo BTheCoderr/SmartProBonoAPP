@@ -16,7 +16,6 @@ import { useAuth } from '../context/AuthContext';
 import ChatIcon from '@mui/icons-material/Chat';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import OnboardingIcon from '@mui/icons-material/PlayArrow';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SecurityIcon from '@mui/icons-material/Security';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -28,151 +27,68 @@ const HeroSection = () => {
   const navigate = useNavigate();
   const { mockLogin, isAuthenticated, currentUser } = useAuth();
 
-  const heroVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
+        duration: 0.5,
         ease: [0.25, 0.46, 0.45, 0.94],
       },
     },
   };
 
-  const floatingAnimation = {
-    y: [0, -10, 0],
-    transition: {
-      duration: 3,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  };
-
-  // Removed fake statistics - we'll add real ones when we have actual data
-  // const stats = [];
-
   const trustSignals = [
     {
-      icon: <SecurityIcon sx={{ fontSize: 24, color: theme.palette.success.main }} />,
+      icon: <SecurityIcon sx={{ fontSize: 20, color: theme.palette.success.main }} />,
       text: t('hero.features.bankLevelSecurity'),
     },
     {
-      icon: <VerifiedUserIcon sx={{ fontSize: 24, color: theme.palette.primary.main }} />,
+      icon: <VerifiedUserIcon sx={{ fontSize: 20, color: theme.palette.primary.main }} />,
       text: t('hero.features.licensedAttorneys'),
     },
     {
-      icon: <CheckCircleIcon sx={{ fontSize: 24, color: theme.palette.warning.main }} />,
+      icon: <CheckCircleIcon sx={{ fontSize: 20, color: theme.palette.warning.main }} />,
       text: t('hero.features.abaCompliant'),
     },
     {
-      icon: <SupportIcon sx={{ fontSize: 24, color: theme.palette.info.main }} />,
+      icon: <SupportIcon sx={{ fontSize: 20, color: theme.palette.info.main }} />,
       text: t('hero.features.expertSupport'),
     },
   ];
 
   return (
     <Box
-      component={motion.div}
-      variants={heroVariants}
-      initial="hidden"
-      animate="visible"
-              sx={{
-          background: `linear-gradient(135deg, #0F3D5E 0%, #1FB6A6 100%)`,
-          color: 'white',
-          position: 'relative',
-          overflow: 'hidden',
-          pt: { xs: 12, md: 16 },
-          pb: { xs: 12, md: 16 },
-          borderRadius: { xs: 0, md: '0 0 40px 40px' },
-          mx: { xs: 0, md: 2 },
-          mb: { xs: 0, md: 4 },
-          boxShadow: '0 8px 32px rgba(21, 101, 192, 0.3)',
-        }}
+      sx={{
+        background: '#ffffff',
+        color: 'text.primary',
+        position: 'relative',
+        pt: { xs: 10, md: 16 },
+        pb: { xs: 8, md: 12 },
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+      }}
     >
-              {/* Background Elements */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.4)',
-            zIndex: 1,
-          }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.1,
-          background: `
-            radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255,255,255,0.3) 0%, transparent 50%),
-            radial-gradient(circle at 40% 40%, rgba(255,255,255,0.2) 0%, transparent 50%)
-          `,
-        }}
-      />
-      
-      {/* Floating Shapes */}
-      <motion.div
-        animate={floatingAnimation}
-        style={{
-          position: 'absolute',
-          top: '20%',
-          right: '10%',
-          width: 60,
-          height: 60,
-          borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.1)',
-        }}
-      />
-      <motion.div
-        animate={{ ...floatingAnimation, delay: 1 }}
-        style={{
-          position: 'absolute',
-          top: '60%',
-          left: '5%',
-          width: 40,
-          height: 40,
-          borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.1)',
-        }}
-      />
-
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 3 }}>
-        <Grid container spacing={4} alignItems="center">
+      <Container maxWidth="lg">
+        <Grid container spacing={6} alignItems="center">
           {/* Left Content */}
           <Grid item xs={12} md={7}>
-            <motion.div variants={itemVariants}>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={itemVariants}
+            >
               {/* Badge */}
               <Chip
                 label={t('hero.badge')}
-                color="secondary"
                 sx={{
                   mb: 3,
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  backgroundColor: theme.palette.primary.main,
                   color: 'white',
                   fontWeight: 600,
-                  fontSize: '0.875rem',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                  },
+                  fontSize: '0.75rem',
+                  height: 28,
                 }}
               />
 
@@ -181,12 +97,12 @@ const HeroSection = () => {
                 variant="h1"
                 gutterBottom
                 sx={{
-                  fontWeight: 900,
-                  fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem' },
+                  fontWeight: 700,
+                  fontSize: { xs: '2.5rem', sm: '3rem', md: '3.75rem' },
                   lineHeight: 1.1,
-                  textShadow: '0 4px 12px rgba(0,0,0,0.5)',
                   mb: 3,
-                  color: '#ffffff',
+                  color: '#0F172A',
+                  letterSpacing: '-0.02em',
                 }}
               >
                 {t('hero.title')}
@@ -194,10 +110,7 @@ const HeroSection = () => {
                 <Box
                   component="span"
                   sx={{
-                    background: 'linear-gradient(45deg, #ffffff 30%, #f0f9ff 90%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
+                    color: theme.palette.primary.main,
                   }}
                 >
                   {t('hero.subtitle')}
@@ -206,29 +119,25 @@ const HeroSection = () => {
 
               {/* Subtitle */}
               <Typography
-                variant="h5"
+                variant="h6"
                 paragraph
                 sx={{
                   mb: 4,
-                  opacity: 1,
                   maxWidth: '600px',
-                  lineHeight: 1.6,
-                  fontSize: { xs: '1.1rem', md: '1.25rem' },
-                  fontWeight: 500,
-                  color: '#ffffff',
-                  textShadow: '0 2px 12px rgba(0,0,0,0.6)',
+                  lineHeight: 1.7,
+                  fontSize: { xs: '1rem', md: '1.125rem' },
+                  fontWeight: 400,
+                  color: '#64748B',
                 }}
               >
                 {t('hero.description')}
               </Typography>
 
-              {/* Stats section removed - will add real statistics when available */}
-
               {/* CTA Buttons */}
               <Stack
                 direction={{ xs: 'column', sm: 'row' }}
                 spacing={2}
-                sx={{ mb: 4 }}
+                sx={{ mb: 5 }}
               >
                 {!isAuthenticated && (
                   <Button
@@ -237,16 +146,18 @@ const HeroSection = () => {
                     onClick={mockLogin}
                     startIcon={<OnboardingIcon />}
                     sx={{
-                      backgroundColor: 'white',
-                      color: theme.palette.primary.main,
-                      fontWeight: 700,
+                      backgroundColor: theme.palette.primary.main,
+                      color: 'white',
+                      fontWeight: 600,
                       py: 1.5,
-                      px: 3,
+                      px: 4,
                       fontSize: '1rem',
+                      borderRadius: 2,
+                      textTransform: 'none',
                       '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)',
+                        backgroundColor: theme.palette.primary.dark,
+                        transform: 'translateY(-1px)',
+                        boxShadow: '0 4px 12px rgba(15, 61, 94, 0.3)',
                       },
                     }}
                   >
@@ -260,16 +171,17 @@ const HeroSection = () => {
                   startIcon={<DocumentScannerIcon />}
                   onClick={() => navigate('/scan-document')}
                   sx={{
-                    borderColor: 'rgba(255, 255, 255, 0.8)',
-                    color: 'white',
+                    borderColor: theme.palette.divider,
+                    color: 'text.primary',
                     fontWeight: 600,
                     py: 1.5,
-                    px: 3,
+                    px: 4,
                     fontSize: '1rem',
+                    borderRadius: 2,
+                    textTransform: 'none',
                     '&:hover': {
-                      borderColor: 'white',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateY(-2px)',
+                      borderColor: theme.palette.primary.main,
+                      backgroundColor: 'rgba(15, 61, 94, 0.04)',
                     },
                   }}
                 >
@@ -279,41 +191,20 @@ const HeroSection = () => {
                 <Button
                   variant="outlined"
                   size="large"
-                  startIcon={<DocumentScannerIcon />}
-                  onClick={() => navigate('/generate-document')}
-                  sx={{
-                    borderColor: 'rgba(255, 255, 255, 0.8)',
-                    color: 'white',
-                    fontWeight: 600,
-                    py: 1.5,
-                    px: 3,
-                    fontSize: '1rem',
-                    '&:hover': {
-                      borderColor: 'white',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateY(-2px)',
-                    },
-                  }}
-                >
-                  {t('hero.buttons.pdfGenerator')}
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  size="large"
                   startIcon={<ChatIcon />}
                   onClick={() => navigate('/legal-chat')}
                   sx={{
-                    borderColor: 'rgba(255, 255, 255, 0.8)',
-                    color: 'white',
+                    borderColor: theme.palette.divider,
+                    color: 'text.primary',
                     fontWeight: 600,
                     py: 1.5,
-                    px: 3,
+                    px: 4,
                     fontSize: '1rem',
+                    borderRadius: 2,
+                    textTransform: 'none',
                     '&:hover': {
-                      borderColor: 'white',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateY(-2px)',
+                      borderColor: theme.palette.primary.main,
+                      backgroundColor: 'rgba(15, 61, 94, 0.04)',
                     },
                   }}
                 >
@@ -333,48 +224,34 @@ const HeroSection = () => {
                 <Typography
                   variant="body2"
                   sx={{
-                    opacity: 1,
-                    fontWeight: 600,
-                    color: '#ffffff',
-                    textShadow: '0 1px 6px rgba(0,0,0,0.6)',
+                    fontWeight: 500,
+                    color: '#64748B',
+                    fontSize: '0.875rem',
                   }}
                 >
                   Trusted by:
                 </Typography>
                 {trustSignals.map((signal, index) => (
-                  <motion.div
+                  <Box
                     key={signal.text}
-                    variants={itemVariants}
-                    initial="hidden"
-                    animate="visible"
-                    transition={{ delay: 0.8 + index * 0.1 }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                    }}
                   >
-                    <Box
+                    {signal.icon}
+                    <Typography
+                      variant="caption"
                       sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        px: 2,
-                        py: 1,
-                        borderRadius: 2,
-                        backdropFilter: 'blur(10px)',
+                        fontWeight: 500,
+                        fontSize: '0.75rem',
+                        color: '#475569',
                       }}
                     >
-                      {signal.icon}
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontWeight: 600,
-                          fontSize: '0.75rem',
-                          color: '#ffffff',
-                          textShadow: '0 1px 6px rgba(0,0,0,0.6)',
-                        }}
-                      >
-                        {signal.text}
-                      </Typography>
-                    </Box>
-                  </motion.div>
+                      {signal.text}
+                    </Typography>
+                  </Box>
                 ))}
               </Box>
             </motion.div>
@@ -383,141 +260,79 @@ const HeroSection = () => {
           {/* Right Content */}
           <Grid item xs={12} md={5}>
             <motion.div
+              initial="hidden"
+              animate="visible"
               variants={itemVariants}
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+              transition={{ delay: 0.2 }}
             >
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 3,
-                  width: '100%',
-                  maxWidth: 400,
+                  p: 4,
+                  backgroundColor: '#F8FAFC',
+                  borderRadius: 3,
+                  border: '1px solid',
+                  borderColor: 'divider',
                 }}
               >
-                {/* Feature Cards */}
-                <motion.div
-                  animate={floatingAnimation}
-                  transition={{ delay: 0.5 }}
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  gutterBottom
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: '1.125rem',
+                    mb: 3,
+                    color: '#0F172A',
+                  }}
                 >
-                  <Box
-                    sx={{
-                      p: 3,
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                      borderRadius: 3,
-                      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                      backdropFilter: 'blur(20px)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
-                      color="primary"
-                      gutterBottom
+                  Why Choose SmartProBono?
+                </Typography>
+                <Box
+                  component="ul"
+                  sx={{
+                    m: 0,
+                    pl: 0,
+                    listStyle: 'none',
+                  }}
+                >
+                  {[
+                    '24/7 AI-powered legal assistance',
+                    'Free document generation & templates',
+                    'Expert legal guidance & resources',
+                    'Secure, confidential & compliant',
+                  ].map((item, index) => (
+                    <Box
+                      key={index}
+                      component="li"
                       sx={{
-                        fontWeight: 700,
-                        fontSize: '1.1rem',
                         display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
+                        alignItems: 'flex-start',
+                        mb: 2.5,
+                        '&:last-child': { mb: 0 },
                       }}
                     >
-                      <TrendingUpIcon />
-                      Why Choose SmartProBono?
-                    </Typography>
-                    <Box
-                      component="ul"
-                      sx={{
-                        m: 0,
-                        pl: 2,
-                        color: 'text.primary',
-                      }}
-                    >
-                      <Typography
-                        component="li"
+                      <CheckCircleIcon
                         sx={{
-                          mb: 1,
-                          fontSize: '0.9rem',
+                          fontSize: 20,
+                          color: theme.palette.success.main,
+                          mr: 1.5,
+                          mt: 0.25,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          fontSize: '0.9375rem',
                           fontWeight: 500,
+                          color: '#334155',
+                          lineHeight: 1.6,
                         }}
                       >
-                        24/7 AI-powered legal assistance
-                      </Typography>
-                      <Typography
-                        component="li"
-                        sx={{
-                          mb: 1,
-                          fontSize: '0.9rem',
-                          fontWeight: 500,
-                        }}
-                      >
-                        Free document generation & templates
-                      </Typography>
-                      <Typography
-                        component="li"
-                        sx={{
-                          mb: 1,
-                          fontSize: '0.9rem',
-                          fontWeight: 500,
-                        }}
-                      >
-                        Expert legal guidance & resources
-                      </Typography>
-                      <Typography
-                        component="li"
-                        sx={{
-                          fontSize: '0.9rem',
-                          fontWeight: 500,
-                        }}
-                      >
-                        Secure, confidential & compliant
+                        {item}
                       </Typography>
                     </Box>
-                  </Box>
-                </motion.div>
-
-                {/* User Status Card */}
-                {isAuthenticated && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1 }}
-                  >
-                    <Box
-                      sx={{
-                        p: 2,
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        borderRadius: 2,
-                        textAlign: 'center',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: 'success.main',
-                          fontWeight: 600,
-                          mb: 1,
-                        }}
-                      >
-                        ✅ Welcome back!
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: 'text.primary',
-                          fontWeight: 500,
-                        }}
-                      >
-                        {currentUser?.first_name} {currentUser?.last_name}
-                      </Typography>
-                    </Box>
-                  </motion.div>
-                )}
+                  ))}
+                </Box>
               </Box>
             </motion.div>
           </Grid>
