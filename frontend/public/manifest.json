@@ -26,7 +26,7 @@
   "background_color": "#ffffff",
   "orientation": "portrait",
   "categories": ["legal", "productivity", "social"],
-  "description": "Pro bono legal services platform connecting attorneys with clients in need",
+  "description": "Free AI-powered legal assistance for everyone. Generate legal documents, scan contracts, get instant legal advice, and access professional legal resources.",
   "dir": "ltr",
   "lang": "en",
   "prefer_related_applications": false,
