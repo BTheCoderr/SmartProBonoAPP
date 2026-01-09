@@ -16,7 +16,7 @@ const LogoContainer = styled(Box)(({ theme, variant }) => ({
 const Logo = ({ variant = 'light', size = 'medium', type = 'mark' }) => {
   const logoSizes = {
     small: { width: '32px', height: '32px' },
-    medium: { width: '40px', height: '40px' },
+    medium: { width: '48px', height: '48px' },
     large: { width: '64px', height: '64px' }
   };
 
@@ -34,6 +34,8 @@ const Logo = ({ variant = 'light', size = 'medium', type = 'mark' }) => {
     }
   };
 
+  const logoSrc = getLogoSrc();
+
   return (
     <LogoContainer variant={variant}>
       <Box sx={{ 
@@ -43,11 +45,17 @@ const Logo = ({ variant = 'light', size = 'medium', type = 'mark' }) => {
         filter: variant === 'light' ? 'drop-shadow(0px 2px 4px rgba(21, 101, 192, 0.5))' : 'none'
       }}>
         <img 
-          src={getLogoSrc()} 
+          src={logoSrc} 
           alt="SmartProBono Logo"
           style={{
             ...logoSizes[size],
-            objectFit: 'contain'
+            objectFit: 'contain',
+            display: 'block',
+          }}
+          onError={(e) => {
+            // Fallback if logo doesn't load
+            console.warn('Logo failed to load:', logoSrc);
+            e.target.style.display = 'none';
           }}
         />
         {type === 'text' && (
