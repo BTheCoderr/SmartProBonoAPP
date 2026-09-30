@@ -47,7 +47,7 @@ else
 fi
 
 # Set environment variables
-export RESEND_API_KEY=re_N7YNzBXp_HyNzVsWjuLNqxqUQr8oxaxvf
+: "${RESEND_API_KEY:?Set RESEND_API_KEY in your environment before starting SmartProBono}"
 export FLASK_ENV=development
 
 # Check if ports are available

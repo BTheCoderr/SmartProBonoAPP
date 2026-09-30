@@ -181,7 +181,7 @@ CORS(app,
      supports_credentials=app.config.get('CORS_SUPPORTS_CREDENTIALS', True))
 
 # Resend API configuration
-RESEND_API_KEY = os.environ.get('RESEND_API_KEY', 're_N7YNzBXp_HyNzVsWjuLNqxqUQr8oxaxvf')
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY')
 RESEND_URL = 'https://api.resend.com/emails'
 
 def send_contact_form_email(data):

@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Resend API configuration
-const RESEND_API_KEY = process.env.RESEND_API_KEY || 're_N7YNzBXp_HyNzVsWjuLNqxqUQr8oxaxvf';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const RESEND_URL = 'https://api.resend.com/emails';
 
 // Health check endpoint
