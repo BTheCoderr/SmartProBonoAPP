@@ -1,141 +1,176 @@
-# SmartProBono - Complete Legal Platform
+# SmartProBono — Legacy Legal Platform Prototype
+
+> **Current production:** https://smartprobono.org  
+> **Current canonical codebase:** `BTheCoderr/smartprobonoip`
+>
+> This repository is an earlier SmartProBono legal-tech prototype. It is kept as a reference for features, UX ideas, and migration candidates. It is **not** the source currently serving SmartProBono production.
 
 <!-- repo-intro:start -->
-**Project snapshot:** An earlier SmartProBono legal-platform build exploring AI-assisted intake, legal research, document workflows, role-based dashboards, and case-management concepts.
+**Project snapshot:** Earlier full-stack SmartProBono experiments covering AI-assisted intake, legal research, document workflows, role-based dashboard concepts, WebSocket experiments, and case-management prototypes.
 
-**What it demonstrates:** Full-stack product design · AI-assisted workflows · role-based UX · legal-tech prototyping.
+**What it demonstrates:** Full-stack product design · AI-assisted workflows · role-based UX concepts · legal-tech prototyping · Flask + React architecture.
+
+**Important:** A file, component, or API route being present in this repository does not mean that capability is enabled, production-ready, or live at smartprobono.org.
 <!-- repo-intro:end -->
 
-A comprehensive legal assistance platform with AI-powered features, role-based dashboards, and real-time case management.
+## Current Status
 
-## 🚀 Core Features
+SmartProBono has moved forward into a unified **Legal + IP preparation platform** at **https://smartprobono.org**.
 
-### 🤖 AI-Powered Features
-- **AI Virtual Paralegal**: Autonomous AI system for case research and document generation
-- **Legal AI Chat**: Instant legal assistance and guidance
-- **Document Scanner**: Upload and analyze legal documents with AI insights
-- **PDF Generator**: Create professional legal documents from templates
-- **Case Law Research**: Real-time access to CourtListener API for case law research
+The current production product uses the newer `smartprobonoip` repository as its canonical codebase. That application now provides the SmartProBono umbrella experience, SmartProBono Legal, SmartProBonoIP, unified accounts/workspaces, and the current Supabase architecture.
 
-### 👥 Role-Based Dashboards
-- **Client Portal**: Case tracking, progress monitoring, document access
-- **Lawyer Dashboard**: Case management, client communication, analytics
-- **Bondsman Dashboard**: Bail bond management, payment tracking, risk assessment
-- **Admin Dashboard**: System management, user analytics, compliance monitoring
+This older repository should be treated as a **feature archive and prototype source**, not a production feature checklist.
 
-### 🔄 Real-Time Features
-- **Live Notifications**: Real-time updates on case progress and deadlines
-- **WebSocket Integration**: Instant communication and updates
-- **Progress Tracking**: Visual progress bars and status updates
-- **Document Collaboration**: Real-time document sharing and editing
+## What This Repository Actually Contains
 
-### ⚖️ Legal Tools
-- **Document Analysis**: AI-powered legal document review
-- **Form Generation**: Automated legal form creation
-- **Compliance Scanner**: Legal compliance checking
-- **Risk Assessment**: Automated risk analysis for cases
+### Active frontend routes in this legacy build
 
-## 🛠️ Quick Start
+The current `frontend/src/App.js` actively mounts:
 
-### Backend Setup
+- Home
+- About
+- Contact
+- Legal AI Chat
+- Document Scan
+- Login
+- Register
+- Dashboard
+- Privacy
+- Terms
+
+The app also contains many additional page components and experiments, but most are currently commented out or otherwise not enabled in the active router.
+
+### Prototype / migration-candidate features present in code
+
+Code exists for concepts including:
+
+- AI Virtual Paralegal workflows
+- CourtListener/case-law research
+- Client portal
+- Lawyer dashboard
+- Bondsman dashboard
+- Admin dashboard
+- Document generation
+- Legal forms
+- Document collaboration
+- WebSocket notifications
+- Compliance/risk experiments
+- CRM/case-management APIs
+- Enhanced v2 APIs
+- Voice/court-filing/model-management experiments
+
+These should be described as **prototype capabilities or migration candidates**, not as live production features unless they are separately verified and enabled.
+
+## Important Legacy Limitations
+
+This repository includes development shortcuts and prototype implementations that should not be represented as production behavior:
+
+- The frontend `ProtectedRoute` currently allows access without enforcing authentication.
+- Many dashboard/tool routes are commented out in `frontend/src/App.js`.
+- Document collaboration currently uses in-memory dictionaries for demo storage rather than durable collaborative persistence.
+- The standalone WebSocket server defaults to `localhost:8765`.
+- Several backend blueprints are conditionally registered and can be unavailable if dependencies or services are missing.
+- Some older feature documentation describes intended behavior more broadly than the currently active runtime.
+- This repository is not the code currently deployed at `smartprobono.org`.
+
+## Production
+
+Use the current product here:
+
+**https://smartprobono.org**
+
+The production SmartProBono architecture is organized around:
+
+- **SmartProBono Legal** — legal preparation, document understanding, Ermi, draft preparation, and guided workflows.
+- **SmartProBonoIP** — IP readiness, invention organization, research preparation, and professional handoff.
+- **Unified Workspace** — authenticated Legal + IP persistence while preserving anonymous IP preparation.
+- **Learn → Prepare → Connect** — the platform operating model.
+
+SmartProBono is a preparation platform and is not a law firm. It does not replace lawyers, courts, legal-aid organizations, patent professionals, or other qualified professionals.
+
+## Local Development for This Legacy Repository
+
+`localhost` is used **only for local development of this historical codebase**. It is not the public SmartProBono address.
+
+### Backend
+
 ```bash
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# Start backend server
 cd backend
-export RESEND_API_KEY=your_api_key_here
 python combined_server.py
 ```
 
-### Frontend Setup
-```bash
-# Install dependencies
-npm install
+Typical legacy local backend:
 
-# Start frontend
+```text
+http://localhost:3001
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
 npm start
 ```
 
-## 📁 Project Structure
+Typical legacy local frontend:
 
+```text
+http://localhost:3002
 ```
-SmartProBono-main/
+
+## Legacy Project Structure
+
+```text
+SmartProBonoAPP/
 ├── backend/
-│   ├── combined_server.py      # Main Flask server
-│   ├── simple_ai_service.py   # AI document processing
-│   └── routes/                 # API endpoints
+│   ├── combined_server.py
+│   ├── production_app.py
+│   ├── routes/
+│   ├── services/
+│   └── websocket_server.py
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/             # React pages
-│   │   └── components/        # React components
-│   └── public/                # Static assets
-└── requirements.txt           # Python dependencies
+│   │   ├── pages/
+│   │   ├── components/
+│   │   └── App.js
+│   └── public/
+└── requirements.txt
 ```
 
-## 🔧 API Endpoints
+## Notable Legacy APIs
 
-### Document Processing
-- `GET /api/scanner/health` - Document scanner health check
-- `POST /api/scanner/analyze` - Analyze uploaded documents
-- `GET /api/generator/templates` - Get document templates
-- `POST /api/generator/create` - Generate PDF documents
+The repository contains backend implementations for several API groups, including:
 
-### AI Virtual Paralegal
-- `POST /api/v1/ai-virtual-paralegal/start` - Start AI workflow
-- `GET /api/v1/ai-virtual-paralegal/status` - Get AI status
-- `GET /api/v1/ai-virtual-paralegal/logs` - Get activity logs
-- `POST /api/v1/ai-virtual-paralegal/search-cases` - Search CourtListener API
-- `POST /api/v1/ai-virtual-paralegal/similar-cases` - Find similar cases
-- `GET /api/v1/ai-virtual-paralegal/recent-cases` - Get recent cases
-- `POST /api/v1/ai-virtual-paralegal/generate-document` - Generate documents
-- `GET /api/v1/ai-virtual-paralegal/dashboard` - Get dashboard data
+- Document scanning and document generation
+- Legal AI
+- AI Virtual Paralegal experiments
+- CourtListener research
+- Enhanced v2 case/user/document APIs
+- CRM and intake workflows
+- Document collaboration
+- Analytics
+- Voice and court-filing experiments
 
-### Enhanced API (v2)
-- `GET /api/v2/` - API documentation and root
-- `GET /api/v2/cases/` - List cases with pagination
-- `POST /api/v2/cases/` - Create new case
-- `GET /api/v2/cases/{id}/` - Get specific case
-- `PUT /api/v2/cases/{id}/` - Update case
-- `DELETE /api/v2/cases/{id}/` - Delete case
-- `GET /api/v2/users/` - List users
-- `GET /api/v2/documents/` - List documents
-- `GET /api/v2/health/` - Health check
+Because this is a legacy prototype repository, do not assume every endpoint is enabled in the deployed runtime merely because its source file exists.
 
-### Contact & Support
-- `POST /api/contact/submit` - Submit contact form
+## Migration Rule
 
-## 🌐 Access
+When a capability from this repository is useful, migrate it deliberately into the canonical SmartProBono platform rather than reactivating the entire old stack.
 
-### Main Application
-- **Frontend**: http://localhost:3002
-- **Backend**: http://localhost:3001
+Migration candidates should receive:
 
-### User Dashboards
-- **Client Portal**: http://localhost:3002/client-portal
-- **Lawyer Dashboard**: http://localhost:3002/lawyer-dashboard
-- **Bondsman Dashboard**: http://localhost:3002/bondsman-dashboard
-- **Admin Dashboard**: http://localhost:3002/admin
+1. Current security/auth architecture
+2. Current Supabase ownership/RLS model
+3. Current SmartProBono Legal safety language
+4. Production tests
+5. Explicit Legal/IP workspace integration
+6. Current deployment verification at `smartprobono.org`
 
-### AI Features
-- **AI Virtual Paralegal**: http://localhost:3002/ai-virtual-paralegal
-- **Legal AI Chat**: http://localhost:3002/legal-chat
-- **Virtual Paralegal**: http://localhost:3002/virtual-paralegal
+## License
 
-### Legal Tools
-- **Legal Tools**: http://localhost:3002/legal-tools
-- **Document Scanner**: http://localhost:3002/document-scanner
-- **Document Generator**: http://localhost:3002/generate-document
-- **Safety Check**: http://localhost:3002/safety-check
-
-### API Documentation
-- **Enhanced API**: http://localhost:3001/api/v2/
-- **API Health**: http://localhost:3001/api/v2/health/
-
-## 📝 License
-
-MIT License - see LICENSE file for details
+MIT License — see `LICENSE`.
