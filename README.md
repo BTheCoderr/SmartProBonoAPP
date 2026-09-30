@@ -1,5 +1,11 @@
 # SmartProBono - Complete Legal Platform
 
+<!-- repo-intro:start -->
+**Project snapshot:** An earlier SmartProBono legal-platform build exploring AI-assisted intake, legal research, document workflows, role-based dashboards, and case-management concepts.
+
+**What it demonstrates:** Full-stack product design · AI-assisted workflows · role-based UX · legal-tech prototyping.
+<!-- repo-intro:end -->
+
 A comprehensive legal assistance platform with AI-powered features, role-based dashboards, and real-time case management.
 
 ## 🚀 Core Features
