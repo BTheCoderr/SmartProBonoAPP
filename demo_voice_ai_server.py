@@ -22,10 +22,14 @@ app = Flask(__name__)
 CORS(app)
 
 # Set up API keys
-CEREBRAS_API_KEY = os.environ.get("CEREBRAS_API_KEY", "***REMOVED***")
-LIVEKIT_API_KEY = os.environ.get("LIVEKIT_API_KEY", "***REMOVED***")
-LIVEKIT_API_SECRET = os.environ.get("LIVEKIT_API_SECRET", "***REMOVED***")
+CEREBRAS_API_KEY = os.environ.get("CEREBRAS_API_KEY")
+LIVEKIT_API_KEY = os.environ.get("LIVEKIT_API_KEY")
+LIVEKIT_API_SECRET = os.environ.get("LIVEKIT_API_SECRET")
 LIVEKIT_WS_URL = os.environ.get("LIVEKIT_WS_URL", "wss://smartprobono-lr9wv8ch.livekit.cloud")
+
+# Require credentials rather than using committed defaults
+if not all([CEREBRAS_API_KEY, LIVEKIT_API_KEY, LIVEKIT_API_SECRET]):
+    raise RuntimeError("CEREBRAS_API_KEY, LIVEKIT_API_KEY and LIVEKIT_API_SECRET must be set")
 
 # Set environment variables
 os.environ["CEREBRAS_API_KEY"] = CEREBRAS_API_KEY
@@ -35,8 +39,8 @@ os.environ["LIVEKIT_WS_URL"] = LIVEKIT_WS_URL
 
 print("🚀 Demo Voice AI Server for SmartProBono")
 print("=" * 50)
-print(f"✅ Cerebras API Key: {CEREBRAS_API_KEY[:20]}...")
-print(f"✅ LiveKit API Key: {LIVEKIT_API_KEY[:10]}...")
+print("✅ Cerebras API Key: configured")
+print("✅ LiveKit API Key: configured")
 print(f"✅ LiveKit WebSocket URL: {LIVEKIT_WS_URL}")
 
 class VoiceAIDemo:

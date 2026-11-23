@@ -45,7 +45,7 @@ if [ $? -eq 0 ]; then
     echo "   → Render auto-deploys both backend & frontend!"
     echo ""
     echo "2️⃣ Set Environment Variables in Render:"
-    echo "   → GEMINI_API_KEY: ***REMOVED***"
+    echo "   → GEMINI_API_KEY: (set in Render environment; never commit)"
     echo "   → DATABASE_URL: (your Supabase URL)"
     echo "   → SECRET_KEY: (auto-generated)"
     echo ""

@@ -11,10 +11,12 @@ from exa_py import Exa
 from cerebras.cloud.sdk import Cerebras
 
 # Configure API keys
-EXA_API_KEY = "***REMOVED***"
-CEREBRAS_API_KEY = os.environ.get("CEREBRAS_API_KEY", "***REMOVED***")
+EXA_API_KEY = os.environ.get("EXA_API_KEY")
+CEREBRAS_API_KEY = os.environ.get("CEREBRAS_API_KEY")
 
 # Initialize clients
+if not EXA_API_KEY or not CEREBRAS_API_KEY:
+    raise RuntimeError("EXA_API_KEY and CEREBRAS_API_KEY must be set")
 try:
     client = Cerebras(api_key=CEREBRAS_API_KEY)
     exa = Exa(api_key=EXA_API_KEY)
