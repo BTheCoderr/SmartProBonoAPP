@@ -1,47 +1,21 @@
-# Dependencies
-venv/
+# Dependencies and local state
 node_modules/
+venv/
+.venv/
+.venv*/
 __pycache__/
-
-# Environment files
-.env
-.env.local
-.env.development
-.env.test
-.env.production
-backend/.env
-frontend/.env
-frontend/.env.*
-
-# Build files
-/build
-/dist
-
-# IDE files
+*.py[cod]
+*.db
+*.sqlite
+*.sqlite3
+# Never track environment credentials
+.env*
+!.env.example
+# Generated and editor files
+/build/
+/dist/
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# OS files
+*.log
 .DS_Store
 Thumbs.db
-
-# Misc
-*.log
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-.Python
-*.so
-
-Miniforge3-MacOSX-arm64.sh
-Miniforge3-MacOSX-arm64.sh
-
-# Redis configuration
-REDIS_PASSWORD=***REMOVED***
-
-# JWT configuration (needed for authentication)
-JWT_SECRET_KEY=***REMOVED***
-.env.backup
