@@ -14,29 +14,31 @@ const NotFoundPage = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: 'calc(100vh - 64px)', // Adjust based on your navbar height
+        minHeight: '60vh',
+        px: 2
       }}
     >
       <Paper
         elevation={3}
         sx={{
-          p: 4,
+          p: { xs: 2, sm: 4 },
+          width: '100%',
           textAlign: 'center',
           maxWidth: 400,
         }}
       >
         <ErrorOutlineIcon sx={{ fontSize: 64, color: 'error.main', mb: 2 }} />
         <Typography variant="h4" gutterBottom>
-          {t('errors.notFound.title')}
+          {t('errors.notFound.title', { defaultValue: 'Page not found' })}
         </Typography>
         <Typography color="text.secondary" paragraph>
-          {t('errors.notFound.message')}
+          {t('errors.notFound.message', { defaultValue: 'This page is not available in the legacy prototype.' })}
         </Typography>
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 4, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1 }}>
           <Button
             variant="contained"
             onClick={() => navigate('/')}
-            sx={{ mr: 2 }}
+            sx={{ maxWidth: '100%' }}
           >
             {t('common.backToHome')}
           </Button>

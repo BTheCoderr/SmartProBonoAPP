@@ -218,7 +218,7 @@ const FeaturesSection = () => {
           viewport={{ once: true }}
         >
           <Grid container spacing={4}>
-            {features.map((feature, index) => (
+            {features.filter(feature => ['/legal-chat', '/scan-document'].includes(feature.path)).map((feature, index) => (
               <Grid item xs={12} sm={6} lg={4} key={index}>
                 <motion.div variants={cardVariants}>
                   <Card
@@ -409,7 +409,7 @@ const FeaturesSection = () => {
                 fontWeight: 400,
               }}
             >
-              Join thousands of users who have already found the legal help they need
+              This is an earlier SmartProBono prototype. Visit the current platform for available features.
             </Typography>
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
@@ -419,7 +419,8 @@ const FeaturesSection = () => {
               <Button
                 variant="contained"
                 size="large"
-                onClick={() => navigate('/onboarding')}
+                component="a"
+                href="https://smartprobono.org"
                 sx={{
                   backgroundColor: theme.palette.primary.main,
                   color: 'white',
@@ -436,7 +437,7 @@ const FeaturesSection = () => {
                   },
                 }}
               >
-                Start Free Trial
+                Visit Current Platform
               </Button>
               <Button
                 variant="outlined"

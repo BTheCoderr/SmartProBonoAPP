@@ -15,7 +15,7 @@ const LegalAIChatPage = () => {
             Experience the power of AI-assisted legal document preparation.
           </Typography>
           <Typography variant="body2" sx={{ opacity: 0.9 }}>
-            Demo Mode: This is a preview of SmartProBono. Your conversations and documents won't be saved. Sign up for full access →
+            Legacy demo: availability and data handling have not been verified. Use fictional information only. For the current platform, visit smartprobono.org.
           </Typography>
         </Container>
       </Box>

@@ -9,7 +9,7 @@ function HomePage() {
     <PageLayout 
       background="light" 
       padding="none"
-      sx={{ pt: { xs: 8, md: 10 } }} // Add top padding to account for fixed header
+      sx={{ pt: { xs: 0, md: 1 } }}
     >
       <HeroSection />
       <Section variant="default" background="white">
