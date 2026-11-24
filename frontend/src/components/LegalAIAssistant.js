@@ -252,10 +252,10 @@ const LegalAIAssistant = () => {
   };
 
   return (
-    <Box sx={{ height: 'calc(100vh - 120px)', p: 2 }}>
-      <Grid container spacing={2} sx={{ height: '100%' }}>
+    <Box sx={{ minHeight: 0, p: { xs: 0, sm: 2 } }}>
+      <Grid container spacing={2} sx={{ alignItems: 'flex-start' }}>
         {/* Left Panel - Upload & Chat */}
-        <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
+        <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
           {/* Upload Section */}
           <Card sx={{ bgcolor: '#1e3a5f', color: 'white' }}>
             <CardContent>
@@ -271,7 +271,7 @@ const LegalAIAssistant = () => {
                   border: '2px dashed',
                   borderColor: selectedFile ? 'primary.light' : 'rgba(255,255,255,0.3)',
                   borderRadius: 2,
-                  p: 4,
+                  p: { xs: 2, sm: 4 },
                   textAlign: 'center',
                   bgcolor: 'rgba(255,255,255,0.05)',
                   cursor: 'pointer',
@@ -341,7 +341,7 @@ const LegalAIAssistant = () => {
           </Card>
 
           {/* Chat Section */}
-          <Card sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#1e3a5f', color: 'white' }}>
+          <Card sx={{ minHeight: 360, display: 'flex', flexDirection: 'column', bgcolor: '#1e3a5f', color: 'white' }}>
             <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 0 }}>
               {/* Header */}
               <Box sx={{ p: 2, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
@@ -354,7 +354,7 @@ const LegalAIAssistant = () => {
               </Box>
 
               {/* Messages */}
-              <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>
+              <Box sx={{ flex: 1, minHeight: 160, maxHeight: 480, overflow: 'auto', p: 2, overflowWrap: 'anywhere' }}>
                 <List>
                   {messages.map((message) => (
                     <ListItem
@@ -483,7 +483,7 @@ const LegalAIAssistant = () => {
           {/* Footer */}
           <Box sx={{ textAlign: 'center', py: 1 }}>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              SmartProBono © 2025 | Powered by AI
+              SmartProBono | Legacy prototype
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>
               AI does not provide legal advice — all outputs require attorney review.
@@ -492,8 +492,8 @@ const LegalAIAssistant = () => {
         </Grid>
 
         {/* Right Panel - Generated Output */}
-        <Grid item xs={12} md={6} sx={{ height: '100%' }}>
-          <Card sx={{ height: '100%', bgcolor: '#1e3a5f', color: 'white', display: 'flex', flexDirection: 'column' }}>
+        <Grid item xs={12} md={6} sx={{ minWidth: 0 }}>
+          <Card sx={{ minHeight: 280, bgcolor: '#1e3a5f', color: 'white', display: 'flex', flexDirection: 'column' }}>
             <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 0 }}>
               {/* Header */}
               <Box sx={{ p: 2, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
